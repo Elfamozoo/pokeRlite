@@ -420,6 +420,61 @@
     };
   }
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  LA TROISIÈME GÉNÉRATION (HOENN) S'INSCRIT ICI  [09/09/2026]
+  // ═══════════════════════════════════════════════════════════════════════════
+  if (W.POKE_GEN3_ESPECE && W.POKE_GEN3_TYPE_TABLE) {
+    JEUX.gen3 = {
+      nom: "Troisième génération",
+      types: function () { return W.POKE_GEN3_TYPES; },
+      typeNoms: function () { return W.POKE_GEN3_TYPE_NOMS; },
+      table: function () { return W.POKE_GEN3_TYPE_TABLE; },
+      speciaux: function () { return W.POKE_GEN3_TYPES_SPECIAUX; },
+      especes: function () { return W.POKE_GEN3_ESPECE; },
+      especesListe: function () { return W.POKE_GEN3_ESPECES; },
+      attaques: function () { return W.POKE_GEN3_ATTAQUE_PAR_CLE; },
+      attaquesListe: function () { return W.POKE_GEN3_ATTAQUES; },
+      dexTotal: 386,
+      arenes: function () { return W.POKE_GEN3_ARENES || W.POKE_ARENES; },
+      etapes: function () { return W.POKE_GEN3_ETAPES || W.POKE_ETAPES; },
+      clesVoyage: function () { return W.POKE_GEN3_CLES || W.POKE_CLES; },
+      badgePourCS: function () { return W.POKE_GEN3_BADGE_POUR_CS || {}; },
+      badgesStat: { 1: "atk", 3: "vit", 5: "def", 7: "spe" },
+      sons: function () { return W.POKE_GEN3_SONS || W.POKE_SONS; },
+      sonsAttaques: function () { return W.POKE_GEN3_SONS_ATTAQUES || W.POKE_SONS; },
+      peche: function () { return W.POKE_GEN3_PECHE || null; },
+      zones: function () { return W.POKE_GEN3_ZONES || W.POKE_ZONES; },
+      lieux: function () { return W.POKE_GEN3_LIEUX || W.POKE_LIEUX; },
+      versions: ["emeraude"],
+      versionsNoms: { emeraude: { fr: "Émeraude", en: "Emerald" } },
+      canon: [252, 255, 258],
+      professeur: { fr: "Seko", en: "Birch" },
+      visages: {
+        arene: ["gen3/dresseur/arene1", "gen3/dresseur/arene2", "gen3/dresseur/arene3",
+          "gen3/dresseur/arene4", "gen3/dresseur/arene5", "gen3/dresseur/arene6",
+          "gen3/dresseur/arene7", "gen3/dresseur/arene8"],
+        conseil: ["gen3/dresseur/conseil1", "gen3/dresseur/conseil2",
+          "gen3/dresseur/conseil3", "gen3/dresseur/conseil4"],
+        maitre: "gen3/dresseur/maitre",
+      },
+      maitre: function () { return W.POKE_GEN3_MAITRE || null; },
+      equipes: function () { return W.POKE_GEN3_EQUIPES || null; },
+      classesDresseur: function () { return W.POKE_GEN3_CLASSES || null; },
+      rival: function () { return W.POKE_GEN3_RIVAL || null; },
+      dresseurFinal: function () { return W.POKE_GEN3_STEVEN || null; },
+      objetsTable: function () { return W.POKE_GEN3_OBJETS || null; },
+      errants: function () { return W.POKE_GEN3_ERRANTS || null; },
+      mythique: function () { return { n: 385, niveau: 30, lieu: "mossdeep-space-center" }; },
+      conseil: function () { return W.POKE_GEN3_CONSEIL || W.POKE_CONSEIL; },
+      echanges: function () { return W.POKE_GEN3_ECHANGES || null; },
+      casino: function () { return W.POKE_GEN3_CASINO || null; },
+      cadeaux: function () { return W.POKE_GEN3_CADEAUX || null; },
+      fossiles: function () { return W.POKE_GEN3_FOSSILES || null; },
+      speAtk: "sat",
+      speDef: "sdf",
+    };
+  }
+
   var courant = DEFAUT;
 
   // 🔴 UNE PARTIE SANS `regles` EST UNE PARTIE DE LA GEN 1. Toutes celles qui
@@ -699,6 +754,7 @@
       if (t && t[cle]) return t[cle];
       if (W.POKE_OBJETS && W.POKE_OBJETS[cle]) return W.POKE_OBJETS[cle];
       if (W.POKE_GEN2_OBJETS && W.POKE_GEN2_OBJETS[cle]) return W.POKE_GEN2_OBJETS[cle];
+      if (W.POKE_GEN3_OBJETS && W.POKE_GEN3_OBJETS[cle]) return W.POKE_GEN3_OBJETS[cle];
       return null;
     },
     //  Le nom d'un objet dans la langue courante, ou sa clé si l'objet

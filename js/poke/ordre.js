@@ -193,6 +193,29 @@
     "js/poke/gen2/anim-attaque.js",
   ];
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  HOENN — TROISIÈME GÉNÉRATION (RUBIS / SAPHIR / ÉMERAUDE)  [09/09/2026]
+  // ═══════════════════════════════════════════════════════════════════════════
+  var GEN3 = [
+    "js/poke/gen3/types.js",
+    "js/poke/gen3/effets.js",
+    "js/poke/gen3/objets.js",
+    "js/poke/gen3/obtentions.js",
+    "js/poke/gen3/attaques.js",
+    "js/poke/gen3/especes.js",
+    "js/poke/gen3/dresseurs.js",
+    "js/poke/gen3/classes.js",
+    "js/poke/gen3/equipes.js",
+    "js/poke/gen3/arenes.js",
+    "js/poke/gen3/rival.js",
+    "js/poke/gen3/monde.js",
+    "js/poke/gen3/voyage.js",
+  ];
+
+  var GEN3_ECRANS = [
+    "js/poke/gen3/sons.js",
+  ];
+
   function surLeBanc() {
     try {
       var h = W.location && W.location.hostname;
@@ -252,6 +275,26 @@
     //  et l'écran de combat choisit entre les deux au moment du coup.
     var iAnim = ECRANS.indexOf("js/poke/anim-attaque.js");
     ECRANS = ECRANS.slice(0, iAnim + 1).concat(GEN2_ECRANS, ECRANS.slice(iAnim + 1));
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  L'ÉTAT DE HOENN — UN SEUL MOT, LU DES DEUX CÔTÉS  [09/09/2026]
+  // ═══════════════════════════════════════════════════════════════════════════
+  var HOENN = "ouvert";
+
+  function hoennCharge() {
+    if (HOENN === "ouvert") return true;
+    if (HOENN !== "banc") return false;
+    return surLeBanc();
+  }
+
+  W.POKE_ORDRE_GEN3 = GEN3;
+  W.POKE_ORDRE_GEN3_ECRANS = GEN3_ECRANS;
+  W.POKE_HOENN_ETAT = HOENN;
+  W.POKE_BANC_HOENN = hoennCharge();
+  if (W.POKE_BANC_HOENN) {
+    var iReg3 = NOYAU.indexOf("js/poke/regles.js");
+    NOYAU = NOYAU.slice(0, iReg3).concat(GEN3, NOYAU.slice(iReg3));
   }
 
   W.POKE_ORDRE_NOYAU = NOYAU;
