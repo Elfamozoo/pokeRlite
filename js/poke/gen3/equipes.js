@@ -10,6 +10,8 @@
     "youngster": [
       // Early routes (Routes 101, 102, 104)
       [{ n: 263, niveau: 3, attaques: ["TACKLE", "GROWL"] }], // Zigzagoon
+      [{ n: 261, niveau: 4, attaques: ["TACKLE"] }], // Poochyena
+      [{ n: 273, niveau: 5, attaques: ["BIDE", "HARDEN"] }], // Seedot
       [{ n: 261, niveau: 4, attaques: ["TACKLE"] }, { n: 265, niveau: 4, attaques: ["TACKLE", "STRING_SHOT"] }], // Poochyena, Wurmple
       [{ n: 263, niveau: 5, attaques: ["TACKLE", "TAIL_WHIP"] }, { n: 276, niveau: 5, attaques: ["PECK", "GROWL"] }], // Zigzagoon, Taillow
       [{ n: 276, niveau: 7, attaques: ["PECK", "GROWL", "QUICK_ATTACK"] }], // Taillow
@@ -26,7 +28,9 @@
 
     "lass": [
       // Early
-      [{ n: 265, niveau: 4, attaques: ["TACKLE", "STRING_SHOT"] }], // Wurmple
+      [{ n: 265, niveau: 3, attaques: ["TACKLE", "STRING_SHOT"] }], // Wurmple
+      [{ n: 285, niveau: 4, attaques: ["ABSORB", "TACKLE"] }], // Shroomish
+      [{ n: 263, niveau: 5, attaques: ["TACKLE", "TAIL_WHIP"] }], // Zigzagoon
       [{ n: 285, niveau: 5, attaques: ["ABSORB", "TACKLE"] }], // Shroomish
       [{ n: 263, niveau: 6, attaques: ["TACKLE", "TAIL_WHIP"] }, { n: 285, niveau: 6, attaques: ["ABSORB", "STUN_SPORE"] }],
       [{ n: 300, niveau: 9, attaques: ["TACKLE", "GROWL", "TAIL_WHIP"] }], // Skitty
@@ -42,6 +46,9 @@
 
     "bug_catcher": [
       [{ n: 265, niveau: 3, attaques: ["TACKLE", "STRING_SHOT"] }],
+      [{ n: 266, niveau: 4, attaques: ["HARDEN", "TACKLE"] }], // Silcoon
+      [{ n: 268, niveau: 4, attaques: ["HARDEN", "POISON_STING"] }], // Cascoon
+      [{ n: 290, niveau: 6, attaques: ["SCRATCH", "HARDEN"] }], // Nincada
       [{ n: 266, niveau: 5, attaques: ["HARDEN"] }, { n: 268, niveau: 5, attaques: ["HARDEN"] }], // Silcoon, Cascoon
       [{ n: 267, niveau: 8, attaques: ["CONFUSION", "GUST", "POISON_STING"] }], // Beautifly
       [{ n: 269, niveau: 8, attaques: ["CONFUSION", "GUST", "POISON_STING"] }], // Dustox

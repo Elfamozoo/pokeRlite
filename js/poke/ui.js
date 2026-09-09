@@ -4817,6 +4817,21 @@
     return (p && p.surnomConnu && p.surnomConnu(n)) || "";
   }
 
+  function rivalDefautMonde(genre) {
+    var cle = (partie && W.PokeRegles && W.PokeRegles.de) ? W.PokeRegles.de(partie)
+      : (W.PokeRegles && W.PokeRegles.courant ? W.PokeRegles.courant() : "gen1");
+    if (cle === "gen3") {
+      var estFille = (genre === "f");
+      var estAnglais = (LANG() === "en");
+      if (estFille) {
+        return estAnglais ? "BRENDAN" : "BRICE";
+      } else {
+        return estAnglais ? "MAY" : "FLORA";
+      }
+    }
+    return T("rivalDefaut");
+  }
+
   function creation(brouillonRepris) {
     var defi = !!(partie && partie.compare);
     // Le genre du compte est déjà connu : on ne le redemande pas à zéro.
@@ -4922,7 +4937,7 @@
           //       s'appliquerait plus.
           '<label class="pkdx-q" for="pk-rival">' + T("nomRival") + "</label>" +
           '<input id="pk-rival" class="pkdx-champ" maxlength="10" placeholder="' +
-            esc(T("rivalDefaut")) + '" value="' + esc(brouillon.rival) + '">' +
+            esc(rivalDefautMonde(brouillon.genre)) + '" value="' + esc(brouillon.rival) + '">' +
         "</div>" +
         "</div>" +
         "</div>" +
@@ -5141,7 +5156,7 @@
         //       (« Il te faut un nom pour partir ») existe déjà et c'est le bon
         //       choix : le nom du joueur est identitaire, celui du rival est
         //       secondaire. Pas de repli pour l'un, un repli pour l'autre.
-        partie.rival = racine.querySelector("#pk-rival").value.trim() || T("rivalDefaut");
+        partie.rival = racine.querySelector("#pk-rival").value.trim() || rivalDefautMonde(brouillon.genre);
         partie.genre = brouillon.genre;
         if (!partie.compare) partie.regle = brouillon.regle;
         // 🔴 LE SCEAU SE POSE SUR LA PARTIE, ET JAMAIS AU DÉFI DU JOUR. C'est
@@ -7222,7 +7237,7 @@
             : n.type === "boss" && VISAGE_ARENE()[n.arene - 1]
             ? '<span class="pkdx-medaillon est-visage">' + visage(VISAGE_ARENE()[n.arene - 1], 48) + "</span>"
             : n.type === "rival"
-            ? '<span class="pkdx-medaillon est-visage">' + visage("rival1", 40) + "</span>"
+            ? '<span class="pkdx-medaillon est-visage">' + visage(visageRival(n.rencontre), 40) + "</span>"
             : '<span class="pkdx-medaillon">' +
               W.PokeIcones.svg(DESSIN[n.type] || n.type, { taille: boss ? 28 : 22 }) + "</span>") +
           '<span class="pkdx-noeud-corps">' +
@@ -8797,7 +8812,7 @@
       // Le rival vieillit avec nous : trois silhouettes dans la désassemblée,
       // une par âge, comme ses trois séries d'équipes.
       '<div class="pkdx-champion-tete">' +
-        visage("rival" + Math.min(3, Math.floor(n.rencontre / 3) + 1), 88) +
+        visage(visageRival(n.rencontre), 88) +
         '<div><h1 class="pkdx-titre">' + nom + "</h1></div>" +
       "</div>" +
       '<p class="pkdx-dit">' + dit + "</p>" +
@@ -12288,7 +12303,7 @@
     function visageDefi(d) {
       if (d.rang === "arene") return VISAGE_ARENE()[d.ordre - 1];
       if (d.rang === "conseil") return VISAGE_CONSEIL()[d.ordre - 1];
-      return "rival3";
+      return VISAGE_MAITRE();
     }
     // 🔴 LE NOM SE RÉSOUT ICI, PAS DANS LA LISTE. `PokeDuel.defis()` mémoïse sa
     //    table ; un nom de Champion rangé dedans serait figé dans la langue du
@@ -12614,6 +12629,17 @@
   //    regarder. Le registre les nomme désormais, monde par monde.
   function VISAGE_ARENE() { return ((W.PokeRegles && W.PokeRegles.visages()) || {}).arene || []; }
   function VISAGE_CONSEIL() { return ((W.PokeRegles && W.PokeRegles.visages()) || {}).conseil || []; }
+  function VISAGE_MAITRE() { return ((W.PokeRegles && W.PokeRegles.visages()) || {}).maitre || "rival3"; }
+
+  function visageRival(rencontre) {
+    var cleMonde = (partie && W.PokeRegles && W.PokeRegles.de) ? W.PokeRegles.de(partie)
+      : (W.PokeRegles && W.PokeRegles.courant ? W.PokeRegles.courant() : "gen1");
+    if (cleMonde === "gen3") {
+      var genre = (partie && partie.genre) || W.POKE_GENRE || "h";
+      return genre === "f" ? "gen3/dresseur/brendan" : "gen3/dresseur/may";
+    }
+    return "rival" + Math.min(3, Math.floor(((rencontre && rencontre.rencontre) || rencontre || 0) / 3) + 1);
+  }
 
   //  ⚠️ UNE BARRE OBLIQUE DIT « CE CHEMIN EST COMPLET ». Les classes de route
   //     et les trois visages du rival restent des noms nus, servis depuis le
@@ -12621,10 +12647,20 @@
   //     à un seul de leurs appels.
   function visage(nom, taille) {
     if (!nom) return "";
-    var src = nom.indexOf("/") >= 0 ? "assets/img/poke/" + nom + ".png"
-      : "assets/img/poke/dresseur/" + nom + ".png";
+    var cleMonde = (partie && W.PokeRegles && W.PokeRegles.de) ? W.PokeRegles.de(partie)
+      : (W.PokeRegles && W.PokeRegles.courant ? W.PokeRegles.courant() : "gen1");
+    var src;
+    var repli = "";
+    if (nom.indexOf("/") >= 0) {
+      src = "assets/img/poke/" + nom + ".png";
+    } else if (cleMonde === "gen3") {
+      src = "assets/img/poke/gen3/dresseur/" + nom + ".png";
+      repli = ' onerror="this.onerror=null;this.src=\'assets/img/poke/dresseur/' + esc(nom) + '.png\';"';
+    } else {
+      src = "assets/img/poke/dresseur/" + nom + ".png";
+    }
     return '<img class="pkdx-visage" alt="" loading="lazy" width="' + (taille || 56) +
-      '" src="' + src + '">';
+      '" src="' + src + '"' + repli + '>';
   }
   // La classe d'un dresseur de route : sa clé anglaise donne son fichier, par la
   // même règle que l'outil qui les a rapatriés — minuscules, sans espace.
@@ -14641,9 +14677,18 @@
   //     (un seul essai, et refuser est une réponse), autre adversaire.
   function ecranSommet(etape) {
     var d = etape.dresseurFinal;
+    var cleMonde = (partie && W.PokeRegles && W.PokeRegles.de) ? W.PokeRegles.de(partie)
+      : (W.PokeRegles && W.PokeRegles.courant ? W.PokeRegles.courant() : "gen1");
+    var nomAffiche = (LANG() === "en" && d.nomEn) ? d.nomEn : (d.nomFr || d.nom);
+    var tete = cleMonde === "gen3"
+      ? '<div class="pkdx-champion-tete">' +
+          visage("gen3/dresseur/steven", 88) +
+          '<div><h1 class="pkdx-titre">' + esc(nomAffiche) + "</h1></div>" +
+        "</div>"
+      : '<h1 class="pkdx-titre">' + esc(d.nom) + "</h1>";
     coque(
       '<p class="pkdx-surtitre">' + T("nSommet") + "</p>" +
-      '<h1 class="pkdx-titre">' + esc(d.nom) + "</h1>" +
+      tete +
       '<p class="pkdx-dit">' + T("sommetDit") + "</p>" +
       '<p class="pkdx-dit">' + T("sommetQui") + "</p>" +
       '<div class="pkdx-actions est-pied">' +

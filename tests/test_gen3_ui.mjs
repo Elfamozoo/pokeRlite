@@ -289,8 +289,12 @@ test("PokeSprites correctly routes sprite paths for Gen 1, Gen 2, and Gen 3", ()
   assert.strictEqual(ctx.PokeSprites.face(251), "assets/img/poke/gen2/face/251.png");
   assert.strictEqual(ctx.PokeSprites.dos(251), "assets/img/poke/gen2/dos/251.png");
 
-  // 3. Gen 3 species (> 251):
+  // 3. Gen 3 mode routes all species 1-386 to gen3 Emerald sprites:
   activeGen = "gen3";
+  assert.strictEqual(ctx.PokeSprites.face(25), "assets/img/poke/gen3/face/25.png");
+  assert.strictEqual(ctx.PokeSprites.dos(25), "assets/img/poke/gen3/dos/25.png");
+  assert.strictEqual(ctx.PokeSprites.face(152), "assets/img/poke/gen3/face/152.png");
+  assert.strictEqual(ctx.PokeSprites.dos(152), "assets/img/poke/gen3/dos/152.png");
   assert.strictEqual(ctx.PokeSprites.face(252), "assets/img/poke/gen3/face/252.png");
   assert.strictEqual(ctx.PokeSprites.dos(252), "assets/img/poke/gen3/dos/252.png");
   assert.strictEqual(ctx.PokeSprites.face(386), "assets/img/poke/gen3/face/386.png");
@@ -301,16 +305,36 @@ test("PokeSprites correctly routes sprite paths for Gen 1, Gen 2, and Gen 3", ()
   assert.strictEqual(ctx.PokeSprites.dos(252, "?i=6"), "assets/img/poke/gen3/dos/252.png?i=6");
 });
 
-test("Gen 3 face and back sprite assets exist on disk for sample species", () => {
-  const sampleSpecies = [252, 255, 258, 384, 386];
+test("Gen 3 face and back sprite assets exist on disk for all 1-386 species", () => {
+  const sampleSpecies = [1, 25, 150, 152, 249, 251, 252, 255, 258, 384, 386];
   for (const n of sampleSpecies) {
     const faceFile = path.join(ROOT_DIR, `assets/img/poke/gen3/face/${n}.png`);
     const backFile = path.join(ROOT_DIR, `assets/img/poke/gen3/dos/${n}.png`);
-    const artFile = path.join(ROOT_DIR, `assets/img/poke/art/${n}.webp`);
 
-    assert.ok(fs.existsSync(faceFile), `Face sprite must exist: ${faceFile}`);
-    assert.ok(fs.existsSync(backFile), `Back sprite must exist: ${backFile}`);
+    assert.ok(fs.existsSync(faceFile), `Gen 3 face sprite must exist: ${faceFile}`);
+    assert.ok(fs.existsSync(backFile), `Gen 3 back sprite must exist: ${backFile}`);
+  }
+  for (const n of [252, 255, 258, 384, 386]) {
+    const artFile = path.join(ROOT_DIR, `assets/img/poke/art/${n}.webp`);
     assert.ok(fs.existsSync(artFile), `Artwork must exist: ${artFile}`);
+  }
+});
+
+test("Gen 3 trainer portraits and rival names are properly defined and wired", () => {
+  const uiContent = fs.readFileSync(path.join(ROOT_DIR, "js/poke/ui.js"), "utf-8");
+  assert.ok(uiContent.includes("function rivalDefautMonde(genre)"), "ui.js must define rivalDefautMonde");
+  assert.ok(uiContent.includes("function visageRival(rencontre)"), "ui.js must define visageRival");
+  assert.ok(uiContent.includes("VISAGE_MAITRE()"), "ui.js must define and use VISAGE_MAITRE");
+
+  // Check key trainer sprites exist in assets/img/poke/gen3/dresseur/
+  const keySprites = [
+    "youngster.png", "lass.png", "bugcatcher.png", "richboy.png", "lady.png",
+    "arene1.png", "arene8.png", "conseil1.png", "conseil4.png", "maitre.png",
+    "may.png", "brendan.png", "steven.png", "wally.png"
+  ];
+  for (const spr of keySprites) {
+    const p = path.join(ROOT_DIR, "assets/img/poke/gen3/dresseur", spr);
+    assert.ok(fs.existsSync(p), `Gen 3 trainer sprite must exist: ${spr}`);
   }
 });
 

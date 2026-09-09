@@ -240,9 +240,10 @@
   //     elle dit OÙ, pas COMBIEN DE TEMPS.
   // ═══════════════════════════════════════════════════════════════════════════
   function dossierSprite(n) {
+    var cle = W.PokeRegles ? W.PokeRegles.courant() : "gen1";
+    if (cle === "gen3") return "assets/img/poke/gen3/";
     if (+n > 251) return "assets/img/poke/gen3/";
     if (+n > 151) return "assets/img/poke/gen2/";
-    var cle = W.PokeRegles ? W.PokeRegles.courant() : "gen1";
     return cle === "gen2" ? "assets/img/poke/gen2/" : "assets/img/poke/";
   }
 

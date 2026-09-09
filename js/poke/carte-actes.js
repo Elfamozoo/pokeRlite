@@ -527,7 +527,7 @@
   //     cartouche, pas un réglage — les dresseurs de Cristal frappent plus fort
   //     à niveau égal. On ne les affaiblit pas ; on donne au joueur la place de
   //     monter avant de les rencontrer.
-  var RAMPE_MONDE = { gen2: 1.3 };
+  var RAMPE_MONDE = { gen2: 1.3, gen3: 1.6 };
   function rampe() {
     var cle = W.PokeRegles && W.PokeRegles.courante ? W.PokeRegles.courante() : null;
     return (cle && RAMPE_MONDE[cle]) || RAMPE_EXP;
@@ -671,7 +671,9 @@
     //     branché, et sans effet — la mesure n'avait pas bougé d'un dixième.
     //     *Un filtre posé après une sélection ne filtre que ce qu'elle a
     //     laissé passer.*
-    if (rangee === 0 && partie && partie.equipe && partie.equipe.length) {
+    var cleCourante = W.PokeRegles && W.PokeRegles.courante ? W.PokeRegles.courante() : "gen1";
+    var maxRangeeSolo = cleCourante === "gen3" ? 1 : 0;
+    if (rangee <= maxRangeeSolo && partie && partie.equipe && partie.equipe.length) {
       var miens = partie.equipe.length;
       var courts = candidats.filter(function (c) { return c.equipe.length <= miens; });
       if (courts.length) candidats = courts;
