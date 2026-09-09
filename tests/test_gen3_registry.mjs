@@ -3,7 +3,7 @@
  * Unit test suite for Gen 3 (Hoenn) registration in ordre.js and regles.js.
  *
  * Verifies:
- * 1. ordre.js contains POKE_ORDRE_GEN3 (13 NOYAU files) and POKE_ORDRE_GEN3_ECRANS (sons.js).
+ * 1. ordre.js contains POKE_ORDRE_GEN3 (14 NOYAU files) and POKE_ORDRE_GEN3_ECRANS (sons.js).
  * 2. HOENN = "ouvert", W.POKE_HOENN_ETAT = "ouvert", W.POKE_BANC_HOENN = true.
  * 3. NOYAU ordering: GEN3 files injected before regles.js.
  * 4. Pure NOYAU execution in isolated Node.js context (zero window/document).
@@ -98,6 +98,7 @@ const EXPECTED_GEN3_NOYAU = [
   "js/poke/gen3/types.js",
   "js/poke/gen3/effets.js",
   "js/poke/gen3/objets.js",
+  "js/poke/gen3/ct.js",
   "js/poke/gen3/obtentions.js",
   "js/poke/gen3/attaques.js",
   "js/poke/gen3/especes.js",
@@ -151,7 +152,7 @@ test("Zero sound files in POKE_ORDRE_GEN3 (pure NOYAU logic)", () => {
   }
 });
 
-test("All 13 GEN3 files exist on disk", () => {
+test("All 14 GEN3 files exist on disk", () => {
   for (const relPath of EXPECTED_GEN3_NOYAU) {
     const fullPath = path.join(ROOT_DIR, relPath);
     assert.ok(fs.existsSync(fullPath), `Gen 3 NOYAU file does not exist on disk: ${relPath}`);

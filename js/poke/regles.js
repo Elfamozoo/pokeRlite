@@ -64,6 +64,9 @@
       etapes: function () { return W.POKE_ETAPES; },
       clesVoyage: function () { return W.POKE_CLES; },
       badgePourCS: function () { return W.POKE_BADGE_POUR_CS || {}; },
+      ct: function () { return W.POKE_CT; },
+      cs: function () { return null; },
+      ctParCle: function () { return W.POKE_CT_PAR_CLE; },
       // ═══════════════════════════════════════════════════════════════════════
       //  QUELS BADGES DONNENT QUOI — LE DERNIER CHIFFRE ENCORE ÉCRIT EN DUR
       //
@@ -317,6 +320,9 @@
       etapes: function () { return W.POKE_GEN2_ETAPES || W.POKE_ETAPES; },
       clesVoyage: function () { return W.POKE_GEN2_CLES || W.POKE_CLES; },
       badgePourCS: function () { return W.POKE_GEN2_BADGE_POUR_CS || {}; },
+      ct: function () { return W.POKE_GEN2_CT || W.POKE_CT; },
+      cs: function () { return null; },
+      ctParCle: function () { return W.POKE_GEN2_CT_PAR_CLE || W.POKE_CT_PAR_CLE; },
       //  Zéphyr → Attaque, Plaine → Vitesse, Minéral → Défense, Glacier →
       //  Spéciale. Le canon de 1999, aux mêmes rangs que la cartouche.
       badgesStat: { 1: "atk", 3: "vit", 6: "def", 7: "spe" },
@@ -467,6 +473,9 @@
       etapes: function () { return W.POKE_GEN3_ETAPES || W.POKE_ETAPES; },
       clesVoyage: function () { return W.POKE_GEN3_CLES || W.POKE_CLES; },
       badgePourCS: function () { return W.POKE_GEN3_BADGE_POUR_CS || {}; },
+      ct: function () { return W.POKE_GEN3_CT || W.POKE_CT; },
+      cs: function () { return W.POKE_GEN3_CS || null; },
+      ctParCle: function () { return W.POKE_GEN3_CT_PAR_CLE || W.POKE_CT_PAR_CLE; },
       badgesStat: { 1: "atk", 3: "vit", 5: "def", 7: "spe" },
       sons: function () { return W.POKE_GEN3_SONS || W.POKE_SONS; },
       sonsAttaques: function () { return W.POKE_GEN3_SONS_ATTAQUES || W.POKE_SONS; },
@@ -608,6 +617,21 @@
     etapes: function () { return jeu().etapes(); },
     clesVoyage: function () { return jeu().clesVoyage(); },
     badgePourCS: function () { return jeu().badgePourCS ? jeu().badgePourCS() : {}; },
+    ct: function (partieOuCle) {
+      var k = typeof partieOuCle === "string" ? partieOuCle : de(partieOuCle);
+      var j = (partieOuCle && JEUX[k]) || jeu();
+      return j.ct ? j.ct() : W.POKE_CT;
+    },
+    cs: function (partieOuCle) {
+      var k = typeof partieOuCle === "string" ? partieOuCle : de(partieOuCle);
+      var j = (partieOuCle && JEUX[k]) || jeu();
+      return j.cs ? j.cs() : null;
+    },
+    ctParCle: function (partieOuCle) {
+      var k = typeof partieOuCle === "string" ? partieOuCle : de(partieOuCle);
+      var j = (partieOuCle && JEUX[k]) || jeu();
+      return j.ctParCle ? j.ctParCle() : W.POKE_CT_PAR_CLE;
+    },
     badgesStat: function () { return jeu().badgesStat || JEUX[DEFAUT].badgesStat; },
     sons: function () { return jeu().sons ? jeu().sons() : W.POKE_SONS; },
     sonsAttaques: function () { return jeu().sonsAttaques ? jeu().sonsAttaques() : W.POKE_SONS; },
