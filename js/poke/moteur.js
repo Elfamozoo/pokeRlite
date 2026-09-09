@@ -201,6 +201,7 @@
       // ═══════════════════════════════════════════════════════════════════════
       objet: o.objet !== undefined ? o.objet : objetTenu(e, h, o.objetForce),
       nature: o.nature !== undefined ? o.nature : (o.genererNature && h && W.PokeNatures ? W.PokeNatures.tirer(h) : undefined),
+      talent: o.talent !== undefined ? o.talent : (e.talent || (e.talents && e.talents[0]) || null),
     };
     p.stats = calculerStats(p);
     p.pv = p.stats.pv;
