@@ -118,6 +118,7 @@ const EXPECTED_GEN3_NOYAU = [
 
 const EXPECTED_GEN3_ECRANS = [
   "js/poke/gen3/sons.js",
+  "js/poke/ui-usine.js",
 ];
 
 let ordreContext;

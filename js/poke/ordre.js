@@ -220,6 +220,7 @@
 
   var GEN3_ECRANS = [
     "js/poke/gen3/sons.js",
+    "js/poke/ui-usine.js",
   ];
 
   function surLeBanc() {

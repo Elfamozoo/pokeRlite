@@ -133,10 +133,12 @@ test("POKE_ORDRE_GEN3 contains pure logic/data and NO sound/animation files", ()
   }
 });
 
-test("POKE_ORDRE_GEN3_ECRANS contains sound presentation files", () => {
+test("POKE_ORDRE_GEN3_ECRANS contains sound and UI presentation files", () => {
   const gen3Ecrans = ordreContext.POKE_ORDRE_GEN3_ECRANS;
   assert.ok(Array.isArray(gen3Ecrans), "POKE_ORDRE_GEN3_ECRANS must be an array");
+  assert.strictEqual(gen3Ecrans.length, 2, "POKE_ORDRE_GEN3_ECRANS must contain exactly 2 files");
   assert.ok(gen3Ecrans.includes("js/poke/gen3/sons.js"), "gen3/sons.js must be in GEN3_ECRANS");
+  assert.ok(gen3Ecrans.includes("js/poke/ui-usine.js"), "ui-usine.js must be in GEN3_ECRANS");
 });
 
 test("Zero intersection between NOYAU and ECRANS file lists", () => {
