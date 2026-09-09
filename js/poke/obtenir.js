@@ -1,4 +1,4 @@
-﻿(function (W) {
+(function (W) {
   "use strict";
   // ⚠️ PAR LE REGISTRE : Johto a son itinéraire, ses clés et ses zones.
   var ETAPES = function () { return (W.PokeRegles && W.PokeRegles.etapes()) || W.POKE_ETAPES || []; };
@@ -68,10 +68,49 @@
   //     branche. Deux traductions, ce serait deux prix — et un jour l'écran
   //     affiche 2 000 ₽ pendant que la caisse en prend 4 000.
   // ═══════════════════════════════════════════════════════════════════════════
-  function machinePour(cle) {
-    if (!cle || cle.slice(0, 3) !== "TM_") return null;
-    var att = cle.slice(3);
-    for (var i = 0; i < W.POKE_CT.length; i++) if (W.POKE_CT[i].cle === att) return W.POKE_CT[i];
+  function machinePour(cle, p) {
+    if (cle == null) return null;
+    var liste = (W.PokeRegles && W.PokeRegles.ct ? W.PokeRegles.ct(p) : W.POKE_CT) || W.POKE_CT;
+    if (typeof cle === "number") {
+      for (var i = 0; i < liste.length; i++) if (liste[i].n === cle) return liste[i];
+      return null;
+    }
+    if (typeof cle !== "string") return null;
+    var mNum = cle.match(/^TM[-_]?0*(\d+)$/i);
+    if (mNum) {
+      var n = parseInt(mNum[1], 10);
+      for (var i = 0; i < liste.length; i++) if (liste[i].n === n) return liste[i];
+      return null;
+    }
+    if (/^\d+$/.test(cle)) {
+      var n2 = parseInt(cle, 10);
+      for (var i = 0; i < liste.length; i++) if (liste[i].n === n2) return liste[i];
+      return null;
+    }
+    var att = cle.indexOf("TM_") === 0 ? cle.slice(3) : cle;
+    if (W.PokeRegles && W.PokeRegles.ctParCle) {
+      var map = W.PokeRegles.ctParCle(p);
+      if (map) {
+        if (map[att]) return map[att];
+        if (map[cle]) return map[cle];
+      }
+    }
+    for (var i = 0; i < liste.length; i++) {
+      if (liste[i].cle === att || liste[i].cle === cle) return liste[i];
+    }
+    if (W.PokeRegles && W.PokeRegles.cs) {
+      var csListe = W.PokeRegles.cs(p);
+      if (csListe) {
+        var csNum = cle.match(/^(?:CS|HM)[-_]?0*(\d+)$/i);
+        if (csNum) {
+          var cn = parseInt(csNum[1], 10);
+          for (var j = 0; j < csListe.length; j++) if (csListe[j].n === cn) return csListe[j];
+        }
+        for (var j = 0; j < csListe.length; j++) {
+          if (csListe[j].cle === att || csListe[j].cle === cle) return csListe[j];
+        }
+      }
+    }
     return null;
   }
 
@@ -105,13 +144,13 @@
   }
 
   function donnerCT(p, cle) {
-    return poserMachine(p, machinePour(cle));
+    return poserMachine(p, machinePour(cle, p));
   }
 
-  function prixDe(cle) {
-    var o = W.PokeRegles ? W.PokeRegles.objet(cle) : W.POKE_OBJETS[cle];
+  function prixDe(cle, p) {
+    var o = W.PokeRegles ? W.PokeRegles.objet(cle) : (W.POKE_OBJETS && W.POKE_OBJETS[cle]);
     if (o) return o.prix;
-    var m = machinePour(cle);
+    var m = machinePour(cle, p);
     return m ? m.prix : 0;
   }
 
@@ -120,7 +159,7 @@
   //    et un écran finit toujours par l'oublier.
   function acheter(p, cle, combien) {
     var n = combien || 1;
-    var prix = prixDe(cle);
+    var prix = prixDe(cle, p);
     if (!prix) return { ok: false, raison: "objetInconnu" };
     var total = prix * n;
     if (p.argent < total) return { ok: false, raison: "tropCher", manque: total - p.argent };
@@ -129,7 +168,7 @@
     //    son numéro — c'est là que l'écran d'apprentissage va la chercher.
     //    L'envoyer dans `p.sac` aurait produit un achat qui débite, qui dit
     //    « acheté », et qui n'apparaît nulle part : de l'argent qui disparaît.
-    var m = machinePour(cle);
+    var m = machinePour(cle, p);
     if (m) {
       p.ct = p.ct || {};
       p.ct[m.n] = (p.ct[m.n] || 0) + n;
@@ -157,11 +196,16 @@
   var HORS_MONDE = /^(ESCAPE_ROPE|REPEL|SUPER_REPEL|MAX_REPEL|POKE_DOLL)$/;
 
   function inventaire(nomMart) {
-    var liste = W.POKE_MARTS[nomMart];
+    var g3 = W.POKE_GEN3_MARTS && W.POKE_GEN3_MARTS[nomMart];
+    var g2 = W.POKE_GEN2_MARTS && W.POKE_GEN2_MARTS[nomMart];
+    var liste = g3 || g2 || (W.POKE_MARTS && W.POKE_MARTS[nomMart]);
     if (!liste) return [];
+    var reglesCle = g3 ? "gen3" : (g2 ? "gen2" : "gen1");
     return liste.filter(function (c) {
-      var connu = W.PokeRegles ? !!W.PokeRegles.objet(c) : !!W.POKE_OBJETS[c];
-      return (connu || !!machinePour(c)) && !HORS_MONDE.test(c);
+      var connu = W.PokeRegles ? !!W.PokeRegles.objet(c) : (W.POKE_OBJETS && !!W.POKE_OBJETS[c]);
+      if (!connu && W.POKE_GEN3_OBJETS && W.POKE_GEN3_OBJETS[c]) connu = true;
+      if (!connu && W.POKE_GEN2_OBJETS && W.POKE_GEN2_OBJETS[c]) connu = true;
+      return (connu || !!machinePour(c, reglesCle)) && !HORS_MONDE.test(c);
     });
   }
 
@@ -191,6 +235,11 @@
   var MARTS_PAR_ACTE = ["ViridianMartClerkText", "PewterMartClerkText", "CeruleanMartClerkText",
     "VermilionMartClerkText", "CeladonMart2FClerk1Text", "LavenderMartClerkText",
     "FuchsiaMartClerkText", "CinnabarMartClerkText", "IndigoPlateauLobbyClerkText"];
+  var MARTS_PAR_ACTE_GEN3 = [
+    "RustboroMart", "DewfordMart", "MauvilleMart",
+    "LavaridgeMart", "VerdanturfMart", "FortreeMart",
+    "LilycoveDept2F", "MossdeepMart", "EverGrandeMart"
+  ];
   // Les deux comptoirs du grand magasin de Céladopole, et l'acte où la ville
   // s'ouvre — celui d'Erika. Plus tôt serait hors canon ; plus tard serait hors
   // de portée, la moitié des voyages s'arrêtant devant Koga à l'acte 5.
@@ -198,14 +247,26 @@
   var MART_COMBAT = "CeladonMart5FClerk1Text";
   var ACTE_MACHINES = 4;
 
+  function martMachines(p) {
+    var cleRegles = (W.PokeRegles && W.PokeRegles.de) ? W.PokeRegles.de(p) : ((p && p.regles) || (W.PokeRegles && W.PokeRegles.courante ? W.PokeRegles.courante() : "gen1"));
+    return cleRegles === "gen3" ? "LilycoveDept4F" : MART_MACHINES;
+  }
+
+  function martCombat(p) {
+    var cleRegles = (W.PokeRegles && W.PokeRegles.de) ? W.PokeRegles.de(p) : ((p && p.regles) || (W.PokeRegles && W.PokeRegles.courante ? W.PokeRegles.courante() : "gen1"));
+    return cleRegles === "gen3" ? "LilycoveDept3F" : MART_COMBAT;
+  }
+
   function martPour(p) {
-    var i = Math.min(MARTS_PAR_ACTE.length - 1, Math.max(0, (p.acte || 1) - 1));
+    var cleRegles = (W.PokeRegles && W.PokeRegles.de) ? W.PokeRegles.de(p) : ((p && p.regles) || (W.PokeRegles && W.PokeRegles.courante ? W.PokeRegles.courante() : "gen1"));
+    var table = (cleRegles === "gen3") ? MARTS_PAR_ACTE_GEN3 : MARTS_PAR_ACTE;
+    var i = Math.min(table.length - 1, Math.max(0, ((p && p.acte) || 1) - 1));
     // Un nom d'étal absent des données ne doit pas rendre la boutique muette :
     // on redescend jusqu'au premier qui existe.
     for (var k = i; k >= 0; k--) {
-      if (inventaire(MARTS_PAR_ACTE[k]).length) return MARTS_PAR_ACTE[k];
+      if (inventaire(table[k]).length) return table[k];
     }
-    return MARTS_PAR_ACTE[0];
+    return table[0];
   }
 
   // ⚠️ PAS DE `martsOuverts()` ICI. J'en avais écrit une pour que l'outil
@@ -857,10 +918,11 @@
   //     dans `especes[].ct` — on ne l'invente pas, on la lit.
   function ctDe(p) {
     var out = [];
+    var liste = (W.PokeRegles && W.PokeRegles.ct ? W.PokeRegles.ct(p) : W.POKE_CT) || W.POKE_CT;
     for (var n in (p.ct || {})) {
       if (!p.ct[n]) continue;
       var m = null;
-      for (var i = 0; i < W.POKE_CT.length; i++) if (W.POKE_CT[i].n === +n) m = W.POKE_CT[i];
+      for (var i = 0; i < liste.length; i++) if (liste[i].n === +n) m = liste[i];
       if (m) out.push(m);
     }
     return out.sort(function (a, b) { return a.n - b.n; });
@@ -900,19 +962,29 @@
   var VITAMINES = {
     HP_UP: "pv", PROTEIN: "atk", IRON: "def", CARBOS: "vit", CALCIUM: "spe",
   };
+  var VITAMINES_GEN3 = {
+    HP_UP: "pv", PROTEIN: "atk", IRON: "def", CARBOS: "vit", CALCIUM: "sat", ZINC: "sdf",
+  };
   var VITAMINE_GAIN = 2560;   // le pas du jeu d'origine
 
   function employerVitamine(p, index, objet) {
-    var stat = VITAMINES[objet];
+    var cleRegles = (W.PokeRegles && W.PokeRegles.de) ? W.PokeRegles.de(p) : ((p && p.regles) || (W.PokeRegles && W.PokeRegles.courante ? W.PokeRegles.courante() : "gen1"));
+    var tableVit = (cleRegles === "gen3") ? VITAMINES_GEN3 : VITAMINES;
+    var stat = tableVit[objet];
     if (!stat) return { ok: false, raison: "pasUneVitamine" };
     var mon = p.equipe[index];
     if (!mon) return { ok: false, raison: "pasDePokemon" };
     if (!(p.sac[objet] > 0)) return { ok: false, raison: "pasEnStock" };
+    mon.statExp = mon.statExp || { pv: 0, atk: 0, def: 0, vit: 0, spe: 0 };
+    if (cleRegles === "gen3") {
+      if (mon.statExp.sat === undefined) mon.statExp.sat = mon.statExp.spe || 0;
+      if (mon.statExp.sdf === undefined) mon.statExp.sdf = mon.statExp.spe || 0;
+    }
     // Le plafond du canon : au-delà, la vitamine ne fait plus rien et il faut
     // le DIRE, sinon le joueur gaspille sans comprendre.
-    if (mon.statExp[stat] >= 25600) return { ok: false, raison: "plafond", stat: stat };
+    if ((mon.statExp[stat] || 0) >= 25600) return { ok: false, raison: "plafond", stat: stat };
     P().utiliserObjet(p, objet);
-    mon.statExp[stat] = Math.min(25600, mon.statExp[stat] + VITAMINE_GAIN);
+    mon.statExp[stat] = Math.min(25600, (mon.statExp[stat] || 0) + VITAMINE_GAIN);
     var avant = mon.stats.pv;
     // ═══════════════════════════════════════════════════════════════════════
     // 🔴 ON REND LE GAIN VISIBLE, PAS SEULEMENT LE FAIT. Le calcul d'origine
@@ -1039,12 +1111,15 @@
     MART_MACHINES: MART_MACHINES,
     MART_COMBAT: MART_COMBAT,
     ACTE_MACHINES: ACTE_MACHINES,
+    martMachines: martMachines,
+    martCombat: martCombat,
     martPour: martPour,
     ctDe: ctDe,
     machinePour: machinePour,
     quiApprend: quiApprend,
     apprendreCT: apprendreCT,
     VITAMINES: VITAMINES,
+    VITAMINES_GEN3: VITAMINES_GEN3,
     // ⚠️ EXPORTÉ pour que l'écran annonce le gain AVANT le clic sans recopier
     //    le pas : deux valeurs pour un seul pas divergeraient au premier
     //    réglage, et c'est l'écran qui aurait tort.

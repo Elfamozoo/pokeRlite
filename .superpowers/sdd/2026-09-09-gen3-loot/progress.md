@@ -10,6 +10,6 @@
 | Task 3 text | Non-regression on Gen 1 and Gen 2 | All existing suites must pass 100%. | Pass |
 
 ## Progress
-- Task 1: pending
-- Task 2: pending
+- Task 1: complete (commits efc996d..af98f69, review clean)
+- Task 2: complete (review pending)
 - Task 3: pending

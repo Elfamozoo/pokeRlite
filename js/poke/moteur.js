@@ -1,4 +1,4 @@
-﻿(function (W) {
+(function (W) {
   "use strict";
   // ═══════════════════════════════════════════════════════════════════════════
   //  LE MOTEUR — CRÉATURES, STATISTIQUES, EXPÉRIENCE, ÉVOLUTION
@@ -84,8 +84,10 @@
       vit: Math.floor((terme(b.vit, d.vit, e.vit) * L) / 100) + 5,
     };
     var sa = SPE_ATK(), sd = SPE_DEF();
-    s[sa] = Math.floor((terme(b[sa], d.spe, e.spe) * L) / 100) + 5;
-    s[sd] = Math.floor((terme(b[sd], d.spe, e.spe) * L) / 100) + 5;
+    var expSa = (e && e.sat !== undefined) ? e.sat : ((e && e[sa] !== undefined) ? e[sa] : (e ? e.spe : 0));
+    var expSd = (e && e.sdf !== undefined) ? e.sdf : ((e && e[sd] !== undefined) ? e[sd] : (e ? e.spe : 0));
+    s[sa] = Math.floor((terme(b[sa], d.spe, expSa) * L) / 100) + 5;
+    s[sd] = Math.floor((terme(b[sd], d.spe, expSd) * L) / 100) + 5;
     return s;
   }
 

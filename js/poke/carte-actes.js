@@ -809,6 +809,7 @@
   //     n'ouvre pas non plus au début du jeu d'origine.
   // ═══════════════════════════════════════════════════════════════════════════
   var VITAMINES = ["HP_UP", "PROTEIN", "IRON", "CARBOS", "CALCIUM"];
+  var VITAMINES_GEN3 = ["HP_UP", "PROTEIN", "IRON", "CARBOS", "CALCIUM", "ZINC"];
   // ═══════════════════════════════════════════════════════════════════════════
   //  🔴 LES DEUX MONDES NE NOMMENT PAS LA MÊME PIERRE PAREIL. Kanto la range
   //     sous `THUNDER_STONE`, Johto sous `THUNDERSTONE` — sans tiret bas. Le
@@ -831,20 +832,32 @@
   // ═══════════════════════════════════════════════════════════════════════════
   var PIERRES_CANON = [["FIRE_STONE"], ["THUNDER_STONE", "THUNDERSTONE"],
                        ["WATER_STONE"], ["LEAF_STONE"]];
+  var PIERRES_CANON_GEN3 = [["FIRE_STONE"], ["THUNDER_STONE", "THUNDERSTONE"],
+                            ["WATER_STONE"], ["LEAF_STONE"], ["MOON_STONE"], ["SUN_STONE"]];
   var OBJETS_T = function () {
     return (W.PokeRegles && W.PokeRegles.objetsTable && W.PokeRegles.objetsTable()) ||
            W.POKE_OBJETS || null;
   };
-  var PIERRES = function () {
-    var t = OBJETS_T();
-    if (!t) return ["FIRE_STONE", "THUNDER_STONE", "WATER_STONE", "LEAF_STONE"];
+  var PIERRES = function (cleRegles) {
+    var canon = cleRegles === "gen3" ? PIERRES_CANON_GEN3 : PIERRES_CANON;
+    var t = null;
+    if (W.PokeRegles && W.PokeRegles.pour && cleRegles) {
+      var r = W.PokeRegles.pour(cleRegles);
+      if (r && r.objetsTable) t = r.objetsTable();
+    }
+    if (!t) t = OBJETS_T();
+    if (!t) return cleRegles === "gen3"
+      ? ["FIRE_STONE", "THUNDERSTONE", "WATER_STONE", "LEAF_STONE", "MOON_STONE", "SUN_STONE"]
+      : ["FIRE_STONE", "THUNDER_STONE", "WATER_STONE", "LEAF_STONE"];
     var out = [];
-    for (var i = 0; i < PIERRES_CANON.length; i++) {
-      for (var j = 0; j < PIERRES_CANON[i].length; j++) {
-        if (t[PIERRES_CANON[i][j]]) { out.push(PIERRES_CANON[i][j]); break; }
+    for (var i = 0; i < canon.length; i++) {
+      for (var j = 0; j < canon[i].length; j++) {
+        if (t[canon[i][j]]) { out.push(canon[i][j]); break; }
       }
     }
-    return out.length ? out : ["FIRE_STONE", "THUNDER_STONE", "WATER_STONE", "LEAF_STONE"];
+    return out.length ? out : (cleRegles === "gen3"
+      ? ["FIRE_STONE", "THUNDERSTONE", "WATER_STONE", "LEAF_STONE", "MOON_STONE", "SUN_STONE"]
+      : ["FIRE_STONE", "THUNDER_STONE", "WATER_STONE", "LEAF_STONE"]);
   };
 
   //  🔴 UN COMPTOIR SE TIENT DANS UNE VILLE, ET IL PORTAIT LE LIEU DE SA
@@ -874,9 +887,11 @@
       //    exactement le demi-câblage que ce dossier refuse. Une vitamine et
       //    une pierre suffisent à donner un emploi à l'argent ; la CT viendra
       //    avec son écran, ou pas du tout.
-      var pierres = PIERRES();
+      var cleRegles = (W.PokeRegles && W.PokeRegles.de) ? W.PokeRegles.de(partie) : ((partie && partie.regles) || (W.PokeRegles && W.PokeRegles.courante ? W.PokeRegles.courante() : "gen1"));
+      var vits = cleRegles === "gen3" ? VITAMINES_GEN3 : VITAMINES;
+      var pierres = PIERRES(cleRegles);
       n.rare = [
-        VITAMINES[h.entier(VITAMINES.length)],
+        vits[h.entier(vits.length)],
         pierres[h.entier(pierres.length)],
       ];
     }
@@ -1565,6 +1580,7 @@
     tableArbre: tableArbre,
     onSecoueIci: onSecoueIci,
     generer: generer,
+    noeudBoutique: noeudBoutique,
     // 🔴 EXPORTÉ POUR QU'IL N'Y AIT QU'UNE LISTE. `actes.js` décidait de son
     //    côté quelles étapes sont des « scènes », avec sa propre énumération de
     //    drapeaux — et deux nœuds neufs (le Musée, le Dojo) n'y figuraient pas :

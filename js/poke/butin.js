@@ -157,6 +157,14 @@
       //    la table — le même index rend le même objet. Le contrat de rejeu
       //    tient, et `poke-rng.mjs` le vérifie.
       tirer: function (p, h) {
+        var cleRegles = (W.PokeRegles && W.PokeRegles.de) ? W.PokeRegles.de(p) : ((p && p.regles) || (W.PokeRegles && W.PokeRegles.courante ? W.PokeRegles.courante() : "gen1"));
+        if (cleRegles === "gen3") {
+          var tableG3 = (W.PokeObtenir && W.PokeObtenir.VITAMINES_GEN3) || {
+            HP_UP: "pv", PROTEIN: "atk", IRON: "def", CARBOS: "vit", CALCIUM: "sat", ZINC: "sdf"
+          };
+          var cleG3 = h.dans(["HP_UP", "PROTEIN", "IRON", "CARBOS", "CALCIUM", "ZINC"]);
+          return { type: "vitamine", objet: cleG3, stat: tableG3[cleG3] };
+        }
         var table = W.PokeObtenir.VITAMINES;
         var cle = h.dans(Object.keys(table));
         return { type: "vitamine", objet: cle, stat: table[cle] };
@@ -446,8 +454,9 @@
   function apprenables(p) {
     var out = [];
     var cap = W.PokeButin.plafondCT(p.acte || 1);
-    for (var i = 0; i < W.POKE_CT.length; i++) {
-      var m = W.POKE_CT[i];
+    var listeCT = (W.PokeRegles && W.PokeRegles.ct ? W.PokeRegles.ct(p) : W.POKE_CT) || W.POKE_CT;
+    for (var i = 0; i < listeCT.length; i++) {
+      var m = listeCT[i];
       if (p.ct && p.ct[m.n]) continue;
       if (cap) {
         var att = ATT() ? ATT()[m.cle] : null;
@@ -482,6 +491,7 @@
     var out = {};
     for (var k = 0; k < p.equipe.length; k++) {
       var e = ESP()[p.equipe[k].n];
+      if (!e) continue;
       for (var i = 0; i < (e.evolue || []).length; i++) {
         if (e.evolue[i].par === "pierre") out[e.evolue[i].objet] = true;
       }

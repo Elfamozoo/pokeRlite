@@ -130,4 +130,83 @@
     }
   ];
 
+  // ═══════════════════════════════════════════════════════════════════════
+  //  LES BOUTIQUES POKÉMON D'HOENN (ÉMERAUDE CANON)
+  //  Comptoirs des villes et étages du Grand Magasin de Nénucrique.
+  // ═══════════════════════════════════════════════════════════════════════
+  W.POKE_GEN3_MARTS = {
+    "OldaleMart": [
+      "POTION", "ANTIDOTE", "PARLYZ_HEAL", "AWAKENING"
+    ],
+    "PetalburgMart": [
+      "POKE_BALL", "POTION", "ANTIDOTE", "PARLYZ_HEAL", "AWAKENING",
+      "ESCAPE_ROPE", "REPEL", "X_SPEED", "X_ATTACK"
+    ],
+    "RustboroMart": [
+      "POKE_BALL", "POTION", "SUPER_POTION", "ANTIDOTE", "PARLYZ_HEAL",
+      "ESCAPE_ROPE", "REPEL", "X_DEFEND", "X_ATTACK"
+    ],
+    "DewfordMart": [
+      "POKE_BALL", "SUPER_POTION", "ANTIDOTE", "PARLYZ_HEAL",
+      "ESCAPE_ROPE", "REPEL"
+    ],
+    "SlateportMart": [
+      "POKE_BALL", "GREAT_BALL", "POTION", "SUPER_POTION", "ANTIDOTE",
+      "PARLYZ_HEAL", "ESCAPE_ROPE", "REPEL"
+    ],
+    "MauvilleMart": [
+      "POKE_BALL", "GREAT_BALL", "SUPER_POTION", "ANTIDOTE", "PARLYZ_HEAL",
+      "AWAKENING", "X_SPEED", "X_ATTACK", "GUARD_SPEC", "DIRE_HIT", "X_ACCURACY"
+    ],
+    "VerdanturfMart": [
+      "GREAT_BALL", "NEST_BALL", "SUPER_POTION", "ANTIDOTE", "PARLYZ_HEAL",
+      "AWAKENING", "REPEL"
+    ],
+    "FallarborMart": [
+      "GREAT_BALL", "SUPER_POTION", "ANTIDOTE", "PARLYZ_HEAL",
+      "ESCAPE_ROPE", "SUPER_REPEL"
+    ],
+    "LavaridgeMart": [
+      "GREAT_BALL", "SUPER_POTION", "ANTIDOTE", "PARLYZ_HEAL",
+      "AWAKENING", "REVIVE", "SUPER_REPEL", "X_SPEED"
+    ],
+    "FortreeMart": [
+      "GREAT_BALL", "ULTRA_BALL", "SUPER_POTION", "HYPER_POTION",
+      "ANTIDOTE", "PARLYZ_HEAL", "AWAKENING", "REVIVE", "SUPER_REPEL"
+    ],
+    "LilycoveDept2F": [
+      "POKE_BALL", "GREAT_BALL", "ULTRA_BALL", "ESCAPE_ROPE", "FULL_HEAL",
+      "ANTIDOTE", "PARLYZ_HEAL", "BURN_HEAL", "ICE_HEAL", "AWAKENING",
+      "POTION", "SUPER_POTION", "HYPER_POTION", "MAX_POTION", "REVIVE"
+    ],
+    "LilycoveDept3F": [
+      "PROTEIN", "CALCIUM", "IRON", "ZINC", "CARBOS", "HP_UP",
+      "X_ATTACK", "X_DEFEND", "X_SPEED", "X_SPECIAL", "X_ACCURACY",
+      "GUARD_SPEC", "DIRE_HIT"
+    ],
+    "LilycoveDept4F": [
+      "TM_FIRE_BLAST", "TM_THUNDER", "TM_BLIZZARD", "TM_HYPER_BEAM",
+      "TM_PROTECT", "TM_SAFEGUARD", "TM_REFLECT", "TM_LIGHT_SCREEN"
+    ],
+    "LilycoveDept5F": [
+      "POKE_DOLL"
+    ],
+    "MossdeepMart": [
+      "ULTRA_BALL", "NET_BALL", "DIVE_BALL", "HYPER_POTION",
+      "FULL_HEAL", "REVIVE", "MAX_REPEL", "X_ATTACK", "X_DEFEND"
+    ],
+    "SootopolisMart": [
+      "ULTRA_BALL", "HYPER_POTION", "MAX_POTION", "FULL_HEAL",
+      "REVIVE", "MAX_REPEL"
+    ],
+    "EverGrandeMart": [
+      "ULTRA_BALL", "HYPER_POTION", "MAX_POTION", "FULL_RESTORE",
+      "FULL_HEAL", "REVIVE", "MAX_REPEL"
+    ],
+    "PacifidlogMart": [
+      "GREAT_BALL", "SUPER_POTION", "ANTIDOTE", "PARLYZ_HEAL",
+      "AWAKENING", "REVIVE", "SUPER_REPEL"
+    ]
+  };
+
 })(typeof window !== "undefined" ? window : globalThis);
