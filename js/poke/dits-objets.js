@@ -147,9 +147,11 @@
     //    nom lisible, lui, reste à l'écran : ce fichier ne connaît pas les
     //    langues, il ne connaît que des clés.
     // ═════════════════════════════════════════════════════════════════════════
+    var regleGen3 = W.PokeRegles && W.PokeRegles.courante && W.PokeRegles.courante() === "gen3";
     var vitamines = (W.PokeObtenir && W.PokeObtenir.VITAMINES) || {};
-    if (vitamines[cle]) {
-      var s = vitamines[cle];
+    var vitaminesGen3 = (W.PokeObtenir && W.PokeObtenir.VITAMINES_GEN3) || {};
+    var s = regleGen3 ? (vitaminesGen3[cle] || vitamines[cle]) : (vitamines[cle] || vitaminesGen3[cle]);
+    if (s) {
       return T("bDitVitamine", { stat: nomStat ? nomStat(s) : s });
     }
     if (DIT_BALL[cle]) return T(DIT_BALL[cle]);

@@ -11,5 +11,5 @@
 
 ## Progress
 - Task 1: complete (commits efc996d..af98f69, review clean)
-- Task 2: complete (review pending)
-- Task 3: pending
+- Task 2: complete (commits af98f69..0705525, review clean)
+- Task 3: complete (UI descriptions, shop integration, full regression suite)

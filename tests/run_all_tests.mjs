@@ -247,6 +247,10 @@ test("All expected NOYAU APIs, registries, and Gen 3 globals are fully exported"
   assert.ok(noyauContext.POKE_GEN3_LIEUX, "POKE_GEN3_LIEUX must be exported");
   assert.ok(noyauContext.POKE_GEN3_CLES, "POKE_GEN3_CLES must be exported");
   assert.ok(noyauContext.POKE_GEN3_OBJETS, "POKE_GEN3_OBJETS must be exported");
+  assert.ok(noyauContext.POKE_GEN3_CT, "POKE_GEN3_CT must be exported");
+  assert.ok(noyauContext.POKE_GEN3_CS, "POKE_GEN3_CS must be exported");
+  assert.ok(noyauContext.POKE_GEN3_CT_PAR_CLE, "POKE_GEN3_CT_PAR_CLE must be exported");
+  assert.ok(noyauContext.POKE_GEN3_MARTS, "POKE_GEN3_MARTS must be exported");
 
   // PokeRegles Gen 3 Profile
   assert.strictEqual(noyauContext.PokeRegles.existe("gen3"), true, "PokeRegles must recognize 'gen3'");
@@ -1003,6 +1007,311 @@ test("All Gym Leaders, Elite Four, Wallace, and Steven teams instantiate via Pok
   }
 
   Regles.poser("gen1");
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Suite 10: Gen 3 Loot, Marts & Rewards Invariants
+// ─────────────────────────────────────────────────────────────────────────────
+suite("10. Gen 3 Loot, Marts & Rewards Invariants");
+
+test("All 50 Gen 3 CTs and 8 CSs are defined in POKE_GEN3_CT, POKE_GEN3_CS and mapped in POKE_GEN3_CT_PAR_CLE", () => {
+  const cts = noyauContext.POKE_GEN3_CT;
+  const css = noyauContext.POKE_GEN3_CS;
+  const parCle = noyauContext.POKE_GEN3_CT_PAR_CLE;
+
+  assert.ok(Array.isArray(cts) && cts.length === 50, "POKE_GEN3_CT must contain exactly 50 CTs");
+  assert.ok(Array.isArray(css) && css.length === 8, "POKE_GEN3_CS must contain exactly 8 CSs");
+  assert.ok(parCle && typeof parCle === "object", "POKE_GEN3_CT_PAR_CLE must be defined");
+
+  for (let i = 0; i < 50; i++) {
+    const ct = cts[i];
+    assert.strictEqual(ct.n, i + 1, `CT #${i + 1} has wrong number`);
+    assert.ok(typeof ct.cle === "string" && ct.cle.length > 0, `CT #${i + 1} must have string move cle`);
+    assert.ok(typeof ct.prix === "number" && ct.prix > 0, `CT #${i + 1} must have positive price`);
+    assert.ok(typeof ct.type === "string", `CT #${i + 1} must have string type`);
+    assert.strictEqual(parCle[ct.cle], ct, `POKE_GEN3_CT_PAR_CLE must map ${ct.cle} to CT #${ct.n}`);
+  }
+
+  for (let i = 0; i < 8; i++) {
+    const cs = css[i];
+    assert.strictEqual(cs.n, i + 1, `CS #${i + 1} has wrong number`);
+    assert.ok(typeof cs.cle === "string" && cs.cle.length > 0, `CS #${i + 1} must have string move cle`);
+    assert.strictEqual(cs.cs, true, `CS #${i + 1} must have cs: true`);
+    assert.ok(typeof cs.type === "string", `CS #${i + 1} must have string type`);
+    assert.strictEqual(parCle[cs.cle], cs, `POKE_GEN3_CT_PAR_CLE must map ${cs.cle} to CS #${cs.n}`);
+  }
+
+  const Regles = noyauContext.PokeRegles;
+  assert.strictEqual(Regles.ct("gen3"), cts, "PokeRegles.ct('gen3') must return POKE_GEN3_CT");
+  assert.strictEqual(Regles.cs("gen3"), css, "PokeRegles.cs('gen3') must return POKE_GEN3_CS");
+  assert.strictEqual(Regles.ctParCle("gen3"), parCle, "PokeRegles.ctParCle('gen3') must return POKE_GEN3_CT_PAR_CLE");
+});
+
+test("PokeObtenir.machinePour resolves Gen 3 TMs/HMs by number, code, and move key with Gen 1 non-regression", () => {
+  const O = noyauContext.PokeObtenir;
+  const pGen3 = { regles: "gen3" };
+  const pGen1 = { regles: "gen1" };
+
+  // Gen 3 resolution
+  const m39 = O.machinePour("TM39", pGen3);
+  assert.ok(m39, "TM39 must resolve in Gen 3");
+  assert.strictEqual(m39.n, 39);
+  assert.strictEqual(m39.cle, "ROCK_TOMB");
+
+  const m08 = O.machinePour("TM08", pGen3);
+  assert.ok(m08, "TM08 must resolve in Gen 3");
+  assert.strictEqual(m08.n, 8);
+  assert.strictEqual(m08.cle, "BULK_UP");
+
+  const mNum = O.machinePour(39, pGen3);
+  assert.strictEqual(mNum.cle, "ROCK_TOMB");
+
+  const mCle = O.machinePour("ROCK_TOMB", pGen3);
+  assert.strictEqual(mCle.n, 39);
+
+  const mCs8 = O.machinePour("HM08", pGen3);
+  assert.ok(mCs8 && mCs8.cs);
+  assert.strictEqual(mCs8.cle, "DIVE");
+
+  // Gen 1 non-regression
+  const m39G1 = O.machinePour("TM39", pGen1);
+  assert.ok(m39G1, "TM39 must resolve in Gen 1");
+  assert.strictEqual(m39G1.n, 39);
+  assert.strictEqual(m39G1.cle, "SWIFT");
+
+  const mNumG1 = O.machinePour(39, pGen1);
+  assert.strictEqual(mNumG1.cle, "SWIFT");
+});
+
+test("VITAMINES_GEN3 and employerVitamine correctly support ZINC and CALCIUM with statExp", () => {
+  const O = noyauContext.PokeObtenir;
+  const Moteur = noyauContext.PokeMoteur;
+  const Hasard = noyauContext.PokeHasard;
+  const Regles = noyauContext.PokeRegles;
+  const h = new Hasard("VITAMINES-TEST");
+
+  assert.ok(O.VITAMINES_GEN3, "PokeObtenir.VITAMINES_GEN3 must be exported");
+  assert.strictEqual(O.VITAMINES_GEN3.ZINC, "sdf");
+  assert.strictEqual(O.VITAMINES_GEN3.CALCIUM, "sat");
+  assert.strictEqual(O.VITAMINES_GEN3.HP_UP, "pv");
+  assert.strictEqual(O.VITAMINES_GEN3.PROTEIN, "atk");
+  assert.strictEqual(O.VITAMINES_GEN3.IRON, "def");
+  assert.strictEqual(O.VITAMINES_GEN3.CARBOS, "vit");
+
+  // Gen 3 party
+  Regles.poser("gen3");
+  const pGen3 = {
+    regles: "gen3",
+    equipe: [Moteur.creer(252, 10, h)], // Treecko
+    sac: { ZINC: 2, CALCIUM: 2 },
+  };
+
+  const rZinc = O.employerVitamine(pGen3, 0, "ZINC");
+  assert.strictEqual(rZinc.ok, true, "ZINC must succeed in Gen 3");
+  assert.strictEqual(pGen3.equipe[0].statExp.sdf, 2560);
+  assert.strictEqual(pGen3.sac.ZINC, 1);
+
+  const rCal = O.employerVitamine(pGen3, 0, "CALCIUM");
+  assert.strictEqual(rCal.ok, true, "CALCIUM must succeed in Gen 3");
+  assert.strictEqual(pGen3.equipe[0].statExp.sat, 2560);
+  assert.strictEqual(pGen3.sac.CALCIUM, 1);
+
+  // Gen 1 party rejects ZINC
+  Regles.poser("gen1");
+  const pGen1 = {
+    regles: "gen1",
+    equipe: [Moteur.creer(25, 10, h)], // Pikachu
+    sac: { ZINC: 1 },
+  };
+  const rZincG1 = O.employerVitamine(pGen1, 0, "ZINC");
+  assert.strictEqual(rZincG1.ok, false, "ZINC must be rejected in Gen 1");
+  assert.strictEqual(rZincG1.raison, "pasUneVitamine");
+});
+
+test("PokeMoteur.calculerStats calculates sat and sdf from statExp without regression", () => {
+  const Moteur = noyauContext.PokeMoteur;
+  const Hasard = noyauContext.PokeHasard;
+  const Regles = noyauContext.PokeRegles;
+  const h = new Hasard("CALCULER-STATS-TEST");
+
+  // Gen 3 Pokemon (Arcko #252 lvl 20)
+  Regles.poser("gen3");
+  const monG3 = Moteur.creer(252, 20, h);
+  const baseSat = monG3.stats.sat;
+  const baseSdf = monG3.stats.sdf;
+
+  monG3.statExp.sat = 25600;
+  monG3.statExp.sdf = 25600;
+  const updated = Moteur.calculerStats(monG3);
+
+  assert.ok(Number.isInteger(updated.sat), "sat must be an integer");
+  assert.ok(Number.isInteger(updated.sdf), "sdf must be an integer");
+  assert.ok(updated.sat > baseSat, "Boosted statExp.sat must increase sat");
+  assert.ok(updated.sdf > baseSdf, "Boosted statExp.sdf must increase sdf");
+
+  // Gen 1 Pokemon preserves spe
+  Regles.poser("gen1");
+  const monG1 = Moteur.creer(25, 20, h);
+  assert.ok(Number.isInteger(monG1.stats.spe), "Gen 1 stats must have integer spe");
+});
+
+test("PokeButin.apprenables and pierresUtiles adapt dynamically to Gen 3 rules", () => {
+  const Butin = noyauContext.PokeButin;
+  const Moteur = noyauContext.PokeMoteur;
+  const Hasard = noyauContext.PokeHasard;
+  const Regles = noyauContext.PokeRegles;
+  const h = new Hasard("BUTIN-ADAPT-TEST");
+
+  // Gen 3 party with Treecko #252
+  Regles.poser("gen3");
+  const pGen3 = {
+    regles: "gen3",
+    equipe: [Moteur.creer(252, 10, h)],
+    ct: {},
+  };
+
+  const appG3 = Butin.apprenables(pGen3);
+  assert.ok(appG3.length > 0, "Gen 3 party must have learnable CTs");
+  const gen3Keys = new Set(noyauContext.POKE_GEN3_CT.map((c) => c.cle));
+  for (const m of appG3) {
+    assert.ok(gen3Keys.has(m.cle), `Learnable CT ${m.cle} must belong to Gen 3 CT table`);
+  }
+
+  // Stone evolutions in Gen 3
+  const pStones = {
+    regles: "gen3",
+    equipe: [
+      Moteur.creer(44, 25, h),  // Gloom -> Vileplume (LEAF_STONE) & Bellossom (SUN_STONE)
+      Moteur.creer(271, 20, h), // Lombre -> Ludicolo (WATER_STONE)
+      Moteur.creer(273, 20, h), // Nuzleaf -> Shiftry (LEAF_STONE)
+      Moteur.creer(300, 20, h), // Skitty -> Delcatty (MOON_STONE)
+    ],
+  };
+  const utiles = Butin.pierresUtiles(pStones);
+  assert.ok(utiles.includes("SUN_STONE"), "SUN_STONE must be useful for Gloom in Gen 3");
+  assert.ok(utiles.includes("MOON_STONE"), "MOON_STONE must be useful for Skitty in Gen 3");
+  assert.ok(utiles.includes("WATER_STONE"), "WATER_STONE must be useful for Lombre");
+  assert.ok(utiles.includes("LEAF_STONE"), "LEAF_STONE must be useful for Nuzleaf/Gloom");
+  Regles.poser("gen1");
+});
+
+test("POKE_GEN3_MARTS defines Hoenn town marts and Lilycove counters, and PokeObtenir adapts dynamically", () => {
+  const marts = noyauContext.POKE_GEN3_MARTS;
+  const O = noyauContext.PokeObtenir;
+
+  assert.ok(marts, "POKE_GEN3_MARTS must be exported");
+  const requiredMarts = [
+    "RustboroMart", "DewfordMart", "MauvilleMart", "LavaridgeMart",
+    "VerdanturfMart", "FortreeMart", "LilycoveDept2F", "LilycoveDept3F",
+    "LilycoveDept4F", "LilycoveDept5F", "MossdeepMart", "EverGrandeMart"
+  ];
+  for (const m of requiredMarts) {
+    assert.ok(Array.isArray(marts[m]), `POKE_GEN3_MARTS.${m} must be an array`);
+    assert.ok(marts[m].length > 0, `POKE_GEN3_MARTS.${m} must not be empty`);
+  }
+
+  const pGen3 = { regles: "gen3", acte: 4 };
+  const pGen1 = { regles: "gen1", acte: 4 };
+
+  assert.strictEqual(O.martMachines(pGen3), "LilycoveDept4F");
+  assert.strictEqual(O.martMachines(pGen1), "CeladonMart2FClerk2Text");
+  assert.strictEqual(O.martCombat(pGen3), "LilycoveDept3F");
+  assert.strictEqual(O.martCombat(pGen1), "CeladonMart5FClerk1Text");
+
+  // Act mapping for Gen 3
+  assert.strictEqual(O.martPour({ regles: "gen3", acte: 1 }), "RustboroMart");
+  assert.strictEqual(O.martPour({ regles: "gen3", acte: 2 }), "DewfordMart");
+  assert.strictEqual(O.martPour({ regles: "gen3", acte: 6 }), "FortreeMart");
+
+  // Inventories
+  const ctStock = O.inventaire("LilycoveDept4F");
+  assert.ok(ctStock.includes("TM_FIRE_BLAST"), "LilycoveDept4F must sell Fire Blast");
+  assert.ok(ctStock.includes("TM_THUNDER"), "LilycoveDept4F must sell Thunder");
+  assert.ok(ctStock.includes("TM_BLIZZARD"), "LilycoveDept4F must sell Blizzard");
+});
+
+test("Mulberry32 PRNG determinism and rare shelf invariants in Gen 3 vs Gen 1", () => {
+  const Butin = noyauContext.PokeButin;
+  const Hasard = noyauContext.PokeHasard;
+  const CarteActes = noyauContext.PokeCarteActes;
+
+  // PRNG determinism for vitamine draws
+  const h1 = new Hasard("VITAMINE-SEED-42");
+  const h2 = new Hasard("VITAMINE-SEED-42");
+  const draws1 = [];
+  const draws2 = [];
+  for (let i = 0; i < 50; i++) {
+    draws1.push(Butin.FAMILLES.vitamine.tirer({ regles: "gen3" }, h1).objet);
+    draws2.push(Butin.FAMILLES.vitamine.tirer({ regles: "gen3" }, h2).objet);
+  }
+  assert.deepStrictEqual(draws1, draws2, "Mulberry32 vitamin draws must be bit-identical given same seed");
+  assert.ok(draws1.includes("ZINC"), "ZINC must appear in Gen 3 vitamin draws");
+
+  // Gen 1 never draws ZINC
+  const hG1 = new Hasard("VITAMINE-SEED-42");
+  for (let i = 0; i < 100; i++) {
+    const v = Butin.FAMILLES.vitamine.tirer({ regles: "gen1" }, hG1).objet;
+    assert.notStrictEqual(v, "ZINC", "Gen 1 must never draw ZINC");
+  }
+
+  // Rare shelf invariants
+  const etapeG3 = { id: "lilycove-city", lieu: "lilycove-city" };
+  const acteG3 = { ville: "lilycove-city" };
+  const pG3 = { regles: "gen3", acte: 5 };
+  const hRareG3 = new Hasard("RARE-SHELF-GEN3");
+  const rareVits = new Set();
+  const rareStones = new Set();
+  for (let i = 0; i < 100; i++) {
+    const noeud = CarteActes.noeudBoutique(etapeG3, acteG3, pG3, hRareG3);
+    if (noeud.rare) {
+      rareVits.add(noeud.rare[0]);
+      rareStones.add(noeud.rare[1]);
+    }
+  }
+  assert.ok(rareVits.has("ZINC"), "Gen 3 rare shelf must be able to draw ZINC");
+  assert.ok(rareStones.has("SUN_STONE"), "Gen 3 rare shelf must be able to draw SUN_STONE");
+  assert.ok(rareStones.has("MOON_STONE"), "Gen 3 rare shelf must be able to draw MOON_STONE");
+
+  // Gen 1 rare shelf never draws ZINC, SUN_STONE or MOON_STONE
+  const etapeG1 = { id: "celadon-city", lieu: "celadon-city" };
+  const acteG1 = { ville: "celadon-city" };
+  const pG1 = { regles: "gen1", acte: 5 };
+  const hRareG1 = new Hasard("RARE-SHELF-GEN1");
+  for (let i = 0; i < 100; i++) {
+    const noeud = CarteActes.noeudBoutique(etapeG1, acteG1, pG1, hRareG1);
+    if (noeud.rare) {
+      assert.notStrictEqual(noeud.rare[0], "ZINC", "Gen 1 rare shelf must never draw ZINC");
+      assert.notStrictEqual(noeud.rare[1], "SUN_STONE", "Gen 1 rare shelf must never draw SUN_STONE");
+      assert.notStrictEqual(noeud.rare[1], "MOON_STONE", "Gen 1 rare shelf must never draw MOON_STONE");
+    }
+  }
+});
+
+test("PokeDits.objet formats Gen 3 vitamins, stones, and balls correctly", () => {
+  loadScriptInContext("js/poke/dits-objets.js", noyauContext);
+  assert.ok(noyauContext.PokeDits && typeof noyauContext.PokeDits.objet === "function", "PokeDits.objet must be defined");
+
+  const T = (k, args) => ({ k, args });
+  const nomStat = (s) => `nom_${s}`;
+
+  noyauContext.PokeRegles.poser("gen3");
+  const ditZinc = noyauContext.PokeDits.objet("ZINC", T, nomStat);
+  assert.strictEqual(ditZinc.k, "bDitVitamine");
+  assert.strictEqual(ditZinc.args.stat, "nom_sdf");
+
+  const ditCalG3 = noyauContext.PokeDits.objet("CALCIUM", T, nomStat);
+  assert.strictEqual(ditCalG3.k, "bDitVitamine");
+  assert.strictEqual(ditCalG3.args.stat, "nom_sat");
+
+  assert.strictEqual(noyauContext.PokeDits.objet("SUN_STONE", T).k, "bDitPierre");
+  assert.strictEqual(noyauContext.PokeDits.objet("MOON_STONE", T).k, "bDitPierre");
+
+  const g3Balls = ["NET_BALL", "DIVE_BALL", "NEST_BALL", "REPEAT_BALL", "TIMER_BALL", "LUXURY_BALL", "PREMIER_BALL"];
+  for (const ball of g3Balls) {
+    assert.strictEqual(noyauContext.PokeDits.objet(ball, T).k, "bDitBall", `${ball} must return bDitBall`);
+  }
+
+  noyauContext.PokeRegles.poser("gen1");
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

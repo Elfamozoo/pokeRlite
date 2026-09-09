@@ -6270,7 +6270,8 @@
       // Le comptoir des machines ouvre au même acte que le rayon rare : on le
       // dit ici, avec ses bornes de prix lues sur l'étal.
       if ((partie.acte || 1) >= O().ACTE_MACHINES) {
-        var prixCT = O().inventaire(O().MART_MACHINES).map(function (c) { return O().prixDe(c); })
+        var martMach = O().martMachines ? O().martMachines(partie) : O().MART_MACHINES;
+        var prixCT = O().inventaire(martMach).map(function (c) { return O().prixDe(c); })
           .filter(function (x) { return x > 0; });
         if (prixCT.length) {
           dit += " " + T("aBoutiqueMachines", {
@@ -8172,7 +8173,8 @@
     // consommables de combat, ils se rangent avec les potions. Sans doublon —
     // un étal tardif peut déjà les proposer.
     if ((partie.acte || 1) >= O().ACTE_MACHINES) {
-      O().inventaire(O().MART_COMBAT).forEach(function (c) {
+      var martCombat = O().martCombat ? O().martCombat(partie) : O().MART_COMBAT;
+      O().inventaire(martCombat).forEach(function (c) {
         if (liste.indexOf(c) < 0) liste = liste.concat([c]);
       });
     }
@@ -8251,7 +8253,8 @@
         // ═══════════════════════════════════════════════════════════════════
         (function () {
           if ((partie.acte || 1) < O().ACTE_MACHINES) return "";
-          var ct = O().inventaire(O().MART_MACHINES);
+          var martMachines = O().martMachines ? O().martMachines(partie) : O().MART_MACHINES;
+          var ct = O().inventaire(martMachines);
           if (!ct.length) return "";
           return '<h2 class="pkdx-soustitre">' + T("etalMachines") + "</h2>" +
             '<p class="pkdx-dit">' + T("etalMachinesDit") + "</p>" +
@@ -14238,7 +14241,8 @@
   }
 
   function ctDe(n) {
-    for (var i = 0; i < W.POKE_CT.length; i++) if (W.POKE_CT[i].n === n) return W.POKE_CT[i];
+    var table = (W.PokeRegles && W.PokeRegles.ct ? W.PokeRegles.ct(partie) : W.POKE_CT) || [];
+    for (var i = 0; i < table.length; i++) if (table[i].n === n) return table[i];
     return { n: n, cle: "?" };
   }
   function nomAttaque(cle) {
