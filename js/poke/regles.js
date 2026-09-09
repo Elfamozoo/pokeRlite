@@ -424,16 +424,44 @@
   //  LA TROISIÈME GÉNÉRATION (HOENN) S'INSCRIT ICI  [09/09/2026]
   // ═══════════════════════════════════════════════════════════════════════════
   if (W.POKE_GEN3_ESPECE && W.POKE_GEN3_TYPE_TABLE) {
+    var g3Esp = null, g3EspListe = null;
+    function toutesEspecesGen3() {
+      if (g3Esp) return g3Esp;
+      var base = (W.POKE_GEN2_ESPECE) || W.POKE_ESPECE || {};
+      g3Esp = Object.assign({}, base, W.POKE_GEN3_ESPECE || {});
+      return g3Esp;
+    }
+    function listeEspecesGen3() {
+      if (g3EspListe) return g3EspListe;
+      var base = (W.POKE_GEN2_ESPECES) || W.POKE_ESPECES || [];
+      g3EspListe = base.concat(W.POKE_GEN3_ESPECES || []);
+      return g3EspListe;
+    }
+
+    var g3Att = null, g3AttListe = null;
+    function toutesAttaquesGen3() {
+      if (g3Att) return g3Att;
+      var base = (JEUX.gen2 && JEUX.gen2.attaques()) || W.POKE_ATTAQUE_PAR_CLE || {};
+      g3Att = Object.assign({}, base, W.POKE_GEN3_ATTAQUE_PAR_CLE || {});
+      return g3Att;
+    }
+    function listeAttaquesGen3() {
+      if (g3AttListe) return g3AttListe;
+      var base = (JEUX.gen2 && JEUX.gen2.attaquesListe()) || W.POKE_ATTAQUES || [];
+      g3AttListe = base.concat(W.POKE_GEN3_ATTAQUES || []);
+      return g3AttListe;
+    }
+
     JEUX.gen3 = {
       nom: "Troisième génération",
       types: function () { return W.POKE_GEN3_TYPES; },
       typeNoms: function () { return W.POKE_GEN3_TYPE_NOMS; },
       table: function () { return W.POKE_GEN3_TYPE_TABLE; },
       speciaux: function () { return W.POKE_GEN3_TYPES_SPECIAUX; },
-      especes: function () { return W.POKE_GEN3_ESPECE; },
-      especesListe: function () { return W.POKE_GEN3_ESPECES; },
-      attaques: function () { return W.POKE_GEN3_ATTAQUE_PAR_CLE; },
-      attaquesListe: function () { return W.POKE_GEN3_ATTAQUES; },
+      especes: toutesEspecesGen3,
+      especesListe: listeEspecesGen3,
+      attaques: toutesAttaquesGen3,
+      attaquesListe: listeAttaquesGen3,
       dexTotal: 386,
       arenes: function () { return W.POKE_GEN3_ARENES || W.POKE_ARENES; },
       etapes: function () { return W.POKE_GEN3_ETAPES || W.POKE_ETAPES; },

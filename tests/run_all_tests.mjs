@@ -556,11 +556,9 @@ test("Turn-by-turn combat simulation reproduces identical events in Gen 3", () =
   function runSimulatedGen3Battle() {
     Regles.poser("gen3");
     const h = new Hasard("BATTLE-REPLAY-SEED-GEN3");
-    // Treecko (#252) lv 20 vs Torchic (#255) lv 20 equipped with Gen 3 signature moves
-    const treecko = Moteur.creer(252, 20, h);
-    const torchic = Moteur.creer(255, 20, h);
-    treecko.attaques = [{ cle: "LEAF_BLADE", pp: 15, ppMax: 15 }];
-    torchic.attaques = [{ cle: "BLAZE_KICK", pp: 15, ppMax: 15 }];
+    // Treecko (#252) lv 5 vs Torchic (#255) lv 5 fighting with natural learnset
+    const treecko = Moteur.creer(252, 5, h);
+    const torchic = Moteur.creer(255, 5, h);
 
     const combatState = Combat.demarrer(
       [treecko],
@@ -596,30 +594,48 @@ test("Cross-generational non-regression: Gen 1 combat replay invariance after Ge
   const Hasard = noyauContext.PokeHasard;
   const Regles = noyauContext.PokeRegles;
 
-  Regles.poser("gen1");
-  const h = new Hasard("BATTLE-REPLAY-SEED-777");
-  const pikachu = Moteur.creer(25, 20, h);
-  const squirtle = Moteur.creer(7, 20, h);
+  function runSimulatedGen1Battle() {
+    Regles.poser("gen1");
+    const h = new Hasard("BATTLE-REPLAY-SEED-777");
+    const pikachu = Moteur.creer(25, 20, h);
+    const squirtle = Moteur.creer(7, 20, h);
 
-  const combatState = Combat.demarrer(
-    [pikachu],
-    [squirtle],
-    { graine: "BATTLE-REPLAY-SEED-777", dresseur: false },
-    h
-  );
+    const combatState = Combat.demarrer(
+      [pikachu],
+      [squirtle],
+      { graine: "BATTLE-REPLAY-SEED-777", dresseur: false },
+      h
+    );
 
-  const eventsLog = [];
-  let rounds = 0;
-  while (!combatState.fini && rounds < 20) {
-    rounds++;
-    const actionJoueur = { type: "attaque", index: 0 };
-    const actionAdverse = { type: "attaque", index: 0 };
-    const ev = Combat.jouerTour(combatState, actionJoueur, h, actionAdverse);
-    eventsLog.push({ round: rounds, ev });
+    const eventsLog = [];
+    let rounds = 0;
+    while (!combatState.fini && rounds < 20) {
+      rounds++;
+      const actionJoueur = { type: "attaque", index: 0 };
+      const actionAdverse = { type: "attaque", index: 0 };
+      const ev = Combat.jouerTour(combatState, actionJoueur, h, actionAdverse);
+      eventsLog.push({ round: rounds, ev });
+    }
+    return { combatState, eventsLog, finalTirages: h.tirages };
   }
 
-  assert.ok(combatState.fini, "Combat must finish");
-  assert.ok(h.tirages > 0, "PRNG draws must have occurred");
+  const run1 = runSimulatedGen1Battle();
+
+  // Execute Gen 3 code in-between to stress cross-generational state isolation
+  Regles.poser("gen3");
+  const h3 = new Hasard("INTERLEAVED-GEN3");
+  const t = Moteur.creer(252, 5, h3);
+  assert.ok(t && t.n === 252 && t.stats, "Gen 3 Treecko must instantiate cleanly");
+
+  // Re-run Gen 1 simulation
+  const run2 = runSimulatedGen1Battle();
+
+  assert.ok(run1.combatState.fini, "Combat 1 must finish");
+  assert.ok(run2.combatState.fini, "Combat 2 must finish");
+  assert.ok(run1.finalTirages > 0, "PRNG draws must have occurred");
+  assert.equal(run1.finalTirages, run2.finalTirages, "Gen 1 PRNG draws must match bit-identically after Gen 3 execution");
+  assert.equal(run1.combatState.fini, run2.combatState.fini, "Gen 1 combat result must match after Gen 3 execution");
+  assert.deepEqual(run1.eventsLog, run2.eventsLog, "Gen 1 combat events must be 100% bit-identical after Gen 3 execution");
 });
 
 test("PokeRejeu.replayDaily produces deterministic scoring parity", () => {
@@ -933,6 +949,60 @@ test("All 8 static legendaries and roaming duo are declared and correctly mapped
   const sealedStep = etapes.find((e) => e.id === "chambre-scellee");
   assert.ok(sealedStep, "Step 'chambre-scellee' must exist in POKE_GEN3_ETAPES");
   assert.strictEqual(sealedStep.apresLigue, true);
+});
+
+test("All Gym Leaders, Elite Four, Wallace, and Steven teams instantiate via PokeMoteur.creer without throwing", () => {
+  const Regles = noyauContext.PokeRegles;
+  const Moteur = noyauContext.PokeMoteur;
+  const Hasard = noyauContext.PokeHasard;
+  const h = new Hasard("TEAMS-INSTANTIATION-GEN3");
+
+  Regles.poser("gen3");
+
+  const g3 = Regles.pour("gen3");
+  const arenes = g3.arenes();
+  assert.ok(arenes && arenes.length === 8, "Must have 8 gym leaders in Gen 3");
+  for (const gym of arenes) {
+    assert.ok(gym.equipe && gym.equipe.length > 0, `Gym leader ${gym.champion || gym.nom} missing team`);
+    for (const pkmn of gym.equipe) {
+      assert.doesNotThrow(() => {
+        const inst = Moteur.creer(pkmn.n, pkmn.niveau, h);
+        assert.ok(inst && inst.stats && inst.attaques, `Failed instantiating #${pkmn.n} in gym team`);
+      }, `Gym leader ${gym.champion || gym.nom} member #${pkmn.n} failed to instantiate`);
+    }
+  }
+
+  const conseil = g3.conseil();
+  assert.ok(conseil && conseil.length === 4, "Must have 4 Elite Four members in Gen 3");
+  for (const c of conseil) {
+    assert.ok(c.equipe && c.equipe.length > 0, `Elite Four ${c.nom} missing team`);
+    for (const pkmn of c.equipe) {
+      assert.doesNotThrow(() => {
+        const inst = Moteur.creer(pkmn.n, pkmn.niveau, h);
+        assert.ok(inst && inst.stats && inst.attaques, `Failed instantiating #${pkmn.n} in ${c.nom}'s team`);
+      }, `Elite Four ${c.nom} member #${pkmn.n} failed to instantiate`);
+    }
+  }
+
+  const maitre = g3.maitre();
+  assert.ok(maitre && maitre.equipe && maitre.equipe.length === 6, "Master Wallace must have 6 Pokemon");
+  for (const pkmn of maitre.equipe) {
+    assert.doesNotThrow(() => {
+      const inst = Moteur.creer(pkmn.n, pkmn.niveau, h);
+      assert.ok(inst && inst.stats && inst.attaques, `Failed instantiating #${pkmn.n} in Wallace's team`);
+    }, `Master Wallace member #${pkmn.n} failed to instantiate`);
+  }
+
+  const steven = g3.dresseurFinal();
+  assert.ok(steven && steven.equipe && steven.equipe.length === 6, "Steven Stone must have 6 Pokemon");
+  for (const pkmn of steven.equipe) {
+    assert.doesNotThrow(() => {
+      const inst = Moteur.creer(pkmn.n, pkmn.niveau, h);
+      assert.ok(inst && inst.stats && inst.attaques, `Failed instantiating #${pkmn.n} in Steven's team`);
+    }, `Steven Stone member #${pkmn.n} failed to instantiate`);
+  }
+
+  Regles.poser("gen1");
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

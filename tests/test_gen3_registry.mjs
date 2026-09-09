@@ -215,12 +215,11 @@ test("PokeRegles.pour('gen3') returns complete profile", () => {
   assert.strictEqual(g3.table(), ctx.POKE_GEN3_TYPE_TABLE);
   assert.strictEqual(g3.speciaux(), ctx.POKE_GEN3_TYPES_SPECIAUX);
 
-  // Species & Moves
-  assert.strictEqual(g3.especes(), ctx.POKE_GEN3_ESPECE);
-  assert.strictEqual(g3.especesListe(), ctx.POKE_GEN3_ESPECES);
-  assert.strictEqual(g3.especesListe().length, 135);
-  assert.strictEqual(g3.attaques(), ctx.POKE_GEN3_ATTAQUE_PAR_CLE);
-  assert.strictEqual(g3.attaquesListe(), ctx.POKE_GEN3_ATTAQUES);
+  // Species & Moves (Cumulative across Gen 1, 2, and 3)
+  assert.ok(g3.especes()[252] && g3.especes()[1], "especes() must contain Gen 3 and Gen 1 species");
+  assert.strictEqual(g3.especesListe().length, 386, "especesListe() must contain all 386 species");
+  assert.ok(g3.attaques()["LEAF_BLADE"] && g3.attaques()["TACKLE"], "attaques() must contain Gen 3 and Gen 1 moves");
+  assert.ok(g3.attaquesListe().length >= 354, "attaquesListe() must contain all moves up to Gen 3");
 
   // Journey & Arenas
   assert.strictEqual(g3.arenes(), ctx.POKE_GEN3_ARENES);
