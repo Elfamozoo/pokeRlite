@@ -193,7 +193,9 @@
     //  ⚠️ Le Pokédex du COMPTE est commun aux deux. Le dire ici, une fois,
     //     évite la question qu'on se pose devant deux mondes séparés.
     // ═══════════════════════════════════════════════════════════════════════
-    mondeChoixSur: { fr: "DEUX MONDES", en: "TWO WORLDS" },
+    mondeChoixSur: { fr: "TROIS MONDES", en: "THREE WORLDS" },
+    mondeChoixSur2: { fr: "DEUX MONDES", en: "TWO WORLDS" },
+    mondeChoixSur3: { fr: "TROIS MONDES", en: "THREE WORLDS" },
     mondeChoixT: { fr: "Où pars-tu ?", en: "Where are you going?" },
     mondeKanto: { fr: "KANTO", en: "KANTO" },
     mondeKantoDit: { fr: "Rouge ou Bleue, huit Champions, la Ligue Indigo. 151 Pokémon.",
@@ -201,8 +203,11 @@
     mondeJohto: { fr: "JOHTO", en: "JOHTO" },
     mondeJohtoDit: { fr: "Cristal, huit Champions, le Conseil 4, puis Red au Mont Argenté. 251 Pokémon.",
                      en: "Crystal, eight Leaders, the Elite Four, then Red on Mount Silver. 251 Pokémon." },
-    mondeCommun: { fr: "Ton Pokédex est le même dans les deux.",
-                   en: "Your Pokédex is the same in both." },
+    mondeHoenn: { fr: "Hoenn", en: "Hoenn" },
+    mondeHoennDit: { fr: "La région des terres et des mers",
+                     en: "The land of land and seas" },
+    mondeCommun: { fr: "Ton Pokédex est le même dans les trois.",
+                   en: "Your Pokédex is the same in all three." },
     // [17/08, question de Darkjuampi] Ce que le compte transporte, dit avant de
     // partir — et rien de plus que ce qu'il fait. Voir `gardeDuCompte`.
     compteT: { fr: "Sur cet appareil seulement", en: "This device only" },
@@ -509,6 +514,7 @@
     //    seconde où le joueur s'y installe, c'est la classe que ce dossier
     //    traque : *le jeu sait, et il ne dit pas.*
     johto: { fr: "JOHTO — SECONDE GÉNÉRATION", en: "JOHTO — SECOND GENERATION" },
+    hoenn: { fr: "HOENN — TROISIÈME GÉNÉRATION", en: "HOENN — THIRD GENERATION" },
     // ── LE DÉFI DU JOUR ────────────────────────────────────────────────────
     //  🔴 IL ÉTAIT CÂBLÉ PARTOUT ET N'AVAIT PAS DE BOUTON. `partie.compare`
     //     verrouille le vivier de départ aux trois du canon, refuse le
@@ -4667,6 +4673,7 @@
   var MONDES_DITS = {
     gen1: { nom: "mondeKanto", dit: "mondeKantoDit", sur: "kanto" },
     gen2: { nom: "mondeJohto", dit: "mondeJohtoDit", sur: "johto" },
+    gen3: { nom: "mondeHoenn", dit: "mondeHoennDit", sur: "hoenn" },
   };
 
   //  Le bandeau du monde courant. Hors voyage, le registre rend le monde par

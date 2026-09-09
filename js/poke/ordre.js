@@ -295,6 +295,13 @@
   if (W.POKE_BANC_HOENN) {
     var iReg3 = NOYAU.indexOf("js/poke/regles.js");
     NOYAU = NOYAU.slice(0, iReg3).concat(GEN3, NOYAU.slice(iReg3));
+    var iGen2Fin = GEN2_ECRANS.length > 0 ? ECRANS.indexOf(GEN2_ECRANS[GEN2_ECRANS.length - 1]) : -1;
+    var iPos3 = iGen2Fin >= 0 ? iGen2Fin : ECRANS.indexOf("js/poke/anim-attaque.js");
+    if (iPos3 >= 0) {
+      ECRANS = ECRANS.slice(0, iPos3 + 1).concat(GEN3_ECRANS, ECRANS.slice(iPos3 + 1));
+    } else {
+      ECRANS = ECRANS.concat(GEN3_ECRANS);
+    }
   }
 
   W.POKE_ORDRE_NOYAU = NOYAU;

@@ -630,7 +630,7 @@
         (r.immune.length ? '<h2 class="pkdx-titre">' + T("immune") + "</h2><p>" + r.immune.map(function (t) { return pastille(t); }).join(" ") + "</p>" : "") +
         (e.evolue && e.evolue.length ? '<h2 class="pkdx-titre">' + T("evolue") + "</h2><p>" +
           e.evolue.map(function (ev) {
-            var cible = ESP()[ev.vers];
+            var cible = ESPECE(ev.vers);
             var comment = ev.par === "niveau" ? T("parNiveau", { n: ev.niveau })
               : ev.par === "pierre" ? T("parPierre", { o: nomPierre(ev.objet) }) : T("parEchange");
             // Le nom de la forme évoluée reste caché tant qu'on ne l'a pas
@@ -652,7 +652,7 @@
     var PIERRES = {
       FIRE_STONE: { fr: "Pierre Feu", en: "Fire Stone" }, WATER_STONE: { fr: "Pierre Eau", en: "Water Stone" },
       THUNDER_STONE: { fr: "Pierre Foudre", en: "Thunder Stone" }, LEAF_STONE: { fr: "Pierre Plante", en: "Leaf Stone" },
-      MOON_STONE: { fr: "Pierre Lune", en: "Moon Stone" },
+      MOON_STONE: { fr: "Pierre Lune", en: "Moon Stone" }, SUN_STONE: { fr: "Pierre Soleil", en: "Sun Stone" },
     };
     function nomPierre(o) { return (PIERRES[o] || { fr: o, en: o })[LANG()]; }
 
