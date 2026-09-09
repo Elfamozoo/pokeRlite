@@ -1,0 +1,1856 @@
+﻿e2b22cf docs: Task 3 report for combat engine ability hooks and held items
+2115a70 feat(gen3): Task 3 - combat engine ability hooks, hail weather, air lock and held items
+ .../task-3-report.md                               | 120 +++++
+ js/poke/combat.js                                  | 431 +++++++++++++--
+ js/poke/gen3/objets-tenus.js                       |  95 ++++
+ js/poke/ordre.js                                   |   1 +
+ js/poke/regles.js                                  |   3 +
+ tests/run_all_tests.mjs                            |   2 +-
+ tests/test_gen3_combat_talents.mjs                 | 590 +++++++++++++++++++++
+ tests/test_gen3_registry.mjs                       |   5 +-
+ 8 files changed, 1208 insertions(+), 39 deletions(-)
+diff --git a/.superpowers/sdd/2026-09-09-battle-factory-talents/task-3-report.md b/.superpowers/sdd/2026-09-09-battle-factory-talents/task-3-report.md
+new file mode 100644
+index 0000000..45df475
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-09-battle-factory-talents/task-3-report.md
+@@ -0,0 +1,120 @@
++´╗┐# Task 3 Report: Moteur de Combat ├ëvolu├® (Hooks de Talents, M├®t├®o Gr├¬le/Air Lock & Objets Tenus)
++
++## Metadata
++- **Task**: Task 3 ÔÇö Moteur de Combat ├ëvolu├® (Hooks de Talents, M├®t├®o Gr├¬le/Air Lock & Objets Tenus)
++- **Status**: DONE
++- **Commit**: 2115a70 (eat(gen3): Task 3 - combat engine ability hooks, hail weather, air lock and held items)
++- **Date**: 2026-09-09
++
++---
++
++## 1. Summary of Changes
++
++### 1.1. js/poke/gen3/objets-tenus.js [CREATED]
++- Declares competitive Gen 3 held items in POKE_GEN3_TENUS:
++  - oost: dictionary for 17 type-boosting items with oostFacteur: 1.1.
++  - leftovers: { effet: "HELD_LEFTOVERS", part: 16 } (+1/16 max HP per turn).
++  - choiceBand: { effet: "HELD_CHOICE_BAND", facteur: 1.5, bloque: true } (+50% Physical Attack).
++  - whiteHerb: { effet: "HELD_WHITE_HERB", restaurePaliersNegatifs: true, consomme: true }.
++  - quickClaw: { effet: "HELD_QUICK_CLAW", sur: 256, seuil: 60 }.
++  - scopeLens: { effet: "HELD_CRITICAL_UP", facteur: 2 }.
++  - ocusBand: { effet: "HELD_FOCUS_BAND", sur: 256, seuil: 26 }.
++  - aies:
++    - HELD_LUM_BERRY: { soigneStatuts: true, soigneConfusion: true, consomme: true }.
++    - HELD_SITRUS_BERRY: { soigne: 30, seuil: 0.5, consomme: true }.
++    - Status berries (HELD_CHESTO_BERRY, HELD_PECHA_BERRY, etc.).
++- Strict NOYAU compliance: strict mode ("use strict"), zero DOM/browser globals, zero unauthorized non-deterministic calls.
++
++### 1.2. js/poke/regles.js [MODIFIED]
++- In gen3 profile declaration:
++  - Added 	alentsActifs: function () { return true; }.
++  - Added 	enus: function () { return W.POKE_GEN3_TENUS || W.POKE_GEN2_TENUS; }.
++- In W.PokeRegles interface:
++  - Added 	alentsActifs: function () { return jeu().talentsActifs ? jeu().talentsActifs() : false; }.
++  - Gen 1 and Gen 2 return alse for 	alentsActifs(), strictly protecting legacy generations.
++
++### 1.3. js/poke/combat.js [MODIFIED]
++- Implemented ability and held item combat helpers:
++  - 	alentsSontActifs(e): checks if abilities are active in the current rule set or combat context.
++  - 	alentDe(p, e): retrieves active ability, respecting explicit 
++ull overrides and fallback to species.
++  - irLockActif(e): checks if Rayquaza (AIR_LOCK) or Golduck/Psyduck (CLOUD_NINE) is active on either side.
++  - erifierHerbeBlanche(p, cote, ev, quiCote): resets negative stat stages and consumes White Herb.
++  - erifierBaieStatut(p, cote, ev, quiCote): heals status or confusion and consumes Lum Berry.
++  - entreeEnCombat(e, cote, p, ev):
++    - Handles TRACE (copies opponent active ability).
++    - Handles INTIMIDATE (lowers opponent Attack stage by 1, blocked by CLEAR_BODY, WHITE_SMOKE, HYPER_CUTTER).
++    - Handles weather entry: DRIZZLE (rain), DROUGHT (sun), SAND_STREAM (sandstorm).
++  - erifierImmuniteTalent(att, def, a, e, ev):
++    - LEVITATE: grants immunity to Ground attacks (	alentImmunite).
++    - WONDER_GUARD: blocks non-super-effective damage moves (	alentGardeMystik).
++    - VOLT_ABSORB: absorbs Electric moves, heals 25% max HP.
++    - WATER_ABSORB: absorbs Water moves, heals 25% max HP.
++    - FLASH_FIRE: absorbs Fire moves, activates lashFire boost.
++    - SOUNDPROOF: blocks sound-based moves (ROAR, SUPERSONIC, SCREECH, HYPER_VOICE, SNORE).
++- Damage calculation (degats):
++  - OVERGROW, BLAZE, TORRENT, SWARM: +50% power when HP <= 1/3 max HP.
++  - HUGE_POWER / PURE_POWER: doubles physical attack stat.
++  - GUTS: +50% physical attack when afflicted with status, and negates burn attack halving.
++  - THICK_FAT: halves incoming Fire and Ice damage.
++  - BATTLE_ARMOR / SHELL_ARMOR: prevents critical hits.
++  - CHOICE_BAND: +50% physical attack.
++  - Ignored weather damage multipliers if irLockActif(e) is true.
++- Contact and status resolution (
+esoudreCoup and poserStatut):
++  - Contact abilities triggered when estContact(a) is true:
++    - STATIC: 30% chance to paralyze attacker.
++    - POISON_POINT: 30% chance to poison attacker.
++    - FLAME_BODY: 30% chance to burn attacker.
++    - ROUGH_SKIN: deals 1/16 max HP chip damage to attacker.
++  - ROCK_HEAD: prevents recoil damage from RECOIL_EFFECT moves (except STRUGGLE).
++  - Strict status immunities in poserStatut:
++    - IMMUNITY: blocks poison and toxic.
++    - LIMBER: blocks paralysis.
++    - WATER_VEIL: blocks burn.
++    - INSOMNIA / VITAL_SPIRIT: blocks sleep.
++    - MAGMA_ARMOR: blocks freeze.
++    - SYNCHRONIZE: mirrors status afflictions back to the attacker.
++    - OWN_TEMPO: blocks confusion in 
+esoudreCoup, effetSpecial (Swagger), and thrash recovery.
++- End-of-turn processing (inDeTour):
++  - SPEED_BOOST: raises Speed stage by 1 each turn.
++  - RAIN_DISH: heals 1/16 max HP under rain (when not negated by Air Lock).
++  - SHED_SKIN: 1/3 chance to cure status condition.
++  - LEFTOVERS: heals 1/16 max HP.
++  - Hail weather (grele): deals 1/16 max HP chip damage to non-Ice types, spares Ice types.
++  - AIR_LOCK: completely negates end-of-turn weather damage and weather multipliers.
++- Exported new APIs on W.PokeCombat:
++  - 	alentsSontActifs, 	alentDe, irLockActif, entreeEnCombat, erifierImmuniteTalent, poserStatut, usureMeteo.
++
++### 1.4. js/poke/ordre.js [MODIFIED]
++- Registered "js/poke/gen3/objets-tenus.js" in GEN3 immediately following "js/poke/gen3/talents.js".
++
++### 1.5. 	ests/test_gen3_combat_talents.mjs [CREATED]
++- 21-test dedicated suite testing:
++  1. Held items module existence and table properties.
++  2. PokeRegles.talentsActifs() behavior across Gen 1, 2, and 3.
++  3. Entrance abilities: Intimidate, Clear Body, White Smoke, Hyper Cutter, Drizzle, Drought, Sand Stream, Trace.
++  4. Immunities & absorptions: Levitate, Wonder Guard, Volt Absorb, Water Absorb, Flash Fire.
++  5. Damage calculations: Overgrow, Blaze, Torrent, Huge Power, Guts, Thick Fat, Choice Band.
++  6. Contact and status: Static, Rough Skin, Immunity, Limber, Water Veil, Insomnia, Own Tempo.
++  7. End of turn: Speed Boost, Air Lock, Hail damage.
++  8. Gen 3 items: Choice Band, Leftovers, White Herb, Lum Berry.
++  9. Cross-generational non-regression: Gen 1 & 2 ignore abilities even when assigned.
++
++### 1.6. 	ests/test_gen3_registry.mjs & 	ests/run_all_tests.mjs [MODIFIED]
++- Bumped expected POKE_ORDRE_GEN3 file count from 16 to 17.
++
++---
++
++## 2. Test Verification
++
++### 2.1. Dedicated Suite: 	est_gen3_combat_talents.mjs
++- **Result**: **21/21 passed (100%)**
++- Execution: 
++ode tests/test_gen3_combat_talents.mjs
++
++### 2.2. Registry Suite: 	est_gen3_registry.mjs
++- **Result**: **14/14 passed (100%)**
++
++### 2.3. Full Regression Suite: 
+un_all_tests.mjs
++- **Result**: **44/44 passed (100%)**
++- Zero regressions across Gen 1 and Gen 2 combat replays, mulberry32 determinism, and headless NOYAU execution.
+diff --git a/js/poke/combat.js b/js/poke/combat.js
+index 5c4eee7..2ad23a8 100644
+--- a/js/poke/combat.js
++++ b/js/poke/combat.js
+@@ -78,23 +78,205 @@
+     if (PALIER_DE[effet]) return PALIER_DE[effet];
+     var n = NEUFS();
+     return (n && n.paliers[effet]) || null;
+   }
+   //  L'effet que porte un Pok├®mon, ou `null`. Une seule porte : le nom de
+   //  l'objet est une CL├ë, son effet est une DONN├ëE, et les deux vivent dans
+   //  `gen2/objets-tenus.js`.
+   function effetTenu(p) {
+     var t = TENUS();
+     if (!t || !p || !p.objet) return null;
+-    var O = (W.PokeRegles && W.PokeRegles.objetsTable && W.PokeRegles.objetsTable()) || null;
++    if (typeof p.objet === "string" && p.objet.indexOf("HELD_") === 0) return p.objet;
++    var O = (W.PokeRegles && W.PokeRegles.objetsTable && W.PokeRegles.objetsTable()) || W.POKE_GEN3_OBJETS || W.POKE_GEN2_OBJETS || null;
+     var o = O && O[p.objet];
+-    return o ? o.tenu : null;
++    if (o && o.tenu) return o.tenu;
++    if (t.leftovers && p.objet === "LEFTOVERS") return t.leftovers.effet;
++    if (t.choiceBand && p.objet === "CHOICE_BAND") return t.choiceBand.effet;
++    if (t.whiteHerb && p.objet === "WHITE_HERB") return t.whiteHerb.effet;
++    if (p.objet === "LUM_BERRY") return "HELD_LUM_BERRY";
++    return null;
++  }
++
++  function talentsSontActifs(e) {
++    if (e && e.talentsActifs !== undefined) return e.talentsActifs;
++    return W.PokeRegles && W.PokeRegles.talentsActifs ? W.PokeRegles.talentsActifs() : false;
++  }
++
++  function talentDe(p, e) {
++    if (!p || !talentsSontActifs(e)) return null;
++    if (p.talent !== undefined) return p.talent;
++    if (W.PokeTalents && W.PokeTalents.de) return W.PokeTalents.de(p);
++    var esp = ESP();
++    return (esp && esp[p.n] && esp[p.n].talent) || null;
++  }
++
++  function airLockActif(e) {
++    if (!talentsSontActifs(e) || !e) return false;
++    var pJ = e.joueur && actif(e.joueur), pA = e.adverse && actif(e.adverse);
++    var tJ = vivant(pJ) && talentDe(pJ, e);
++    var tA = vivant(pA) && talentDe(pA, e);
++    return tJ === "AIR_LOCK" || tJ === "CLOUD_NINE" || tA === "AIR_LOCK" || tA === "CLOUD_NINE";
++  }
++
++  function verifierHerbeBlanche(p, cote, ev, quiCote) {
++    var t = TENUS();
++    if (!t || !vivant(p) || !p.objet || !cote || !cote.paliers) return false;
++    var eT = effetTenu(p);
++    if (eT === "HELD_WHITE_HERB" || (t.whiteHerb && eT === t.whiteHerb.effet)) {
++      var aNeg = false;
++      for (var k in cote.paliers) {
++        if (cote.paliers[k] < 0) {
++          cote.paliers[k] = 0;
++          aNeg = true;
++        }
++      }
++      if (aNeg) {
++        if (ev) ev.push({ t: "tenuHerbeBlanche", cote: quiCote, objet: p.objet, consomme: true });
++        p.objet = null;
++        return true;
++      }
++    }
++    return false;
++  }
++
++  function verifierBaieStatut(p, cote, ev, quiCote) {
++    var t = TENUS();
++    if (!t || !vivant(p) || !p.objet) return false;
++    var eT = effetTenu(p);
++    var estLum = eT === "HELD_LUM_BERRY" || eT === "HELD_HEAL_STATUS" || p.objet === "LUM_BERRY" || p.objet === "BAIE_PRUNUS";
++    if (estLum) {
++      var soinLum = false;
++      if (p.statut) {
++        p.statut = null;
++        p.statutTours = 0;
++        soinLum = true;
++      }
++      if (cote && cote.volatils && cote.volatils.confusion > 0) {
++        cote.volatils.confusion = 0;
++        soinLum = true;
++      }
++      if (soinLum) {
++        if (ev) ev.push({ t: "tenuBaiePrunus", cote: quiCote, objet: p.objet, consomme: true });
++        p.objet = null;
++        return true;
++      }
++    }
++    return false;
++  }
++
++  function entreeEnCombat(e, cote, p, ev) {
++    if (!talentsSontActifs(e) || !vivant(p) || !e) return;
++    var autreCote = cote === "joueur" ? "adverse" : "joueur";
++    var t = talentDe(p, e);
++    if (!t) return;
++
++    if (t === "TRACE") {
++      var autreMon = e[autreCote] && actif(e[autreCote]);
++      var tAutre = autreMon && vivant(autreMon) ? talentDe(autreMon, e) : null;
++      if (tAutre) {
++        p.talent = tAutre;
++        if (ev) ev.push({ t: "talentTrace", qui: cote, talent: tAutre });
++        t = tAutre;
++      }
++    }
++
++    if (t === "INTIMIDATE") {
++      var cibleMon = e[autreCote] && actif(e[autreCote]);
++      if (cibleMon && vivant(cibleMon)) {
++        var tCible = talentDe(cibleMon, e);
++        if (tCible === "CLEAR_BODY" || tCible === "WHITE_SMOKE" || tCible === "HYPER_CUTTER") {
++          if (ev) ev.push({ t: "talentBloqueBaisse", qui: cote, cible: autreCote, talent: tCible, stat: "atk" });
++        } else {
++          e[autreCote].paliers.atk = Math.max(-6, e[autreCote].paliers.atk - 1);
++          if (ev) ev.push({ t: "talentIntimidation", qui: cote, cible: autreCote });
++          verifierHerbeBlanche(cibleMon, e[autreCote], ev, autreCote);
++        }
++      }
++    } else if (t === "DRIZZLE") {
++      if (!e.meteo || e.meteo.cle !== "pluie") {
++        e.meteo = { cle: "pluie", reste: 5 };
++        if (ev) ev.push({ t: "meteo", cle: "pluie", talent: "DRIZZLE" });
++      }
++    } else if (t === "DROUGHT") {
++      if (!e.meteo || e.meteo.cle !== "zenith") {
++        e.meteo = { cle: "zenith", reste: 5 };
++        if (ev) ev.push({ t: "meteo", cle: "zenith", talent: "DROUGHT" });
++      }
++    } else if (t === "SAND_STREAM") {
++      if (!e.meteo || e.meteo.cle !== "sable") {
++        e.meteo = { cle: "sable", reste: 5 };
++        if (ev) ev.push({ t: "meteo", cle: "sable", talent: "SAND_STREAM" });
++      }
++    }
++  }
++
++  var ATTAQUES_SONORES = { ROAR: true, SUPERSONIC: true, SCREECH: true, HYPER_VOICE: true, SNORE: true };
++
++  function verifierImmuniteTalent(att, def, a, e, ev) {
++    if (!talentsSontActifs(e) || !def || !a) return false;
++    var tDef = talentDe(def, e);
++    if (!tDef) return false;
++
++    if (tDef === "LEVITATE" && a.type === "ground") {
++      if (ev) ev.push({ t: "talentImmunite", talent: "LEVITATE", type: "ground" });
++      return true;
++    }
++    if (tDef === "WONDER_GUARD" && a.puissance > 0) {
++      var eff = efficacite(a.type, typesDe(def));
++      if (eff <= 1) {
++        if (ev) ev.push({ t: "talentGardeMystik", talent: "WONDER_GUARD" });
++        return true;
++      }
++    }
++    if (tDef === "VOLT_ABSORB" && a.type === "electric") {
++      var soinVA = Math.floor(def.stats.pv / 4);
++      var avantVA = def.pv;
++      MOT().poserPv(def, def.pv + soinVA, "absorbVolt");
++      if (ev) ev.push({ t: "talentAbsorbe", talent: "VOLT_ABSORB", soin: def.pv - avantVA });
++      return true;
++    }
++    if (tDef === "WATER_ABSORB" && a.type === "water") {
++      var soinWA = Math.floor(def.stats.pv / 4);
++      var avantWA = def.pv;
++      MOT().poserPv(def, def.pv + soinWA, "absorbEau");
++      if (ev) ev.push({ t: "talentAbsorbe", talent: "WATER_ABSORB", soin: def.pv - avantWA });
++      return true;
++    }
++    if (tDef === "FLASH_FIRE" && a.type === "fire") {
++      def.volatils = def.volatils || {};
++      def.volatils.flashFire = true;
++      if (e) {
++        var cDef = (e.joueur && def === actif(e.joueur)) ? e.joueur : e.adverse;
++        if (cDef && cDef.volatils) cDef.volatils.flashFire = true;
++      }
++      if (ev) ev.push({ t: "talentTorche", talent: "FLASH_FIRE" });
++      return true;
++    }
++    if (tDef === "SOUNDPROOF" && ATTAQUES_SONORES[a.cle]) {
++      if (ev) ev.push({ t: "talentAntiBruit", talent: "SOUNDPROOF", attaque: a.cle });
++      return true;
++    }
++    return false;
++  }
++
++  var NON_CONTACT = {
++    EARTHQUAKE: true, MAGNITUDE: true, ROCK_SLIDE: true, ROCK_TOMB: true,
++    ROCK_BLAST: true, SAND_TOMB: true, MUD_SHOT: true, BARRAGE: true,
++    BONEMERANG: true, BONE_CLUB: true, BONE_RUSH: true, EGG_BOMB: true,
++    EXPLOSION: true, SELFDESTRUCT: true
++  };
++
++  function estContact(a) {
++    if (!a || !a.puissance) return false;
++    if (a.contact !== undefined) return !!a.contact;
++    if (NON_CONTACT[a.cle]) return false;
++    return !estSpecial(a.type);
+   }
+ 
+   var SPE_ATK = function () { return W.PokeRegles ? W.PokeRegles.speAtk() : "spe"; };
+   var SPE_DEF = function () { return W.PokeRegles ? W.PokeRegles.speDef() : "spe"; };
+   //  Le moteur, pour la seule porte d'├®criture des points de vie. `combat.js` ne
+   //  lui demandait rien jusqu'ici ; il ne lui demande que ├ºa.
+   var MOT = function () { return W.PokeMoteur; };
+ 
+   //  ­ƒöæ UNE SEULE PORTE POUR UN JEU DE PALIERS NEUF. Il en existait SIX copies
+   //     ├®crites ├á la main dans ce fichier, toutes identiques ÔÇö et il aurait
+@@ -223,72 +405,107 @@
+     //    s'annon├ºait et ne changeait rien au combat.
+     var typesDef = typesDe(def);
+     var typesAtt = typesDe(att);
+ 
+     // ­ƒö┤ UN COUP PEUT ├èTRE SANS TYPE ÔÇö 1999 en a un seul, Prescience, et c'est
+     //    ce qui la rend fiable : ni super efficace, ni sans effet, jamais. La
+     //    garde vaut aussi pour le bonus de m├¬me type, plus bas : un coup sans
+     //    type n'appartient ├á personne.
+     var eff = ctx.sansType ? 1 : efficacite(a.type, typesDef);
+     if (eff === 0) return { degats: 0, efficacite: 0, critique: false };
++    if (talentsSontActifs(ctx)) {
++      var tDefImm = talentDe(def, ctx);
++      if (tDefImm === "LEVITATE" && a.type === "ground") return { degats: 0, efficacite: 0, critique: false };
++      if (tDefImm === "WONDER_GUARD" && eff <= 1) return { degats: 0, efficacite: eff, critique: false };
++      if (tDefImm === "VOLT_ABSORB" && a.type === "electric") return { degats: 0, efficacite: 0, critique: false };
++      if (tDefImm === "WATER_ABSORB" && a.type === "water") return { degats: 0, efficacite: 0, critique: false };
++      if (tDefImm === "FLASH_FIRE" && a.type === "fire") return { degats: 0, efficacite: 0, critique: false };
++    }
+ 
+     // ÔÜá´©Å PUISSANCE DIVISE LE TAUX DE CRITIQUE AU LIEU DE LE MULTIPLIER. C'est
+     //    le bug le plus c├®l├¿bre de la premi├¿re g├®n├®ration, et on le garde :
+     //    le corriger donnerait un jeu qui n'a jamais exist├®.
+     var tauxCrit = chanceCritique(att, attaque);
+     // La Lentille Scope double le taux. M├¬me jet, autre seuil.
+     var _tnC = TENUS();
+     if (_tnC && effetTenu(att) === _tnC.critique.effet) tauxCrit = tauxCrit * _tnC.critique.facteur;
+     if (ctx.puissance) tauxCrit = tauxCrit / 4;
+     // Le Serment de l'audace ajoute sa part ici, le Serment de la prudence la
+     // retire. ­ƒö┤ LE TIRAGE RESTE LE M├èME : on d├®place le seuil, on n'ajoute
+     // aucun appel ├á `h`. Un serment qui changerait le NOMBRE de tirages
+     // casserait le rejeu de toutes les graines du mode.
+     if (ctx.sermentsCrit) tauxCrit = Math.max(0, Math.min(1, tauxCrit + ctx.sermentsCrit));
+     // ÔÜá´©Å ET LE TIRAGE DE CRITIQUE NE SE FAIT PAS QUAND IL N'Y A PAS DE
+     //    CRITIQUE POSSIBLE. Le consommer pour rien d├®calerait la graine d'un
+     //    cran ├á chaque Prescience ÔÇö un coup diff├®r├® co├╗te UN tirage, celui de
+     //    l'al├®a des d├®g├óts, et c'est ce que sa table d├®clare.
+-    var critique = ctx.sansCritique ? false : h.brut() < tauxCrit;
++    var critique = ctx.sansCritique ? false : (h && h.brut ? h.brut() < tauxCrit : false);
++    if (talentsSontActifs(ctx)) {
++      var tDefC = talentDe(def, ctx);
++      if (tDefC === "BATTLE_ARMOR" || tDefC === "SHELL_ARMOR") critique = false;
++    }
+     var spec = estSpecial(a.type);
+ 
+     // Un coup critique ignore les changements de statistiques, des deux c├┤t├®s.
+     // ­ƒö┤ L'ATTAQUANT LIT SON ATTAQUE SP├ëCIALE, LE D├ëFENSEUR SA D├ëFENSE
+     //    SP├ëCIALE. En gen 1 c'est la m├¬me statistique et la ligne est celle
+     //    d'avant ; en gen 2 c'est ce qui rend un Pok├®mon fort en attaque et
+     //    fragile en d├®fense ÔÇö l'apport principal de la g├®n├®ration.
+     var cleA = spec ? SPE_ATK() : "atk";
+     var cleD = spec ? SPE_DEF() : "def";
+     var A = att.stats[cleA];
+     var D = def.stats[cleD];
+     if (!critique) {
+-      A = Math.floor(A * facteurPalier(ctx.attPaliers[cleA]));
+-      D = Math.floor(D * facteurPalier(ctx.defPaliers[cleD]));
++      A = Math.floor(A * facteurPalier(ctx.attPaliers && ctx.attPaliers[cleA] !== undefined ? ctx.attPaliers[cleA] : 0));
++      D = Math.floor(D * facteurPalier(ctx.defPaliers && ctx.defPaliers[cleD] !== undefined ? ctx.defPaliers[cleD] : 0));
++    }
++    if (talentsSontActifs(ctx)) {
++      var tAtt = talentDe(att, ctx);
++      var tDefS = talentDe(def, ctx);
++      if (!spec && (tAtt === "HUGE_POWER" || tAtt === "PURE_POWER")) {
++        A = A * 2;
++      }
++      if (tAtt === "GUTS" && att.statut) {
++        A = Math.floor(A * 1.5);
++      }
++      var PINCH = { OVERGROW: "grass", BLAZE: "fire", TORRENT: "water", SWARM: "bug" };
++      if (PINCH[tAtt] && PINCH[tAtt] === a.type && att.pv <= Math.floor(att.stats.pv / 3)) {
++        A = Math.floor(A * 1.5);
++      }
++      if (att.volatils && att.volatils.flashFire && a.type === "fire") {
++        A = Math.floor(A * 1.5);
++      }
++      if (tDefS === "THICK_FAT" && (a.type === "fire" || a.type === "ice")) {
++        A = Math.max(1, Math.floor(A / 2));
++      }
+     }
+     // ­ƒö┤ LE RENFORT DE TYPE. ├ù1,1 quand l'objet tenu correspond au type du
+     //    coup ÔÇö c'est la valeur du ROM, et elle s'applique ├á l'ATTAQUE, pas au
+     //    r├®sultat : c'est l├á que le jeu d'origine la place.
+     var _tn = TENUS();
+     if (_tn) {
+       var _e = effetTenu(att);
+-      if (_e && _tn.boost[_e] === a.type) A = Math.floor(A * _tn.boostFacteur);
++      if (_e && _tn.boost && _tn.boost[_e] === a.type) A = Math.floor(A * _tn.boostFacteur);
++      if (!spec && (_e === "HELD_CHOICE_BAND" || (_tn.choiceBand && _e === _tn.choiceBand.effet))) {
++        A = Math.floor(A * 1.5);
++      }
+     }
+     // ­ƒö┤ LA M├ëT├ëO P├êSE SUR LE COUP, pas sur la cr├®ature : la pluie double
+     //    presque l'Eau et ├®touffe le Feu, le z├®nith fait l'inverse. C'est un
+     //    multiplicateur fixe, sans un jet.
+     var _nm = NEUFS();
+-    if (_nm && ctx.meteo) {
++    if (_nm && ctx.meteo && !ctx.airLock && !(talentsSontActifs(ctx) && airLockActif(ctx.e || ctx))) {
+       var _md = _nm.meteoDegats[ctx.meteo];
+       if (_md && _md[a.type]) A = Math.floor(A * _md[a.type]);
+     }
+     // La br├╗lure coupe l'Attaque de moiti├® ÔÇö physique uniquement.
+-    if (!spec && att.statut === "brulure") A = Math.floor(A / 2);
++    if (!spec && att.statut === "brulure" && (!talentsSontActifs(ctx) || talentDe(att, ctx) !== "GUTS")) A = Math.floor(A / 2);
+     // ­ƒö┤ LES DEUX MURS DOUBLENT LA D├ëFENSE VIS├ëE, chacun sur sa moiti├® du jeu :
+     //    Protection contre le physique, Mur Lumi├¿re contre le sp├®cial. Ils
+     //    s'annon├ºaient sans rien changer ÔÇö deux tours donn├®s pour rien.
+     //    ÔÜá´©Å Un coup critique les IGNORE, comme dans le jeu d'origine : c'est ce
+     //       qui emp├¬che un mur de rendre un combat imperdable.
+     if (!critique) {
+       if (spec && ctx.mur) D = D * 2;
+       if (!spec && ctx.protection) D = D * 2;
+     }
+     // Les bonus de badge du joueur, appliqu├®s comme dans le jeu d'origine.
+@@ -308,21 +525,21 @@
+ 
+     // Bonus de m├¬me type. En g├®n├®ration 1 il vaut exactement une fois et demie.
+     // Il suit les types FORC├ëS : un M├®tamorph transform├® en Dracaufeu profite
+     // du bonus des attaques Feu, comme dans le jeu.
+     if (!ctx.sansType && typesAtt.indexOf(a.type) >= 0) d = Math.floor(d * 1.5);
+     d = Math.floor(d * eff);
+ 
+     // L'al├®a d'origine : entre 217 et 255 deux cent cinquante-cinqui├¿mes. Un
+     // m├¬me coup fait donc entre 85 % et 100 % de sa valeur, et ├ºa suffit ├á
+     // rendre un combat incertain sans le rendre injuste.
+-    if (d > 1) d = Math.floor((d * h.entre(217, 255)) / 255);
++    if (d > 1) d = Math.floor((d * (h && h.entre ? h.entre(217, 255) : 236)) / 255);
+     // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+     // ­ƒö┤ LES SERMENTS S'APPLIQUENT APR├êS L'AL├ëA, ET C'EST VOULU. Pos├®s avant,
+     //    ils passeraient dans deux arrondis vers le bas au lieu d'un, et un
+     //    serment de plus ou moins dix pour cent se perdrait enti├¿rement sur
+     //    les petits coups. Apr├¿s, ils se voient toujours.
+     // ÔÜá´©Å Le plancher d'un d├®g├ót reste UN. Un serment ne peut pas rendre une
+     //    attaque inoffensive : le combat cesserait d'avancer.
+     // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+     if (ctx.sermentsInflige && ctx.sermentsInflige !== 1) d = Math.floor(d * ctx.sermentsInflige);
+     if (ctx.sermentsSubit && ctx.sermentsSubit !== 1) d = Math.floor(d * ctx.sermentsSubit);
+@@ -392,21 +609,25 @@
+     c.actif = index;
+     //  ­ƒöæ C'EST AU MOTEUR DE DIRE QUELLES STATISTIQUES EXISTENT. Une table
+     //     ├®crite ├á la main nommait `spe` ; sous Johto la Sp├®ciale s'appelle
+     //     `sat`/`sdf`, et le rempla├ºant repartait avec des paliers o├╣ sa
+     //     statistique n'existait pas ÔÇö d├®g├óts NaN, points de vie NaN, et
+     //     `NaN > 0` ├®tant faux, une cr├®ature qui compte pour morte sans tomber.
+     c.paliers = o.paliers || paliersNeufs();
+     c.volatils = {};
+     if (o.annonce) (ev || []).push(o.annonce);
+     piegesALEntree(e, quiCote, ev || []);
+-    return c.equipe[index];
++    var p = c.equipe[index];
++    if (talentsSontActifs(e)) {
++      entreeEnCombat(e, quiCote, p, ev || []);
++    }
++    return p;
+   }
+ 
+   //  Ce que le terrain fait payer ├á celui qui entre. En 1996 : rien.
+   function piegesALEntree(e, quiCote, ev) {
+     var n = NEUFS();
+     if (!n || !n.pieges) return;
+     var c = e[quiCote];
+     var p = c.equipe[c.actif];
+     if (!p || !vivant(p)) return;
+     for (var i = 0; i < n.pieges.length; i++) {
+@@ -478,20 +699,25 @@
+       //  ÔÜá´©Å ABSENT PAR D├ëFAUT, donc rien ne change pour la premi├¿re g├®n├®ration :
+       //     aucun de ses appels ne pose ce champ, et le compte ├á rebours ne se
+       //     d├®clenche jamais. Aucun tirage n'est ajout├® non plus ÔÇö c'est un
+       //     compteur de tours, pas un jet.
+       // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+       fuiteApres: o.fuiteApres || 0,
+       balls: o.balls || {},
+       journal: [],
+     };
+     e.joueur.participants[e.joueur.actif] = true;
++    if (talentsSontActifs(e)) {
++      var evInit = o.ev || e.journal;
++      entreeEnCombat(e, "joueur", actif(e.joueur), evInit);
++      entreeEnCombat(e, "adverse", actif(e.adverse), evInit);
++    }
+     return e;
+   }
+ 
+   // ÔöÇÔöÇ Ordre des tours ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+   //  La vitesse tranche. ├Ç ├®galit├® parfaite, on tire ÔÇö et on consomme le
+   //  tirage TOUJOURS, m├¬me quand les vitesses diff├¿rent, pour que le rejeu ne
+   //  d├®pende pas des statistiques des Pok├®mon en pr├®sence.
+   // ÔÜá´©Å `camp` EST FACULTATIF, et c'est par lui que le Badge Foudre entre : il
+   //    vaut +12,5 % de Vitesse au joueur qui l'a gagn├®, exactement comme le
+   //    Badge Roche vaut +12,5 % d'Attaque. Il ├®tait pos├® et n'avait aucun
+@@ -638,33 +864,45 @@
+   //     perdent de la vie sans aucune raison particuli├¿re ┬╗. Les Restes
+   //     rendent des points de vie ├á chaque tour ; sans ├®v├®nement, le joueur
+   //     verrait un adversaire se soigner tout seul et n'en saurait pas la
+   //     cause.
+   //  ­ƒö┤ ET UNE BAIE SE CONSOMME. Un soin qui ne co├╗te rien est un soin infini :
+   //     le seuil se franchit une fois, l'objet part, et le tour suivant le
+   //     Pok├®mon est seul. C'est le march├® du canon.
+   //  ÔÜá´©Å Z├ëRO TIRAGE : les Restes sont une fraction, la baie est un SEUIL sur
+   //     les points de vie. Rien ici ne se joue aux d├®s.
+   // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+-  function objetFinDeTour(p, ev, quiCote) {
++  function objetFinDeTour(p, ev, quiCote, cote) {
+     var t = TENUS();
+     if (!t || !vivant(p) || !p.objet) return;
+     var e = effetTenu(p);
+     if (!e) return;
+-    if (e === t.leftovers.effet && p.pv < p.stats.pv) {
+-      var soin = Math.max(1, Math.floor(p.stats.pv / t.leftovers.part));
++    if ((e === "HELD_LEFTOVERS" || (t.leftovers && e === t.leftovers.effet)) && p.pv < p.stats.pv) {
++      var soin = Math.max(1, Math.floor(p.stats.pv / (t.leftovers ? t.leftovers.part : 16)));
+       var avant = p.pv;
+       MOT().poserPv(p, p.pv + soin, "restes");
+       ev.push({ t: "tenuSoigne", cote: quiCote, objet: p.objet, soin: p.pv - avant, pv: p.pv });
+       return;
+     }
+-    var baie = t.baies[e];
++    if (verifierHerbeBlanche(p, cote, ev, quiCote)) return;
++    if (verifierBaieStatut(p, cote, ev, quiCote)) return;
++    if (e === "HELD_SITRUS_BERRY" || (t.baies && t.baies.HELD_SITRUS_BERRY && e === "HELD_SITRUS_BERRY")) {
++      var sitrus = (t.baies && t.baies.HELD_SITRUS_BERRY) || { soigne: 30, seuil: 0.5 };
++      if (p.pv <= Math.floor(p.stats.pv * sitrus.seuil) && p.pv < p.stats.pv) {
++        var aSit = p.pv;
++        MOT().poserPv(p, p.pv + sitrus.soigne, "baie");
++        ev.push({ t: "tenuSoigne", cote: quiCote, objet: p.objet, soin: p.pv - aSit, pv: p.pv, consomme: true });
++        p.objet = null;
++        return;
++      }
++    }
++    var baie = t.baies && t.baies[e];
+     if (baie && p.pv <= Math.floor(p.stats.pv * baie.seuil)) {
+       var a2 = p.pv;
+       MOT().poserPv(p, p.pv + baie.soigne, "baie");
+       ev.push({ t: "tenuSoigne", cote: quiCote, objet: p.objet, soin: p.pv - a2, pv: p.pv, consomme: true });
+       p.objet = null;
+       return;
+     }
+     // ÔöÇÔöÇ La Baie Myst├¿re : le coup tomb├® ├á z├®ro repart avec cinq points ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+     //  ÔÜá´©Å AUCUN TIRAGE : c'est un SEUIL, comme les autres baies. Elle avait ├®t├®
+     //     rang├®e parmi ┬½ ce qui demande un jet ┬╗ sur une lecture trop rapide ÔÇö
+@@ -677,21 +915,21 @@
+       for (var ip = 0; ip < p.attaques.length; ip++) {
+         if (p.attaques[ip] && p.attaques[ip].pp <= 0) {
+           p.attaques[ip].pp = Math.min(p.attaques[ip].ppMax, rpp.pp);
+           ev.push({ t: "tenuRendPP", cote: quiCote, objet: p.objet,
+                     attaque: p.attaques[ip].cle, pp: p.attaques[ip].pp, consomme: true });
+           p.objet = null;
+           return;
+         }
+       }
+     }
+-    var cure = t.soins[e];
++    var cure = t.soins && t.soins[e];
+     if (cure && p.statut && cure.indexOf(p.statut) >= 0) {
+       var quoi = p.statut;
+       p.statut = null;
+       p.statutTours = 0;
+       ev.push({ t: "tenuGuerit", cote: quiCote, objet: p.objet, statut: quoi, consomme: true });
+       p.objet = null;
+     }
+   }
+ 
+   // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+@@ -699,45 +937,49 @@
+   //
+   //  ­ƒö┤ UNE M├ëT├ëO QUI NE S'ARR├èTE PAS N'EST PAS UNE M├ëT├ëO, c'est une r├¿gle du
+   //     combat. Cinq tours, compt├®s, annonc├®s quand ils tombent.
+   //  ÔÜá´©Å LA TEMP├èTE ├ëPARGNE ROCHE, SOL ET ACIER ÔÇö c'est le canon, pas une
+   //     douceur, et c'est ce qui fait d'elle une arme d'├ëQUIPE : on la lance
+   //     quand on a les types qui la supportent.
+   //  ÔÜá´©Å ET ELLE FRAPPE AVANT L'USURE ORDINAIRE : un Pok├®mon qui tombe sous la
+   //     temp├¬te ne subit pas ensuite son poison, comme dans le jeu d'origine.
+   // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   function usureMeteo(e, p, ev, quiCote) {
++    if (airLockActif(e)) return;
++    if (!e || !e.meteo || !vivant(p)) return;
+     var n = NEUFS();
+-    if (!n || !e.meteo || !vivant(p)) return;
+-    var u = n.meteoUsure[e.meteo.cle];
++    var u = (n && n.meteoUsure && n.meteoUsure[e.meteo.cle]);
++    if (!u && e.meteo.cle === "grele") {
++      u = { epargne: ["ice"], part: 16 };
++    }
+     if (!u) return;
+     var t = typesDe(p);
+     for (var i = 0; i < t.length; i++) if (u.epargne.indexOf(t[i]) >= 0) return;
+     var d = Math.max(1, Math.floor(p.stats.pv / u.part));
+     MOT().poserPv(p, p.pv - d, "usureMeteo");
+     ev.push({ t: "meteoRonge", cote: quiCote, cle: e.meteo.cle, degats: d, pv: p.pv });
+   }
+ 
+   //  Le compte ├á rebours de la m├®t├®o. Une seule fois par tour, ├á la fin.
+   function meteoFinDeTour(e, ev) {
+     if (!e.meteo) return;
+     e.meteo.reste--;
+     if (e.meteo.reste <= 0) {
+       ev.push({ t: "meteoFinit", cle: e.meteo.cle });
+       e.meteo = null;
+     }
+   }
+ 
+   function usureFinDeTour(p, ev, quiCote, cote, autre) {
+     if (!vivant(p)) return;
+-    objetFinDeTour(p, ev, quiCote);
+-    if (cote && cote.volatils.graine) {
++    objetFinDeTour(p, ev, quiCote, cote);
++    if (cote && cote.volatils && cote.volatils.graine) {
+       var drain = Math.max(1, Math.floor(p.stats.pv / 16));
+       MOT().poserPv(p, p.pv - drain, "vampigraine");
+       ev.push({ t: "graineDraine", cote: quiCote, degats: drain });
+       if (autre) {
+         var voleur = actif(autre);
+         if (vivant(voleur)) {
+           // ­ƒö┤ LA MOITI├ë DE LA VAMPIGRAINE ├ëTAIT MUETTE ÔÇö rapport de joueur du
+           //    14/08 : ┬½ par moment des Pok├®mon perdent de la vie (adverse)
+           //    sans aucune raison particuli├¿re ┬╗. Vu de l'autre c├┤t├® : la
+           //    graine ANNON├çAIT ce qu'elle retire et TAISAIT ce qu'elle rend.
+@@ -1700,20 +1942,22 @@
+     //    rendu `undefined`, donc ┬½ vise l'adversaire ┬╗ pour tout, y compris
+     //    H├óte et Armure. Une cl├® qui n'existe pas ne l├¿ve rien : c'est la faute
+     //    la plus fr├®quente du dossier.
+     var palSoi = palierDe(a.effet);
+     var viseSoi = a.puissance === 0 && ((palSoi && palSoi[1] > 0) || VISE_SOI[a.effet]);
+     if (!viseSoi && a.precision < 100 && !h.chance(a.precision)) {
+       ev.push({ t: "rate", cote: quiA });
+       return;
+     }
+ 
++    if (!viseSoi && verifierImmuniteTalent(pA, pD, a, e, ev)) return;
++
+     if (effetSpecial(e, source, cible, pA, pD, quiA, quiD, faux, a, ev, h)) return;
+     // ­ƒö┤ LA M├èME QUEUE QUE `assaut`, ET C'EST TOUT L'OBJET DE L'EXTRACTION :
+     //    statuts, paliers, peur, confusion, coups multiples, vol de vie,
+     //    contrecoup, recharge, ├®treinte, sacrifice. `dejaCharge` vaut VRAI ÔÇö
+     //    une attaque rejou├®e ne pose pas de tour de charge, elle se joue tout
+     //    de suite ou pas du tout.
+     resoudreCoup(e, source, cible, pA, pD, quiA, quiD, faux, a, ev, h, true);
+   }
+ 
+   // ­ƒö┤ UNE SEULE PORTE POUR ENCAISSER. Le clone doit intercepter les d├®g├óts
+@@ -1779,36 +2023,74 @@
+   //     depuis un seul : un sacrifice qui ne co├╗te que lorsqu'il r├®ussit n'est
+   //     plus un sacrifice.
+   // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   function seSacrifier(a, p, ev, quiCote) {
+     if (!a || a.effet !== "EXPLODE_EFFECT" || !vivant(p)) return;
+     p.pv = 0;
+     ev.push({ t: "sacrifice", cote: quiCote });
+     ev.push({ t: "ko", cote: quiCote });
+   }
+ 
+-  function poserStatut(cible, statut, ev, quiCote, h, coteCible) {
++  function poserStatut(cible, statut, ev, quiCote, h, coteCible, source, e) {
++    if (talentsSontActifs(e)) {
++      var tCible = talentDe(cible, e);
++      if (tCible === "IMMUNITY" && (statut === "poison" || statut === "poisonGrave")) {
++        if (ev) ev.push({ t: "talentImmuniteStatut", qui: quiCote, talent: "IMMUNITY", statut: statut });
++        return;
++      }
++      if (tCible === "LIMBER" && statut === "para") {
++        if (ev) ev.push({ t: "talentImmuniteStatut", qui: quiCote, talent: "LIMBER", statut: statut });
++        return;
++      }
++      if (tCible === "WATER_VEIL" && statut === "brulure") {
++        if (ev) ev.push({ t: "talentImmuniteStatut", qui: quiCote, talent: "WATER_VEIL", statut: statut });
++        return;
++      }
++      if ((tCible === "INSOMNIA" || tCible === "VITAL_SPIRIT") && statut === "sommeil") {
++        if (ev) ev.push({ t: "talentImmuniteStatut", qui: quiCote, talent: tCible, statut: statut });
++        return;
++      }
++      if (tCible === "MAGMA_ARMOR" && statut === "gel") {
++        if (ev) ev.push({ t: "talentImmuniteStatut", qui: quiCote, talent: "MAGMA_ARMOR", statut: statut });
++        return;
++      }
++    }
+     // ­ƒö┤ RUNE PROTECT REFUSE LE STATUT, ET ELLE LE DIT. Sans cette ligne, la
+     //    protection s'annon├ºait au tour o├╣ on la pose et ne prot├®geait de rien
+     //    ÔÇö un coup annonc├® qui ne fait rien, exactement ce que ce dossier
+     //    traque partout ailleurs.
+     var _n = NEUFS();
+-    if (_n && coteCible && coteCible.volatils.rune > 0) {
+-      ev.push({ t: "runeProtege", cote: quiCote, statut: statut });
++    if (_n && coteCible && coteCible.volatils && coteCible.volatils.rune > 0) {
++      if (ev) ev.push({ t: "runeProtege", cote: quiCote, statut: statut });
+       return;
+     }
+     // ­ƒö┤ Un Pok├®mon n'a qu'un statut ├á la fois ÔÇö poser le second effacerait le
+     //    premier sans le dire, et le joueur lirait deux annonces pour un effet.
+-    if (cible.statut) { ev.push({ t: "statutRefuse", cote: quiCote, deja: cible.statut }); return; }
++    if (cible.statut) {
++      if (ev) ev.push({ t: "statutRefuse", cote: quiCote, deja: cible.statut });
++      return;
++    }
+     cible.statut = statut;
+-    cible.statutTours = statut === "sommeil" ? h.entre(1, 7) : statut === "poisonGrave" ? 0 : 0;
+-    ev.push({ t: "statut", cote: quiCote, statut: statut });
++    cible.statutTours = statut === "sommeil" ? (h && h.entre ? h.entre(1, 7) : 3) : 0;
++    if (ev) ev.push({ t: "statut", cote: quiCote, statut: statut });
++    verifierBaieStatut(cible, coteCible, ev, quiCote);
++
++    // Synchronize
++    if (talentsSontActifs(e) && source && vivant(source) && !source.statut) {
++      var tSyn = talentDe(cible, e);
++      if (tSyn === "SYNCHRONIZE" && (statut === "para" || statut === "poison" || statut === "poisonGrave" || statut === "brulure")) {
++        var quiSource = quiCote === "joueur" ? "adverse" : "joueur";
++        var coteSource = e ? e[quiSource] : null;
++        if (ev) ev.push({ t: "talentSynchro", talent: "SYNCHRONIZE", statut: statut, cible: quiSource });
++        poserStatut(source, statut, ev, quiSource, h, coteSource, null, e);
++      }
++    }
+   }
+ 
+   function bougerPalier(c, stat, delta, ev, quiCote) {
+     var avant = c.paliers[stat];
+     c.paliers[stat] = Math.max(-6, Math.min(6, avant + delta));
+     ev.push({ t: "palier", cote: quiCote, stat: stat, delta: c.paliers[stat] - avant,
+               bloque: c.paliers[stat] === avant, valeur: c.paliers[stat] });
+   }
+ 
+   // Patience : deux ou trois tours ├á encaisser, puis on rend le double.
+@@ -2171,20 +2453,25 @@
+     //    Protection adverse n'ont rien ├á voir avec elle.
+     // ÔÜá´©Å ET LE SACRIFICE SE PAIE QUAND M├èME ÔÇö Explosion couche son lanceur
+     //    m├¬me arr├¬t├®e, comme elle le fait d├®j├á sur un rat├® et sur un immunis├®.
+     // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+     if (!viseSoi && cible.volatils.abri) {
+       ev.push({ t: "abriTient", cote: quiD, attaque: mv.cle });
+       seSacrifier(a, pA, ev, quiA);
+       return ev;
+     }
+ 
++    if (!viseSoi && verifierImmuniteTalent(pA, pD, a, e, ev)) {
++      seSacrifier(a, pA, ev, quiA);
++      return ev;
++    }
++
+     // ­ƒö┤ LES EFFETS QUI REMPLACENT L'ATTAQUE PASSENT AVANT LES D├ëG├éTS. Vingt et
+     //    une attaques tombaient jusqu'ici dans le vide : voir `effetSpecial`.
+     if (effetSpecial(e, source, cible, pA, pD, quiA, quiD, mv, a, ev, h)) return ev;
+ 
+     return resoudreCoup(e, source, cible, pA, pD, quiA, quiD, mv, a, ev, h, dejaCharge);
+   }
+ 
+   // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   //  LA R├ëSOLUTION D'UN COUP ÔÇö LA QUEUE DE `assaut`, EXTRAITE POUR ├èTRE PARTAG├ëE
+   //
+@@ -2357,30 +2644,32 @@
+         // ­ƒö┤ ET J'AVAIS ┬½ V├ëRIFI├ë ┬╗ : 241 ├®v├®nements `vol` sur 3 000 combats.
+         //    Un ├®v├®nement qui SORT ne prouve pas que son EFFET est juste ÔÇö il
+         //    prouve qu'on est pass├® par la ligne. Le d├®faut n'est apparu qu'en
+         //    mesurant les PV REGAGN├ëS, c'est-├á-dire la seule chose qui compte.
+         var vole = Math.max(1, Math.floor(r.degats / 2));
+         var avant = pA.pv;
+         MOT().poserPv(pA, pA.pv + vole, "siphon");
+         if (pA.pv !== avant) ev.push({ t: "vol", cote: quiA, soin: pA.pv - avant });
+       }
+       if (a.effet === "RECOIL_EFFECT") {
+-        // ­ƒö┤ LUTTE EST ├Ç PART, ET LE ROM LE DIT : un quart pour B├®lier,
+-        //    Damocl├¿s et Sacrifice, LA MOITI├ë pour Lutte. Les donn├®es ne
+-        //    distinguent pas les deux ÔÇö elles portent la m├¬me cl├® ÔÇö, donc on
+-        //    nomme l'attaque ici, une seule fois, plut├┤t que d'inventer une
+-        //    cl├® qui n'existe pas dans le ROM.
+-        var part = mv.cle === "STRUGGLE" ? 2 : 4;
+-        var recul = Math.max(1, Math.floor(r.degats / part));
+-        MOT().poserPv(pA, pA.pv - recul, "contrecoup");
+-        ev.push({ t: "contrecoup", cote: quiA, degats: recul });
+-        if (!vivant(pA)) ev.push({ t: "ko", cote: quiA });
++        if (!talentsSontActifs(e) || talentDe(pA, e) !== "ROCK_HEAD" || mv.cle === "STRUGGLE") {
++          // ­ƒö┤ LUTTE EST ├Ç PART, ET LE ROM LE DIT : un quart pour B├®lier,
++          //    Damocl├¿s et Sacrifice, LA MOITI├ë pour Lutte. Les donn├®es ne
++          //    distinguent pas les deux ÔÇö elles portent la m├¬me cl├® ÔÇö, donc on
++          //    nomme l'attaque ici, une seule fois, plut├┤t que d'inventer une
++          //    cl├® qui n'existe pas dans le ROM.
++          var part = mv.cle === "STRUGGLE" ? 2 : 4;
++          var recul = Math.max(1, Math.floor(r.degats / part));
++          MOT().poserPv(pA, pA.pv - recul, "contrecoup");
++          ev.push({ t: "contrecoup", cote: quiA, degats: recul });
++          if (!vivant(pA)) ev.push({ t: "ko", cote: quiA });
++        }
+       }
+       // La recharge se pose ICI, apr├¿s les d├®g├óts : si la cible est tomb├®e,
+       // la ligne juste en dessous sort avant et l'Ultralaser ne co├╗te rien.
+       if (a.effet === "HYPER_BEAM_EFFECT" && vivant(pD)) source.volatils.recharge = true;
+       // La prise se pose au premier coup seulement : `dejaCharge` marque les
+       // r├®p├®titions, et sans lui l'├®treinte se renouvellerait sans fin.
+       // Deux ou trois tours en tout : on en pose un ou deux de plus.
+       // ­ƒö┤ FR├ëN├ëSIE : ON NE S'ARR├èTE PLUS, ET CHAQUE COUP RE├çU MONTE L'ATTAQUE.
+       //    `RAGE_EFFECT` n'├®tait ├®crit nulle part : l'attaque sortait ses 20 ÔÇö
+       //    la plus faible du jeu ÔÇö et rien d'autre. Tout son int├®r├¬t est le
+@@ -2445,21 +2734,21 @@
+         return ev;
+       }
+       // ­ƒö┤ ET UN EFFET SECONDAIRE NE PREND PAS SUR SON PROPRE TYPE (1G) :
+       //    Tonnerre ne paralyse pas un ├ëlectrik, Plaquage un Normal. La garde
+       //    puissance>0 est essentielle ÔÇö Cage ├ëclair, elle, paralyse bien un
+       //    ├ëlectrik.
+       if (!immun && a.puissance > 0 && ESP()[pD.n].types.indexOf(a.type) >= 0) {
+         immun = true;
+       }
+       if (immun) ev.push({ t: "statutImmune", cote: quiD, statut: st[0] });
+-      else poserStatut(pD, st[0], ev, quiD, h, cible);
++      else poserStatut(pD, st[0], ev, quiD, h, cible, pA, e);
+     }
+     var pal = palierDe(a.effet);
+     if (pal && h.chance(pal[2])) {
+       // Une attaque sans puissance qui baisse une statistique vise l'ADVERSAIRE ;
+       // celles qui montent visent SOI. C'est la lecture du ROM, pas une r├¿gle
+       // invent├®e : Rugissement baisse la D├®fense d'en face, Danse-Lames monte
+       // la sienne.
+       var versSoi = pal[1] > 0;
+       // ­ƒö┤ LA BRUME EST ENFIN LUE (audit 13/08). Pos├®e, effa├ºable par Bu├®e
+       //    Noire, et JAMAIS consult├®e : Rugissement baissait les stats sous
+@@ -2503,21 +2792,47 @@
+         ev.push({ t: "tenuApeure", cote: quiD, objet: pA.objet });
+       }
+     }
+     // ­ƒö┤ LA CONFUSION SECONDAIRE EST ├Ç 10 %, PAS ├Ç 100 (audit 13/08) : Rafale
+     //    Psy et Choc Mental confusaient CHAQUE frappe non l├®tale (188/188) ÔÇö
+     //    le ROM dit ~10 %. Ultrason et Onde Folie, elles, restent ├á 100 %.
+     //    ÔÜá´©Å Tirage ajout├® sur les coups SIDE : bump group├®.
+     if (a.effet === "CONFUSION_EFFECT" ||
+         (a.effet === "CONFUSION_SIDE_EFFECT" && h.chance(10))) {
+       if (abrite) ev.push({ t: "cloneTient", cote: quiD });
+-      else if (!cible.volatils.confusion) { cible.volatils.confusion = h.entre(2, 5); ev.push({ t: "confusion", cote: quiD }); }
++      else if (!cible.volatils.confusion) {
++        if (talentsSontActifs(e) && talentDe(pD, e) === "OWN_TEMPO") {
++          ev.push({ t: "talentBloqueConfusion", qui: quiD, talent: "OWN_TEMPO" });
++        } else {
++          cible.volatils.confusion = h.entre(2, 5);
++          ev.push({ t: "confusion", cote: quiD });
++          verifierBaieStatut(pD, cible, ev, quiD);
++        }
++      }
++    }
++    if (talentsSontActifs(e) && a.puissance > 0 && estContact(a) && !abrite && vivant(pD) && vivant(pA)) {
++      var tDefCont = talentDe(pD, e);
++      if (tDefCont === "ROUGH_SKIN") {
++        var dmgRS = Math.max(1, Math.floor(pA.stats.pv / 16));
++        MOT().poserPv(pA, pA.pv - dmgRS, "peauDure");
++        ev.push({ t: "talentPeauDure", qui: quiD, cible: quiA, degats: dmgRS });
++        if (!vivant(pA)) ev.push({ t: "ko", cote: quiA });
++      }
++      if (vivant(pA) && !pA.statut) {
++        if (tDefCont === "STATIC" && h.entier(100) < 30) {
++          poserStatut(pA, "para", ev, quiA, h, source, pD, e);
++        } else if (tDefCont === "POISON_POINT" && h.entier(100) < 30 && typesDe(pA).indexOf("poison") < 0) {
++          poserStatut(pA, "poison", ev, quiA, h, source, pD, e);
++        } else if (tDefCont === "FLAME_BODY" && h.entier(100) < 30 && typesDe(pA).indexOf("fire") < 0) {
++          poserStatut(pA, "brulure", ev, quiA, h, source, pD, e);
++        }
++      }
+     }
+     // ­ƒö┤ Le relev├® des effets non trait├®s ne doit accuser QUE ce qui ne fait
+     //    rien. Un effet trait├® plus haut dans cette fonction doit ├¬tre d├®clar├®
+     //    ici, sinon le contr├┤le crie ├á tort ÔÇö et un contr├┤le qui crie ├á tort
+     //    finit ignor├® en bloc, y compris quand il a raison.
+     // ­ƒö┤ LA RESTRICTION ┬½ puissance === 0 ┬╗ EST LEV├ëE (cl├┤ture d'audit 13/08) :
+     //    c'est l'angle mort qui a cach├® le gel mort (FREEZE sans ┬½ 1 ┬╗) puis
+     //    le poison de Dard-Nu├®e (0/600). Les effets ├á d├®g├óts trait├®s par du
+     //    code d├®di├® sont d├®sormais D├ëCLAR├ëS dans COUPS_TRAITES ci-dessous.
+     if (!STATUT_DE[a.effet] && !palierDe(a.effet) && !PEUR_DE[a.effet] && !TRAITES_AILLEURS[a.effet]
+@@ -3258,36 +3573,71 @@
+     }
+   }
+ 
+   function decompterEntrave(cote, qui, ev) {
+     var ent = cote.volatils.entrave;
+     if (!ent) return;
+     ent.tours--;
+     if (ent.tours <= 0) { cote.volatils.entrave = null; ev.push({ t: "finEntrave", cote: qui }); }
+   }
+ 
++  function talentsFinDeTour(e, quiCote, cote, ev, h) {
++    if (!cote || !vivant(actif(cote))) return;
++    var p = actif(cote);
++    var t = talentDe(p, e);
++    if (!t) return;
++
++    if (t === "SPEED_BOOST") {
++      if (cote.paliers.vit < 6) {
++        cote.paliers.vit = Math.min(6, cote.paliers.vit + 1);
++        if (ev) ev.push({ t: "talentTurbo", qui: quiCote, talent: "SPEED_BOOST", vit: cote.paliers.vit });
++      }
++    } else if (t === "RAIN_DISH") {
++      if (e.meteo && e.meteo.cle === "pluie" && !airLockActif(e) && p.pv < p.stats.pv) {
++        var soinRD = Math.max(1, Math.floor(p.stats.pv / 16));
++        var avantRD = p.pv;
++        MOT().poserPv(p, p.pv + soinRD, "cuvette");
++        if (ev) ev.push({ t: "talentCuvette", qui: quiCote, talent: "RAIN_DISH", soin: p.pv - avantRD });
++      }
++    } else if (t === "SHED_SKIN") {
++      if (p.statut) {
++        var rollSS = h && h.entier ? h.entier(3) : 0;
++        if (rollSS === 0) {
++          var statutGueri = p.statut;
++          p.statut = null;
++          p.statutTours = 0;
++          if (ev) ev.push({ t: "talentMue", qui: quiCote, talent: "SHED_SKIN", statut: statutGueri });
++        }
++      }
++    }
++  }
++
+   function finDeTour(e, ev, h) {
+     decompterEtreinte(e.joueur, "adverse", ev);
+     decompterEtreinte(e.adverse, "joueur", ev);
+     decompterEntrave(e.joueur, "joueur", ev);
+     decompterEntrave(e.adverse, "adverse", ev);
+     // ­ƒö┤ LA PEUR MEURT AVEC LE TOUR (audit 13/08). Pos├®e par le SECOND ├á agir,
+     //    elle survivait et volait le tour SUIVANT (38/38 au banc) ÔÇö impossible
+     //    en 1996 : l'apeurement ne vaut que si l'on frappe en premier.
+     e.joueur.volatils.peur = false;
+     e.adverse.volatils.peur = false;
+     if (h) { decompterFureur(e.joueur, "joueur", ev, h); decompterFureur(e.adverse, "adverse", ev, h); }
+     // La temp├¬te frappe AVANT l'usure ordinaire ÔÇö voir `usureMeteo`.
+     if (vivant(actif(e.joueur))) usureMeteo(e, actif(e.joueur), ev, "joueur");
+     if (vivant(actif(e.adverse))) usureMeteo(e, actif(e.adverse), ev, "adverse");
+     if (vivant(actif(e.joueur))) usureFinDeTour(actif(e.joueur), ev, "joueur", e.joueur, e.adverse);
+     if (vivant(actif(e.adverse))) usureFinDeTour(actif(e.adverse), ev, "adverse", e.adverse, e.joueur);
++    if (talentsSontActifs(e)) {
++      talentsFinDeTour(e, "joueur", e.joueur, ev, h);
++      talentsFinDeTour(e, "adverse", e.adverse, ev, h);
++    }
+     meteoFinDeTour(e, ev);
+     // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+     //  ­ƒö┤ LE REQUIEM EMPORTE LES DEUX, ET C'EST CE QUI EN FAIT UN PARI. Trois
+     //     tours apr├¿s le chant, celui qui l'a lanc├® tombe aussi ÔÇö le lancer
+     //     quand on est derri├¿re est un calcul, pas une ex├®cution.
+     //  ÔÜá´©Å ET LES DEUX COMPTEURS DESCENDENT ENSEMBLE : un seul d├®compte aurait
+     //     fait tomber un camp avant l'autre, ce qui n'est pas le canon et ce
+     //     qui rendrait le coup imparable.
+     // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+     (function () {
+@@ -3567,12 +3917,19 @@
+     facteurPalier: facteurPalier,
+     degats: degats,
+     demarrer: demarrer,
+     actif: actif,
+     vivant: vivant,
+     resteUn: resteUn,
+     vitesseEffective: vitesseEffective,
+     joueurEnPremier: joueurEnPremier,
+     peutAgir: peutAgir,
+     usureFinDeTour: usureFinDeTour,
++    usureMeteo: usureMeteo,
++    talentsSontActifs: talentsSontActifs,
++    talentDe: talentDe,
++    airLockActif: airLockActif,
++    entreeEnCombat: entreeEnCombat,
++    verifierImmuniteTalent: verifierImmuniteTalent,
++    poserStatut: poserStatut,
+   };
+ })(typeof window !== "undefined" ? window : globalThis);
+diff --git a/js/poke/gen3/objets-tenus.js b/js/poke/gen3/objets-tenus.js
+new file mode 100644
+index 0000000..2874494
+--- /dev/null
++++ b/js/poke/gen3/objets-tenus.js
+@@ -0,0 +1,95 @@
++(function (W) {
++  "use strict";
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  //  LES OBJETS TENUS DE LA TROISI├êME G├ëN├ëRATION (HOENN ÔÇö ├ëMERAUDE)
++  //
++  //  Ce fichier d├®finit les m├®tadonn├®es num├®riques et effets des objets tenus
++  //  comp├®titifs de la 3e g├®n├®ration (Bandeau Choix, Restes, Herbe Blanche,
++  //  Baies comp├®titives, etc.).
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++
++  //  Les dix-sept renforts de type : ├ù1,1 sur les d├®g├óts d'un coup du m├¬me type.
++  var BOOST = {
++    HELD_NORMAL_BOOST: "normal",
++    HELD_FIGHTING_BOOST: "fighting",
++    HELD_FLYING_BOOST: "flying",
++    HELD_POISON_BOOST: "poison",
++    HELD_GROUND_BOOST: "ground",
++    HELD_ROCK_BOOST: "rock",
++    HELD_BUG_BOOST: "bug",
++    HELD_GHOST_BOOST: "ghost",
++    HELD_STEEL_BOOST: "steel",
++    HELD_FIRE_BOOST: "fire",
++    HELD_WATER_BOOST: "water",
++    HELD_GRASS_BOOST: "grass",
++    HELD_ELECTRIC_BOOST: "electric",
++    HELD_PSYCHIC_BOOST: "psychic",
++    HELD_ICE_BOOST: "ice",
++    HELD_DRAGON_BOOST: "dragon",
++    HELD_DARK_BOOST: "dark",
++  };
++
++  W.POKE_GEN3_TENUS = {
++    // Renforts de type : ├ù1,1
++    boost: BOOST,
++    boostFacteur: 1.1,
++
++    // Restes (Leftovers) : soigne 1/16 PV max par tour
++    leftovers: { effet: "HELD_LEFTOVERS", part: 16 },
++
++    // Bandeau Choix (Choice Band) : +50% Attaque physique, bloque sur la premi├¿re capacit├®
++    choiceBand: { effet: "HELD_CHOICE_BAND", facteur: 1.5, bloque: true },
++
++    // Herbe Blanche (White Herb) : restaure les paliers n├®gatifs et se consomme
++    whiteHerb: { effet: "HELD_WHITE_HERB", restaurePaliersNegatifs: true, consomme: true },
++
++    // Vive Griffe (Quick Claw) : 60 / 256 chances d'agir en premier ├á priorit├® ├®gale
++    quickClaw: { effet: "HELD_QUICK_CLAW", sur: 256, seuil: 60 },
++    viveGriffe: { effet: "HELD_QUICK_CLAW", sur: 256, seuil: 60 },
++
++    // Lentille Scope (Scope Lens) : double le taux de coup critique
++    scopeLens: { effet: "HELD_CRITICAL_UP", facteur: 2 },
++    critique: { effet: "HELD_CRITICAL_UP", facteur: 2 },
++
++    // Bandeau (Focus Band) : 26 / 256 (environ 10%) chances de survivre ├á 1 PV
++    focusBand: { effet: "HELD_FOCUS_BAND", sur: 256, seuil: 26 },
++
++    // Poudre Claire (Brightpowder) : pr├®cision adverse ├ù0,9
++    brightpowder: { effet: "HELD_BRIGHTPOWDER", precision: 0.9 },
++
++    // Roche Royale (King's Rock) : 30 / 256 chances d'apeurer sur coup port├®
++    flinch: { effet: "HELD_FLINCH", sur: 256, seuil: 30 },
++
++    // Baie Mepo (Leppa Berry) : rend 10 PP au coup ├®puis├®
++    rendPP: { effet: "HELD_RESTORE_PP", pp: 10 },
++
++    // ÔöÇÔöÇ Les Baies ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++    baies: {
++      HELD_BERRY: { soigne: 10, seuil: 0.5, consomme: true },
++      HELD_SITRUS_BERRY: { soigne: 30, seuil: 0.5, consomme: true },
++      HELD_LUM_BERRY: { soigneStatuts: true, soigneConfusion: true, consomme: true },
++      HELD_CHESTO_BERRY: { statut: "sommeil", consomme: true },
++      HELD_PECHA_BERRY: { statuts: ["poison", "poisonGrave"], consomme: true },
++      HELD_RAWST_BERRY: { statut: "brulure", consomme: true },
++      HELD_ASPEAR_BERRY: { statut: "gel", consomme: true },
++      HELD_CHERI_BERRY: { statut: "para", consomme: true },
++      HELD_PERSIM_BERRY: { soigneConfusion: true, consomme: true },
++    },
++
++    // Baies de statut qui l├¿vent l'├®tat
++    soins: {
++      HELD_HEAL_POISON: ["poison", "poisonGrave"],
++      HELD_HEAL_PARALYZE: ["para"],
++      HELD_HEAL_FREEZE: ["gel"],
++      HELD_HEAL_BURN: ["brulure"],
++      HELD_HEAL_SLEEP: ["sommeil"],
++      HELD_HEAL_STATUS: ["poison", "poisonGrave", "para", "gel", "brulure", "sommeil"],
++      HELD_LUM_BERRY: ["poison", "poisonGrave", "para", "gel", "brulure", "sommeil"],
++      HELD_CHESTO_BERRY: ["sommeil"],
++      HELD_PECHA_BERRY: ["poison", "poisonGrave"],
++      HELD_RAWST_BERRY: ["brulure"],
++      HELD_ASPEAR_BERRY: ["gel"],
++      HELD_CHERI_BERRY: ["para"],
++    },
++  };
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/js/poke/ordre.js b/js/poke/ordre.js
+index a49f8c2..c55c7c2 100644
+--- a/js/poke/ordre.js
++++ b/js/poke/ordre.js
+@@ -199,20 +199,21 @@
+   var GEN3 = [
+     "js/poke/gen3/types.js",
+     "js/poke/gen3/effets.js",
+     "js/poke/gen3/objets.js",
+     "js/poke/gen3/ct.js",
+     "js/poke/gen3/obtentions.js",
+     "js/poke/gen3/attaques.js",
+     "js/poke/gen3/especes.js",
+     "js/poke/gen3/natures.js",
+     "js/poke/gen3/talents.js",
++    "js/poke/gen3/objets-tenus.js",
+     "js/poke/gen3/dresseurs.js",
+     "js/poke/gen3/classes.js",
+     "js/poke/gen3/equipes.js",
+     "js/poke/gen3/arenes.js",
+     "js/poke/gen3/rival.js",
+     "js/poke/gen3/monde.js",
+     "js/poke/gen3/voyage.js",
+   ];
+ 
+   var GEN3_ECRANS = [
+diff --git a/js/poke/regles.js b/js/poke/regles.js
+index 4899d4c..4ea4adc 100644
+--- a/js/poke/regles.js
++++ b/js/poke/regles.js
+@@ -492,20 +492,22 @@
+           "gen3/dresseur/arene7", "gen3/dresseur/arene8"],
+         conseil: ["gen3/dresseur/conseil1", "gen3/dresseur/conseil2",
+           "gen3/dresseur/conseil3", "gen3/dresseur/conseil4"],
+         maitre: "gen3/dresseur/maitre",
+       },
+       maitre: function () { return W.POKE_GEN3_MAITRE || null; },
+       equipes: function () { return W.POKE_GEN3_EQUIPES || null; },
+       classesDresseur: function () { return W.POKE_GEN3_CLASSES || null; },
+       rival: function () { return W.POKE_GEN3_RIVAL || null; },
+       dresseurFinal: function () { return W.POKE_GEN3_STEVEN || null; },
++      talentsActifs: function () { return true; },
++      tenus: function () { return W.POKE_GEN3_TENUS || W.POKE_GEN2_TENUS; },
+       objetsTable: function () { return W.POKE_GEN3_OBJETS || null; },
+       errants: function () { return W.POKE_GEN3_ERRANTS || null; },
+       mythique: function () { return { n: 385, niveau: 30, lieu: "mossdeep-space-center" }; },
+       conseil: function () { return W.POKE_GEN3_CONSEIL || W.POKE_CONSEIL; },
+       echanges: function () { return W.POKE_GEN3_ECHANGES || null; },
+       casino: function () { return W.POKE_GEN3_CASINO || null; },
+       cadeaux: function () { return W.POKE_GEN3_CADEAUX || null; },
+       fossiles: function () { return W.POKE_GEN3_FOSSILES || null; },
+       speAtk: "sat",
+       speDef: "sdf",
+@@ -760,20 +762,21 @@
+     //  un monde sans dresseurs ne poserait aucun combat de route.
+     equipes: function () {
+       return (jeu().equipes ? jeu().equipes() : null) || W.POKE_EQUIPES || null;
+     },
+     classesDresseur: function () {
+       return (jeu().classesDresseur ? jeu().classesDresseur() : null) || W.POKE_CLASSES || null;
+     },
+     rival: function () { return jeu().rival ? jeu().rival() : null; },
+     dresseurFinal: function () { return jeu().dresseurFinal ? jeu().dresseurFinal() : null; },
+     tenus: function () { return jeu().tenus ? jeu().tenus() : null; },
++    talentsActifs: function () { return jeu().talentsActifs ? jeu().talentsActifs() : false; },
+     objetsTable: function () { return jeu().objetsTable ? jeu().objetsTable() : null; },
+     // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+     //  UN OBJET SE NOMME PAR LA PORTE   [20/08/2026]
+     //
+     //  ­ƒö┤ SIGNAL├ë PAR RAYHANE, CAPTURE ├Ç L'APPUI : ┬½ on dirait que la Pierre
+     //     Foudre n'est pas traduite correctement ! ┬╗ ÔÇö l'├®cran de butin offrait
+     //     ┬½ Pierre Feu ┬╗ et, juste en dessous, ┬½ THUNDERSTONE ┬╗. La donn├®e ├®tait
+     //     JUSTE des deux c├┤t├®s : Johto ├®crit bien `{fr: "Pierre Foudre"}`. Ce
+     //     qui ├®tait faux, c'est l'endroit o├╣ l'├®cran allait chercher ÔÇö treize
+     //     lignes lisaient `W.POKE_OBJETS`, la table de 1996, avec une cl├® de
+diff --git a/tests/run_all_tests.mjs b/tests/run_all_tests.mjs
+index 887ee18..dac9521 100644
+--- a/tests/run_all_tests.mjs
++++ b/tests/run_all_tests.mjs
+@@ -119,21 +119,21 @@ test("POKE_ORDRE_GEN2_ECRANS contains sound and animation presentation files", (
+   assert.ok(Array.isArray(gen2Ecrans), "POKE_ORDRE_GEN2_ECRANS must be an array");
+   assert.ok(gen2Ecrans.includes("js/poke/gen2/sons.js"), "gen2/sons.js must be in GEN2_ECRANS");
+   assert.ok(gen2Ecrans.includes("js/poke/gen2/sons-attaques.js"), "gen2/sons-attaques.js must be in GEN2_ECRANS");
+   assert.ok(gen2Ecrans.includes("js/poke/gen2/animations.js"), "gen2/animations.js must be in GEN2_ECRANS");
+   assert.ok(gen2Ecrans.includes("js/poke/gen2/anim-attaque.js"), "gen2/anim-attaque.js must be in GEN2_ECRANS");
+ });
+ 
+ test("POKE_ORDRE_GEN3 contains pure logic/data and NO sound/animation files", () => {
+   const gen3 = ordreContext.POKE_ORDRE_GEN3;
+   assert.ok(Array.isArray(gen3), "POKE_ORDRE_GEN3 must be an array");
+-  assert.strictEqual(gen3.length, 16, "POKE_ORDRE_GEN3 must contain exactly 16 files");
++  assert.strictEqual(gen3.length, 17, "POKE_ORDRE_GEN3 must contain exactly 17 files");
+   for (const f of gen3) {
+     assert.ok(!f.includes("sons"), `File ${f} must NOT be in GEN3 (NOYAU)`);
+     assert.ok(!f.includes("anim"), `File ${f} must NOT be in GEN3 (NOYAU)`);
+   }
+ });
+ 
+ test("POKE_ORDRE_GEN3_ECRANS contains sound presentation files", () => {
+   const gen3Ecrans = ordreContext.POKE_ORDRE_GEN3_ECRANS;
+   assert.ok(Array.isArray(gen3Ecrans), "POKE_ORDRE_GEN3_ECRANS must be an array");
+   assert.ok(gen3Ecrans.includes("js/poke/gen3/sons.js"), "gen3/sons.js must be in GEN3_ECRANS");
+diff --git a/tests/test_gen3_combat_talents.mjs b/tests/test_gen3_combat_talents.mjs
+new file mode 100644
+index 0000000..e80b97e
+--- /dev/null
++++ b/tests/test_gen3_combat_talents.mjs
+@@ -0,0 +1,590 @@
++/**
++ * tests/test_gen3_combat_talents.mjs
++ * Unit test suite for Gen 3 Tactical Combat Engine:
++ * - Entrance abilities (INTIMIDATE, DRIZZLE, DROUGHT, SAND_STREAM, TRACE)
++ * - Damage calculation abilities (OVERGROW, BLAZE, TORRENT, HUGE_POWER, GUTS, THICK_FAT)
++ * - Immunities & absorption abilities (LEVITATE, WONDER_GUARD, VOLT_ABSORB, WATER_ABSORB, FLASH_FIRE, SOUNDPROOF)
++ * - Contact & status abilities (STATIC, POISON_POINT, FLAME_BODY, ROUGH_SKIN, SYNCHRONIZE, IMMUNITY, LIMBER, WATER_VEIL, INSOMNIA, OWN_TEMPO)
++ * - End of turn abilities & weather (SPEED_BOOST, RAIN_DISH, SHED_SKIN, HAIL, AIR_LOCK)
++ * - Gen 3 Held items (CHOICE_BAND, LEFTOVERS, WHITE_HERB, LUM_BERRY)
++ * - Cross-generational invariance (Gen 1 & Gen 2 talents are inactive)
++ */
++
++import fs from "node:fs";
++import path from "node:path";
++import vm from "node:vm";
++import assert from "node:assert/strict";
++import { fileURLToPath } from "node:url";
++
++const __filename = fileURLToPath(import.meta.url);
++const __dirname = path.dirname(__filename);
++const ROOT_DIR = path.resolve(__dirname, "..");
++
++let totalTests = 0;
++let passedTests = 0;
++let failedTests = 0;
++const failures = [];
++
++function suite(title) {
++  console.log(`\n\x1b[1m\x1b[36m=== ${title} ===\x1b[0m`);
++}
++
++function test(name, fn) {
++  totalTests++;
++  try {
++    fn();
++    passedTests++;
++    console.log(`  \x1b[32mÔ£ô\x1b[0m ${name}`);
++  } catch (err) {
++    failedTests++;
++    failures.push({ name, err });
++    console.log(`  \x1b[31mÔ£ù\x1b[0m ${name}`);
++    console.error(`    \x1b[31m${err.message}\x1b[0m`);
++    if (err.stack) {
++      const firstStack = err.stack.split("\n").slice(1, 4).join("\n");
++      console.error(`    \x1b[90m${firstStack}\x1b[0m`);
++    }
++  }
++}
++
++function createIsolatedContext(customGlobals = {}) {
++  const sandbox = {
++    console,
++    Math,
++    Object,
++    Array,
++    String,
++    Number,
++    Boolean,
++    RegExp,
++    JSON,
++    isFinite,
++    isNaN,
++    parseInt,
++    parseFloat,
++    ...customGlobals,
++  };
++  sandbox.globalThis = sandbox;
++  sandbox.window = sandbox;
++  return vm.createContext(sandbox);
++}
++
++function loadScriptInContext(filePath, context) {
++  const fullPath = path.join(ROOT_DIR, filePath);
++  if (!fs.existsSync(fullPath)) {
++    throw new Error(`File does not exist: ${filePath}`);
++  }
++  const code = fs.readFileSync(fullPath, "utf-8");
++  vm.runInContext(code, context, { filename: filePath });
++}
++
++function loadFullNoyauContext() {
++  const ctx = createIsolatedContext();
++  loadScriptInContext("js/poke/ordre.js", ctx);
++  for (const f of ctx.POKE_ORDRE_NOYAU) {
++    loadScriptInContext(f, ctx);
++  }
++  return ctx;
++}
++
++function mon(ctx, id, lvl = 50, seed = "MON-DEFAULT") {
++  const h = new ctx.PokeHasard(seed);
++  return ctx.PokeMoteur.creer(id, lvl, h);
++}
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 1: File Existence & Static Constraints
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("1. Gen 3 Held Items File & Registration");
++
++test("js/poke/gen3/objets-tenus.js exists and exports POKE_GEN3_TENUS", () => {
++  const ctx = loadFullNoyauContext();
++  assert.ok(ctx.POKE_GEN3_TENUS, "POKE_GEN3_TENUS must be defined on window/globalThis");
++  assert.strictEqual(typeof ctx.POKE_GEN3_TENUS.boost, "object", "POKE_GEN3_TENUS.boost must be an object");
++  assert.strictEqual(ctx.POKE_GEN3_TENUS.boostFacteur, 1.1, "POKE_GEN3_TENUS.boostFacteur must be 1.1");
++  assert.strictEqual(ctx.POKE_GEN3_TENUS.leftovers.effet, "HELD_LEFTOVERS");
++  assert.strictEqual(ctx.POKE_GEN3_TENUS.choiceBand.effet, "HELD_CHOICE_BAND");
++  assert.strictEqual(ctx.POKE_GEN3_TENUS.choiceBand.facteur, 1.5);
++  assert.strictEqual(ctx.POKE_GEN3_TENUS.whiteHerb.effet, "HELD_WHITE_HERB");
++  assert.strictEqual(ctx.POKE_GEN3_TENUS.quickClaw.effet, "HELD_QUICK_CLAW");
++  assert.strictEqual(ctx.POKE_GEN3_TENUS.scopeLens.effet, "HELD_CRITICAL_UP");
++  assert.strictEqual(ctx.POKE_GEN3_TENUS.focusBand.effet, "HELD_FOCUS_BAND");
++});
++
++test("PokeRegles: talentsActifs() is true only for gen3, false for gen1 and gen2", () => {
++  const ctx = loadFullNoyauContext();
++  const Regles = ctx.PokeRegles;
++
++  Regles.poser("gen1");
++  assert.strictEqual(Regles.talentsActifs(), false, "talentsActifs must be false in Gen 1");
++
++  Regles.poser("gen2");
++  assert.strictEqual(Regles.talentsActifs(), false, "talentsActifs must be false in Gen 2");
++
++  Regles.poser("gen3");
++  assert.strictEqual(Regles.talentsActifs(), true, "talentsActifs must be true in Gen 3");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 2: Entrance Abilities (INTIMIDATE, Weather Summons, TRACE)
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("2. Entrance Abilities & Immunity to Stat Drops");
++
++test("INTIMIDATE lowers opponent Attack stage by 1 on entry", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const p1 = mon(ctx, 384, 50, "P1"); // Rayquaza
++  const p2 = mon(ctx, 130, 50, "P2"); // Gyarados with INTIMIDATE
++  p2.talent = "INTIMIDATE";
++
++  const combat = Combat.demarrer([p1], [p2], { graine: "TEST-INTIMIDATE" });
++  assert.strictEqual(combat.joueur.paliers.atk, -1, "Player attack should be lowered by 1 by Intimidate");
++});
++
++test("CLEAR_BODY, WHITE_SMOKE and HYPER_CUTTER block INTIMIDATE stat drop", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  // Clear Body (e.g. Metagross #376)
++  const pClear = mon(ctx, 376, 50, "CLEAR");
++  pClear.talent = "CLEAR_BODY";
++  const pIntimidate = mon(ctx, 130, 50, "INTIM");
++  pIntimidate.talent = "INTIMIDATE";
++
++  const combat = Combat.demarrer([pClear], [pIntimidate], { graine: "TEST-CLEAR-BODY" });
++  assert.strictEqual(combat.joueur.paliers.atk, 0, "Clear Body must prevent Intimidate drop");
++
++  // Hyper Cutter (e.g. Corphish #341)
++  const pHyper = mon(ctx, 341, 50, "HYPER");
++  pHyper.talent = "HYPER_CUTTER";
++  const combat2 = Combat.demarrer([pHyper], [pIntimidate], { graine: "TEST-HYPER-CUTTER" });
++  assert.strictEqual(combat2.joueur.paliers.atk, 0, "Hyper Cutter must prevent Attack drop");
++});
++
++test("DRIZZLE, DROUGHT, and SAND_STREAM summon weather on entry", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  // Drizzle (Kyogre #382)
++  const kyogre = mon(ctx, 382, 50, "KYO");
++  kyogre.talent = "DRIZZLE";
++  const target = mon(ctx, 25, 50, "T1");
++  const combatPluie = Combat.demarrer([kyogre], [target], { graine: "TEST-RAIN" });
++  assert.ok(combatPluie.meteo, "Weather should be set");
++  assert.strictEqual(combatPluie.meteo.cle, "pluie");
++
++  // Drought (Groudon #383)
++  const groudon = mon(ctx, 383, 50, "GROU");
++  groudon.talent = "DROUGHT";
++  const combatZenith = Combat.demarrer([groudon], [target], { graine: "TEST-SUN" });
++  assert.ok(combatZenith.meteo);
++  assert.strictEqual(combatZenith.meteo.cle, "zenith");
++
++  // Sand Stream (Tyranitar #248)
++  const tyranitar = mon(ctx, 248, 50, "TYRA");
++  tyranitar.talent = "SAND_STREAM";
++  const combatSable = Combat.demarrer([tyranitar], [target], { graine: "TEST-SAND" });
++  assert.ok(combatSable.meteo);
++  assert.strictEqual(combatSable.meteo.cle, "sable");
++});
++
++test("TRACE copies opponent active talent on entry", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const gardevoir = mon(ctx, 282, 50, "GARD"); // Gardevoir with TRACE
++  gardevoir.talent = "TRACE";
++  const pikachu = mon(ctx, 25, 50, "PIKA");
++  pikachu.talent = "STATIC";
++
++  const combat = Combat.demarrer([gardevoir], [pikachu], { graine: "TEST-TRACE" });
++  assert.strictEqual(gardevoir.talent, "STATIC", "Trace should have copied opponent STATIC talent");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 3: Immunities & Absorption (LEVITATE, WONDER_GUARD, etc.)
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("3. Immunities & Absorptions");
++
++test("LEVITATE grants complete immunity to Ground attacks (EARTHQUAKE)", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Hasard = ctx.PokeHasard;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const attacker = mon(ctx, 383, 50, "ATK"); // Groudon
++  attacker.attaques = [{ cle: "EARTHQUAKE", pp: 10, ppMax: 10 }];
++
++  const defender = mon(ctx, 380, 50, "DEF"); // Latias with LEVITATE
++  defender.talent = "LEVITATE";
++  const maxPv = defender.pv;
++
++  const combat = Combat.demarrer([attacker], [defender], { graine: "TEST-LEVITATE" });
++  const h = new Hasard("TEST-LEVITATE-PRNG");
++  const ev = Combat.jouerTour(combat, { type: "attaque", index: 0 }, h, { type: "attaque", index: 0 });
++
++  assert.strictEqual(defender.pv, maxPv, "Defender with LEVITATE should take zero damage from Earthquake");
++  const immuneEv = ev.find(e => e.t === "talentImmunite" && e.talent === "LEVITATE");
++  assert.ok(immuneEv, "An event talentImmunite for LEVITATE must be logged");
++});
++
++test("WONDER_GUARD blocks non-super-effective damage and permits super-effective damage", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Hasard = ctx.PokeHasard;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const shedinja = mon(ctx, 292, 20, "SHED");
++  shedinja.talent = "WONDER_GUARD";
++  shedinja.pv = 1;
++  shedinja.attaques = [{ cle: "HARDEN", pp: 30, ppMax: 30 }];
++
++  // 1. Block Water attack (Water Gun)
++  const waterAttacker = mon(ctx, 7, 20, "WAT");
++  waterAttacker.attaques = [{ cle: "WATER_GUN", pp: 20, ppMax: 20 }];
++  const combat1 = Combat.demarrer([waterAttacker], [shedinja], { graine: "TEST-WG-1" });
++  const h1 = new Hasard("WG-PRNG-1");
++  const ev1 = Combat.jouerTour(combat1, { type: "attaque", index: 0 }, h1, { type: "attaque", index: 0 });
++
++  assert.strictEqual(shedinja.pv, 1, "Water Gun must not damage Shedinja with Wonder Guard");
++  const wgEv = ev1.find(e => e.t === "talentGardeMystik");
++  assert.ok(wgEv, "Wonder Guard event must be logged");
++
++  // 2. Permit Fire attack (Ember)
++  const shedinja2 = mon(ctx, 292, 20, "SHED2");
++  shedinja2.talent = "WONDER_GUARD";
++  shedinja2.pv = 1;
++  shedinja2.attaques = [{ cle: "HARDEN", pp: 30, ppMax: 30 }];
++  const fireAttacker = mon(ctx, 4, 20, "FIR");
++  fireAttacker.attaques = [{ cle: "EMBER", pp: 20, ppMax: 20 }];
++  const combat2 = Combat.demarrer([fireAttacker], [shedinja2], { graine: "TEST-WG-2" });
++  const h2 = new Hasard("WG-PRNG-2");
++  Combat.jouerTour(combat2, { type: "attaque", index: 0 }, h2, { type: "attaque", index: 0 });
++
++  assert.strictEqual(shedinja2.pv, 0, "Super-effective Ember must KO Shedinja");
++});
++
++test("VOLT_ABSORB, WATER_ABSORB and FLASH_FIRE absorb matching elemental moves", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Hasard = ctx.PokeHasard;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  // Volt Absorb (Lanturn #171)
++  const lanturn = mon(ctx, 171, 50, "LAN");
++  lanturn.talent = "VOLT_ABSORB";
++  lanturn.pv = 100;
++  const pika = mon(ctx, 25, 50, "PIK");
++  pika.attaques = [{ cle: "THUNDERBOLT", pp: 15, ppMax: 15 }];
++
++  const combatVolt = Combat.demarrer([pika], [lanturn], { graine: "TEST-VA" });
++  const h = new Hasard("VA-SEED");
++  Combat.jouerTour(combatVolt, { type: "attaque", index: 0 }, h, { type: "attaque", index: 0 });
++  assert.ok(lanturn.pv > 100, "Volt Absorb should heal HP instead of taking damage");
++
++  // Flash Fire (Ninetales #38)
++  const ninetales = mon(ctx, 38, 50, "NIN");
++  ninetales.talent = "FLASH_FIRE";
++  const startPv = ninetales.pv;
++  const fireAttacker = mon(ctx, 4, 50, "FIR");
++  fireAttacker.attaques = [{ cle: "FLAMETHROWER", pp: 15, ppMax: 15 }];
++
++  const combatFire = Combat.demarrer([fireAttacker], [ninetales], { graine: "TEST-FF" });
++  Combat.jouerTour(combatFire, { type: "attaque", index: 0 }, h, { type: "attaque", index: 0 });
++  assert.strictEqual(ninetales.pv, startPv, "Flash Fire should take zero damage from Fire");
++  assert.ok(combatFire.adverse.volatils.flashFire, "flashFire volatil flag should be active");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 4: Damage Calculation Abilities (OVERGROW, HUGE_POWER, GUTS, THICK_FAT)
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("4. Damage Modifiers (OVERGROW, HUGE_POWER, GUTS, THICK_FAT, CHOICE_BAND)");
++
++test("OVERGROW / BLAZE / TORRENT boost attack by 1.5x at <= 1/3 HP", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const sceptile = mon(ctx, 254, 50, "SCEP"); // Sceptile with OVERGROW
++  sceptile.talent = "OVERGROW";
++  const target = mon(ctx, 25, 50, "TAR");
++
++  // Full HP (no boost)
++  sceptile.pv = sceptile.stats.pv;
++  const dmgFull = Combat.degats(sceptile, target, "MEGA_DRAIN", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
++
++  // Crisis HP (<= 1/3 max HP)
++  sceptile.pv = Math.floor(sceptile.stats.pv / 3);
++  const dmgCrisis = Combat.degats(sceptile, target, "MEGA_DRAIN", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
++
++  assert.ok(dmgCrisis > dmgFull, `Crisis damage (${dmgCrisis}) must be strictly greater than full HP damage (${dmgFull})`);
++  const ratio = dmgCrisis / dmgFull;
++  assert.ok(ratio >= 1.4 && ratio <= 1.6, `Damage boost should be approximately 1.5x (actual: ${ratio})`);
++});
++
++test("HUGE_POWER doubles physical attack and THICK_FAT halves Fire/Ice damage", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const azumarill = mon(ctx, 184, 50, "AZU");
++  azumarill.talent = "HUGE_POWER";
++  const normalMon = mon(ctx, 184, 50, "AZU");
++  normalMon.talent = null;
++  const target = mon(ctx, 25, 50, "TAR");
++
++  const dmgNormal = Combat.degats(normalMon, target, "TAKE_DOWN", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
++  const dmgHuge = Combat.degats(azumarill, target, "TAKE_DOWN", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
++  assert.ok(dmgHuge >= dmgNormal * 1.8, `Huge Power should approximately double physical damage (${dmgHuge} vs ${dmgNormal})`);
++
++  // Thick Fat
++  const snorlax = mon(ctx, 143, 50, "SNOR");
++  snorlax.talent = "THICK_FAT";
++  const fireMon = mon(ctx, 4, 50, "FIR");
++  const dmgThickFat = Combat.degats(fireMon, snorlax, "FLAMETHROWER", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
++
++  const snorlaxNoTalent = mon(ctx, 143, 50, "SNOR2");
++  snorlaxNoTalent.talent = null;
++  const dmgNoThickFat = Combat.degats(fireMon, snorlaxNoTalent, "FLAMETHROWER", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
++
++  assert.ok(dmgThickFat < dmgNoThickFat, `Thick Fat damage (${dmgThickFat}) must be lower than normal damage (${dmgNoThickFat})`);
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 5: Contact Effects & Status Immunities
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("5. Contact Effects, Status Immunities & Rough Skin");
++
++test("STATIC paralyzes attacker on contact and ROUGH_SKIN deals 1/16 damage", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Hasard = ctx.PokeHasard;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  // Rough Skin (Sharpedo #319)
++  const sharpedo = mon(ctx, 319, 50, "SHARP");
++  sharpedo.talent = "ROUGH_SKIN";
++  const attacker = mon(ctx, 25, 50, "ATK");
++  attacker.attaques = [{ cle: "TACKLE", pp: 35, ppMax: 35 }];
++  const startPv = attacker.pv;
++
++  const combat = Combat.demarrer([attacker], [sharpedo], { graine: "TEST-ROUGH-SKIN" });
++  const h = new Hasard("ROUGH-SEED");
++  Combat.jouerTour(combat, { type: "attaque", index: 0 }, h, { type: "attaque", index: 0 });
++
++  assert.ok(attacker.pv < startPv, "Attacker should have taken Rough Skin recoil damage on contact");
++});
++
++test("Strict status immunities (IMMUNITY, LIMBER, WATER_VEIL, INSOMNIA, OWN_TEMPO)", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const zangoose = mon(ctx, 335, 50, "ZANG");
++  zangoose.talent = "IMMUNITY";
++  Combat.poserStatut(zangoose, "poison", [], "joueur", null, null);
++  assert.strictEqual(zangoose.statut, null, "Immunity talent must prevent poison");
++
++  const limberMon = mon(ctx, 52, 50, "MEOW");
++  limberMon.talent = "LIMBER";
++  Combat.poserStatut(limberMon, "para", [], "joueur", null, null);
++  assert.strictEqual(limberMon.statut, null, "Limber must prevent paralysis");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 6: End of Turn, Weather & Air Lock
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("6. End of Turn, Weather (Hail) & Air Lock");
++
++test("SPEED_BOOST increases Speed by 1 stage at end of turn", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Hasard = ctx.PokeHasard;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const ninjask = mon(ctx, 291, 50, "NINJ");
++  ninjask.talent = "SPEED_BOOST";
++  const dummy = mon(ctx, 25, 50, "DUM");
++  dummy.attaques = [{ cle: "TAIL_WHIP", pp: 30, ppMax: 30 }];
++
++  const combat = Combat.demarrer([ninjask], [dummy], { graine: "TEST-TURBO" });
++  assert.strictEqual(combat.joueur.paliers.vit, 0);
++
++  const h = new Hasard("SPEED-SEED");
++  Combat.jouerTour(combat, { type: "attaque", index: 0 }, h, { type: "attaque", index: 0 });
++  assert.strictEqual(combat.joueur.paliers.vit, 1, "Speed Boost must increase speed stage by 1");
++});
++
++test("AIR_LOCK negates weather damage and weather multipliers", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const rayquaza = mon(ctx, 384, 50, "RAY");
++  rayquaza.talent = "AIR_LOCK";
++  const dummy = mon(ctx, 25, 50, "DUM");
++
++  const combat = Combat.demarrer([rayquaza], [dummy], { graine: "TEST-AIRLOCK" });
++  combat.meteo = { cle: "sable", reste: 5 };
++
++  // usureMeteo should deal 0 damage because Air Lock is active
++  const startPv = dummy.pv;
++  const ev = [];
++  Combat.usureMeteo(combat, dummy, ev, "adverse");
++  assert.strictEqual(dummy.pv, startPv, "Air Lock must prevent sandstorm weather chip damage");
++});
++
++test("HAIL deals 1/16 chip damage to non-Ice types and spares Ice types", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const iceMon = mon(ctx, 361, 50, "ICE"); // Snorunt (Ice type)
++  const nonIceMon = mon(ctx, 25, 50, "NOICE"); // Pikachu (Electric type)
++  const startNonIcePv = nonIceMon.pv;
++  const startIcePv = iceMon.pv;
++
++  const combat = Combat.demarrer([iceMon], [nonIceMon], { graine: "TEST-HAIL" });
++  combat.meteo = { cle: "grele", reste: 5 };
++
++  const ev = [];
++  Combat.usureMeteo(combat, nonIceMon, ev, "adverse");
++  assert.ok(nonIceMon.pv < startNonIcePv, "Non-ice type should take hail damage");
++
++  Combat.usureMeteo(combat, iceMon, ev, "joueur");
++  assert.strictEqual(iceMon.pv, startIcePv, "Ice type should be immune to hail damage");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 7: Gen 3 Held Items (CHOICE_BAND, LEFTOVERS, WHITE_HERB, LUM_BERRY)
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("7. Gen 3 Held Items");
++
++test("CHOICE_BAND boosts physical move damage by 1.5x", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const attacker = mon(ctx, 25, 50, "ATK");
++  const target = mon(ctx, 25, 50, "TAR");
++
++  // Without Choice Band
++  attacker.objet = null;
++  const dmgNormal = Combat.degats(attacker, target, "BODY_SLAM", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
++
++  // With Choice Band
++  attacker.objet = "CHOICE_BAND";
++  const dmgCB = Combat.degats(attacker, target, "BODY_SLAM", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
++
++  assert.ok(dmgCB > dmgNormal, `Choice Band (${dmgCB}) must deal more damage than unboosted (${dmgNormal})`);
++  const ratio = dmgCB / dmgNormal;
++  assert.ok(ratio >= 1.4 && ratio <= 1.6, `Choice band boost must be ~1.5x (actual: ${ratio})`);
++});
++
++test("LEFTOVERS heals 1/16 HP at end of turn", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const m = mon(ctx, 25, 50, "MON");
++  m.objet = "LEFTOVERS";
++  m.pv = 50; // Damaged
++
++  const ev = [];
++  Combat.usureFinDeTour(m, ev, "joueur", {}, {});
++  assert.ok(m.pv > 50, "Leftovers should heal HP");
++  assert.strictEqual(m.objet, "LEFTOVERS", "Leftovers is not consumed");
++});
++
++test("WHITE_HERB resets negative stages to 0 and is consumed", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const m = mon(ctx, 25, 50, "MON");
++  m.objet = "WHITE_HERB";
++  const cote = { paliers: { atk: -2, def: 0, vit: -1 } };
++
++  const ev = [];
++  Combat.usureFinDeTour(m, ev, "joueur", cote, {});
++  assert.strictEqual(cote.paliers.atk, 0, "White herb must reset negative attack palier to 0");
++  assert.strictEqual(cote.paliers.vit, 0, "White herb must reset negative speed palier to 0");
++  assert.strictEqual(m.objet, null, "White herb must be consumed");
++});
++
++test("LUM_BERRY cures status condition & confusion and is consumed", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++  Regles.poser("gen3");
++
++  const m = mon(ctx, 25, 50, "MON");
++  m.objet = "LUM_BERRY";
++  m.statut = "brulure";
++  const cote = { volatils: { confusion: 3 } };
++
++  const ev = [];
++  Combat.usureFinDeTour(m, ev, "joueur", cote, {});
++  assert.strictEqual(m.statut, null, "Lum berry must cure burn");
++  assert.strictEqual(cote.volatils.confusion, 0, "Lum berry must cure confusion");
++  assert.strictEqual(m.objet, null, "Lum berry must be consumed");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 8: Cross-Generational Non-Regression (Gen 1 & Gen 2)
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("8. Cross-Generational Non-Regression");
++
++test("Gen 1 and Gen 2 ignore abilities even if assigned on Pokemon object", () => {
++  const ctx = loadFullNoyauContext();
++  const Combat = ctx.PokeCombat;
++  const Regles = ctx.PokeRegles;
++
++  Regles.poser("gen1");
++  const p1 = mon(ctx, 130, 50, "P1"); // Gyarados
++  p1.talent = "INTIMIDATE";
++  const p2 = mon(ctx, 25, 50, "P2");
++
++  const combatGen1 = Combat.demarrer([p1], [p2], { graine: "TEST-G1" });
++  assert.strictEqual(combatGen1.adverse.paliers.atk, 0, "Intimidate must NOT trigger in Gen 1");
++
++  Regles.poser("gen2");
++  const combatGen2 = Combat.demarrer([p1], [p2], { graine: "TEST-G2" });
++  assert.strictEqual(combatGen2.adverse.paliers.atk, 0, "Intimidate must NOT trigger in Gen 2");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Summary
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++console.log("\n" + "ÔöÇ".repeat(60));
++console.log(`Total Tests: ${totalTests} | Passed: ${passedTests} | Failed: ${failedTests}`);
++
++if (failedTests > 0) {
++  console.error(`\x1b[31m${failedTests} test(s) failed!\x1b[0m`);
++  process.exit(1);
++} else {
++  console.log("\x1b[32mALL TESTS PASSED SUCCESSFULLY! (100% PASS RATE)\x1b[0m\n");
++  process.exit(0);
++}
+diff --git a/tests/test_gen3_registry.mjs b/tests/test_gen3_registry.mjs
+index 70cdbe8..fdf2a50 100644
+--- a/tests/test_gen3_registry.mjs
++++ b/tests/test_gen3_registry.mjs
+@@ -95,20 +95,23 @@ function loadScriptInContext(filePath, context) {
+ suite("1. ordre.js Gen 3 Wiring & Module Lists");
+ 
+ const EXPECTED_GEN3_NOYAU = [
+   "js/poke/gen3/types.js",
+   "js/poke/gen3/effets.js",
+   "js/poke/gen3/objets.js",
+   "js/poke/gen3/ct.js",
+   "js/poke/gen3/obtentions.js",
+   "js/poke/gen3/attaques.js",
+   "js/poke/gen3/especes.js",
++  "js/poke/gen3/natures.js",
++  "js/poke/gen3/talents.js",
++  "js/poke/gen3/objets-tenus.js",
+   "js/poke/gen3/dresseurs.js",
+   "js/poke/gen3/classes.js",
+   "js/poke/gen3/equipes.js",
+   "js/poke/gen3/arenes.js",
+   "js/poke/gen3/rival.js",
+   "js/poke/gen3/monde.js",
+   "js/poke/gen3/voyage.js",
+ ];
+ 
+ const EXPECTED_GEN3_ECRANS = [
+@@ -145,21 +148,21 @@ test("POKE_ORDRE_NOYAU injects GEN3 files before regles.js", () => {
+     assert.ok(idx < idxRegles, `GEN3 file ${f} must appear before regles.js (idx ${idx} vs ${idxRegles})`);
+   }
+ });
+ 
+ test("Zero sound files in POKE_ORDRE_GEN3 (pure NOYAU logic)", () => {
+   for (const f of ordreContext.POKE_ORDRE_GEN3) {
+     assert.ok(!f.includes("sons"), `NOYAU file ${f} must not be a sound file`);
+   }
+ });
+ 
+-test("All 14 GEN3 files exist on disk", () => {
++test("All 17 GEN3 files exist on disk", () => {
+   for (const relPath of EXPECTED_GEN3_NOYAU) {
+     const fullPath = path.join(ROOT_DIR, relPath);
+     assert.ok(fs.existsSync(fullPath), `Gen 3 NOYAU file does not exist on disk: ${relPath}`);
+   }
+ });
+ 
+ // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+ // Suite 2: Isolated Execution of NOYAU Stack with Gen 3
+ // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+ suite("2. Headless NOYAU Execution with Gen 3 Stack");

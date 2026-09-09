@@ -126,7 +126,7 @@ test("POKE_ORDRE_GEN2_ECRANS contains sound and animation presentation files", (
 test("POKE_ORDRE_GEN3 contains pure logic/data and NO sound/animation files", () => {
   const gen3 = ordreContext.POKE_ORDRE_GEN3;
   assert.ok(Array.isArray(gen3), "POKE_ORDRE_GEN3 must be an array");
-  assert.strictEqual(gen3.length, 17, "POKE_ORDRE_GEN3 must contain exactly 17 files");
+  assert.strictEqual(gen3.length, 19, "POKE_ORDRE_GEN3 must contain exactly 19 files");
   for (const f of gen3) {
     assert.ok(!f.includes("sons"), `File ${f} must NOT be in GEN3 (NOYAU)`);
     assert.ok(!f.includes("anim"), `File ${f} must NOT be in GEN3 (NOYAU)`);
