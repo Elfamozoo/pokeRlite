@@ -1,0 +1,1658 @@
+﻿c4fa700 feat(gen3): Task 3 - trainers, gym leaders, elite four and rivals
+ .superpowers/sdd/2026-09-09-hoenn-gen3/progress.md |   11 +-
+ .../task-2-review-package.diff                     | 2013 ++++++++++++++++++++
+ .../sdd/2026-09-09-hoenn-gen3/task-3-brief.md      |   65 +
+ .../sdd/2026-09-09-hoenn-gen3/task-3-report.md     |   84 +
+ js/poke/gen3/arenes.js                             |  249 +++
+ js/poke/gen3/classes.js                            |  106 ++
+ js/poke/gen3/dresseurs.js                          |  288 +++
+ js/poke/gen3/equipes.js                            |  290 +++
+ js/poke/gen3/rival.js                              |  118 ++
+ tests/test_gen3_trainers.mjs                       |  559 ++++++
+ 10 files changed, 3779 insertions(+), 4 deletions(-)
+diff --git a/js/poke/gen3/arenes.js b/js/poke/gen3/arenes.js
+new file mode 100644
+index 0000000..e857dcb
+--- /dev/null
++++ b/js/poke/gen3/arenes.js
+@@ -0,0 +1,249 @@
++(function (W) {
++  "use strict";
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  //  Ar├¿nes d'Hoenn, Conseil 4, Ma├«tre et Boss ├ëpilogue (├ëmeraude Canon).
++  //  ├ëquipes compl├¿tes avec esp├¿ces nationales (1-386), niveaux et capacit├®s.
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++
++  // 1. Les 8 Champions d'Ar├¿ne d'Hoenn (rosters canoniques d'├ëmeraude)
++  W.POKE_GEN3_ARENES = [
++    {
++      ordre: 1,
++      ville: "rustboro-city",
++      nom: { fr: "Ar├¿ne de M├®rouville", en: "Rustboro Gym" },
++      champion: "Roxanne",
++      championFr: "Roxanne",
++      championEn: "Roxanne",
++      badge: "Roche",
++      badgeEn: "Stone",
++      type: "Roche",
++      ct: "TM39",
++      equipe: [
++        { n: 74, niveau: 12, attaques: ["ROCK_THROW", "TACKLE", "DEFENSE_CURL", "ROCK_TOMB"] },
++        { n: 74, niveau: 12, attaques: ["ROCK_THROW", "TACKLE", "DEFENSE_CURL", "ROCK_TOMB"] },
++        { n: 299, niveau: 15, attaques: ["ROCK_THROW", "TACKLE", "HARDEN", "ROCK_TOMB"] }
++      ]
++    },
++    {
++      ordre: 2,
++      ville: "dewford-town",
++      nom: { fr: "Ar├¿ne de Myokara", en: "Dewford Gym" },
++      champion: "Brawly",
++      championFr: "Bastien",
++      championEn: "Brawly",
++      badge: "Poing",
++      badgeEn: "Knuckle",
++      type: "Combat",
++      ct: "TM08",
++      equipe: [
++        { n: 66, niveau: 16, attaques: ["KARATE_CHOP", "LOW_KICK", "LEER", "BULK_UP"] },
++        { n: 307, niveau: 16, attaques: ["MEDITATE", "FOCUS_PUNCH", "LIGHT_SCREEN", "REFLECT"] },
++        { n: 296, niveau: 19, attaques: ["ARM_THRUST", "KNOCK_OFF", "SAND_ATTACK", "BULK_UP"] }
++      ]
++    },
++    {
++      ordre: 3,
++      ville: "mauville-city",
++      nom: { fr: "Ar├¿ne de Lavandia", en: "Mauville Gym" },
++      champion: "Wattson",
++      championFr: "Volt├¿re",
++      championEn: "Wattson",
++      badge: "Dynamo",
++      badgeEn: "Dynamo",
++      type: "├ëlectrik",
++      ct: "TM34",
++      equipe: [
++        { n: 100, niveau: 20, attaques: ["SPARK", "ROLLOUT", "SCREECH", "SHOCK_WAVE"] },
++        { n: 309, niveau: 20, attaques: ["SPARK", "QUICK_ATTACK", "LEER", "SHOCK_WAVE"] },
++        { n: 82, niveau: 22, attaques: ["SPARK", "SONICBOOM", "SUPERSONIC", "SHOCK_WAVE"] },
++        { n: 310, niveau: 24, attaques: ["QUICK_ATTACK", "THUNDER_WAVE", "HOWL", "SHOCK_WAVE"] }
++      ]
++    },
++    {
++      ordre: 4,
++      ville: "lavaridge-town",
++      nom: { fr: "Ar├¿ne de Vermilava", en: "Lavaridge Gym" },
++      champion: "Flannery",
++      championFr: "Adriane",
++      championEn: "Flannery",
++      badge: "Chaleur",
++      badgeEn: "Heat",
++      type: "Feu",
++      ct: "TM50",
++      equipe: [
++        { n: 322, niveau: 24, attaques: ["OVERHEAT", "ROCK_TOMB", "MAGNITUDE", "SUNNY_DAY"] },
++        { n: 218, niveau: 24, attaques: ["OVERHEAT", "ROCK_TOMB", "LIGHT_SCREEN", "SMOG"] },
++        { n: 323, niveau: 26, attaques: ["OVERHEAT", "TACKLE", "ATTRACT", "MAGNITUDE"] },
++        { n: 324, niveau: 29, attaques: ["OVERHEAT", "BODY_SLAM", "FLAIL", "ATTRACT"] }
++      ]
++    },
++    {
++      ordre: 5,
++      ville: "petalburg-city",
++      nom: { fr: "Ar├¿ne de Cl├®menti-Ville", en: "Petalburg Gym" },
++      champion: "Norman",
++      championFr: "Norman",
++      championEn: "Norman",
++      badge: "Balancier",
++      badgeEn: "Balance",
++      type: "Normal",
++      ct: "TM42",
++      equipe: [
++        { n: 327, niveau: 27, attaques: ["TEETER_DANCE", "PSYBEAM", "HYPNOSIS", "FACADE"] },
++        { n: 288, niveau: 27, attaques: ["SLASH", "FAINT_ATTACK", "ENCORE", "FACADE"] },
++        { n: 264, niveau: 29, attaques: ["SLASH", "BELLY_DRUM", "HEADBUTT", "FACADE"] },
++        { n: 289, niveau: 31, attaques: ["COUNTER", "YAWN", "FAINT_ATTACK", "FACADE"] }
++      ]
++    },
++    {
++      ordre: 6,
++      ville: "fortree-city",
++      nom: { fr: "Ar├¿ne de Cimetronelle", en: "Fortree Gym" },
++      champion: "Winona",
++      championFr: "Aliz├®e",
++      championEn: "Winona",
++      badge: "Plume",
++      badgeEn: "Feather",
++      type: "Vol",
++      ct: "TM40",
++      equipe: [
++        { n: 333, niveau: 29, attaques: ["AERIAL_ACE", "MIRROR_MOVE", "PERISH_SONG", "SAFEGUARD"] },
++        { n: 357, niveau: 29, attaques: ["AERIAL_ACE", "SOLARBEAM", "SUNNY_DAY", "SYNTHESIS"] },
++        { n: 279, niveau: 30, attaques: ["AERIAL_ACE", "WATER_GUN", "SUPERSONIC", "PROTECT"] },
++        { n: 227, niveau: 31, attaques: ["AERIAL_ACE", "STEEL_WING", "SAND_ATTACK", "FURY_ATTACK"] },
++        { n: 334, niveau: 33, attaques: ["AERIAL_ACE", "DRAGON_DANCE", "EARTHQUAKE", "DRAGONBREATH"] }
++      ]
++    },
++    {
++      ordre: 7,
++      ville: "mossdeep-city",
++      nom: { fr: "Ar├¿ne d'Algatia", en: "Mossdeep Gym" },
++      champion: "Tate & Liza",
++      championFr: "L├®vy & Tatia",
++      championEn: "Tate & Liza",
++      badge: "Esprit",
++      badgeEn: "Mind",
++      type: "Psy",
++      ct: "TM04",
++      equipe: [
++        { n: 344, niveau: 41, attaques: ["EARTHQUAKE", "ANCIENTPOWER", "PSYCHIC_M", "LIGHT_SCREEN"] },
++        { n: 178, niveau: 41, attaques: ["PSYCHIC_M", "SUNNY_DAY", "CONFUSE_RAY", "CALM_MIND"] },
++        { n: 337, niveau: 42, attaques: ["PSYCHIC_M", "LIGHT_SCREEN", "HYPNOSIS", "CALM_MIND"] },
++        { n: 338, niveau: 42, attaques: ["SOLARBEAM", "FLAMETHROWER", "SUNNY_DAY", "PSYCHIC_M"] }
++      ]
++    },
++    {
++      ordre: 8,
++      ville: "sootopolis-city",
++      nom: { fr: "Ar├¿ne d'Atalanopolis", en: "Sootopolis Gym" },
++      champion: "Juan",
++      championFr: "Juan",
++      championEn: "Juan",
++      badge: "Pluie",
++      badgeEn: "Rain",
++      type: "Eau",
++      ct: "TM03",
++      equipe: [
++        { n: 370, niveau: 41, attaques: ["WATER_PULSE", "SWEET_KISS", "ATTRACT", "FLAIL"] },
++        { n: 340, niveau: 41, attaques: ["WATER_PULSE", "EARTHQUAKE", "RAIN_DANCE", "AMNESIA"] },
++        { n: 364, niveau: 43, attaques: ["WATER_PULSE", "ENCORE", "BODY_SLAM", "AURORA_BEAM"] },
++        { n: 342, niveau: 43, attaques: ["WATER_PULSE", "CRABHAMMER", "TAUNT", "LEER"] },
++        { n: 230, niveau: 46, attaques: ["WATER_PULSE", "ICE_BEAM", "DRAGON_DANCE", "REST"] }
++      ]
++    }
++  ];
++
++  // 2. Conseil 4 de la Ligue Pok├®mon d'├ëmeraude
++  W.POKE_GEN3_CONSEIL = [
++    {
++      ordre: 1,
++      nom: "Damien",
++      nomFr: "Damien",
++      nomEn: "Sidney",
++      type: "T├®n├¿bres",
++      equipe: [
++        { n: 262, niveau: 46, attaques: ["ROAR", "DOUBLE_EDGE", "SAND_ATTACK", "CRUNCH"] },
++        { n: 275, niveau: 48, attaques: ["TORMENT", "DOUBLE_TEAM", "SWAGGER", "EXTRASENSORY"] },
++        { n: 332, niveau: 46, attaques: ["FAINT_ATTACK", "LEECH_SEED", "SPIKES", "COTTON_SPORE"] },
++        { n: 342, niveau: 48, attaques: ["SURF", "SWORDS_DANCE", "STRENGTH", "FACADE"] },
++        { n: 359, niveau: 49, attaques: ["SLASH", "SWORDS_DANCE", "AERIAL_ACE", "ROCK_SLIDE"] }
++      ]
++    },
++    {
++      ordre: 2,
++      nom: "Spectra",
++      nomFr: "Spectra",
++      nomEn: "Phoebe",
++      type: "Spectre",
++      equipe: [
++        { n: 356, niveau: 48, attaques: ["SHADOW_PUNCH", "CONFUSE_RAY", "CURSE", "PROTECT"] },
++        { n: 354, niveau: 49, attaques: ["SHADOW_BALL", "GRUDGE", "SPITE", "FAINT_ATTACK"] },
++        { n: 302, niveau: 50, attaques: ["SHADOW_BALL", "FAINT_ATTACK", "DOUBLE_TEAM", "NIGHT_SHADE"] },
++        { n: 354, niveau: 49, attaques: ["SHADOW_BALL", "PSYCHIC_M", "THUNDERBOLT", "TOXIC"] },
++        { n: 356, niveau: 51, attaques: ["SHADOW_BALL", "ICE_BEAM", "ROCK_SLIDE", "EARTHQUAKE"] }
++      ]
++    },
++    {
++      ordre: 3,
++      nom: "Glacia",
++      nomFr: "Glacia",
++      nomEn: "Glacia",
++      type: "Glace",
++      equipe: [
++        { n: 362, niveau: 50, attaques: ["ICY_WIND", "LIGHT_SCREEN", "CRUNCH", "ICE_BEAM"] },
++        { n: 364, niveau: 50, attaques: ["ENCORE", "BODY_SLAM", "HAIL", "ICE_BALL"] },
++        { n: 362, niveau: 52, attaques: ["ICE_BEAM", "SHADOW_BALL", "CRUNCH", "EXPLOSION"] },
++        { n: 364, niveau: 52, attaques: ["BLIZZARD", "DOUBLE_EDGE", "HAIL", "ATTRACT"] },
++        { n: 365, niveau: 53, attaques: ["SURF", "BODY_SLAM", "BLIZZARD", "SHEER_COLD"] }
++      ]
++    },
++    {
++      ordre: 4,
++      nom: "Aragon",
++      nomFr: "Aragon",
++      nomEn: "Drake",
++      type: "Dragon",
++      equipe: [
++        { n: 372, niveau: 52, attaques: ["ROCK_TOMB", "IRON_DEFENSE", "DRAGON_CLAW", "PROTECT"] },
++        { n: 334, niveau: 54, attaques: ["DRAGON_DANCE", "COTTON_SPORE", "DRAGONBREATH", "TAKE_DOWN"] },
++        { n: 230, niveau: 53, attaques: ["SMOKESCREEN", "DRAGON_DANCE", "SURF", "BODY_SLAM"] },
++        { n: 330, niveau: 53, attaques: ["CRUNCH", "DRAGONBREATH", "SCREECH", "FLAMETHROWER"] },
++        { n: 373, niveau: 55, attaques: ["FLAMETHROWER", "DRAGON_CLAW", "CRUNCH", "ROCK_SLIDE"] }
++      ]
++    }
++  ];
++
++  // 3. Ma├«tre de la Ligue Pok├®mon d'├ëmeraude : Marc (Wallace)
++  W.POKE_GEN3_MAITRE = {
++    nom: "Marc",
++    nomFr: "Marc",
++    nomEn: "Wallace",
++    type: "Eau",
++    equipe: [
++      { n: 321, niveau: 57, attaques: ["RAIN_DANCE", "WATER_SPOUT", "BLIZZARD", "DOUBLE_EDGE"] },
++      { n: 73, niveau: 55, attaques: ["TOXIC", "HYDRO_PUMP", "SLUDGE_BOMB", "ICE_BEAM"] },
++      { n: 272, niveau: 56, attaques: ["GIGA_DRAIN", "SURF", "LEECH_SEED", "DOUBLE_TEAM"] },
++      { n: 340, niveau: 56, attaques: ["EARTHQUAKE", "SURF", "AMNESIA", "HYPER_BEAM"] },
++      { n: 130, niveau: 56, attaques: ["DRAGON_DANCE", "HYPER_BEAM", "EARTHQUAKE", "SURF"] },
++      { n: 350, niveau: 58, attaques: ["RECOVER", "SURF", "ICE_BEAM", "TOXIC"] }
++    ]
++  };
++
++  // 4. Boss Ultime de l'├ëpilogue : Pierre Rochard (Steven Stone) dans les profondeurs du Site M├®t├®ore
++  W.POKE_GEN3_STEVEN = {
++    nom: "Pierre Rochard",
++    nomFr: "Pierre Rochard",
++    nomEn: "Steven",
++    lieu: "meteor-falls",
++    equipe: [
++      { n: 227, niveau: 77, attaques: ["TOXIC", "AERIAL_ACE", "SPIKES", "STEEL_WING"] },
++      { n: 344, niveau: 75, attaques: ["REFLECT", "LIGHT_SCREEN", "ANCIENTPOWER", "PSYCHIC_M"] },
++      { n: 306, niveau: 76, attaques: ["THUNDERBOLT", "SOLARBEAM", "DRAGON_CLAW", "EARTHQUAKE"] },
++      { n: 346, niveau: 76, attaques: ["GIGA_DRAIN", "ANCIENTPOWER", "SLUDGE_BOMB", "CONFUSE_RAY"] },
++      { n: 348, niveau: 76, attaques: ["WATER_PULSE", "ANCIENTPOWER", "SLASH", "AERIAL_ACE"] },
++      { n: 376, niveau: 78, attaques: ["METEOR_MASH", "PSYCHIC_M", "EARTHQUAKE", "SHADOW_BALL"] }
++    ]
++  };
++
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/js/poke/gen3/classes.js b/js/poke/gen3/classes.js
+new file mode 100644
+index 0000000..4b4b5a4
+--- /dev/null
++++ b/js/poke/gen3/classes.js
+@@ -0,0 +1,106 @@
++(function (W) {
++  "use strict";
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  //  Classes de Dresseur pour la r├®gion d'Hoenn (G├®n├®ration 3 - ├ëmeraude).
++  //  Noms officiels en fran├ºais et anglais, multiplicateurs de gains et
++  //  drapeau `route` indiquant l'├®ligibilit├® pour les n┼ôuds de route.
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++
++  var CLASSES = {
++    "rich_boy": { "fr": "Fils de Famille", "en": "Rich Boy", "route": true, "mult": 200 },
++    "lady": { "fr": "Mademoiselle", "en": "Lady", "route": true, "mult": 200 },
++    "triathlete": { "fr": "Triathl├¿te", "en": "Triathlete", "route": true, "mult": 40 },
++    "aroma_lady": { "fr": "Ar├┤math├®rapeute", "en": "Aroma Lady", "route": true, "mult": 40 },
++    "pokemon_ranger": { "fr": "Pok├®mon Ranger", "en": "Pok├®mon Ranger", "route": true, "mult": 48 },
++    "collector": { "fr": "Collectionneur", "en": "Collector", "route": true, "mult": 60 },
++    "ninja_boy": { "fr": "Ninja Fan", "en": "Ninja Boy", "route": true, "mult": 12 },
++    "parasol_lady": { "fr": "Mademoiselle Parapluie", "en": "Parasol Lady", "route": true, "mult": 40 },
++    "sailor": { "fr": "Marin", "en": "Sailor", "route": true, "mult": 32 },
++    "fisherman": { "fr": "P├¬cheur", "en": "Fisherman", "route": true, "mult": 40 },
++    "hiker": { "fr": "Montagnard", "en": "Hiker", "route": true, "mult": 40 },
++    "youngster": { "fr": "Gamin", "en": "Youngster", "route": true, "mult": 16 },
++    "lass": { "fr": "Fillette", "en": "Lass", "route": true, "mult": 16 },
++    "swimmer_m": { "fr": "Nageur", "en": "SwimmerÔÖé", "route": true, "mult": 8 },
++    "swimmer_f": { "fr": "Nageuse", "en": "SwimmerÔÖÇ", "route": true, "mult": 8 },
++    "team_aqua": { "fr": "Sbire Aqua", "en": "Team Aqua", "route": false, "mult": 20 },
++    "team_magma": { "fr": "Sbire Magma", "en": "Team Magma", "route": false, "mult": 20 },
++    "leader": { "fr": "Champion d'Ar├¿ne", "en": "Gym Leader", "route": false, "mult": 100 },
++    "elite_four": { "fr": "Conseil 4", "en": "Elite Four", "route": false, "mult": 100 },
++    "champion": { "fr": "Ma├«tre", "en": "Champion", "route": false, "mult": 200 },
++    "expert": { "fr": "Expert", "en": "Expert", "route": true, "mult": 70 },
++    "bug_catcher": { "fr": "Scout", "en": "Bug Catcher", "route": true, "mult": 16 },
++    "camper": { "fr": "Campeur", "en": "Camper", "route": true, "mult": 16 },
++    "picnicker": { "fr": "Pique-Nique", "en": "Picnicker", "route": true, "mult": 16 },
++    "cooltrainer_m": { "fr": "TopdresseurÔÖé", "en": "CooltrainerÔÖé", "route": true, "mult": 48 },
++    "cooltrainer_f": { "fr": "TopdresseurÔÖÇ", "en": "CooltrainerÔÖÇ", "route": true, "mult": 48 },
++    "guitarist": { "fr": "Guitariste", "en": "Guitarist", "route": true, "mult": 32 },
++    "bird_keeper": { "fr": "Ornithologue", "en": "Bird Keeper", "route": true, "mult": 32 },
++    "black_belt": { "fr": "Karat├®ka", "en": "Black Belt", "route": true, "mult": 32 },
++    "battle_girl": { "fr": "Combattante", "en": "Battle Girl", "route": true, "mult": 24 },
++    "psychic": { "fr": "Kin├®siste", "en": "Psychic", "route": true, "mult": 24 },
++    "gentleman": { "fr": "Gentleman", "en": "Gentleman", "route": true, "mult": 72 },
++    "beauty": { "fr": "Canon", "en": "Beauty", "route": true, "mult": 72 },
++    "ruin_maniac": { "fr": "Ruine Maniac", "en": "Ruin Maniac", "route": true, "mult": 48 },
++    "pokemaniac": { "fr": "Pok├®maniac", "en": "Pok├®maniac", "route": true, "mult": 60 },
++    "hex_maniac": { "fr": "Kin├®siste", "en": "Hex Maniac", "route": true, "mult": 24 },
++    "dragon_tamer": { "fr": "Dracologue", "en": "Dragon Tamer", "route": true, "mult": 48 },
++    "tuber": { "fr": "Flotteur", "en": "Tuber", "route": true, "mult": 4 },
++    "kindler": { "fr": "Crache-Feu", "en": "Kindler", "route": true, "mult": 32 },
++    "twins": { "fr": "Jumelles", "en": "Twins", "route": true, "mult": 24 }
++  };
++
++  // Alias PascalCase pour interop├®rabilit├® maximale avec les moteurs Gen 1 / Gen 2
++  var pascalMap = {
++    "RichBoy": "rich_boy",
++    "Lady": "lady",
++    "Triathlete": "triathlete",
++    "AromaLady": "aroma_lady",
++    "PokemonRanger": "pokemon_ranger",
++    "Collector": "collector",
++    "NinjaBoy": "ninja_boy",
++    "ParasolLady": "parasol_lady",
++    "Sailor": "sailor",
++    "Fisherman": "fisherman",
++    "Hiker": "hiker",
++    "Youngster": "youngster",
++    "Lass": "lass",
++    "SwimmerM": "swimmer_m",
++    "SwimmerF": "swimmer_f",
++    "TeamAqua": "team_aqua",
++    "TeamMagma": "team_magma",
++    "Leader": "leader",
++    "EliteFour": "elite_four",
++    "Champion": "champion",
++    "Expert": "expert",
++    "BugCatcher": "bug_catcher",
++    "Camper": "camper",
++    "Picnicker": "picnicker",
++    "CooltrainerM": "cooltrainer_m",
++    "CooltrainerF": "cooltrainer_f",
++    "Guitarist": "guitarist",
++    "BirdKeeper": "bird_keeper",
++    "BlackBelt": "black_belt",
++    "BattleGirl": "battle_girl",
++    "Psychic": "psychic",
++    "Gentleman": "gentleman",
++    "Beauty": "beauty",
++    "RuinManiac": "ruin_maniac",
++    "Pokemaniac": "pokemaniac",
++    "HexManiac": "hex_maniac",
++    "DragonTamer": "dragon_tamer",
++    "Tuber": "tuber",
++    "Kindler": "kindler",
++    "Twins": "twins"
++  };
++
++  for (var pKey in pascalMap) {
++    var target = CLASSES[pascalMap[pKey]];
++    if (target && !CLASSES[pKey]) {
++      CLASSES[pKey] = target;
++    }
++  }
++
++  W.POKE_GEN3_CLASSES = CLASSES;
++
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/js/poke/gen3/dresseurs.js b/js/poke/gen3/dresseurs.js
+new file mode 100644
+index 0000000..f385be8
+--- /dev/null
++++ b/js/poke/gen3/dresseurs.js
+@@ -0,0 +1,288 @@
++(function (W) {
++  "use strict";
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  //  Vivier de Dresseurs de Route d'Hoenn (G├®n├®ration 3 - ├ëmeraude).
++  //  Chaque dresseur poss├¿de un identifiant unique, sa classe, son nom bilingue,
++  //  ses citations de combat et une cl├® d'├®quipe associ├®e.
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++
++  W.POKE_GEN3_DRESSEURS = [
++    {
++      id: "youngster_calvin",
++      classe: "youngster",
++      nom: { fr: "Calvin", en: "Calvin" },
++      quotes: {
++        debut: { fr: "Si tu croises le regard d'un dresseur, c'est l'heure du combat !", en: "If our eyes meet, a battle must begin!" },
++        fin: { fr: "Zut ! Mes Pok├®mon ├®taient pourtant bien entra├«n├®s...", en: "Aww! But I trained my Pok├®mon so hard..." }
++      },
++      replique: { fr: "Si tu croises le regard d'un dresseur, c'est l'heure du combat !", en: "If our eyes meet, a battle must begin!" },
++      equipeKey: "youngster_1"
++    },
++    {
++      id: "youngster_allen",
++      classe: "youngster",
++      nom: { fr: "Alain", en: "Allen" },
++      quotes: {
++        debut: { fr: "Mon Lineon va te distancer en vitesse !", en: "My Linoone will outspeed anything you have!" },
++        fin: { fr: "Tu as ├®t├® plus rapide que l'├®clair...", en: "You were as fast as lightning..." }
++      },
++      replique: { fr: "Mon Lineon va te distancer en vitesse !", en: "My Linoone will outspeed anything you have!" },
++      equipeKey: "youngster_2"
++    },
++    {
++      id: "youngster_timmy_route",
++      classe: "youngster",
++      nom: { fr: "Billy", en: "Billy" },
++      quotes: {
++        debut: { fr: "J'ai attrap├® plein d'oiseaux dans les hautes herbes !", en: "I caught so many bird Pok├®mon in the tall grass!" },
++        fin: { fr: "Ils se sont envol├®s trop vite...", en: "They flew away too fast..." }
++      },
++      replique: { fr: "J'ai attrap├® plein d'oiseaux dans les hautes herbes !", en: "I caught so many bird Pok├®mon in the tall grass!" },
++      equipeKey: "youngster_3"
++    },
++    {
++      id: "lass_tiffany",
++      classe: "lass",
++      nom: { fr: "Tiffany", en: "Tiffany" },
++      quotes: {
++        debut: { fr: "Mes Pok├®mon sont tellement mignons que tu ne voudras pas les frapper !", en: "My Pok├®mon are so cute you won't want to hit them!" },
++        fin: { fr: "Comment as-tu os├® faire du mal ├á mes tr├®sors ?", en: "How could you be so mean to my cuties?" }
++      },
++      replique: { fr: "Mes Pok├®mon sont tellement mignons que tu ne voudras pas les frapper !", en: "My Pok├®mon are so cute you won't want to hit them!" },
++      equipeKey: "lass_1"
++    },
++    {
++      id: "lass_haley",
++      classe: "lass",
++      nom: { fr: "H├®l├¿ne", en: "Haley" },
++      quotes: {
++        debut: { fr: "Fais attention aux spores de mon Balignon !", en: "Watch out for my Shroomish's spores!" },
++        fin: { fr: "M├¬me endormi tu as gagn├®...", en: "You still won even while drowsy..." }
++      },
++      replique: { fr: "Fais attention aux spores de mon Balignon !", en: "Watch out for my Shroomish's spores!" },
++      equipeKey: "lass_2"
++    },
++    {
++      id: "bug_catcher_rick",
++      classe: "bug_catcher",
++      nom: { fr: "Rick", en: "Rick" },
++      quotes: {
++        debut: { fr: "La for├¬t regorge d'insectes fascinants !", en: "The woods are teeming with fascinating bug Pok├®mon!" },
++        fin: { fr: "Mes pr├®cieux insectes ont ├®t├® ├®cras├®s !", en: "My precious bugs were squished!" }
++      },
++      replique: { fr: "La for├¬t regorge d'insectes fascinants !", en: "The woods are teeming with fascinating bug Pok├®mon!" },
++      equipeKey: "bug_catcher_1"
++    },
++    {
++      id: "bug_catcher_lyle",
++      classe: "bug_catcher",
++      nom: { fr: "L├®o", en: "Lyle" },
++      quotes: {
++        debut: { fr: "Mon Ninjask frappe plus vite que ton ombre !", en: "My Ninjask strikes faster than your shadow!" },
++        fin: { fr: "Une vitesse incroyable n'a pas suffi...", en: "Incredible speed wasn't enough..." }
++      },
++      replique: { fr: "Mon Ninjask frappe plus vite que ton ombre !", en: "My Ninjask strikes faster than your shadow!" },
++      equipeKey: "bug_catcher_2"
++    },
++    {
++      id: "rich_boy_winston",
++      classe: "rich_boy",
++      nom: { fr: "Stanislas", en: "Winston" },
++      quotes: {
++        debut: { fr: "Mon p├¿re m'a achet├® les meilleurs Pok├®mon du monde.", en: "My father bought me the finest Pok├®mon in the world." },
++        fin: { fr: "Je vais demander ├á mon p├¿re de m'en acheter d'autres !", en: "I shall ask my father to buy me stronger ones!" }
++      },
++      replique: { fr: "Mon p├¿re m'a achet├® les meilleurs Pok├®mon du monde.", en: "My father bought me the finest Pok├®mon in the world." },
++      equipeKey: "rich_boy_1"
++    },
++    {
++      id: "lady_cindy",
++      classe: "lady",
++      nom: { fr: "Cynthia", en: "Cindy" },
++      quotes: {
++        debut: { fr: "Une vraie dame ne refuse jamais une invitation au duel.", en: "A true lady never declines a gentlemanly challenge." },
++        fin: { fr: "Quelle impolitesse ! Mais quelle technique remarquable...", en: "How terribly rude! Yet such exquisite technique..." }
++      },
++      replique: { fr: "Une vraie dame ne refuse jamais une invitation au duel.", en: "A true lady never declines a gentlemanly challenge." },
++      equipeKey: "lady_1"
++    },
++    {
++      id: "triathlete_dylan",
++      classe: "triathlete",
++      nom: { fr: "Dylan", en: "Dylan" },
++      quotes: {
++        debut: { fr: "Course, natation, cyclisme : l'endurance est la cl├® de la victoire !", en: "Running, swimming, cycling: endurance is key to victory!" },
++        fin: { fr: "Je suis ├á bout de souffle...", en: "I'm completely out of breath..." }
++      },
++      replique: { fr: "Course, natation, cyclisme : l'endurance est la cl├® de la victoire !", en: "Running, swimming, cycling: endurance is key to victory!" },
++      equipeKey: "triathlete_1"
++    },
++    {
++      id: "aroma_lady_rose",
++      classe: "aroma_lady",
++      nom: { fr: "Rosalie", en: "Rose" },
++      quotes: {
++        debut: { fr: "Sens ce doux parfum apaisant... Il gu├®rit l'├óme.", en: "Breathe in this soothing aroma... It heals the spirit." },
++        fin: { fr: "Mes p├®tales ont fan├® sous la temp├¬te.", en: "My petals have withered in the storm." }
++      },
++      replique: { fr: "Sens ce doux parfum apaisant... Il gu├®rit l'├óme.", en: "Breathe in this soothing aroma... It heals the spirit." },
++      equipeKey: "aroma_lady_1"
++    },
++    {
++      id: "pokemon_ranger_catherine",
++      classe: "pokemon_ranger",
++      nom: { fr: "Catherine", en: "Catherine" },
++      quotes: {
++        debut: { fr: "Nous prot├®geons la nature et apprenons d'elle !", en: "We protect nature and learn its ancient lessons!" },
++        fin: { fr: "Tu as fait corps avec la nature.", en: "You truly fought as one with nature." }
++      },
++      replique: { fr: "Nous prot├®geons la nature et apprenons d'elle !", en: "We protect nature and learn its ancient lessons!" },
++      equipeKey: "pokemon_ranger_1"
++    },
++    {
++      id: "collector_edwin",
++      classe: "collector",
++      nom: { fr: "Edgar", en: "Edwin" },
++      quotes: {
++        debut: { fr: "Admire les sp├®cimens rarissimes de ma collection personnelle !", en: "Admire the exquisite rare specimens of my personal collection!" },
++        fin: { fr: "Ne va pas ab├«mer mes pr├®cieux Pok├®mon de collection !", en: "Don't you dare scratch my precious collector's items!" }
++      },
++      replique: { fr: "Admire les sp├®cimens rarissimes de ma collection personnelle !", en: "Admire the exquisite rare specimens of my personal collection!" },
++      equipeKey: "collector_1"
++    },
++    {
++      id: "ninja_boy_lao",
++      classe: "ninja_boy",
++      nom: { fr: "Lao", en: "Lao" },
++      quotes: {
++        debut: { fr: "Dissimul├® dans les ombres, je frappe sans crier gare !", en: "Concealed within the shadows, I strike without warning!" },
++        fin: { fr: "Pouah ! D├®masqu├® et vaincu !", en: "Poof! Exposed and defeated!" }
++      },
++      replique: { fr: "Dissimul├® dans les ombres, je frappe sans crier gare !", en: "Concealed within the shadows, I strike without warning!" },
++      equipeKey: "ninja_boy_1"
++    },
++    {
++      id: "parasol_lady_madeline",
++      classe: "parasol_lady",
++      nom: { fr: "Madeleine", en: "Madeline" },
++      quotes: {
++        debut: { fr: "Qu'il pleuve ou qu'il vente, mon ombrelle me prot├¿ge.", en: "Come rain or shine, my parasol shields me completely." },
++        fin: { fr: "Une bourrasque a emport├® mon ombrelle !", en: "A sudden gust has blown my parasol away!" }
++      },
++      replique: { fr: "Qu'il pleuve ou qu'il vente, mon ombrelle me prot├¿ge.", en: "Come rain or shine, my parasol shields me completely." },
++      equipeKey: "parasol_lady_1"
++    },
++    {
++      id: "sailor_brendan",
++      classe: "sailor",
++      nom: { fr: "Gilles", en: "Brendan" },
++      quotes: {
++        debut: { fr: "J'ai navigu├® sur toutes les mers d'Hoenn avec mes Pok├®mon !", en: "I've sailed all the seven seas of Hoenn alongside my crew!" },
++        fin: { fr: "Coul├® par le fond ! Bien jou├®, matelot !", en: "Sent straight to Davy Jones' locker! Well done, sailor!" }
++      },
++      replique: { fr: "J'ai navigu├® sur toutes les mers d'Hoenn avec mes Pok├®mon !", en: "I've sailed all the seven seas of Hoenn alongside my crew!" },
++      equipeKey: "sailor_1"
++    },
++    {
++      id: "fisherman_elliot",
++      classe: "fisherman",
++      nom: { fr: "Elliot", en: "Elliot" },
++      quotes: {
++        debut: { fr: "├ça mord ! Pr├®pare-toi ├á un combat arros├® !", en: "A huge bite! Get ready for a soaking-wet battle!" },
++        fin: { fr: "Ma ligne a cass├®...", en: "My fishing line snapped..." }
++      },
++      replique: { fr: "├ça mord ! Pr├®pare-toi ├á un combat arros├® !", en: "A huge bite! Get ready for a soaking-wet battle!" },
++      equipeKey: "fisherman_1"
++    },
++    {
++      id: "hiker_clark",
++      classe: "hiker",
++      nom: { fr: "Brice", en: "Clark" },
++      quotes: {
++        debut: { fr: "Gravir les pics rocheux renforce le corps et l'esprit !", en: "Scaling rocky crags builds muscle and unyielding spirit!" },
++        fin: { fr: "Un ├®boulement impr├®vu !", en: "An unexpected rockslide!" }
++      },
++      replique: { fr: "Gravir les pics rocheux renforce le corps et l'esprit !", en: "Scaling rocky crags builds muscle and unyielding spirit!" },
++      equipeKey: "hiker_1"
++    },
++    {
++      id: "swimmer_m_tony",
++      classe: "swimmer_m",
++      nom: { fr: "Tony", en: "Tony" },
++      quotes: {
++        debut: { fr: "Les courants marins de Chenal 124 sont parfaits pour nager !", en: "The ocean currents on Route 124 are prime for swimming!" },
++        fin: { fr: "Glou glou... J'ai bu la tasse !", en: "Glub glub... I swallowed a mouthful of seawater!" }
++      },
++      replique: { fr: "Les courants marins de Chenal 124 sont parfaits pour nager !", en: "The ocean currents on Route 124 are prime for swimming!" },
++      equipeKey: "swimmer_m_1"
++    },
++    {
++      id: "swimmer_f_katie",
++      classe: "swimmer_f",
++      nom: { fr: "Katia", en: "Katie" },
++      quotes: {
++        debut: { fr: "L'eau azur├®e d'Atalanopolis est mon domaine !", en: "The azure waters around Sootopolis are my sanctuary!" },
++        fin: { fr: "Tes attaques ont fait de grosses vagues !", en: "Your attacks made gigantic waves!" }
++      },
++      replique: { fr: "L'eau azur├®e d'Atalanopolis est mon domaine !", en: "The azure waters around Sootopolis are my sanctuary!" },
++      equipeKey: "swimmer_f_1"
++    },
++    {
++      id: "team_aqua_grunt_1",
++      classe: "team_aqua",
++      nom: { fr: "Sbire Aqua", en: "Aqua Grunt" },
++      quotes: {
++        debut: { fr: "L'oc├®an doit engloutir les terres pour redonner vie au monde !", en: "The vast ocean must drown the land to renew the earth!" },
++        fin: { fr: "Le chef Arthur ne va pas aimer ├ºa...", en: "Boss Archie is not going to like this..." }
++      },
++      replique: { fr: "L'oc├®an doit engloutir les terres pour redonner vie au monde !", en: "The vast ocean must drown the land to renew the earth!" },
++      equipeKey: "team_aqua_1"
++    },
++    {
++      id: "team_magma_grunt_1",
++      classe: "team_magma",
++      nom: { fr: "Sbire Magma", en: "Magma Grunt" },
++      quotes: {
++        debut: { fr: "La terre ferme est le berceau de l'humanit├® !", en: "The solid earth is the rightful cradle of humanity!" },
++        fin: { fr: "Max nous avait pourtant pr├®venus...", en: "Maxie warned us about tough trainers..." }
++      },
++      replique: { fr: "La terre ferme est le berceau de l'humanit├® !", en: "The solid earth is the rightful cradle of humanity!" },
++      equipeKey: "team_magma_1"
++    },
++    {
++      id: "expert_timothy",
++      classe: "expert",
++      nom: { fr: "Timoth├®e", en: "Timothy" },
++      quotes: {
++        debut: { fr: "Des d├®cennies de m├®ditation m'ont appris ├á anticiper chaque coup.", en: "Decades of deep meditation taught me to foresee every blow." },
++        fin: { fr: "Une force int├®rieure remarquable ! Respect.", en: "A truly remarkable inner power! My respect." }
++      },
++      replique: { fr: "Des d├®cennies de m├®ditation m'ont appris ├á anticiper chaque coup.", en: "Decades of deep meditation taught me to foresee every blow." },
++      equipeKey: "expert_1"
++    },
++    {
++      id: "cooltrainer_m_samuel",
++      classe: "cooltrainer_m",
++      nom: { fr: "Samuel", en: "Samuel" },
++      quotes: {
++        debut: { fr: "Tu as travers├® la Route Victoire ? Montre-moi ta vraie force !", en: "You made it through Victory Road? Prove your worth to me!" },
++        fin: { fr: "Tu es digne d'affronter le Conseil 4.", en: "You are truly ready to challenge the Elite Four." }
++      },
++      replique: { fr: "Tu as travers├® la Route Victoire ? Montre-moi ta vraie force !", en: "You made it through Victory Road? Prove your worth to me!" },
++      equipeKey: "cooltrainer_m_1"
++    },
++    {
++      id: "cooltrainer_f_brooke",
++      classe: "cooltrainer_f",
++      nom: { fr: "B├®r├®nice", en: "Brooke" },
++      quotes: {
++        debut: { fr: "Seuls les meilleurs dresseurs atteignent ces sommets !", en: "Only the very finest trainers ever reach these heights!" },
++        fin: { fr: "Ton talent est ├®clatant. Bonne chance ├á la Ligue !", en: "Your skill is magnificent. Good luck at the Pok├®mon League!" }
++      },
++      replique: { fr: "Seuls les meilleurs dresseurs atteignent ces sommets !", en: "Only the very finest trainers ever reach these heights!" },
++      equipeKey: "cooltrainer_f_1"
++    }
++  ];
++
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/js/poke/gen3/equipes.js b/js/poke/gen3/equipes.js
+new file mode 100644
+index 0000000..59e5239
+--- /dev/null
++++ b/js/poke/gen3/equipes.js
+@@ -0,0 +1,290 @@
++(function (W) {
++  "use strict";
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  //  ├ëquipes de Dresseurs de Route pour Hoenn (G├®n├®ration 3 - ├ëmeraude).
++  //  Calibr├®es sur les paliers de niveaux 3 ├á 50+ ├á travers les 9 Actes.
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++
++  var EQUIPES = {
++    "youngster": [
++      // Early routes (Routes 101, 102, 104)
++      [{ n: 263, niveau: 3, attaques: ["TACKLE", "GROWL"] }], // Zigzagoon
++      [{ n: 261, niveau: 4, attaques: ["TACKLE"] }, { n: 265, niveau: 4, attaques: ["TACKLE", "STRING_SHOT"] }], // Poochyena, Wurmple
++      [{ n: 263, niveau: 5, attaques: ["TACKLE", "TAIL_WHIP"] }, { n: 276, niveau: 5, attaques: ["PECK", "GROWL"] }], // Zigzagoon, Taillow
++      [{ n: 276, niveau: 7, attaques: ["PECK", "GROWL", "QUICK_ATTACK"] }], // Taillow
++      // Mid-early routes (Route 116, Route 110)
++      [{ n: 261, niveau: 10, attaques: ["TACKLE", "HOWL", "SAND_ATTACK"] }, { n: 276, niveau: 10, attaques: ["PECK", "QUICK_ATTACK"] }],
++      [{ n: 263, niveau: 13, attaques: ["HEADBUTT", "TAIL_WHIP", "SAND_ATTACK"] }, { n: 277, niveau: 14, attaques: ["WING_ATTACK", "QUICK_ATTACK"] }],
++      // Mid routes (Route 117, Route 111, Route 115)
++      [{ n: 264, niveau: 20, attaques: ["HEADBUTT", "SAND_ATTACK", "ODOR_SLEUTH"] }], // Linoone
++      [{ n: 262, niveau: 24, attaques: ["BITE", "ROAR", "ODOR_SLEUTH"] }, { n: 277, niveau: 25, attaques: ["WING_ATTACK", "AERIAL_ACE"] }],
++      // Late routes (Route 119, Route 120, Route 123)
++      [{ n: 264, niveau: 32, attaques: ["SLASH", "HEADBUTT", "REST", "BELLY_DRUM"] }, { n: 262, niveau: 32, attaques: ["CRUNCH", "TAKE_DOWN", "SCARY_FACE"] }],
++      [{ n: 264, niveau: 38, attaques: ["SLASH", "FACADE", "COVET"] }, { n: 277, niveau: 39, attaques: ["AERIAL_ACE", "DOUBLE_TEAM", "ENDEAVOR"] }]
++    ],
++
++    "lass": [
++      // Early
++      [{ n: 265, niveau: 4, attaques: ["TACKLE", "STRING_SHOT"] }], // Wurmple
++      [{ n: 285, niveau: 5, attaques: ["ABSORB", "TACKLE"] }], // Shroomish
++      [{ n: 263, niveau: 6, attaques: ["TACKLE", "TAIL_WHIP"] }, { n: 285, niveau: 6, attaques: ["ABSORB", "STUN_SPORE"] }],
++      [{ n: 300, niveau: 9, attaques: ["TACKLE", "GROWL", "TAIL_WHIP"] }], // Skitty
++      // Mid-early
++      [{ n: 300, niveau: 13, attaques: ["TACKLE", "SING", "ATTRACT"] }, { n: 285, niveau: 13, attaques: ["MEGA_DRAIN", "STUN_SPORE", "LEECH_SEED"] }],
++      [{ n: 183, niveau: 16, attaques: ["WATER_GUN", "TAIL_WHIP", "ROLLOUT"] }, { n: 300, niveau: 16, attaques: ["FEINT_ATTACK", "SING", "ATTRACT"] }],
++      // Mid
++      [{ n: 286, niveau: 24, attaques: ["MACH_PUNCH", "MEGA_DRAIN", "LEECH_SEED"] }], // Breloom
++      [{ n: 301, niveau: 27, attaques: ["FEINT_ATTACK", "ASSIST", "SING", "CHARM"] }, { n: 184, niveau: 27, attaques: ["BUBBLEBEAM", "ROLLOUT", "DOUBLE_EDGE"] }],
++      // Late
++      [{ n: 301, niveau: 34, attaques: ["DOUBLE_EDGE", "FEINT_ATTACK", "COVET", "CHARM"] }, { n: 286, niveau: 35, attaques: ["SKY_UPPERCUT", "GIGA_DRAIN", "SPORE"] }]
++    ],
++
++    "bug_catcher": [
++      [{ n: 265, niveau: 3, attaques: ["TACKLE", "STRING_SHOT"] }],
++      [{ n: 266, niveau: 5, attaques: ["HARDEN"] }, { n: 268, niveau: 5, attaques: ["HARDEN"] }], // Silcoon, Cascoon
++      [{ n: 267, niveau: 8, attaques: ["CONFUSION", "GUST", "POISON_STING"] }], // Beautifly
++      [{ n: 269, niveau: 8, attaques: ["CONFUSION", "GUST", "POISON_STING"] }], // Dustox
++      [{ n: 290, niveau: 12, attaques: ["SCRATCH", "HARDEN", "LEECH_LIFE"] }], // Nincada
++      [{ n: 283, niveau: 14, attaques: ["WATER_GUN", "QUICK_ATTACK", "SWEET_SCENT"] }], // Surskit
++      [{ n: 313, niveau: 20, attaques: ["SIGNAL_BEAM", "MOONLIGHT", "TAIL_GLOW"] }], // Volbeat
++      [{ n: 314, niveau: 20, attaques: ["SIGNAL_BEAM", "MOONLIGHT", "SWEET_SCENT"] }], // Illumise
++      [{ n: 291, niveau: 32, attaques: ["SLASH", "SWORDS_DANCE", "FURY_CUTTER", "SCREECH"] }], // Ninjask
++      [{ n: 284, niveau: 36, attaques: ["BUBBLEBEAM", "SILVER_WIND", "QUICK_ATTACK"] }], // Masquerain
++      [{ n: 214, niveau: 42, attaques: ["MEGAHORN", "BRICK_BREAK", "COUNTER", "TAKE_DOWN"] }] // Heracross
++    ],
++
++    "rich_boy": [
++      [{ n: 263, niveau: 7, attaques: ["TACKLE", "HEADBUTT"] }], // Zigzagoon
++      [{ n: 264, niveau: 14, attaques: ["HEADBUTT", "SAND_ATTACK", "ODOR_SLEUTH"] }], // Linoone
++      [{ n: 304, niveau: 20, attaques: ["HEADBUTT", "IRON_DEFENSE", "METAL_CLAW"] }], // Aron
++      [{ n: 305, niveau: 30, attaques: ["IRON_DEFENSE", "TAKE_DOWN", "METAL_CLAW", "ROAR"] }], // Lairon
++      [{ n: 306, niveau: 45, attaques: ["IRON_TAIL", "EARTHQUAKE", "ROCK_SLIDE", "DOUBLE_EDGE"] }] // Aggron
++    ],
++
++    "lady": [
++      [{ n: 263, niveau: 7, attaques: ["TACKLE", "GROWL"] }],
++      [{ n: 300, niveau: 14, attaques: ["TACKLE", "SING", "ATTRACT"] }],
++      [{ n: 303, niveau: 20, attaques: ["BITE", "FAINT_ATTACK", "SWEET_SCENT"] }], // Mawile
++      [{ n: 311, niveau: 30, attaques: ["WEATHER_BALL", "HEADBUTT"] }], // Plusle/Minun/Castform
++      [{ n: 350, niveau: 46, attaques: ["SURF", "ICE_BEAM", "RECOVER", "WATER_PULSE"] }] // Milotic
++    ],
++
++    "triathlete": [
++      // Runner
++      [{ n: 84, niveau: 12, attaques: ["PECK", "QUICK_ATTACK", "GROWL"] }], // Doduo
++      [{ n: 85, niveau: 28, attaques: ["TRI_ATTACK", "DRILL_PECK", "PURSUIT"] }], // Dodrio
++      // Cyclist
++      [{ n: 81, niveau: 16, attaques: ["THUNDERSHOCK", "SONICBOOM", "SUPERSONIC"] }], // Magnemite
++      [{ n: 82, niveau: 32, attaques: ["THUNDERBOLT", "SONICBOOM", "THUNDER_WAVE"] }], // Magneton
++      // Swimmer
++      [{ n: 118, niveau: 24, attaques: ["WATER_PULSE", "HORN_ATTACK", "SUPERSONIC"] }], // Goldeen
++      [{ n: 119, niveau: 36, attaques: ["WATERFALL", "HORN_DRILL", "FURY_ATTACK"] }], // Seaking
++      [{ n: 85, niveau: 44, attaques: ["DRILL_PECK", "TRI_ATTACK", "AGILITY", "FURY_ATTACK"] }]
++    ],
++
++    "aroma_lady": [
++      [{ n: 285, niveau: 14, attaques: ["MEGA_DRAIN", "STUN_SPORE", "LEECH_SEED"] }], // Shroomish
++      [{ n: 315, niveau: 18, attaques: ["MEGA_DRAIN", "POISON_STING", "SWEET_SCENT"] }], // Roselia
++      [{ n: 274, niveau: 26, attaques: ["RAZOR_LEAF", "FAINT_ATTACK", "GROWTH"] }], // Nuzleaf
++      [{ n: 315, niveau: 34, attaques: ["GIGA_DRAIN", "MAGICAL_LEAF", "TOXIC", "SYNTHESIS"] }], // Roselia
++      [{ n: 45, niveau: 43, attaques: ["GIGA_DRAIN", "PETAL_DANCE", "MOONLIGHT", "SLEEP_POWDER"] }] // Vileplume
++    ],
++
++    "pokemon_ranger": [
++      [{ n: 276, niveau: 18, attaques: ["WING_ATTACK", "QUICK_ATTACK"] }, { n: 285, niveau: 18, attaques: ["MEGA_DRAIN", "HEADBUTT"] }],
++      [{ n: 277, niveau: 28, attaques: ["AERIAL_ACE", "QUICK_ATTACK", "ENDEAVOR"] }, { n: 286, niveau: 28, attaques: ["MACH_PUNCH", "GIGA_DRAIN", "COUNTER"] }],
++      [{ n: 335, niveau: 35, attaques: ["SLASH", "CRUSH_CLAW", "FURY_SWIPES"] }], // Zangoose
++      [{ n: 336, niveau: 35, attaques: ["POISON_TAIL", "CRUNCH", "SCREECH"] }], // Seviper
++      [{ n: 357, niveau: 44, attaques: ["SOLARBEAM", "BODY_SLAM", "SYNTHESIS", "AERIAL_ACE"] }] // Tropius
++    ],
++
++    "collector": [
++      [{ n: 265, niveau: 15, attaques: ["TACKLE", "POISON_STING"] }, { n: 268, niveau: 15, attaques: ["HARDEN"] }],
++      [{ n: 316, niveau: 24, attaques: ["SLUDGE", "YAWN", "ACID_ARMOR"] }], // Gulpin
++      [{ n: 327, niveau: 30, attaques: ["TEETER_DANCE", "PSYBEAM", "DIZZY_PUNCH"] }], // Spinda
++      [{ n: 352, niveau: 38, attaques: ["ANCIENTPOWER", "SLASH", "FEINT_ATTACK"] }], // Kecleon
++      [{ n: 358, niveau: 45, attaques: ["PSYCHIC_M", "HEAL_BELL", "HYPNOSIS", "DOUBLE_EDGE"] }] // Chimecho
++    ],
++
++    "ninja_boy": [
++      [{ n: 290, niveau: 13, attaques: ["SCRATCH", "SAND_ATTACK", "LEECH_LIFE"] }], // Nincada
++      [{ n: 109, niveau: 22, attaques: ["SMOG", "SLUDGE", "SELFDESTRUCT"] }], // Koffing
++      [{ n: 316, niveau: 28, attaques: ["SLUDGE", "TOXIC", "YAWN"] }], // Gulpin
++      [{ n: 291, niveau: 35, attaques: ["SLASH", "AERIAL_ACE", "SWORDS_DANCE", "DOUBLE_TEAM"] }], // Ninjask
++      [{ n: 292, niveau: 42, attaques: ["SHADOW_BALL", "CONFUSE_RAY", "SPITE", "LEECH_LIFE"] }] // Shedinja
++    ],
++
++    "parasol_lady": [
++      [{ n: 283, niveau: 15, attaques: ["WATER_GUN", "BUBBLE", "SWEET_SCENT"] }], // Surskit
++      [{ n: 118, niveau: 25, attaques: ["WATER_PULSE", "HORN_ATTACK", "SUPERSONIC"] }], // Goldeen
++      [{ n: 311, niveau: 32, attaques: ["WEATHER_BALL", "RAIN_DANCE", "WATER_PULSE"] }], // Castform
++      [{ n: 351, niveau: 38, attaques: ["WEATHER_BALL", "BLIZZARD", "HYDRO_PUMP", "HAIL"] }], // Castform Ice/Water
++      [{ n: 279, niveau: 44, attaques: ["SURF", "WING_ATTACK", "STOCKPILE", "SPIT_UP"] }] // Pelipper
++    ],
++
++    "sailor": [
++      [{ n: 278, niveau: 11, attaques: ["WATER_GUN", "WING_ATTACK"] }], // Wingull
++      [{ n: 66, niveau: 14, attaques: ["KARATE_CHOP", "LOW_KICK", "LEER"] }], // Machop
++      [{ n: 278, niveau: 18, attaques: ["WATER_GUN", "SUPERSONIC", "WING_ATTACK"] }, { n: 66, niveau: 18, attaques: ["SEISMIC_TOSS", "KARATE_CHOP"] }],
++      [{ n: 279, niveau: 28, attaques: ["WATER_PULSE", "WING_ATTACK", "SUPERSONIC"] }], // Pelipper
++      [{ n: 67, niveau: 34, attaques: ["VITAL_THROW", "CROSS_CHOP", "ROCK_SLIDE"] }], // Machoke
++      [{ n: 319, niveau: 42, attaques: ["CRUNCH", "SLASH", "SURF", "SCREECH"] }], // Sharpedo
++      [{ n: 364, niveau: 45, attaques: ["BODY_SLAM", "AURORA_BEAM", "SURF", "REST"] }] // Sealeo
++    ],
++
++    "fisherman": [
++      [{ n: 129, niveau: 10, attaques: ["SPLASH", "TACKLE"] }, { n: 129, niveau: 10, attaques: ["SPLASH", "TACKLE"] }], // Magikarp
++      [{ n: 118, niveau: 14, attaques: ["PECK", "WATER_GUN"] }, { n: 129, niveau: 15, attaques: ["TACKLE"] }],
++      [{ n: 72, niveau: 20, attaques: ["POISON_STING", "CONSTRICT", "ACID", "WATER_PULSE"] }], // Tentacool
++      [{ n: 318, niveau: 25, attaques: ["BITE", "WATER_GUN", "FOCUS_ENERGY"] }], // Carvanha
++      [{ n: 320, niveau: 30, attaques: ["WATER_PULSE", "ROLLOUT", "DEFENSE_CURL"] }], // Wailmer
++      [{ n: 339, niveau: 34, attaques: ["MUD_SLAP", "WATER_PULSE", "MAGNITUDE"] }], // Barboach
++      [{ n: 130, niveau: 40, attaques: ["HYDRO_PUMP", "DRAGON_RAGE", "BITE", "TWISTER"] }], // Gyarados
++      [{ n: 340, niveau: 45, attaques: ["EARTHQUAKE", "SURF", "AMNESIA", "REST"] }] // Whiscash
++    ],
++
++    "hiker": [
++      [{ n: 74, niveau: 8, attaques: ["TACKLE", "DEFENSE_CURL"] }], // Geodude
++      [{ n: 74, niveau: 12, attaques: ["ROCK_THROW", "TACKLE", "DEFENSE_CURL"] }, { n: 74, niveau: 12, attaques: ["ROCK_THROW", "TACKLE"] }],
++      [{ n: 299, niveau: 16, attaques: ["ROCK_THROW", "TACKLE", "BLOCK"] }], // Nosepass
++      [{ n: 75, niveau: 24, attaques: ["ROCK_THROW", "MAGNITUDE", "DEFENSE_CURL"] }], // Graveler
++      [{ n: 304, niveau: 25, attaques: ["HEADBUTT", "METAL_CLAW", "MUD_SLAP"] }, { n: 75, niveau: 25, attaques: ["ROCK_THROW", "SELFDESTRUCT"] }],
++      [{ n: 322, niveau: 30, attaques: ["MAGNITUDE", "EMBER", "TAKE_DOWN"] }], // Numel
++      [{ n: 323, niveau: 38, attaques: ["EARTHQUAKE", "ROCK_SLIDE", "ERUPTION", "AMNESIA"] }], // Camerupt
++      [{ n: 76, niveau: 44, attaques: ["EARTHQUAKE", "ROCK_SLIDE", "EXPLOSION", "DOUBLE_EDGE"] }], // Golem
++      [{ n: 306, niveau: 48, attaques: ["IRON_TAIL", "EARTHQUAKE", "ROCK_SLIDE", "ROAR"] }] // Aggron
++    ],
++
++    "swimmer_m": [
++      [{ n: 72, niveau: 24, attaques: ["ACID", "WATER_PULSE", "WRAP"] }],
++      [{ n: 318, niveau: 28, attaques: ["BITE", "WATER_PULSE", "SCARY_FACE"] }],
++      [{ n: 278, niveau: 30, attaques: ["WING_ATTACK", "WATER_PULSE", "SUPERSONIC"] }, { n: 72, niveau: 30, attaques: ["BUBBLEBEAM", "ACID"] }],
++      [{ n: 341, niveau: 34, attaques: ["BUBBLEBEAM", "CRABHAMMER", "HARDEN"] }], // Corphish
++      [{ n: 319, niveau: 38, attaques: ["CRUNCH", "SLASH", "SURF"] }], // Sharpedo
++      [{ n: 364, niveau: 44, attaques: ["BODY_SLAM", "AURORA_BEAM", "SURF"] }], // Sealeo
++      [{ n: 130, niveau: 46, attaques: ["HYDRO_PUMP", "DRAGON_DANCE", "BITE", "EARTHQUAKE"] }]
++    ],
++
++    "swimmer_f": [
++      [{ n: 183, niveau: 24, attaques: ["WATER_GUN", "ROLLOUT", "TAIL_WHIP"] }],
++      [{ n: 118, niveau: 28, attaques: ["WATER_PULSE", "HORN_ATTACK", "SUPERSONIC"] }],
++      [{ n: 366, niveau: 32, attaques: ["WATER_PULSE", "CLAMP", "IRON_DEFENSE"] }], // Clamperl
++      [{ n: 370, niveau: 36, attaques: ["WATER_PULSE", "SWEET_KISS", "ATTRACT"] }], // Luvdisc
++      [{ n: 119, niveau: 40, attaques: ["WATERFALL", "MEGAHORN", "HORN_DRILL"] }], // Seaking
++      [{ n: 367, niveau: 44, attaques: ["CRUNCH", "SURF", "BATON_PASS", "SCREECH"] }], // Huntail
++      [{ n: 368, niveau: 45, attaques: ["PSYCHIC_M", "SURF", "SAFEGUARD", "SCREECH"] }] // Gorebyss
++    ],
++
++    "team_aqua": [
++      [{ n: 261, niveau: 14, attaques: ["BITE", "HOWL"] }, { n: 72, niveau: 14, attaques: ["POISON_STING", "WATER_GUN"] }],
++      [{ n: 262, niveau: 24, attaques: ["BITE", "ROAR", "SWAGGER"] }, { n: 318, niveau: 24, attaques: ["BITE", "WATER_PULSE"] }],
++      [{ n: 319, niveau: 32, attaques: ["CRUNCH", "SLASH", "SCARY_FACE"] }, { n: 262, niveau: 32, attaques: ["CRUNCH", "TAKE_DOWN"] }],
++      [{ n: 89, niveau: 36, attaques: ["SLUDGE_BOMB", "MINIMIZE", "ACID_ARMOR"] }, { n: 319, niveau: 37, attaques: ["CRUNCH", "SURF", "TAUNT"] }],
++      [{ n: 262, niveau: 42, attaques: ["CRUNCH", "DOUBLE_EDGE", "TAUNT"] }, { n: 319, niveau: 44, attaques: ["CRUNCH", "HYDRO_PUMP", "SLASH"] }]
++    ],
++
++    "team_magma": [
++      [{ n: 261, niveau: 14, attaques: ["BITE", "HOWL"] }, { n: 322, niveau: 14, attaques: ["EMBER", "MAGNITUDE"] }],
++      [{ n: 262, niveau: 24, attaques: ["BITE", "ROAR", "SWAGGER"] }, { n: 322, niveau: 24, attaques: ["EMBER", "MAGNITUDE", "TAKE_DOWN"] }],
++      [{ n: 323, niveau: 32, attaques: ["EARTHQUAKE", "ROCK_SLIDE", "TAKE_DOWN"] }, { n: 262, niveau: 32, attaques: ["CRUNCH", "TAKE_DOWN"] }],
++      [{ n: 110, niveau: 36, attaques: ["SLUDGE_BOMB", "SMOKESCREEN", "EXPLOSION"] }, { n: 323, niveau: 37, attaques: ["EARTHQUAKE", "FLAMETHROWER", "AMNESIA"] }],
++      [{ n: 262, niveau: 42, attaques: ["CRUNCH", "DOUBLE_EDGE", "SCARY_FACE"] }, { n: 323, niveau: 44, attaques: ["EARTHQUAKE", "ERUPTION", "ROCK_SLIDE"] }]
++    ],
++
++    "expert": [
++      [{ n: 307, niveau: 28, attaques: ["CONFUSION", "MEDITATE", "MIND_READER"] }, { n: 296, niveau: 28, attaques: ["ARM_THRUST", "KNOCK_OFF", "BELLY_DRUM"] }],
++      [{ n: 308, niveau: 36, attaques: ["HI_JUMP_KICK", "PSYCHIC_M", "CALM_MIND"] }, { n: 297, niveau: 36, attaques: ["VITAL_THROW", "FAKE_OUT", "BELLY_DRUM"] }],
++      [{ n: 308, niveau: 44, attaques: ["HI_JUMP_KICK", "PSYCHIC_M", "RECOVER", "CALM_MIND"] }], // Medicham
++      [{ n: 297, niveau: 46, attaques: ["CROSS_CHOP", "EARTHQUAKE", "SURF", "KNOCK_OFF"] }], // Hariyama
++      [{ n: 308, niveau: 48, attaques: ["HI_JUMP_KICK", "PSYCHIC_M", "ICE_PUNCH", "THUNDERPUNCH"] }]
++    ],
++
++    "cooltrainer_m": [
++      [{ n: 304, niveau: 26, attaques: ["HEADBUTT", "METAL_CLAW", "IRON_DEFENSE"] }, { n: 277, niveau: 26, attaques: ["WING_ATTACK", "AERIAL_ACE"] }],
++      [{ n: 305, niveau: 34, attaques: ["IRON_TAIL", "BODY_SLAM", "TAKE_DOWN"] }, { n: 334, niveau: 35, attaques: ["DRAGONBREATH", "AERIAL_ACE", "DRAGON_DANCE"] }],
++      [{ n: 254, niveau: 42, attaques: ["LEAF_BLADE", "DRAGON_CLAW", "CRUNCH", "QUICK_ATTACK"] }], // Sceptile
++      [{ n: 257, niveau: 42, attaques: ["BLAZE_KICK", "SKY_UPPERCUT", "SLASH", "QUICK_ATTACK"] }], // Blaziken
++      [{ n: 260, niveau: 42, attaques: ["SURF", "EARTHQUAKE", "MUDDY_WATER", "TAKE_DOWN"] }], // Swampert
++      [{ n: 373, niveau: 48, attaques: ["DRAGON_CLAW", "FLAMETHROWER", "FLY", "CRUNCH"] }] // Salamence
++    ],
++
++    "cooltrainer_f": [
++      [{ n: 281, niveau: 26, attaques: ["CONFUSION", "DOUBLE_TEAM", "CALM_MIND"] }, { n: 300, niveau: 26, attaques: ["FEINT_ATTACK", "ASSIST", "CHARM"] }],
++      [{ n: 282, niveau: 35, attaques: ["PSYCHIC_M", "THUNDERBOLT", "CALM_MIND"] }, { n: 350, niveau: 36, attaques: ["SURF", "ICE_BEAM", "RECOVER"] }],
++      [{ n: 334, niveau: 42, attaques: ["DRAGONBREATH", "EARTHQUAKE", "AERIAL_ACE", "DRAGON_DANCE"] }],
++      [{ n: 359, niveau: 44, attaques: ["SLASH", "SWORDS_DANCE", "AERIAL_ACE", "ROCK_SLIDE"] }], // Absol
++      [{ n: 282, niveau: 48, attaques: ["PSYCHIC_M", "THUNDERBOLT", "CALM_MIND", "SHADOW_BALL"] }] // Gardevoir
++    ],
++
++    "psychic": [
++      [{ n: 280, niveau: 15, attaques: ["CONFUSION", "DOUBLE_TEAM", "GROWL"] }], // Ralts
++      [{ n: 64, niveau: 24, attaques: ["PSYBEAM", "CONFUSION", "RECOVER"] }], // Kadabra
++      [{ n: 281, niveau: 32, attaques: ["PSYBEAM", "CALM_MIND", "TELEPORT"] }], // Kirlia
++      [{ n: 325, niveau: 36, attaques: ["PSYCHIC_M", "TEETER_DANCE", "BOUNCE"] }], // Spoink
++      [{ n: 65, niveau: 44, attaques: ["PSYCHIC_M", "CALM_MIND", "RECOVER", "REFLECT"] }] // Alakazam
++    ],
++
++    "black_belt": [
++      [{ n: 66, niveau: 16, attaques: ["KARATE_CHOP", "LOW_KICK", "LEER"] }],
++      [{ n: 296, niveau: 24, attaques: ["ARM_THRUST", "KNOCK_OFF", "SAND_ATTACK"] }],
++      [{ n: 67, niveau: 32, attaques: ["VITAL_THROW", "KARATE_CHOP", "SEISMIC_TOSS"] }],
++      [{ n: 297, niveau: 38, attaques: ["ARM_THRUST", "BELLY_DRUM", "VITAL_THROW"] }],
++      [{ n: 68, niveau: 46, attaques: ["CROSS_CHOP", "EARTHQUAKE", "ROCK_SLIDE", "SUBMISSION"] }] // Machamp
++    ],
++
++    "guitarist": [
++      [{ n: 309, niveau: 18, attaques: ["SPARK", "QUICK_ATTACK", "LEER"] }],
++      [{ n: 310, niveau: 28, attaques: ["SPARK", "BITE", "QUICK_ATTACK", "ROAR"] }],
++      [{ n: 310, niveau: 38, attaques: ["THUNDERBOLT", "CRUNCH", "QUICK_ATTACK"] }]
++    ],
++
++    "bird_keeper": [
++      [{ n: 276, niveau: 14, attaques: ["WING_ATTACK", "PECK", "QUICK_ATTACK"] }],
++      [{ n: 277, niveau: 26, attaques: ["AERIAL_ACE", "WING_ATTACK", "QUICK_ATTACK"] }],
++      [{ n: 333, niveau: 30, attaques: ["PECK", "SAFEGUARD", "SING", "MIST"] }],
++      [{ n: 227, niveau: 38, attaques: ["STEEL_WING", "AERIAL_ACE", "SPIKES"] }],
++      [{ n: 334, niveau: 45, attaques: ["AERIAL_ACE", "DRAGONBREATH", "DRAGON_DANCE", "EARTHQUAKE"] }]
++    ]
++  };
++
++  // Alias PascalCase pour les ├®quipes ├®galement
++  var aliasList = [
++    ["Youngster", "youngster"],
++    ["Lass", "lass"],
++    ["BugCatcher", "bug_catcher"],
++    ["RichBoy", "rich_boy"],
++    ["Lady", "lady"],
++    ["Triathlete", "triathlete"],
++    ["AromaLady", "aroma_lady"],
++    ["PokemonRanger", "pokemon_ranger"],
++    ["Collector", "collector"],
++    ["NinjaBoy", "ninja_boy"],
++    ["ParasolLady", "parasol_lady"],
++    ["Sailor", "sailor"],
++    ["Fisherman", "fisherman"],
++    ["Hiker", "hiker"],
++    ["SwimmerM", "swimmer_m"],
++    ["SwimmerF", "swimmer_f"],
++    ["TeamAqua", "team_aqua"],
++    ["TeamMagma", "team_magma"],
++    ["Expert", "expert"],
++    ["CooltrainerM", "cooltrainer_m"],
++    ["CooltrainerF", "cooltrainer_f"],
++    ["Psychic", "psychic"],
++    ["BlackBelt", "black_belt"],
++    ["Guitarist", "guitarist"],
++    ["BirdKeeper", "bird_keeper"]
++  ];
++
++  for (var a = 0; a < aliasList.length; a++) {
++    var pName = aliasList[a][0];
++    var sName = aliasList[a][1];
++    if (EQUIPES[sName] && !EQUIPES[pName]) {
++      EQUIPES[pName] = EQUIPES[sName];
++    }
++  }
++
++  W.POKE_GEN3_EQUIPES = EQUIPES;
++
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/js/poke/gen3/rival.js b/js/poke/gen3/rival.js
+new file mode 100644
+index 0000000..0c416ae
+--- /dev/null
++++ b/js/poke/gen3/rival.js
+@@ -0,0 +1,118 @@
++(function (W) {
++  "use strict";
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  //  Rival Brice / Flora (May / Brendan) & Timmy (Wally) pour Hoenn (├ëmeraude).
++  //
++  //  5 rencontres au fil de l'aventure pour le rival, 3 variantes chacune selon
++  //  le starter choisi (l'ordre dans le tableau dicte la variante adverse).
++  //  Timmy d├®fend l'entr├®e de la Ligue au bout de la Route Victoire.
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++
++  W.POKE_GEN3_RIVAL = {
++    // Les 3 starters : Arcko (252), Poussifeu (255), Gobou (258)
++    ordre: [252, 255, 258],
++    rencontres: 5,
++
++    // Rencontres de d├®but : Route 103, Route 110, Route 119 (3 x 3 variantes = 9 ├®quipes)
++    debut: [
++      // 1. Route 103 (Niveau 5)
++      [{ n: 252, niveau: 5, attaques: ["POUND", "LEER"] }],
++      [{ n: 255, niveau: 5, attaques: ["SCRATCH", "GROWL"] }],
++      [{ n: 258, niveau: 5, attaques: ["TACKLE", "GROWL"] }],
++
++      // 2. Route 110 (Niveaux 18-20)
++      [
++        { n: 278, niveau: 18, attaques: ["WATER_GUN", "WING_ATTACK", "SUPERSONIC"] },
++        { n: 271, niveau: 18, attaques: ["NATURE_POWER", "ABSORB", "FURY_SWIPES"] },
++        { n: 253, niveau: 20, attaques: ["PURSUIT", "MEGA_DRAIN", "QUICK_ATTACK", "LEER"] }
++      ],
++      [
++        { n: 278, niveau: 18, attaques: ["WATER_GUN", "WING_ATTACK", "SUPERSONIC"] },
++        { n: 322, niveau: 18, attaques: ["EMBER", "MAGNITUDE", "TACKLE"] },
++        { n: 256, niveau: 20, attaques: ["DOUBLE_KICK", "EMBER", "PECK", "FOCUS_ENERGY"] }
++      ],
++      [
++        { n: 271, niveau: 18, attaques: ["NATURE_POWER", "ABSORB", "FURY_SWIPES"] },
++        { n: 218, niveau: 18, attaques: ["EMBER", "ROCK_THROW", "HARDEN"] },
++        { n: 259, niveau: 20, attaques: ["MUD_SHOT", "WATER_GUN", "BIDE", "MUD_SPORT"] }
++      ],
++
++      // 3. Route 119 (Niveaux 29-31)
++      [
++        { n: 278, niveau: 29, attaques: ["WATER_PULSE", "WING_ATTACK", "SUPERSONIC", "MIST"] },
++        { n: 271, niveau: 29, attaques: ["FURY_SWIPES", "MEGA_DRAIN", "NATURE_POWER"] },
++        { n: 253, niveau: 31, attaques: ["PURSUIT", "GIGA_DRAIN", "QUICK_ATTACK", "SCREECH"] }
++      ],
++      [
++        { n: 322, niveau: 29, attaques: ["MAGNITUDE", "FLAMETHROWER", "TAKE_DOWN"] },
++        { n: 278, niveau: 29, attaques: ["WATER_PULSE", "WING_ATTACK", "SUPERSONIC"] },
++        { n: 256, niveau: 31, attaques: ["SKY_UPPERCUT", "FLAME_WHEEL", "PECK", "SAND_ATTACK"] }
++      ],
++      [
++        { n: 271, niveau: 29, attaques: ["MEGA_DRAIN", "SURF", "FURY_SWIPES"] },
++        { n: 218, niveau: 29, attaques: ["FLAMETHROWER", "ROCK_SLIDE", "SMOG"] },
++        { n: 259, niveau: 31, attaques: ["MUD_SHOT", "SURF", "TAKE_DOWN", "FORESIGHT"] }
++      ]
++    ],
++
++    // Rencontres de milieu / fin : N├®nucrique & ├ëpilogue (2 x 3 variantes = 6 ├®quipes)
++    milieu: [
++      // 4. N├®nucrique (Lilycove City - Niveaux 31-34)
++      [
++        { n: 277, niveau: 31, attaques: ["AERIAL_ACE", "QUICK_ATTACK", "WING_ATTACK", "DOUBLE_TEAM"] },
++        { n: 320, niveau: 32, attaques: ["WATER_PULSE", "ROLLOUT", "ASTONISH"] },
++        { n: 285, niveau: 32, attaques: ["MEGA_DRAIN", "STUN_SPORE", "HEADBUTT"] },
++        { n: 254, niveau: 34, attaques: ["LEAF_BLADE", "PURSUIT", "QUICK_ATTACK", "SCREECH"] }
++      ],
++      [
++        { n: 277, niveau: 31, attaques: ["AERIAL_ACE", "QUICK_ATTACK", "WING_ATTACK", "DOUBLE_TEAM"] },
++        { n: 279, niveau: 32, attaques: ["WATER_PULSE", "WING_ATTACK", "PROTECT"] },
++        { n: 219, niveau: 32, attaques: ["FLAMETHROWER", "ROCK_SLIDE", "AMNESIA"] },
++        { n: 257, niveau: 34, attaques: ["BLAZE_KICK", "DOUBLE_KICK", "SLASH", "SAND_ATTACK"] }
++      ],
++      [
++        { n: 277, niveau: 31, attaques: ["AERIAL_ACE", "QUICK_ATTACK", "WING_ATTACK", "DOUBLE_TEAM"] },
++        { n: 272, niveau: 32, attaques: ["GIGA_DRAIN", "SURF", "NATURE_POWER"] },
++        { n: 219, niveau: 32, attaques: ["FLAMETHROWER", "ROCK_SLIDE", "AMNESIA"] },
++        { n: 260, niveau: 34, attaques: ["MUDDY_WATER", "EARTHQUAKE", "TAKE_DOWN", "MUD_SHOT"] }
++      ],
++
++      // 5. Combat d'├ëpilogue (Niveaux 42-45)
++      [
++        { n: 277, niveau: 42, attaques: ["AERIAL_ACE", "QUICK_ATTACK", "STEEL_WING", "DOUBLE_TEAM"] },
++        { n: 321, niveau: 43, attaques: ["WATER_SPOUT", "BLIZZARD", "BODY_SLAM", "REST"] },
++        { n: 286, niveau: 43, attaques: ["SKY_UPPERCUT", "GIGA_DRAIN", "MACH_PUNCH", "SPORE"] },
++        { n: 254, niveau: 45, attaques: ["LEAF_BLADE", "DRAGON_CLAW", "CRUNCH", "QUICK_ATTACK"] }
++      ],
++      [
++        { n: 277, niveau: 42, attaques: ["AERIAL_ACE", "QUICK_ATTACK", "STEEL_WING", "DOUBLE_TEAM"] },
++        { n: 279, niveau: 43, attaques: ["SURF", "WING_ATTACK", "PROTECT", "STOCKPILE"] },
++        { n: 219, niveau: 43, attaques: ["FLAMETHROWER", "EARTHQUAKE", "ROCK_SLIDE", "RECOVER"] },
++        { n: 257, niveau: 45, attaques: ["BLAZE_KICK", "SKY_UPPERCUT", "SLASH", "SWORDS_DANCE"] }
++      ],
++      [
++        { n: 277, niveau: 42, attaques: ["AERIAL_ACE", "QUICK_ATTACK", "STEEL_WING", "DOUBLE_TEAM"] },
++        { n: 272, niveau: 43, attaques: ["HYDRO_PUMP", "GIGA_DRAIN", "ICE_BEAM", "LEECH_SEED"] },
++        { n: 219, niveau: 43, attaques: ["FLAMETHROWER", "EARTHQUAKE", "ROCK_SLIDE", "RECOVER"] },
++        { n: 260, niveau: 45, attaques: ["EARTHQUAKE", "SURF", "ICE_BEAM", "BRICK_BREAK"] }
++      ]
++    ]
++  };
++
++  // Timmy (Wally) ├á la Route Victoire (├ëmeraude Canon)
++  W.POKE_GEN3_TIMMY = {
++    nom: "Timmy",
++    nomFr: "Timmy",
++    nomEn: "Wally",
++    lieu: "victory-road",
++    equipe: [
++      { n: 334, niveau: 44, attaques: ["AERIAL_ACE", "DRAGONBREATH", "DRAGON_DANCE", "SAFEGUARD"] },
++      { n: 301, niveau: 43, attaques: ["ASSIST", "CHARM", "FAINT_ATTACK", "COVET"] },
++      { n: 315, niveau: 44, attaques: ["GIGA_DRAIN", "TOXIC", "LEECH_SEED", "GRASS_WHISTLE"] },
++      { n: 82, niveau: 41, attaques: ["THUNDERBOLT", "TRI_ATTACK", "SCREECH", "THUNDER_WAVE"] },
++      { n: 282, niveau: 45, attaques: ["PSYCHIC_M", "FUTURE_SIGHT", "CALM_MIND", "DOUBLE_TEAM"] }
++    ]
++  };
++
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/tests/test_gen3_trainers.mjs b/tests/test_gen3_trainers.mjs
+new file mode 100644
+index 0000000..fb43f1e
+--- /dev/null
++++ b/tests/test_gen3_trainers.mjs
+@@ -0,0 +1,559 @@
++/**
++ * tests/test_gen3_trainers.mjs
++ * Unit test suite for Gen 3 NOYAU Trainer & Gym Modules.
++ *
++ * Verifies:
++ * 1. Isolated headless execution (Node.js context, zero window/document).
++ * 2. Static analysis: strict mode ('use strict'), zero DOM references, zero non-deterministic calls.
++ * 3. js/poke/gen3/classes.js:
++ *    - Exports W.POKE_GEN3_CLASSES.
++ *    - Includes canonical Emerald classes: rich_boy, lady, triathlete, aroma_lady, pokemon_ranger,
++ *      collector, ninja_boy, parasol_lady, sailor, fisherman, hiker, youngster, lass,
++ *      swimmer_m, swimmer_f, team_aqua, team_magma, leader, elite_four, champion, expert.
++ *    - Valid { fr, en } names and prize money multipliers.
++ * 4. js/poke/gen3/dresseurs.js:
++ *    - Exports W.POKE_GEN3_DRESSEURS (pool of route trainers with unique ID, class, localized name, quotes, team key).
++ * 5. js/poke/gen3/equipes.js:
++ *    - Exports W.POKE_GEN3_EQUIPES (rosters of Pok├®mon with species number, level, and moves).
++ *    - Level spread across route acts (calibrated across levels 3 to 50).
++ * 6. js/poke/gen3/arenes.js:
++ *    - Exports W.POKE_GEN3_ARENES (8 canonical Emerald Gym Leaders).
++ *    - Exports W.POKE_GEN3_CONSEIL (4 Elite Four members: Sidney, Phoebe, Glacia, Drake).
++ *    - Exports W.POKE_GEN3_MAITRE (Champion Wallace / Marc with 6 Pok├®mon).
++ *    - Exports W.POKE_GEN3_STEVEN (Epilogue Boss Steven Stone / Pierre Rochard with 6 Pok├®mon lv 75-78).
++ * 7. js/poke/gen3/rival.js:
++ *    - Exports W.POKE_GEN3_RIVAL with 3 starter variants for May/Brendan (Arcko 252, Poussifeu 255, Gobou 258).
++ *    - Exports W.POKE_GEN3_TIMMY (Wally) for Victory Road with Gardevoir 282, Altaria 334, Delcatty 301, Roselia 315, Magneton 82.
++ */
++
++import fs from "node:fs";
++import path from "node:path";
++import vm from "node:vm";
++import assert from "node:assert";
++import { fileURLToPath } from "node:url";
++
++const __filename = fileURLToPath(import.meta.url);
++const __dirname = path.dirname(__filename);
++const ROOT_DIR = path.resolve(__dirname, "..");
++
++let totalTests = 0;
++let passedTests = 0;
++let failedTests = 0;
++const failures = [];
++
++function suite(title) {
++  console.log(`\n\x1b[1m\x1b[36m=== ${title} ===\x1b[0m`);
++}
++
++function test(name, fn) {
++  totalTests++;
++  try {
++    fn();
++    passedTests++;
++    console.log(`  \x1b[32mÔ£ô\x1b[0m ${name}`);
++  } catch (err) {
++    failedTests++;
++    failures.push({ name, err });
++    console.log(`  \x1b[31mÔ£ù\x1b[0m ${name}`);
++    console.error(`    \x1b[31m${err.message}\x1b[0m`);
++  }
++}
++
++function stripComments(code) {
++  return code
++    .replace(/\/\*[\s\S]*?\*\//g, "")
++    .replace(/\/\/[^\n\r]*/g, "");
++}
++
++function createIsolatedContext(customGlobals = {}) {
++  const sandbox = {
++    console: console,
++    Math: Math,
++    Object: Object,
++    Array: Array,
++    String: String,
++    Number: Number,
++    Boolean: Boolean,
++    RegExp: RegExp,
++    JSON: JSON,
++    isFinite: isFinite,
++    isNaN: isNaN,
++    parseInt: parseInt,
++    parseFloat: parseFloat,
++    ...customGlobals,
++  };
++  sandbox.globalThis = sandbox;
++  return vm.createContext(sandbox);
++}
++
++function loadScriptInContext(filePath, context) {
++  const fullPath = path.join(ROOT_DIR, filePath);
++  if (!fs.existsSync(fullPath)) {
++    throw new Error(`File does not exist: ${filePath}`);
++  }
++  const code = fs.readFileSync(fullPath, "utf-8");
++  vm.runInContext(code, context, { filename: filePath });
++}
++
++const TRAINER_FILES = [
++  "js/poke/gen3/classes.js",
++  "js/poke/gen3/dresseurs.js",
++  "js/poke/gen3/equipes.js",
++  "js/poke/gen3/arenes.js",
++  "js/poke/gen3/rival.js",
++];
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 1: File Existence & Strict NOYAU Constraints
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("1. File Existence & Strict NOYAU Constraints");
++
++test("All 5 Gen 3 trainer and gym files exist on disk", () => {
++  for (const relPath of TRAINER_FILES) {
++    const fullPath = path.join(ROOT_DIR, relPath);
++    assert.ok(fs.existsSync(fullPath), `File must exist: ${relPath}`);
++  }
++});
++
++test("Strict mode ('use strict') is enforced in all 5 files", () => {
++  for (const relPath of TRAINER_FILES) {
++    const fullPath = path.join(ROOT_DIR, relPath);
++    const content = fs.readFileSync(fullPath, "utf-8");
++    assert.ok(
++      content.includes('"use strict"') || content.includes("'use strict'"),
++      `File ${relPath} must enforce 'use strict'`
++    );
++  }
++});
++
++test("Zero non-deterministic calls (Math.random, Date.now, new Date, performance.now)", () => {
++  const nonDetRegex = /\b(Math\.random|Date\.now|new\s+Date|performance\.now)\b/;
++  for (const relPath of TRAINER_FILES) {
++    const fullPath = path.join(ROOT_DIR, relPath);
++    const content = stripComments(fs.readFileSync(fullPath, "utf-8"));
++    const match = content.match(nonDetRegex);
++    assert.ok(
++      !match,
++      `File ${relPath} contains non-deterministic call: ${match ? match[0] : ""}`
++    );
++  }
++});
++
++test("Zero DOM leaks or browser globals (document, localStorage, sessionStorage, window.)", () => {
++  const domRegex = /\b(document|localStorage|sessionStorage|navigator|location)\b/;
++  for (const relPath of TRAINER_FILES) {
++    const fullPath = path.join(ROOT_DIR, relPath);
++    const content = stripComments(fs.readFileSync(fullPath, "utf-8"));
++    const match = content.match(domRegex);
++    assert.ok(
++      !match,
++      `File ${relPath} contains prohibited DOM/browser global: ${match ? match[0] : ""}`
++    );
++  }
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 2: Headless Context Execution & Global Exports
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("2. Headless Context Execution & Global Exports");
++
++let ctx;
++test("All 5 files evaluate cleanly in isolated context without DOM", () => {
++  ctx = createIsolatedContext();
++  for (const relPath of TRAINER_FILES) {
++    loadScriptInContext(relPath, ctx);
++  }
++  assert.ok(ctx.POKE_GEN3_CLASSES, "POKE_GEN3_CLASSES must be exported");
++  assert.ok(ctx.POKE_GEN3_DRESSEURS, "POKE_GEN3_DRESSEURS must be exported");
++  assert.ok(ctx.POKE_GEN3_EQUIPES, "POKE_GEN3_EQUIPES must be exported");
++  assert.ok(ctx.POKE_GEN3_ARENES, "POKE_GEN3_ARENES must be exported");
++  assert.ok(ctx.POKE_GEN3_CONSEIL, "POKE_GEN3_CONSEIL must be exported");
++  assert.ok(ctx.POKE_GEN3_MAITRE, "POKE_GEN3_MAITRE must be exported");
++  assert.ok(ctx.POKE_GEN3_STEVEN, "POKE_GEN3_STEVEN must be exported");
++  assert.ok(ctx.POKE_GEN3_RIVAL, "POKE_GEN3_RIVAL must be exported");
++  assert.ok(ctx.POKE_GEN3_TIMMY, "POKE_GEN3_TIMMY must be exported");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 3: Trainer Classes Integrity (classes.js)
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("3. Trainer Classes Integrity (classes.js)");
++
++test("Canonical Emerald classes are present in POKE_GEN3_CLASSES", () => {
++  const classes = ctx.POKE_GEN3_CLASSES;
++  const canonicalList = [
++    "rich_boy", "lady", "triathlete", "aroma_lady", "pokemon_ranger",
++    "collector", "ninja_boy", "parasol_lady", "sailor", "fisherman",
++    "hiker", "youngster", "lass", "swimmer_m", "swimmer_f",
++    "team_aqua", "team_magma", "leader", "elite_four", "champion", "expert"
++  ];
++
++  for (const cls of canonicalList) {
++    assert.ok(
++      classes[cls] || classes[cls.replace(/_([a-z])/g, (_, l) => l.toUpperCase())],
++      `Canonical class missing: ${cls}`
++    );
++  }
++});
++
++test("Class definitions include valid localized names, multipliers and route flags", () => {
++  const classes = ctx.POKE_GEN3_CLASSES;
++  const canonicalList = [
++    "rich_boy", "lady", "triathlete", "aroma_lady", "pokemon_ranger",
++    "collector", "ninja_boy", "parasol_lady", "sailor", "fisherman",
++    "hiker", "youngster", "lass", "swimmer_m", "swimmer_f",
++    "team_aqua", "team_magma", "leader", "elite_four", "champion", "expert"
++  ];
++
++  for (const cls of canonicalList) {
++    const def = classes[cls];
++    assert.ok(def, `Definition must exist for ${cls}`);
++    assert.ok(def.fr && typeof def.fr === "string", `Class ${cls} must have French name`);
++    assert.ok(def.en && typeof def.en === "string", `Class ${cls} must have English name`);
++    assert.ok(typeof def.mult === "number" && def.mult > 0, `Class ${cls} must have positive multiplier`);
++    assert.strictEqual(typeof def.route, "boolean", `Class ${cls} must specify boolean route flag`);
++  }
++
++  // Check route flag correctness
++  assert.strictEqual(classes.youngster.route, true, "Youngster must be a route class");
++  assert.strictEqual(classes.leader.route, false, "Leader must not be a route class");
++  assert.strictEqual(classes.elite_four.route, false, "Elite Four must not be a route class");
++  assert.strictEqual(classes.champion.route, false, "Champion must not be a route class");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 4: Route Trainers Pool (dresseurs.js)
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("4. Route Trainers Pool (dresseurs.js)");
++
++test("POKE_GEN3_DRESSEURS contains valid trainer definitions with unique IDs", () => {
++  const trainers = ctx.POKE_GEN3_DRESSEURS;
++  assert.ok(Array.isArray(trainers), "POKE_GEN3_DRESSEURS must be an array");
++  assert.ok(trainers.length >= 20, `POKE_GEN3_DRESSEURS should contain at least 20 trainers, found ${trainers.length}`);
++
++  const seenIds = new Set();
++  for (const t of trainers) {
++    assert.ok(t.id && typeof t.id === "string", "Trainer must have an id string");
++    assert.ok(!seenIds.has(t.id), `Duplicate trainer id: ${t.id}`);
++    seenIds.add(t.id);
++
++    assert.ok(t.classe && typeof t.classe === "string", `Trainer ${t.id} must have a class`);
++    assert.ok(
++      ctx.POKE_GEN3_CLASSES[t.classe],
++      `Trainer ${t.id} has unknown class: ${t.classe}`
++    );
++
++    assert.ok(t.nom && typeof t.nom === "object", `Trainer ${t.id} must have localized name`);
++    assert.ok(t.nom.fr && t.nom.en, `Trainer ${t.id} localized name must have fr and en`);
++
++    // Must have quotes / citations
++    const quotes = t.quotes || t.citations || t.replique;
++    assert.ok(quotes, `Trainer ${t.id} must have dialogue quotes`);
++
++    // Must have team reference
++    assert.ok(t.equipeKey || t.equipe, `Trainer ${t.id} must specify a team key or roster`);
++  }
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 5: Route Trainer Rosters (equipes.js)
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("5. Route Trainer Rosters (equipes.js)");
++
++test("POKE_GEN3_EQUIPES maps classes to non-empty arrays of teams", () => {
++  const equipes = ctx.POKE_GEN3_EQUIPES;
++  assert.ok(equipes && typeof equipes === "object", "POKE_GEN3_EQUIPES must be an object");
++
++  const requiredClasses = ["youngster", "lass", "hiker", "sailor", "fisherman", "rich_boy", "aroma_lady", "triathlete"];
++  for (const cls of requiredClasses) {
++    const teams = equipes[cls];
++    assert.ok(Array.isArray(teams) && teams.length > 0, `Teams for class ${cls} must be non-empty array`);
++  }
++});
++
++test("Every Pok├®mon in POKE_GEN3_EQUIPES has valid species (1-386), level, and moves", () => {
++  const equipes = ctx.POKE_GEN3_EQUIPES;
++  let minLevel = Infinity;
++  let maxLevel = -Infinity;
++  let count = 0;
++
++  for (const [cls, teams] of Object.entries(equipes)) {
++    if (!Array.isArray(teams)) continue;
++    for (const team of teams) {
++      assert.ok(Array.isArray(team) && team.length >= 1 && team.length <= 6, `Team in ${cls} must have 1-6 Pok├®mon`);
++      for (const poke of team) {
++        count++;
++        assert.ok(Number.isInteger(poke.n) && poke.n >= 1 && poke.n <= 386, `Invalid species ${poke.n} in ${cls}`);
++        assert.ok(Number.isInteger(poke.niveau) && poke.niveau >= 2 && poke.niveau <= 100, `Invalid level ${poke.niveau} in ${cls}`);
++        minLevel = Math.min(minLevel, poke.niveau);
++        maxLevel = Math.max(maxLevel, poke.niveau);
++
++        if (poke.attaques) {
++          assert.ok(Array.isArray(poke.attaques), `Attaques in ${cls} must be an array`);
++          assert.ok(poke.attaques.length >= 1 && poke.attaques.length <= 4, `Attaques length in ${cls} must be 1-4`);
++          for (const atk of poke.attaques) {
++            assert.strictEqual(typeof atk, "string", `Move identifier in ${cls} must be string`);
++          }
++        }
++      }
++    }
++  }
++
++  assert.ok(count >= 50, `Expected at least 50 roster entries across all teams, found ${count}`);
++  assert.ok(minLevel <= 6, `Lowest trainer level should be <= 6, found ${minLevel}`);
++  assert.ok(maxLevel >= 45, `Highest trainer level should be >= 45, found ${maxLevel}`);
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 6: Gym Leaders, Elite Four, Wallace & Steven (arenes.js)
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("6. Gym Leaders, Elite Four, Wallace & Steven (arenes.js)");
++
++test("Exactly 8 Gym Leaders exist in POKE_GEN3_ARENES with canonical Emerald rosters", () => {
++  const arenes = ctx.POKE_GEN3_ARENES;
++  assert.ok(Array.isArray(arenes), "POKE_GEN3_ARENES must be an array");
++  assert.strictEqual(arenes.length, 8, "POKE_GEN3_ARENES must contain exactly 8 Gym Leaders");
++
++  const expectedGyms = [
++    {
++      ordre: 1,
++      champion: "Roxanne",
++      championEn: "Roxanne",
++      badge: "Roche",
++      type: "Roche",
++      roster: [{ n: 74, niveau: 12 }, { n: 74, niveau: 12 }, { n: 299, niveau: 15 }]
++    },
++    {
++      ordre: 2,
++      champion: "Brawly",
++      championEn: "Brawly",
++      badge: "Poing",
++      type: "Combat",
++      roster: [{ n: 66, niveau: 16 }, { n: 307, niveau: 16 }, { n: 296, niveau: 19 }]
++    },
++    {
++      ordre: 3,
++      champion: "Wattson",
++      championEn: "Wattson",
++      badge: "Dynamo",
++      type: "├ëlectrik",
++      roster: [{ n: 100, niveau: 20 }, { n: 309, niveau: 20 }, { n: 82, niveau: 22 }, { n: 310, niveau: 24 }]
++    },
++    {
++      ordre: 4,
++      champion: "Flannery",
++      championEn: "Flannery",
++      badge: "Chaleur",
++      type: "Feu",
++      roster: [{ n: 322, niveau: 24 }, { n: 218, niveau: 24 }, { n: 323, niveau: 26 }, { n: 324, niveau: 29 }]
++    },
++    {
++      ordre: 5,
++      champion: "Norman",
++      championEn: "Norman",
++      badge: "Balancier",
++      type: "Normal",
++      roster: [{ n: 327, niveau: 27 }, { n: 288, niveau: 27 }, { n: 264, niveau: 29 }, { n: 289, niveau: 31 }]
++    },
++    {
++      ordre: 6,
++      champion: "Winona",
++      championEn: "Winona",
++      badge: "Plume",
++      type: "Vol",
++      roster: [{ n: 333, niveau: 29 }, { n: 357, niveau: 29 }, { n: 279, niveau: 30 }, { n: 227, niveau: 31 }, { n: 334, niveau: 33 }]
++    },
++    {
++      ordre: 7,
++      champion: "Tate & Liza",
++      championEn: "Tate & Liza",
++      badge: "Esprit",
++      type: "Psy",
++      roster: [{ n: 344, niveau: 41 }, { n: 178, niveau: 41 }, { n: 337, niveau: 42 }, { n: 338, niveau: 42 }]
++    },
++    {
++      ordre: 8,
++      champion: "Juan",
++      championEn: "Juan",
++      badge: "Pluie",
++      type: "Eau",
++      roster: [{ n: 370, niveau: 41 }, { n: 340, niveau: 41 }, { n: 364, niveau: 43 }, { n: 342, niveau: 43 }, { n: 230, niveau: 46 }]
++    }
++  ];
++
++  for (let i = 0; i < 8; i++) {
++    const gym = arenes[i];
++    const exp = expectedGyms[i];
++    assert.strictEqual(gym.ordre, exp.ordre, `Gym ${i+1} ordre mismatch`);
++    assert.ok(
++      gym.champion.includes(exp.champion) || exp.champion.includes(gym.champion),
++      `Gym ${i+1} champion mismatch: expected ${exp.champion}, got ${gym.champion}`
++    );
++    assert.strictEqual(gym.type, exp.type, `Gym ${i+1} type mismatch`);
++    assert.ok(gym.nom && gym.nom.fr && gym.nom.en, `Gym ${i+1} must have localized name`);
++    assert.ok(gym.ct, `Gym ${i+1} must specify CT`);
++
++    // Verify roster
++    assert.strictEqual(gym.equipe.length, exp.roster.length, `Gym ${i+1} roster length mismatch`);
++    for (let p = 0; p < gym.equipe.length; p++) {
++      assert.strictEqual(gym.equipe[p].n, exp.roster[p].n, `Gym ${i+1} poke ${p} species mismatch`);
++      assert.strictEqual(gym.equipe[p].niveau, exp.roster[p].niveau, `Gym ${i+1} poke ${p} level mismatch`);
++      assert.ok(
++        Array.isArray(gym.equipe[p].attaques) && gym.equipe[p].attaques.length >= 1,
++        `Gym ${i+1} poke ${p} must have attacks`
++      );
++    }
++  }
++});
++
++test("Exactly 4 Elite Four members exist in POKE_GEN3_CONSEIL with canonical Emerald rosters", () => {
++  const conseil = ctx.POKE_GEN3_CONSEIL;
++  assert.ok(Array.isArray(conseil), "POKE_GEN3_CONSEIL must be an array");
++  assert.strictEqual(conseil.length, 4, "POKE_GEN3_CONSEIL must contain exactly 4 members");
++
++  const expectedConseil = [
++    {
++      ordre: 1,
++      nomEn: "Sidney",
++      roster: [{ n: 262, niveau: 46 }, { n: 275, niveau: 48 }, { n: 332, niveau: 46 }, { n: 342, niveau: 48 }, { n: 359, niveau: 49 }]
++    },
++    {
++      ordre: 2,
++      nomEn: "Phoebe",
++      roster: [{ n: 356, niveau: 48 }, { n: 354, niveau: 49 }, { n: 302, niveau: 50 }, { n: 354, niveau: 49 }, { n: 356, niveau: 51 }]
++    },
++    {
++      ordre: 3,
++      nomEn: "Glacia",
++      roster: [{ n: 362, niveau: 50 }, { n: 364, niveau: 50 }, { n: 362, niveau: 52 }, { n: 364, niveau: 52 }, { n: 365, niveau: 53 }]
++    },
++    {
++      ordre: 4,
++      nomEn: "Drake",
++      roster: [{ n: 372, niveau: 52 }, { n: 334, niveau: 54 }, { n: 230, niveau: 53 }, { n: 330, niveau: 53 }, { n: 373, niveau: 55 }]
++    }
++  ];
++
++  for (let i = 0; i < 4; i++) {
++    const member = conseil[i];
++    const exp = expectedConseil[i];
++    assert.strictEqual(member.ordre, exp.ordre, `Elite ${i+1} ordre mismatch`);
++    assert.ok(
++      member.nomEn === exp.nomEn || (member.nom && member.nom.en === exp.nomEn),
++      `Elite ${i+1} name mismatch: expected ${exp.nomEn}`
++    );
++    assert.strictEqual(member.equipe.length, exp.roster.length, `Elite ${i+1} team size mismatch`);
++    for (let p = 0; p < member.equipe.length; p++) {
++      assert.strictEqual(member.equipe[p].n, exp.roster[p].n, `Elite ${i+1} poke ${p} species mismatch`);
++      assert.strictEqual(member.equipe[p].niveau, exp.roster[p].niveau, `Elite ${i+1} poke ${p} level mismatch`);
++      assert.ok(Array.isArray(member.equipe[p].attaques) && member.equipe[p].attaques.length >= 1);
++    }
++  }
++});
++
++test("Champion Wallace (Marc) exists in POKE_GEN3_MAITRE with 6 Pok├®mon", () => {
++  const maitre = ctx.POKE_GEN3_MAITRE;
++  assert.ok(maitre, "POKE_GEN3_MAITRE must be defined");
++  const nameEn = maitre.nomEn || (maitre.nom && maitre.nom.en);
++  assert.strictEqual(nameEn, "Wallace", "Champion English name must be Wallace");
++  assert.strictEqual(maitre.equipe.length, 6, "Champion must have exactly 6 Pok├®mon");
++
++  const expectedRoster = [
++    { n: 321, niveau: 57 }, // Wailord
++    { n: 73, niveau: 55 },  // Tentacruel
++    { n: 272, niveau: 56 }, // Ludicolo
++    { n: 340, niveau: 56 }, // Whiscash
++    { n: 130, niveau: 56 }, // Gyarados
++    { n: 350, niveau: 58 }, // Milotic
++  ];
++
++  for (let p = 0; p < 6; p++) {
++    assert.strictEqual(maitre.equipe[p].n, expectedRoster[p].n, `Wallace poke ${p} species mismatch`);
++    assert.strictEqual(maitre.equipe[p].niveau, expectedRoster[p].niveau, `Wallace poke ${p} level mismatch`);
++    assert.ok(Array.isArray(maitre.equipe[p].attaques) && maitre.equipe[p].attaques.length >= 1);
++  }
++});
++
++test("Epilogue Boss Steven Stone exists in POKE_GEN3_STEVEN with 6 Pok├®mon at lv 75-78", () => {
++  const steven = ctx.POKE_GEN3_STEVEN;
++  assert.ok(steven, "POKE_GEN3_STEVEN must be defined");
++  const nameEn = steven.nomEn || (steven.nom && steven.nom.en);
++  assert.strictEqual(nameEn, "Steven", "Steven Stone English name must be Steven");
++  assert.strictEqual(steven.equipe.length, 6, "Steven must have exactly 6 Pok├®mon");
++
++  const expectedRoster = [
++    { n: 227, niveau: 77 }, // Skarmory
++    { n: 344, niveau: 75 }, // Claydol
++    { n: 306, niveau: 76 }, // Aggron
++    { n: 346, niveau: 76 }, // Cradily
++    { n: 348, niveau: 76 }, // Armaldo
++    { n: 376, niveau: 78 }, // Metagross
++  ];
++
++  for (let p = 0; p < 6; p++) {
++    assert.strictEqual(steven.equipe[p].n, expectedRoster[p].n, `Steven poke ${p} species mismatch`);
++    assert.strictEqual(steven.equipe[p].niveau, expectedRoster[p].niveau, `Steven poke ${p} level mismatch`);
++    assert.ok(steven.equipe[p].niveau >= 75 && steven.equipe[p].niveau <= 78, `Steven poke ${p} level must be 75-78`);
++    assert.ok(Array.isArray(steven.equipe[p].attaques) && steven.equipe[p].attaques.length >= 1);
++  }
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 7: Rival Progression & Wally (rival.js)
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("7. Rival Progression & Wally (rival.js)");
++
++test("POKE_GEN3_RIVAL contains 3 starter variants across key checkpoints", () => {
++  const rival = ctx.POKE_GEN3_RIVAL;
++  assert.strictEqual(rival.ordre.length, 3, "Rival ordre length must be 3");
++  assert.strictEqual(rival.ordre[0], 252, "First starter in rival.ordre must be Arcko (252)");
++  assert.strictEqual(rival.ordre[1], 255, "Second starter in rival.ordre must be Poussifeu (255)");
++  assert.strictEqual(rival.ordre[2], 258, "Third starter in rival.ordre must be Gobou (258)");
++  assert.ok(Array.isArray(rival.debut), "rival.debut must be an array");
++  assert.ok(Array.isArray(rival.milieu), "rival.milieu must be an array");
++
++  // Every checkpoint group must be a multiple of 3 (for the 3 starters)
++  assert.strictEqual(rival.debut.length % 3, 0, "rival.debut length must be multiple of 3");
++  assert.strictEqual(rival.milieu.length % 3, 0, "rival.milieu length must be multiple of 3");
++
++  // First checkpoint: level 5 starter
++  assert.strictEqual(rival.debut[0][0].n, 252, "Variant 0 start with Arcko");
++  assert.strictEqual(rival.debut[0][0].niveau, 5);
++  assert.strictEqual(rival.debut[1][0].n, 255, "Variant 1 start with Poussifeu");
++  assert.strictEqual(rival.debut[1][0].niveau, 5);
++  assert.strictEqual(rival.debut[2][0].n, 258, "Variant 2 start with Gobou");
++  assert.strictEqual(rival.debut[2][0].niveau, 5);
++});
++
++test("POKE_GEN3_TIMMY (Wally) is defined with canonical Victory Road team", () => {
++  const timmy = ctx.POKE_GEN3_TIMMY;
++  assert.ok(timmy, "POKE_GEN3_TIMMY must be defined");
++  const nameEn = timmy.nomEn || (timmy.nom && timmy.nom.en);
++  assert.strictEqual(nameEn, "Wally", "Timmy English name must be Wally");
++  assert.strictEqual(timmy.equipe.length, 5, "Timmy must have 5 Pok├®mon on Victory Road");
++
++  const species = timmy.equipe.map(p => p.n);
++  assert.ok(species.includes(282), "Timmy must have Gardevoir (282)");
++  assert.ok(species.includes(334), "Timmy must have Altaria (334)");
++  assert.ok(species.includes(301), "Timmy must have Delcatty (301)");
++  assert.ok(species.includes(315), "Timmy must have Roselia (315)");
++  assert.ok(species.includes(82),  "Timmy must have Magneton (82)");
++
++  for (const p of timmy.equipe) {
++    assert.ok(p.niveau >= 41 && p.niveau <= 45, `Timmy poke ${p.n} level ${p.niveau} outside expected 41-45`);
++    assert.ok(Array.isArray(p.attaques) && p.attaques.length >= 1, `Timmy poke ${p.n} must have attacks`);
++  }
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Summary
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++console.log("\n" + "-".repeat(60));
++console.log(`Total Tests: ${totalTests} | Passed: ${passedTests} | Failed: ${failedTests}`);
++if (failedTests > 0) {
++  console.log("\x1b[31mSOME TESTS FAILED!\x1b[0m");
++  process.exit(1);
++} else {
++  console.log("\x1b[32mALL TESTS PASSED SUCCESSFULLY! (100% PASS RATE)\x1b[0m\n");
++  process.exit(0);
++}
