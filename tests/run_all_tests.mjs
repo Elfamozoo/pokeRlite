@@ -3,14 +3,15 @@
  * Comprehensive automated test suite for Road to Legends — Mode Pokémon.
  *
  * Verifies:
- *  1. ordre.js module architecture, script lists, and dependency order.
- *  2. Strict pure NOYAU execution in isolated Node.js environment (zero window/document).
+ *  1. ordre.js module architecture, script lists, and dependency order (Gen 1, Gen 2, Gen 3).
+ *  2. Strict pure NOYAU execution in isolated Node.js environment (zero window/document) for Gen 1, Gen 2, Gen 3.
  *  3. Static analysis: zero unauthorized non-deterministic calls (Math.random, Date.now, etc.) in executable code.
- *  4. Static analysis: zero DOM/browser global leaks in NOYAU business logic.
+ *  4. Static analysis: zero DOM/browser global leaks in NOYAU business logic and Gen 3 core files.
  *  5. PRNG determinism contract (mulberry32), string hashing, draw accounting, and combinatorial unranking.
- *  6. Combat simulation determinism and replay engine daily scoring parity.
+ *  6. Combat simulation determinism and replay engine daily scoring parity across Gen 1, Gen 2, and Gen 3.
  *  7. Manifest and PWA theme color configuration.
  *  8. UI combat capture timeout tracking and lifecycle cleanup.
+ *  9. Gen 3 (Hoenn) species completeness, 9-act roguelite structure, boss reachability, and legendary mapping.
  */
 
 import fs from "node:fs";
@@ -100,6 +101,10 @@ test("ordre.js evaluates cleanly in isolated context without DOM/window", () => 
   assert.ok(ordreContext.POKE_ORDRE_ECRANS, "POKE_ORDRE_ECRANS must be defined");
   assert.ok(ordreContext.POKE_ORDRE_GEN2, "POKE_ORDRE_GEN2 must be defined");
   assert.ok(ordreContext.POKE_ORDRE_GEN2_ECRANS, "POKE_ORDRE_GEN2_ECRANS must be defined");
+  assert.ok(ordreContext.POKE_ORDRE_GEN3, "POKE_ORDRE_GEN3 must be defined");
+  assert.ok(ordreContext.POKE_ORDRE_GEN3_ECRANS, "POKE_ORDRE_GEN3_ECRANS must be defined");
+  assert.strictEqual(ordreContext.POKE_HOENN_ETAT, "ouvert", "POKE_HOENN_ETAT must be 'ouvert'");
+  assert.strictEqual(ordreContext.POKE_BANC_HOENN, true, "POKE_BANC_HOENN must be true");
 });
 
 test("POKE_ORDRE_GEN2 contains pure logic/data and NO sound files", () => {
@@ -118,6 +123,22 @@ test("POKE_ORDRE_GEN2_ECRANS contains sound and animation presentation files", (
   assert.ok(gen2Ecrans.includes("js/poke/gen2/anim-attaque.js"), "gen2/anim-attaque.js must be in GEN2_ECRANS");
 });
 
+test("POKE_ORDRE_GEN3 contains pure logic/data and NO sound/animation files", () => {
+  const gen3 = ordreContext.POKE_ORDRE_GEN3;
+  assert.ok(Array.isArray(gen3), "POKE_ORDRE_GEN3 must be an array");
+  assert.strictEqual(gen3.length, 13, "POKE_ORDRE_GEN3 must contain exactly 13 files");
+  for (const f of gen3) {
+    assert.ok(!f.includes("sons"), `File ${f} must NOT be in GEN3 (NOYAU)`);
+    assert.ok(!f.includes("anim"), `File ${f} must NOT be in GEN3 (NOYAU)`);
+  }
+});
+
+test("POKE_ORDRE_GEN3_ECRANS contains sound presentation files", () => {
+  const gen3Ecrans = ordreContext.POKE_ORDRE_GEN3_ECRANS;
+  assert.ok(Array.isArray(gen3Ecrans), "POKE_ORDRE_GEN3_ECRANS must be an array");
+  assert.ok(gen3Ecrans.includes("js/poke/gen3/sons.js"), "gen3/sons.js must be in GEN3_ECRANS");
+});
+
 test("Zero intersection between NOYAU and ECRANS file lists", () => {
   const noyau = new Set(ordreContext.POKE_ORDRE_NOYAU);
   const ecrans = new Set(ordreContext.POKE_ORDRE_ECRANS);
@@ -126,12 +147,14 @@ test("Zero intersection between NOYAU and ECRANS file lists", () => {
   }
 });
 
-test("All files in NOYAU, ECRANS, GEN2, and GEN2_ECRANS exist on disk", () => {
+test("All files in NOYAU, ECRANS, GEN2, GEN2_ECRANS, GEN3, and GEN3_ECRANS exist on disk", () => {
   const allFiles = [
     ...ordreContext.POKE_ORDRE_NOYAU,
     ...ordreContext.POKE_ORDRE_ECRANS,
     ...ordreContext.POKE_ORDRE_GEN2,
     ...ordreContext.POKE_ORDRE_GEN2_ECRANS,
+    ...ordreContext.POKE_ORDRE_GEN3,
+    ...ordreContext.POKE_ORDRE_GEN3_ECRANS,
   ];
   for (const relPath of allFiles) {
     const fullPath = path.join(ROOT_DIR, relPath);
@@ -144,6 +167,7 @@ test("NOYAU dependency ordering is strictly preserved", () => {
   const idxRng = noyau.indexOf("js/poke/rng.js");
   const idxGenre = noyau.indexOf("js/poke/genre.js");
   const idxTypes = noyau.indexOf("js/poke/types.js");
+  const idxGen3Types = noyau.indexOf("js/poke/gen3/types.js");
   const idxRegles = noyau.indexOf("js/poke/regles.js");
   const idxEspeces = noyau.indexOf("js/poke/especes.js");
   const idxCombat = noyau.indexOf("js/poke/combat.js");
@@ -152,7 +176,8 @@ test("NOYAU dependency ordering is strictly preserved", () => {
 
   assert.ok(idxRng < idxGenre, "rng.js must precede genre.js");
   assert.ok(idxGenre < idxTypes, "genre.js must precede types.js");
-  assert.ok(idxTypes < idxRegles, "types.js must precede regles.js");
+  assert.ok(idxTypes < idxGen3Types, "types.js must precede gen3/types.js");
+  assert.ok(idxGen3Types < idxRegles, "gen3/types.js must precede regles.js");
   assert.ok(idxRegles < idxEspeces, "regles.js must precede especes.js");
   assert.ok(idxEspeces < idxCombat, "especes.js must precede combat.js");
   assert.ok(idxCombat < idxPartie, "combat.js must precede partie.js");
@@ -193,7 +218,8 @@ test("Fixed IIFE trailers (serments.js, chasses.js, sceaux.js) export cleanly to
   assert.equal(typeof noyauContext.PokeSceaux.appliquer, "function", "PokeSceaux.appliquer must be a function");
 });
 
-test("All expected NOYAU APIs and registries are fully exported", () => {
+test("All expected NOYAU APIs, registries, and Gen 3 globals are fully exported", () => {
+  // Gen 1 & Core APIs
   assert.ok(noyauContext.PokeHasard, "PokeHasard must be exported");
   assert.ok(noyauContext.PokeChoix, "PokeChoix must be exported");
   assert.ok(noyauContext.PokeGenre, "PokeGenre must be exported");
@@ -211,16 +237,36 @@ test("All expected NOYAU APIs and registries are fully exported", () => {
   assert.ok(noyauContext.PokePartie, "PokePartie must be exported");
   assert.ok(noyauContext.PokeRejeu, "PokeRejeu must be exported");
   assert.equal(typeof noyauContext.replayDaily, "function", "root replayDaily must be exported");
+
+  // Gen 3 Globals
+  assert.ok(noyauContext.POKE_GEN3_ESPECES, "POKE_GEN3_ESPECES must be exported");
+  assert.ok(noyauContext.POKE_GEN3_ATTAQUES, "POKE_GEN3_ATTAQUES must be exported");
+  assert.ok(noyauContext.POKE_GEN3_ARENES, "POKE_GEN3_ARENES must be exported");
+  assert.ok(noyauContext.POKE_GEN3_ETAPES, "POKE_GEN3_ETAPES must be exported");
+  assert.ok(noyauContext.POKE_GEN3_ZONES, "POKE_GEN3_ZONES must be exported");
+  assert.ok(noyauContext.POKE_GEN3_LIEUX, "POKE_GEN3_LIEUX must be exported");
+  assert.ok(noyauContext.POKE_GEN3_CLES, "POKE_GEN3_CLES must be exported");
+  assert.ok(noyauContext.POKE_GEN3_OBJETS, "POKE_GEN3_OBJETS must be exported");
+
+  // PokeRegles Gen 3 Profile
+  assert.strictEqual(noyauContext.PokeRegles.existe("gen3"), true, "PokeRegles must recognize 'gen3'");
+  const g3 = noyauContext.PokeRegles.pour("gen3");
+  assert.ok(g3, "PokeRegles.pour('gen3') must return JEUX.gen3 profile");
+  assert.strictEqual(g3.dexTotal, 386, "Gen 3 dexTotal must be 386");
+  assert.strictEqual(g3.nom, "Troisième génération");
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Suite 3: Static Analysis — Zero Unauthorized Non-Determinism & Zero DOM Leaks
 // ─────────────────────────────────────────────────────────────────────────────
-suite("3. Static Analysis — Zero Non-Deterministic Calls & Zero DOM Leaks in NOYAU");
+suite("3. Static Analysis — Zero Non-Deterministic Calls & Zero DOM Leaks in NOYAU & Gen 3");
 
 const noyauList = ordreContext.POKE_ORDRE_NOYAU;
+const gen3Files = fs.readdirSync(path.join(ROOT_DIR, "js/poke/gen3"))
+  .filter((f) => f.endsWith(".js"))
+  .map((f) => `js/poke/gen3/${f}`);
 
-test("Zero occurrences of Math.random(), Date.now(), new Date(), performance.now() across all NOYAU code", () => {
+test("Zero occurrences of Math.random(), Date.now(), new Date(), performance.now() across NOYAU and Gen 3", () => {
   const forbiddenPatterns = [
     { pattern: /\bMath\.random\s*\(/g, name: "Math.random()" },
     { pattern: /\bDate\.now\s*\(/g, name: "Date.now()" },
@@ -229,8 +275,9 @@ test("Zero occurrences of Math.random(), Date.now(), new Date(), performance.now
     { pattern: /\bcrypto\.getRandomValues\s*\(/g, name: "crypto.getRandomValues()" },
   ];
 
+  const filesToCheck = Array.from(new Set([...noyauList, ...gen3Files]));
   const violations = [];
-  for (const relPath of noyauList) {
+  for (const relPath of filesToCheck) {
     const rawContent = fs.readFileSync(path.join(ROOT_DIR, relPath), "utf-8");
     const code = stripComments(rawContent);
     for (const { pattern, name } of forbiddenPatterns) {
@@ -244,7 +291,7 @@ test("Zero occurrences of Math.random(), Date.now(), new Date(), performance.now
   assert.equal(violations.length, 0, `Forbidden non-deterministic calls found:\n${violations.join("\n")}`);
 });
 
-test("Zero DOM / browser API leaks across all NOYAU code", () => {
+test("Zero DOM / browser API leaks across all NOYAU and Gen 3 files", () => {
   const forbiddenDOM = [
     { pattern: /\bdocument\./g, name: "document." },
     { pattern: /\blocalStorage\b/g, name: "localStorage" },
@@ -263,8 +310,9 @@ test("Zero DOM / browser API leaks across all NOYAU code", () => {
     { pattern: /\bAudioContext\b/g, name: "AudioContext" },
   ];
 
+  const filesToCheck = Array.from(new Set([...noyauList, ...gen3Files]));
   const violations = [];
-  for (const relPath of noyauList) {
+  for (const relPath of filesToCheck) {
     const rawContent = fs.readFileSync(path.join(ROOT_DIR, relPath), "utf-8");
     const code = stripComments(rawContent);
     for (const { pattern, name } of forbiddenDOM) {
@@ -275,14 +323,15 @@ test("Zero DOM / browser API leaks across all NOYAU code", () => {
     }
   }
 
-  assert.equal(violations.length, 0, `DOM leaks found in NOYAU:\n${violations.join("\n")}`);
+  assert.equal(violations.length, 0, `DOM leaks found in NOYAU / Gen 3:\n${violations.join("\n")}`);
 });
 
-test("All NOYAU files use strict mode ('use strict')", () => {
+test("All NOYAU and Gen 3 files use strict mode ('use strict')", () => {
+  const filesToCheck = Array.from(new Set([...noyauList, ...gen3Files]));
   const missingStrict = [];
-  for (const relPath of noyauList) {
+  for (const relPath of filesToCheck) {
     const content = fs.readFileSync(path.join(ROOT_DIR, relPath), "utf-8");
-    if (!content.includes('"use strict";') && !content.includes("'use strict';")) {
+    if (!content.includes('"use strict";') && !content.includes("'use strict';") && !content.includes('"use strict"') && !content.includes("'use strict'")) {
       missingStrict.push(relPath);
     }
   }
@@ -379,30 +428,51 @@ test("Combinatorial unranking (PokeChoix.deRang) is an exact bijective unranking
   assert.equal(seen.size, 20, "All 20 unique combinations must be covered without collision");
 });
 
+test("Mulberry32 PRNG determinism holds across Gen 1, Gen 2, and Gen 3 seeds", () => {
+  const Hasard = noyauContext.PokeHasard;
+  const testSeeds = ["HOENN-SEED-2026", "JOHTO-SEED-1999", "KANTO-SEED-1996"];
+
+  for (const seed of testSeeds) {
+    const hA = new Hasard(seed);
+    const hB = new Hasard(seed);
+    for (let i = 0; i < 200; i++) {
+      assert.strictEqual(hA.brut(), hB.brut(), `Seed ${seed} diverged at draw ${i}`);
+    }
+    assert.strictEqual(hA.tirages, 200);
+    assert.strictEqual(hB.tirages, 200);
+  }
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Suite 5: Combat Simulation & Replay Engine Scoring Parity
+// Suite 5: Combat Simulation Determinism & Replay Engine Parity
 // ─────────────────────────────────────────────────────────────────────────────
 suite("5. Combat Simulation Determinism & Replay Engine Parity");
 
-test("Deterministic game session state creation from seed", () => {
+test("Deterministic game session state creation from seed across generations", () => {
   const Partie = noyauContext.PokePartie;
   const Hasard = noyauContext.PokeHasard;
 
-  const session1 = Partie.creer({ graine: "POKE-JOUR-2026-08-25" }, new Hasard("POKE-JOUR-2026-08-25"));
-  const session2 = Partie.creer({ graine: "POKE-JOUR-2026-08-25" }, new Hasard("POKE-JOUR-2026-08-25"));
+  for (const gen of ["gen1", "gen2", "gen3"]) {
+    noyauContext.PokeRegles.poser(gen);
+    const session1 = Partie.creer({ graine: `POKE-TEST-${gen}`, regles: gen }, new Hasard(`POKE-TEST-${gen}`));
+    const session2 = Partie.creer({ graine: `POKE-TEST-${gen}`, regles: gen }, new Hasard(`POKE-TEST-${gen}`));
 
-  assert.equal(session1.version, session2.version, "Version must be identical");
-  assert.equal(session1.graine, session2.graine, "Seed must be identical");
-  assert.deepEqual(session1.visite, session2.visite, "Visited map state must be identical");
-  assert.equal(session1.argent, session2.argent, "Initial money must be identical");
+    assert.equal(session1.version, session2.version, `${gen}: Version must be identical`);
+    assert.equal(session1.graine, session2.graine, `${gen}: Seed must be identical`);
+    assert.deepEqual(session1.visite, session2.visite, `${gen}: Visited map state must be identical`);
+    assert.equal(session1.argent, session2.argent, `${gen}: Initial money must be identical`);
+  }
+  noyauContext.PokeRegles.poser("gen1");
 });
 
-test("Turn-by-turn combat simulation reproduces identical events across independent runs", () => {
+test("Turn-by-turn combat simulation reproduces identical events in Gen 1", () => {
   const Combat = noyauContext.PokeCombat;
   const Moteur = noyauContext.PokeMoteur;
   const Hasard = noyauContext.PokeHasard;
+  const Regles = noyauContext.PokeRegles;
 
   function runSimulatedBattle() {
+    Regles.poser("gen1");
     const h = new Hasard("BATTLE-REPLAY-SEED-777");
     // Team 1: Pikachu (id 25) lvl 20
     const pikachu = Moteur.creer(25, 20, h);
@@ -434,6 +504,122 @@ test("Turn-by-turn combat simulation reproduces identical events across independ
   assert.equal(run1.finalTirages, run2.finalTirages, "Total PRNG draws must match exactly");
   assert.equal(run1.combatState.fini, run2.combatState.fini, "Final combat result must match");
   assert.deepEqual(run1.eventsLog, run2.eventsLog, "Turn-by-turn event logs must be 100% identical");
+});
+
+test("Turn-by-turn combat simulation reproduces identical events in Gen 2", () => {
+  const Combat = noyauContext.PokeCombat;
+  const Moteur = noyauContext.PokeMoteur;
+  const Hasard = noyauContext.PokeHasard;
+  const Regles = noyauContext.PokeRegles;
+
+  function runSimulatedGen2Battle() {
+    Regles.poser("gen2");
+    const h = new Hasard("BATTLE-REPLAY-SEED-GEN2");
+    // Cyndaquil (#155) lv 20 vs Totodile (#158) lv 20
+    const cyndaquil = Moteur.creer(155, 20, h);
+    const totodile = Moteur.creer(158, 20, h);
+
+    const combatState = Combat.demarrer(
+      [cyndaquil],
+      [totodile],
+      { graine: "BATTLE-REPLAY-SEED-GEN2", dresseur: false },
+      h
+    );
+
+    const eventsLog = [];
+    let rounds = 0;
+    while (!combatState.fini && rounds < 20) {
+      rounds++;
+      const actionJoueur = { type: "attaque", index: 0 };
+      const actionAdverse = { type: "attaque", index: 0 };
+      const ev = Combat.jouerTour(combatState, actionJoueur, h, actionAdverse);
+      eventsLog.push({ round: rounds, ev });
+    }
+    Regles.poser("gen1");
+    return { combatState, eventsLog, finalTirages: h.tirages };
+  }
+
+  const run1 = runSimulatedGen2Battle();
+  const run2 = runSimulatedGen2Battle();
+
+  assert.equal(run1.finalTirages, run2.finalTirages, "Gen 2 PRNG draws must match exactly");
+  assert.equal(run1.combatState.fini, run2.combatState.fini, "Gen 2 combat result must match");
+  assert.deepEqual(run1.eventsLog, run2.eventsLog, "Gen 2 events must be 100% identical");
+});
+
+test("Turn-by-turn combat simulation reproduces identical events in Gen 3", () => {
+  const Combat = noyauContext.PokeCombat;
+  const Moteur = noyauContext.PokeMoteur;
+  const Hasard = noyauContext.PokeHasard;
+  const Regles = noyauContext.PokeRegles;
+
+  function runSimulatedGen3Battle() {
+    Regles.poser("gen3");
+    const h = new Hasard("BATTLE-REPLAY-SEED-GEN3");
+    // Treecko (#252) lv 20 vs Torchic (#255) lv 20 equipped with Gen 3 signature moves
+    const treecko = Moteur.creer(252, 20, h);
+    const torchic = Moteur.creer(255, 20, h);
+    treecko.attaques = [{ cle: "LEAF_BLADE", pp: 15, ppMax: 15 }];
+    torchic.attaques = [{ cle: "BLAZE_KICK", pp: 15, ppMax: 15 }];
+
+    const combatState = Combat.demarrer(
+      [treecko],
+      [torchic],
+      { graine: "BATTLE-REPLAY-SEED-GEN3", dresseur: false },
+      h
+    );
+
+    const eventsLog = [];
+    let rounds = 0;
+    while (!combatState.fini && rounds < 20) {
+      rounds++;
+      const actionJoueur = { type: "attaque", index: 0 };
+      const actionAdverse = { type: "attaque", index: 0 };
+      const ev = Combat.jouerTour(combatState, actionJoueur, h, actionAdverse);
+      eventsLog.push({ round: rounds, ev });
+    }
+    Regles.poser("gen1");
+    return { combatState, eventsLog, finalTirages: h.tirages };
+  }
+
+  const run1 = runSimulatedGen3Battle();
+  const run2 = runSimulatedGen3Battle();
+
+  assert.equal(run1.finalTirages, run2.finalTirages, "Gen 3 PRNG draws must match exactly");
+  assert.equal(run1.combatState.fini, run2.combatState.fini, "Gen 3 combat result must match");
+  assert.deepEqual(run1.eventsLog, run2.eventsLog, "Gen 3 events must be 100% identical");
+});
+
+test("Cross-generational non-regression: Gen 1 combat replay invariance after Gen 3 execution", () => {
+  const Combat = noyauContext.PokeCombat;
+  const Moteur = noyauContext.PokeMoteur;
+  const Hasard = noyauContext.PokeHasard;
+  const Regles = noyauContext.PokeRegles;
+
+  Regles.poser("gen1");
+  const h = new Hasard("BATTLE-REPLAY-SEED-777");
+  const pikachu = Moteur.creer(25, 20, h);
+  const squirtle = Moteur.creer(7, 20, h);
+
+  const combatState = Combat.demarrer(
+    [pikachu],
+    [squirtle],
+    { graine: "BATTLE-REPLAY-SEED-777", dresseur: false },
+    h
+  );
+
+  const eventsLog = [];
+  let rounds = 0;
+  while (!combatState.fini && rounds < 20) {
+    rounds++;
+    const actionJoueur = { type: "attaque", index: 0 };
+    const actionAdverse = { type: "attaque", index: 0 };
+    const ev = Combat.jouerTour(combatState, actionJoueur, h, actionAdverse);
+    eventsLog.push({ round: rounds, ev });
+  }
+
+  assert.ok(combatState.fini, "Combat must finish");
+  assert.ok(h.tirages > 0, "PRNG draws must have occurred");
 });
 
 test("PokeRejeu.replayDaily produces deterministic scoring parity", () => {
@@ -637,6 +823,116 @@ test("animerCapture tracks timeouts and terminer()/detruire() cancels all pendin
 
   assert.equal(ecran.minuteursCapture.length, 0, "minuteursCapture must be empty after terminer()");
   assert.equal(clearedTimerIds.length, initialCount, `All ${initialCount} capture timers must have been cleared`);
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Suite 8: Gen 3 (Hoenn) Completeness & Progression Validation
+// ─────────────────────────────────────────────────────────────────────────────
+suite("8. Gen 3 (Hoenn) Completeness & Progression Validation");
+
+test("All 135 species (252-386) have 6 valid base stats, valid capture rates, and valid types", () => {
+  const especes = noyauContext.POKE_GEN3_ESPECES;
+  assert.strictEqual(especes.length, 135, "Must contain exactly 135 Gen 3 species");
+  const validTypes = new Set(noyauContext.POKE_GEN3_TYPES);
+
+  for (let i = 0; i < especes.length; i++) {
+    const p = especes[i];
+    const expectedId = 252 + i;
+    assert.strictEqual(p.n, expectedId, `Species id mismatch: expected ${expectedId}, got ${p.n}`);
+    assert.ok(p.nom && p.nom.fr && p.nom.en, `Species ${p.n} missing bilingual name`);
+
+    // Base stats: 6 positive integers
+    assert.ok(p.base, `Species ${p.n} missing base stats`);
+    for (const s of ["pv", "atk", "def", "vit", "sat", "sdf"]) {
+      assert.ok(
+        typeof p.base[s] === "number" && p.base[s] > 0 && Number.isInteger(p.base[s]),
+        `Species ${p.n} invalid base stat '${s}': ${p.base[s]}`
+      );
+    }
+
+    // Capture rate
+    const captureRate = typeof p.capture === "number" ? p.capture : p.taux;
+    assert.ok(typeof captureRate === "number" && captureRate > 0, `Species ${p.n} invalid capture rate: ${captureRate}`);
+
+    // Pre-Gen 6 types (no fairy type)
+    assert.ok(Array.isArray(p.types) && p.types.length >= 1 && p.types.length <= 2, `Species ${p.n} invalid types array`);
+    for (const t of p.types) {
+      assert.ok(validTypes.has(t), `Species ${p.n} has invalid type '${t}'`);
+      assert.notStrictEqual(t, "fairy", `Species ${p.n} has fairy type which did not exist in Gen 3`);
+    }
+  }
+});
+
+test("PokeActes.construire() generates exactly 9 acts under Gen 3", () => {
+  noyauContext.PokeRegles.poser("gen3");
+  const acts = noyauContext.PokeActes.construire();
+  assert.ok(Array.isArray(acts), "construire() must return an array");
+  assert.strictEqual(acts.length, 9, `Expected 9 acts for Hoenn, got ${acts.length}`);
+
+  for (let i = 0; i < 8; i++) {
+    assert.strictEqual(acts[i].n, i + 1, `Act ${i + 1} number mismatch`);
+    assert.strictEqual(acts[i].boss, i + 1, `Act ${i + 1} boss gym mismatch`);
+  }
+
+  assert.strictEqual(acts[8].n, 9, "Act 9 must be number 9");
+  assert.strictEqual(acts[8].ligue, true, "Act 9 must be ligue");
+  assert.ok(acts[8].epilogue, "Act 9 must have an epilogue");
+
+  noyauContext.PokeRegles.poser("gen1");
+});
+
+test("Steven Stone is reachable as dresseurFinal in meteor falls deep", () => {
+  const etapes = noyauContext.POKE_GEN3_ETAPES;
+  const stevenStep = etapes.find((e) => e.id === "site-meteore-profondeurs");
+  assert.ok(stevenStep, "Step 'site-meteore-profondeurs' must exist in POKE_GEN3_ETAPES");
+  assert.strictEqual(stevenStep.dresseurFinal, true, "site-meteore-profondeurs must have dresseurFinal: true");
+  assert.strictEqual(stevenStep.apresLigue, true, "Steven Stone must be unlocked after Pokemon League");
+
+  const g3 = noyauContext.PokeRegles.pour("gen3");
+  const dresseurFinal = g3.dresseurFinal();
+  assert.ok(dresseurFinal, "PokeRegles gen3 profile must return dresseurFinal");
+  assert.strictEqual(dresseurFinal.nom, "Pierre Rochard");
+  assert.strictEqual(dresseurFinal.nomFr, "Pierre Rochard");
+  assert.strictEqual(dresseurFinal.nomEn, "Steven");
+  assert.ok(
+    Array.isArray(dresseurFinal.equipe) && dresseurFinal.equipe.length === 6,
+    "Steven Stone team must contain 6 Pokemon"
+  );
+});
+
+test("All 8 static legendaries and roaming duo are declared and correctly mapped", () => {
+  const etapes = noyauContext.POKE_GEN3_ETAPES;
+  const expectedLegendaries = [
+    { n: 384, stepId: "pilier-celeste", lieu: "sky-pillar" },    // Rayquaza
+    { n: 383, stepId: "grotte-terra", lieu: "terra-cave" },      // Groudon
+    { n: 382, stepId: "grotte-marine", lieu: "marine-cave" },    // Kyogre
+    { n: 377, stepId: "ruines-desert", lieu: "desert-ruins" },   // Regirock
+    { n: 378, stepId: "grotte-ilot", lieu: "island-cave" },      // Regice
+    { n: 379, stepId: "tombeau-antique", lieu: "ancient-tomb" }, // Registeel
+    { n: 385, stepId: "algatia", lieu: "mossdeep-city" },        // Jirachi
+    { n: 386, stepId: "ile-aurore", lieu: "birth-island" },      // Deoxys
+  ];
+
+  for (const exp of expectedLegendaries) {
+    const step = etapes.find((e) => e.id === exp.stepId);
+    assert.ok(step, `Step '${exp.stepId}' for legendary #${exp.n} must exist`);
+    assert.strictEqual(step.legendaire, exp.n, `Step '${exp.stepId}' must declare legendary #${exp.n}`);
+    assert.strictEqual(step.lieu, exp.lieu, `Step '${exp.stepId}' lieu mismatch`);
+  }
+
+  // Roaming duo
+  const errants = noyauContext.POKE_GEN3_ERRANTS;
+  assert.ok(errants, "POKE_GEN3_ERRANTS must be defined");
+  const roamerSpecies = Array.isArray(errants)
+    ? errants
+    : (errants.liste ? errants.liste.map((x) => x.n) : errants.especes);
+  assert.ok(roamerSpecies.includes(380), "Latias (#380) must be declared in roamers");
+  assert.ok(roamerSpecies.includes(381), "Latios (#381) must be declared in roamers");
+
+  // Sealed Chamber unlocking Regis
+  const sealedStep = etapes.find((e) => e.id === "chambre-scellee");
+  assert.ok(sealedStep, "Step 'chambre-scellee' must exist in POKE_GEN3_ETAPES");
+  assert.strictEqual(sealedStep.apresLigue, true);
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

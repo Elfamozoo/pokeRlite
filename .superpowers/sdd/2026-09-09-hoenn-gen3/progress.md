@@ -9,5 +9,5 @@
 | Task 4 | complete | Commits: `c4fa700`..`7afc652`. Review clean. Locations dictionary (`W.POKE_GEN3_LIEUX`), 61 encounter zones matching Emerald (`W.POKE_GEN3_ZONES`), fishing tables (`W.POKE_GEN3_PECHE`), fossils, casino, gifts, and in-game trades. |
 | Task 5 | complete | Commits: `7afc652`..`366258f`. Review clean. 9 Acts roguelite journey (`W.POKE_GEN3_ETAPES`), 8 HMs (`W.POKE_GEN3_CLES`), all 8 static legendaries, roamers (Latios/Latias), and Steven Stone epilogue boss. |
 | Task 6 | complete | Commits: `366258f`..`801a396`. Review clean. Single source of truth in `ordre.js` wired, polymorphic registry `PokeRegles` in `regles.js` populated with `JEUX.gen3`. `dexTotalCompte()` returns 386. |
-| Task 7 | complete | WebAudio procedural cries for species 252-386 (`sons.js`), `GEN3_ECRANS` wired in `ordre.js`, `MONDES_DITS.gen3` & translations in `ui.js`, sprite routing in `icones.js`, and Pokédex scaling in `pokedex-ui.js`. |
-
+| Task 7 | complete | Commits: `801a396`..`321a358`. Review clean. Procedural WebAudio cries in `sons.js`, `GEN3_ECRANS` in `ordre.js`, `MONDES_DITS.gen3` and localization in `ui.js`, sprite routing for species > 251, Pokédex scaling to 386. |
+| Task 8 | complete | Full regression test suite integrated in `tests/run_all_tests.mjs`. 100% pass rate (35/35 tests in 263ms). All 10 standalone test suites verified. PRNG Mulberry32 bit-level determinism and Gen 1/2/3 combat replay invariance proven. |

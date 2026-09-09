@@ -1,0 +1,525 @@
+﻿321a358 feat(gen3): Task 7 - WebAudio cries, UI world selector and sprite routing
+ .superpowers/sdd/2026-09-09-hoenn-gen3/progress.md |   8 +-
+ .../task-6-review-package.diff                     | Bin 0 -> 48998 bytes
+ .../sdd/2026-09-09-hoenn-gen3/task-7-brief.md      |  56 ++
+ .../sdd/2026-09-09-hoenn-gen3/task-7-report.md     |  81 +++
+ js/poke/gen3/sons.js                               |  21 +
+ js/poke/icones.js                                  |   6 +
+ js/poke/ordre.js                                   |   7 +
+ js/poke/pokedex-ui.js                              |   4 +-
+ js/poke/ui.js                                      |  13 +-
+ tests/test_gen3_ui.mjs                             | 344 ++++++++++++
+ tools/build-gen3-sons.mjs                          | 619 +++++++++++++++++++++
+ 11 files changed, 1148 insertions(+), 11 deletions(-)
+diff --git a/js/poke/gen3/sons.js b/js/poke/gen3/sons.js
+new file mode 100644
+index 0000000..f931b96
+--- /dev/null
++++ b/js/poke/gen3/sons.js
+@@ -0,0 +1,21 @@
++(function (W) {
++  "use strict";
++  // FICHIER G├ëN├ëR├ë ÔÇö cris proc├®duraux de la troisi├¿me g├®n├®ration (Hoenn, 252-386).
++  // Programmes sonores WebAudio / PSG pour le lecteur js/poke/audio.js.
++  // Conforme aux structures des banques de sons de 1996 et 1999 (js/poke/sons.js et js/poke/gen2/sons.js).
++
++  var GEN3_SONS = {"sfx":{"Cry_Treecko":[{"c":5,"n":[[7,2],[0,2,14,1,1820],[0,2,15,0,1860],[0,4,13,2,1910],[0,4,11,2,1850]]},{"c":6,"n":[[7,1],[0,2,12,1,1812],[0,2,13,0,1852],[0,4,11,2,1902],[0,4,9,2,1842]]},{"c":8,"n":[[1,2,6,1,35],[1,4,8,2,51]]}],"Cry_Grovyle":[{"c":5,"n":[[7,2],[0,3,14,1,1720],[0,4,15,0,1780],[0,6,14,2,1840],[0,6,10,2,1760]]},{"c":6,"n":[[7,3],[0,3,12,1,1710],[0,4,13,0,1770],[0,6,12,2,1830],[0,6,8,2,1750]]},{"c":8,"n":[[1,3,8,1,45],[1,6,10,2,60]]}],"Cry_Sceptile":[{"c":5,"n":[[8,3,2,1,1],[0,4,15,1,1580],[0,6,15,0,1680],[0,8,14,2,1720],[0,12,11,2,1620]]},{"c":6,"n":[[8,2,1,2,2],[0,4,14,1,1572],[0,6,13,0,1672],[0,8,12,2,1712],[0,12,9,2,1612]]},{"c":8,"n":[[1,4,12,2,65],[1,8,11,2,80],[1,12,9,2,95]]}],"Cry_Torchic":[{"c":5,"n":[[7,0],[0,2,14,0,1940],[0,2,15,0,1980],[0,4,13,2,1950],[0,2,14,0,1990],[0,6,12,2,1960]]},{"c":6,"n":[[7,1],[0,2,12,0,1932],[0,2,13,0,1972],[0,4,11,2,1942],[0,2,12,0,1982],[0,6,10,2,1952]]},{"c":8,"n":[[1,2,7,1,25],[1,4,6,1,35]]}],"Cry_Combusken":[{"c":5,"n":[[7,2],[0,4,14,1,1780],[0,6,15,0,1850],[0,6,13,2,1810],[0,8,11,2,1740]]},{"c":6,"n":[[7,2],[0,4,12,1,1770],[0,6,13,0,1840],[0,6,11,2,1800],[0,8,9,2,1730]]},{"c":8,"n":[[1,3,10,1,55],[1,6,9,2,70]]}],"Cry_Blaziken":[{"c":5,"n":[[8,2,2,0,1],[0,5,15,1,1620],[0,8,15,0,1760],[0,8,14,2,1700],[0,14,12,2,1580]]},{"c":6,"n":[[8,1,3,1,2],[0,5,13,1,1612],[0,8,13,0,1752],[0,8,12,2,1692],[0,14,10,2,1572]]},{"c":8,"n":[[1,4,13,2,75],[1,8,12,2,85],[1,12,10,2,92]]}],"Cry_Mudkip":[{"c":5,"n":[[7,2],[0,3,13,1,1750],[0,4,15,0,1840],[0,6,14,1,1890],[0,6,11,2,1820]]},{"c":6,"n":[[7,1],[0,3,11,1,1740],[0,4,13,0,1830],[0,6,12,1,1880],[0,6,9,2,1810]]},{"c":8,"n":[[1,2,8,1,20],[1,4,7,2,40]]}],"Cry_Marshtomp":[{"c":5,"n":[[7,2],[0,4,14,1,1640],[0,6,15,0,1740],[0,8,13,2,1790],[0,8,11,2,1680]]},{"c":6,"n":[[7,3],[0,4,12,1,1630],[0,6,13,0,1730],[0,8,11,2,1780],[0,8,9,2,1670]]},{"c":8,"n":[[1,4,9,2,55],[1,6,8,2,70]]}],"Cry_Swampert":[{"c":5,"n":[[8,3,3,0,1],[0,6,15,1,1420],[0,10,15,0,1560],[0,10,14,2,1510],[0,16,11,2,1380]]},{"c":6,"n":[[8,2,2,1,2],[0,6,13,1,1410],[0,10,13,0,1550],[0,10,12,2,1500],[0,16,9,2,1370]]},{"c":8,"n":[[1,6,14,2,90],[1,10,13,2,95],[1,16,11,2,108]]}],"Cry_Poochyena":[{"c":5,"n":[[7,1],[0,2,14,1,1760],[0,3,15,0,1830],[0,5,12,2,1790]]},{"c":6,"n":[[7,2],[0,2,12,1,1752],[0,3,13,0,1822],[0,5,10,2,1782]]},{"c":8,"n":[[1,2,9,1,40],[1,4,7,2,50]]}],"Cry_Mightyena":[{"c":5,"n":[[8,2,2,1,0],[0,4,15,1,1520],[0,8,15,0,1650],[0,12,13,2,1590]]},{"c":6,"n":[[8,1,1,2,2],[0,4,13,1,1510],[0,8,13,0,1640],[0,12,11,2,1580]]},{"c":8,"n":[[1,4,12,2,70],[1,8,11,2,85]]}],"Cry_Zigzagoon":[{"c":5,"n":[[7,0],[0,2,13,0,1880],[0,2,15,0,1920],[0,3,11,2,1850],[0,2,14,0,1930],[0,4,10,2,1870]]},{"c":6,"n":[[7,2],[0,2,11,0,1872],[0,2,13,0,1912],[0,3,9,2,1842],[0,2,12,0,1922],[0,4,8,2,1862]]}],"Cry_Linoone":[{"c":5,"n":[[7,1],[0,3,14,1,1820],[0,4,15,0,1900],[0,6,12,2,1840]]},{"c":6,"n":[[7,2],[0,3,12,1,1810],[0,4,13,0,1890],[0,6,10,2,1830]]},{"c":8,"n":[[1,3,8,1,45],[1,4,6,2,60]]}],"Cry_Wurmple":[{"c":5,"n":[[7,0],[0,3,11,1,1920],[0,4,13,0,1960],[0,5,9,2,1910]]},{"c":6,"n":[[7,1],[0,3,9,1,1912],[0,4,11,0,1952],[0,5,7,2,1902]]}],"Cry_Silcoon":[{"c":5,"n":[[7,2],[0,4,10,1,1780],[0,6,12,1,1810],[0,6,8,2,1750]]},{"c":6,"n":[[7,3],[0,4,8,1,1770],[0,6,10,1,1800],[0,6,6,2,1740]]}],"Cry_Beautifly":[{"c":5,"n":[[7,0],[0,3,14,1,1900],[0,4,15,0,1960],[0,6,13,2,1920],[0,6,11,2,1880]]},{"c":6,"n":[[7,2],[0,3,12,1,1892],[0,4,13,0,1952],[0,6,11,2,1912],[0,6,9,2,1872]]}],"Cry_Dustox":[{"c":5,"n":[[7,3],[0,3,12,0,1680],[0,3,14,0,1720],[0,6,12,2,1700],[0,8,10,2,1640]]},{"c":6,"n":[[7,3],[0,3,10,0,1675],[0,3,12,0,1715],[0,6,10,2,1695],[0,8,8,2,1635]]},{"c":8,"n":[[1,4,10,1,70],[1,6,8,2,85]]}],"Cry_Lotad":[{"c":5,"n":[[7,1],[0,2,14,0,1790],[0,3,15,1,1840],[0,4,12,2,1800]]},{"c":6,"n":[[7,2],[0,2,12,0,1782],[0,3,13,1,1832],[0,4,10,2,1792]]}],"Cry_Ludicolo":[{"c":5,"n":[[7,2],[0,3,14,1,1720],[0,3,15,0,1790],[0,4,13,1,1750],[0,6,14,0,1820],[0,8,11,2,1760]]},{"c":6,"n":[[7,1],[0,3,12,1,1712],[0,3,13,0,1782],[0,4,11,1,1742],[0,6,12,0,1812],[0,8,9,2,1752]]},{"c":8,"n":[[1,3,9,1,35],[1,4,8,1,45],[1,6,9,2,55]]}],"Cry_Seedot":[{"c":5,"n":[[7,0],[0,2,13,1,1840],[0,3,15,0,1890],[0,4,11,2,1830]]},{"c":6,"n":[[7,2],[0,2,11,1,1832],[0,3,13,0,1882],[0,4,9,2,1822]]}],"Cry_Shiftry":[{"c":5,"n":[[8,2,3,1,1],[0,5,14,1,1610],[0,8,15,0,1740],[0,10,13,2,1670],[0,12,10,2,1560]]},{"c":6,"n":[[8,1,2,2,2],[0,5,12,1,1602],[0,8,13,0,1732],[0,10,11,2,1662],[0,12,8,2,1552]]},{"c":8,"n":[[1,5,11,2,60],[1,8,12,2,75],[1,12,9,2,90]]}],"Cry_Taillow":[{"c":5,"n":[[7,1],[0,2,15,0,1920],[0,3,15,0,1970],[0,5,13,2,1930]]},{"c":6,"n":[[7,0],[0,2,13,0,1912],[0,3,13,0,1962],[0,5,11,2,1922]]},{"c":8,"n":[[1,2,8,1,30],[1,4,7,2,45]]}],"Cry_Swellow":[{"c":5,"n":[[7,2],[0,3,15,0,1860],[0,5,15,0,1930],[0,8,13,2,1880],[0,8,10,2,1810]]},{"c":6,"n":[[7,1],[0,3,13,0,1852],[0,5,13,0,1922],[0,8,11,2,1872],[0,8,8,2,1802]]},{"c":8,"n":[[1,3,10,1,50],[1,6,9,2,65]]}],"Cry_Wingull":[{"c":5,"n":[[7,1],[0,3,13,1,1880],[0,4,15,0,1920],[0,6,12,2,1860]]},{"c":6,"n":[[7,2],[0,3,11,1,1872],[0,4,13,0,1912],[0,6,10,2,1852]]}],"Cry_Pelipper":[{"c":5,"n":[[7,3],[0,4,14,1,1680],[0,6,15,0,1750],[0,8,12,2,1710]]},{"c":6,"n":[[7,3],[0,4,12,1,1672],[0,6,13,0,1742],[0,8,10,2,1702]]},{"c":8,"n":[[1,4,9,2,60],[1,8,7,2,75]]}],"Cry_Ralts":[{"c":5,"n":[[7,0],[0,3,13,0,1940],[0,4,14,0,1980],[0,6,12,2,1950]]},{"c":6,"n":[[7,1],[0,3,11,0,1932],[0,4,12,0,1972],[0,6,10,2,1942]]}],"Cry_Gardevoir":[{"c":5,"n":[[7,1],[0,4,14,1,1820],[0,6,15,0,1910],[0,8,14,1,1870],[0,10,11,2,1800]]},{"c":6,"n":[[7,2],[0,4,12,1,1812],[0,6,13,0,1902],[0,8,12,1,1862],[0,10,9,2,1792]]}],"Cry_Surskit":[{"c":5,"n":[[7,0],[0,2,13,1,1900],[0,3,14,0,1940],[0,4,11,2,1890]]},{"c":6,"n":[[7,1],[0,2,11,1,1892],[0,3,12,0,1932],[0,4,9,2,1882]]}],"Cry_Shroomish":[{"c":5,"n":[[7,2],[0,3,13,1,1760],[0,4,14,0,1820],[0,5,11,2,1770]]},{"c":6,"n":[[7,3],[0,3,11,1,1752],[0,4,12,0,1812],[0,5,9,2,1762]]}],"Cry_Breloom":[{"c":5,"n":[[7,2],[0,3,14,1,1680],[0,5,15,0,1760],[0,6,13,2,1720],[0,8,10,2,1650]]},{"c":6,"n":[[7,1],[0,3,12,1,1672],[0,5,13,0,1752],[0,6,11,2,1712],[0,8,8,2,1642]]},{"c":8,"n":[[1,3,11,1,60],[1,6,10,2,75]]}],"Cry_Slakoth":[{"c":5,"n":[[7,3],[0,6,12,1,1560],[0,8,14,0,1620],[0,12,10,2,1540]]},{"c":6,"n":[[7,2],[0,6,10,1,1552],[0,8,12,0,1612],[0,12,8,2,1532]]}],"Cry_Slaking":[{"c":5,"n":[[8,3,3,1,0],[0,6,15,1,1380],[0,12,15,0,1520],[0,14,12,2,1450]]},{"c":6,"n":[[8,2,2,2,1],[0,6,13,1,1370],[0,12,13,0,1510],[0,14,10,2,1440]]},{"c":8,"n":[[1,6,14,2,85],[1,12,12,2,98]]}],"Cry_Nincada":[{"c":5,"n":[[7,3],[0,2,13,0,1950],[0,2,14,0,1980],[0,4,12,1,1960],[0,6,10,2,1920]]},{"c":6,"n":[[7,3],[0,2,11,0,1945],[0,2,12,0,1975],[0,4,10,1,1955],[0,6,8,2,1915]]}],"Cry_Ninjask":[{"c":5,"n":[[7,0],[0,2,15,0,2010],[0,3,15,0,2030],[0,6,13,2,1990]]},{"c":6,"n":[[7,3],[0,2,13,0,2005],[0,3,13,0,2025],[0,6,11,2,1985]]},{"c":8,"n":[[1,2,10,1,35],[1,4,8,2,50]]}],"Cry_Shedinja":[{"c":5,"n":[[7,3],[0,4,11,1,1680],[0,6,12,1,1710],[0,8,9,2,1650]]},{"c":6,"n":[[7,1],[0,4,9,1,1672],[0,6,10,1,1702],[0,8,7,2,1642]]},{"c":8,"n":[[1,6,8,1,80],[1,8,6,2,95]]}],"Cry_Whismur":[{"c":5,"n":[[7,0],[0,3,10,1,1720],[0,4,14,0,1850],[0,6,12,2,1800]]},{"c":6,"n":[[7,1],[0,3,8,1,1712],[0,4,12,0,1842],[0,6,10,2,1792]]}],"Cry_Loudred":[{"c":5,"n":[[8,1,2,1,1],[0,4,14,1,1620],[0,8,15,0,1740],[0,8,13,2,1680]]},{"c":6,"n":[[8,2,1,2,2],[0,4,12,1,1610],[0,8,13,0,1730],[0,8,11,2,1670]]},{"c":8,"n":[[1,4,12,2,65],[1,8,10,2,80]]}],"Cry_Exploud":[{"c":5,"n":[[8,3,3,0,0],[0,6,15,1,1440],[0,10,15,0,1600],[0,12,14,2,1530],[0,16,11,2,1410]]},{"c":6,"n":[[8,1,1,2,3],[0,6,13,1,1430],[0,10,13,0,1590],[0,12,12,2,1520],[0,16,9,2,1400]]},{"c":8,"n":[[1,6,14,2,85],[1,10,13,2,95],[1,16,11,2,110]]}],"Cry_Makuhita":[{"c":5,"n":[[7,2],[0,3,14,1,1680],[0,5,15,0,1750],[0,6,12,2,1690]]},{"c":6,"n":[[7,3],[0,3,12,1,1670],[0,5,13,0,1740],[0,6,10,2,1680]]},{"c":8,"n":[[1,3,12,1,75],[1,6,9,2,90]]}],"Cry_Hariyama":[{"c":5,"n":[[8,2,2,0,1],[0,5,15,1,1480],[0,8,15,0,1610],[0,10,13,2,1540]]},{"c":6,"n":[[8,3,1,1,2],[0,5,13,1,1470],[0,8,13,0,1600],[0,10,11,2,1530]]},{"c":8,"n":[[1,5,14,2,85],[1,10,12,2,105]]}],"Cry_Nosepass":[{"c":5,"n":[[7,3],[0,4,13,0,1640],[0,6,14,1,1690],[0,8,10,2,1620]]},{"c":6,"n":[[7,3],[0,4,11,0,1630],[0,6,12,1,1680],[0,8,8,2,1610]]}],"Cry_Skitty":[{"c":5,"n":[[7,0],[0,2,14,0,1940],[0,3,15,0,1980],[0,5,12,2,1940]]},{"c":6,"n":[[7,1],[0,2,12,0,1932],[0,3,13,0,1972],[0,5,10,2,1932]]}],"Cry_Sableye":[{"c":5,"n":[[7,1],[0,2,13,0,1820],[0,2,15,0,1870],[0,4,12,1,1830],[0,6,9,2,1780]]},{"c":6,"n":[[7,3],[0,2,11,0,1812],[0,2,13,0,1862],[0,4,10,1,1822],[0,6,7,2,1772]]}],"Cry_Mawile":[{"c":5,"n":[[7,2],[0,3,14,1,1760],[0,4,15,0,1850],[0,6,13,2,1790]]},{"c":6,"n":[[7,1],[0,3,12,1,1750],[0,4,13,0,1840],[0,6,11,2,1780]]},{"c":8,"n":[[1,3,12,1,60],[1,5,10,2,75]]}],"Cry_Aron":[{"c":5,"n":[[7,3],[0,3,14,1,1720],[0,5,15,0,1790],[0,6,12,2,1730]]},{"c":6,"n":[[7,3],[0,3,12,1,1712],[0,5,13,0,1782],[0,6,10,2,1722]]},{"c":8,"n":[[1,3,10,1,65],[1,5,8,2,80]]}],"Cry_Aggron":[{"c":5,"n":[[8,3,3,0,1],[0,6,15,1,1420],[0,10,15,0,1580],[0,12,13,2,1500]]},{"c":6,"n":[[8,2,2,1,2],[0,6,13,1,1410],[0,10,13,0,1570],[0,12,11,2,1490]]},{"c":8,"n":[[1,6,15,2,90],[1,12,13,2,105]]}],"Cry_Meditite":[{"c":5,"n":[[7,1],[0,3,13,1,1840],[0,5,14,0,1900],[0,6,11,2,1850]]},{"c":6,"n":[[7,2],[0,3,11,1,1832],[0,5,12,0,1892],[0,6,9,2,1842]]}],"Cry_Electrike":[{"c":5,"n":[[7,0],[0,2,14,1,1810],[0,3,15,0,1870],[0,4,12,2,1830]]},{"c":6,"n":[[7,1],[0,2,12,1,1802],[0,3,13,0,1862],[0,4,10,2,1822]]},{"c":8,"n":[[1,2,11,1,45],[1,4,8,2,60]]}],"Cry_Manectric":[{"c":5,"n":[[8,1,2,1,1],[0,4,15,1,1660],[0,6,15,0,1780],[0,8,13,2,1720]]},{"c":6,"n":[[8,2,1,2,2],[0,4,13,1,1650],[0,6,13,0,1770],[0,8,11,2,1710]]},{"c":8,"n":[[1,4,13,1,65],[1,8,11,2,80]]}],"Cry_Plusle":[{"c":5,"n":[[7,0],[0,2,14,0,1960],[0,2,15,0,2000],[0,4,12,2,1970]]},{"c":6,"n":[[7,1],[0,2,12,0,1952],[0,2,13,0,1992],[0,4,10,2,1962]]}],"Cry_Volbeat":[{"c":5,"n":[[7,2],[0,3,13,1,1820],[0,4,14,0,1880],[0,5,11,2,1830]]},{"c":6,"n":[[7,3],[0,3,11,1,1812],[0,4,12,0,1872],[0,5,9,2,1822]]}],"Cry_Roselia":[{"c":5,"n":[[7,1],[0,3,14,1,1860],[0,4,15,0,1920],[0,6,12,2,1870]]},{"c":6,"n":[[7,2],[0,3,12,1,1852],[0,4,13,0,1912],[0,6,10,2,1862]]}],"Cry_Gulpin":[{"c":5,"n":[[7,2],[0,4,12,1,1680],[0,6,14,0,1760],[0,6,10,2,1690]]},{"c":6,"n":[[7,3],[0,4,10,1,1672],[0,6,12,0,1752],[0,6,8,2,1682]]}],"Cry_Carvanha":[{"c":5,"n":[[7,1],[0,3,14,1,1740],[0,4,15,0,1820],[0,5,12,2,1770]]},{"c":6,"n":[[7,2],[0,3,12,1,1732],[0,4,13,0,1812],[0,5,10,2,1762]]},{"c":8,"n":[[1,3,10,1,55],[1,5,8,2,70]]}],"Cry_Wailmer":[{"c":5,"n":[[8,2,2,1,0],[0,5,14,1,1540],[0,8,15,0,1660],[0,10,12,2,1580]]},{"c":6,"n":[[8,1,1,2,1],[0,5,12,1,1530],[0,8,13,0,1650],[0,10,10,2,1570]]},{"c":8,"n":[[1,5,11,2,75],[1,10,9,2,90]]}],"Cry_Numel":[{"c":5,"n":[[7,3],[0,4,13,1,1620],[0,6,14,0,1690],[0,6,11,2,1630]]},{"c":6,"n":[[7,2],[0,4,11,1,1612],[0,6,12,0,1682],[0,6,9,2,1622]]}],"Cry_Torkoal":[{"c":5,"n":[[7,2],[0,4,14,1,1580],[0,8,15,0,1680],[0,8,11,2,1600]]},{"c":6,"n":[[7,3],[0,4,12,1,1570],[0,8,13,0,1670],[0,8,9,2,1590]]},{"c":8,"n":[[1,4,12,1,80],[1,8,10,2,95]]}],"Cry_Spoink":[{"c":5,"n":[[7,0],[0,2,14,1,1860],[0,3,15,0,1940],[0,4,11,2,1870]]},{"c":6,"n":[[7,1],[0,2,12,1,1852],[0,3,13,0,1932],[0,4,9,2,1862]]}],"Cry_Trapinch":[{"c":5,"n":[[7,2],[0,3,13,1,1690],[0,4,14,0,1760],[0,5,11,2,1710]]},{"c":6,"n":[[7,3],[0,3,11,1,1682],[0,4,12,0,1752],[0,5,9,2,1702]]},{"c":8,"n":[[1,3,11,1,55],[1,5,9,2,70]]}],"Cry_Flygon":[{"c":5,"n":[[7,1],[0,4,15,1,1820],[0,6,15,0,1920],[0,8,13,2,1860],[0,8,10,2,1780]]},{"c":6,"n":[[7,2],[0,4,13,1,1812],[0,6,13,0,1912],[0,8,11,2,1852],[0,8,8,2,1772]]}],"Cry_Swablu":[{"c":5,"n":[[7,0],[0,3,14,0,1920],[0,4,15,0,1980],[0,6,12,2,1940]]},{"c":6,"n":[[7,1],[0,3,12,0,1912],[0,4,13,0,1972],[0,6,10,2,1932]]}],"Cry_Altaria":[{"c":5,"n":[[7,1],[0,4,15,1,1840],[0,6,15,0,1930],[0,8,14,1,1890],[0,10,11,2,1820]]},{"c":6,"n":[[7,2],[0,4,13,1,1832],[0,6,13,0,1922],[0,8,12,1,1882],[0,10,9,2,1812]]}],"Cry_Zangoose":[{"c":5,"n":[[7,2],[0,3,15,1,1760],[0,5,15,0,1860],[0,6,13,2,1800]]},{"c":6,"n":[[7,1],[0,3,13,1,1750],[0,5,13,0,1850],[0,6,11,2,1790]]},{"c":8,"n":[[1,3,12,1,65],[1,6,10,2,80]]}],"Cry_Seviper":[{"c":5,"n":[[7,3],[0,4,14,1,1700],[0,6,15,0,1780],[0,8,12,2,1720]]},{"c":6,"n":[[7,3],[0,4,12,1,1690],[0,6,13,0,1770],[0,8,10,2,1710]]},{"c":8,"n":[[1,4,13,1,75],[1,8,11,2,90]]}],"Cry_Lunatone":[{"c":5,"n":[[7,3],[0,4,13,1,1740],[0,6,14,0,1810],[0,8,11,2,1750]]},{"c":6,"n":[[7,1],[0,4,11,1,1732],[0,6,12,0,1802],[0,8,9,2,1742]]}],"Cry_Barboach":[{"c":5,"n":[[7,1],[0,2,13,1,1780],[0,3,14,0,1840],[0,4,10,2,1790]]},{"c":6,"n":[[7,2],[0,2,11,1,1772],[0,3,12,0,1832],[0,4,8,2,1782]]}],"Cry_Corphish":[{"c":5,"n":[[7,2],[0,3,14,1,1720],[0,4,15,0,1790],[0,5,12,2,1740]]},{"c":6,"n":[[7,1],[0,3,12,1,1712],[0,4,13,0,1782],[0,5,10,2,1732]]},{"c":8,"n":[[1,3,10,1,60],[1,5,8,2,75]]}],"Cry_Claydol":[{"c":5,"n":[[7,3],[0,4,13,0,1680],[0,6,15,1,1760],[0,8,12,2,1700]]},{"c":6,"n":[[7,3],[0,4,11,0,1672],[0,6,13,1,1752],[0,8,10,2,1692]]}],"Cry_Feebas":[{"c":5,"n":[[7,1],[0,3,11,1,1820],[0,4,13,0,1870],[0,4,9,2,1810]]},{"c":6,"n":[[7,2],[0,3,9,1,1812],[0,4,11,0,1862],[0,4,7,2,1802]]}],"Cry_Milotic":[{"c":5,"n":[[7,1],[0,5,15,1,1860],[0,8,15,0,1950],[0,10,14,1,1910],[0,12,11,2,1830]]},{"c":6,"n":[[7,2],[0,5,13,1,1852],[0,8,13,0,1942],[0,10,12,1,1902],[0,12,9,2,1822]]}],"Cry_Castform":[{"c":5,"n":[[7,0],[0,2,14,0,1920],[0,3,15,0,1960],[0,4,12,2,1910]]},{"c":6,"n":[[7,1],[0,2,12,0,1912],[0,3,13,0,1952],[0,4,10,2,1902]]}],"Cry_Kecleon":[{"c":5,"n":[[7,2],[0,3,13,1,1780],[0,4,14,0,1840],[0,5,11,2,1790]]},{"c":6,"n":[[7,3],[0,3,11,1,1772],[0,4,12,0,1832],[0,5,9,2,1782]]}],"Cry_Shuppet":[{"c":5,"n":[[7,3],[0,3,13,1,1740],[0,4,14,0,1810],[0,5,11,2,1750]]},{"c":6,"n":[[7,1],[0,3,11,1,1732],[0,4,12,0,1802],[0,5,9,2,1742]]}],"Cry_Duskull":[{"c":5,"n":[[7,3],[0,4,12,1,1660],[0,6,14,0,1730],[0,8,10,2,1670]]},{"c":6,"n":[[7,2],[0,4,10,1,1652],[0,6,12,0,1722],[0,8,8,2,1662]]},{"c":8,"n":[[1,4,9,1,75],[1,8,7,2,90]]}],"Cry_Tropius":[{"c":5,"n":[[8,2,2,1,0],[0,6,14,1,1520],[0,8,15,0,1640],[0,10,12,2,1560]]},{"c":6,"n":[[8,1,1,2,1],[0,6,12,1,1510],[0,8,13,0,1630],[0,10,10,2,1550]]}],"Cry_Chimecho":[{"c":5,"n":[[7,0],[0,3,14,0,1980],[0,4,15,0,2020],[0,6,13,1,2000],[0,8,10,2,1960]]},{"c":6,"n":[[7,1],[0,3,12,0,1972],[0,4,13,0,2012],[0,6,11,1,1992],[0,8,8,2,1952]]}],"Cry_Absol":[{"c":5,"n":[[7,2],[0,4,15,1,1720],[0,6,15,0,1830],[0,8,13,2,1770],[0,10,10,2,1690]]},{"c":6,"n":[[7,3],[0,4,13,1,1710],[0,6,13,0,1820],[0,8,11,2,1760],[0,10,8,2,1680]]},{"c":8,"n":[[1,4,11,1,60],[1,8,9,2,75]]}],"Cry_Wynaut":[{"c":5,"n":[[7,0],[0,3,14,1,1880],[0,4,15,0,1940],[0,5,12,2,1890]]},{"c":6,"n":[[7,1],[0,3,12,1,1872],[0,4,13,0,1932],[0,5,10,2,1882]]}],"Cry_Snorunt":[{"c":5,"n":[[7,1],[0,2,13,1,1860],[0,3,14,0,1920],[0,4,11,2,1870]]},{"c":6,"n":[[7,2],[0,2,11,1,1852],[0,3,12,0,1912],[0,4,9,2,1862]]}],"Cry_Spheal":[{"c":5,"n":[[7,2],[0,3,14,1,1790],[0,4,15,0,1860],[0,5,12,2,1810]]},{"c":6,"n":[[7,1],[0,3,12,1,1782],[0,4,13,0,1852],[0,5,10,2,1802]]}],"Cry_Walrein":[{"c":5,"n":[[8,3,2,1,0],[0,6,15,1,1440],[0,10,15,0,1580],[0,12,13,2,1510]]},{"c":6,"n":[[8,2,1,2,1],[0,6,13,1,1430],[0,10,13,0,1570],[0,12,11,2,1500]]},{"c":8,"n":[[1,6,14,2,85],[1,12,12,2,100]]}],"Cry_Clamperl":[{"c":5,"n":[[7,3],[0,3,13,1,1780],[0,4,14,0,1840],[0,5,11,2,1790]]},{"c":6,"n":[[7,2],[0,3,11,1,1772],[0,4,12,0,1832],[0,5,9,2,1782]]}],"Cry_Bagon":[{"c":5,"n":[[7,2],[0,3,14,1,1760],[0,4,15,0,1840],[0,5,12,2,1780]]},{"c":6,"n":[[7,1],[0,3,12,1,1750],[0,4,13,0,1830],[0,5,10,2,1770]]}],"Cry_Salamence":[{"c":5,"n":[[8,3,3,1,0],[0,6,15,1,1480],[0,10,15,0,1640],[0,12,14,2,1580],[0,14,11,2,1460]]},{"c":6,"n":[[8,2,2,2,1],[0,6,13,1,1470],[0,10,13,0,1630],[0,12,12,2,1570],[0,14,9,2,1450]]},{"c":8,"n":[[1,6,15,2,85],[1,10,14,2,95],[1,14,11,2,110]]}],"Cry_Beldum":[{"c":5,"n":[[7,3],[0,3,13,1,1720],[0,5,14,0,1780],[0,6,11,2,1730]]},{"c":6,"n":[[7,3],[0,3,11,1,1710],[0,5,12,0,1770],[0,6,9,2,1720]]}],"Cry_Metagross":[{"c":5,"n":[[8,3,3,0,1],[0,6,15,1,1460],[0,10,15,0,1620],[0,12,13,2,1550]]},{"c":6,"n":[[8,2,2,1,2],[0,6,13,1,1450],[0,10,13,0,1610],[0,12,11,2,1540]]},{"c":8,"n":[[1,6,14,2,95],[1,12,12,2,110]]}],"Cry_Regirock":[{"c":5,"n":[[8,3,3,1,1],[0,5,15,1,1380],[0,8,15,0,1490],[0,12,13,2,1430]]},{"c":6,"n":[[8,2,2,2,2],[0,5,13,1,1370],[0,8,13,0,1480],[0,12,11,2,1420]]},{"c":8,"n":[[1,5,15,2,85],[1,12,13,2,105]]}],"Cry_Regice":[{"c":5,"n":[[7,3],[0,4,15,1,1860],[0,8,15,0,1940],[0,10,13,2,1880]]},{"c":6,"n":[[7,0],[0,4,13,1,1850],[0,8,13,0,1930],[0,10,11,2,1870]]}],"Cry_Registeel":[{"c":5,"n":[[7,3],[0,4,15,1,1680],[0,8,15,0,1780],[0,10,13,2,1720]]},{"c":6,"n":[[7,3],[0,4,13,1,1670],[0,8,13,0,1770],[0,10,11,2,1710]]},{"c":8,"n":[[1,4,12,1,75],[1,8,10,2,90]]}],"Cry_Latias":[{"c":5,"n":[[7,0],[0,4,15,1,1900],[0,6,15,0,1980],[0,8,13,2,1930]]},{"c":6,"n":[[7,1],[0,4,13,1,1890],[0,6,13,0,1970],[0,8,11,2,1920]]}],"Cry_Latios":[{"c":5,"n":[[7,1],[0,4,15,1,1860],[0,6,15,0,1940],[0,8,13,2,1890]]},{"c":6,"n":[[7,2],[0,4,13,1,1850],[0,6,13,0,1930],[0,8,11,2,1880]]}],"Cry_Kyogre":[{"c":5,"n":[[8,3,3,0,0],[0,6,15,1,1320],[0,12,15,0,1510],[0,14,14,1,1460],[0,18,11,2,1340]]},{"c":6,"n":[[8,2,2,1,1],[0,6,13,1,1310],[0,12,13,0,1500],[0,14,12,1,1450],[0,18,9,2,1330]]},{"c":8,"n":[[1,6,15,2,95],[1,12,14,2,105],[1,18,12,2,120]]}],"Cry_Groudon":[{"c":5,"n":[[8,3,3,1,1],[0,6,15,1,1280],[0,12,15,0,1470],[0,14,14,1,1420],[0,18,11,2,1300]]},{"c":6,"n":[[8,2,2,2,2],[0,6,13,1,1270],[0,12,13,0,1460],[0,14,12,1,1410],[0,18,9,2,1290]]},{"c":8,"n":[[1,6,15,2,100],[1,12,14,2,110],[1,18,12,2,125]]}],"Cry_Rayquaza":[{"c":5,"n":[[8,3,3,0,1],[0,6,15,1,1560],[0,12,15,0,1720],[0,14,14,1,1680],[0,18,12,2,1540]]},{"c":6,"n":[[8,1,1,2,2],[0,6,13,1,1550],[0,12,13,0,1710],[0,14,12,1,1670],[0,18,10,2,1530]]},{"c":8,"n":[[1,6,15,2,90],[1,12,14,2,105],[1,18,12,2,118]]}],"Cry_Jirachi":[{"c":5,"n":[[7,0],[0,3,14,0,1980],[0,5,15,0,2030],[0,8,13,1,2010],[0,10,10,2,1970]]},{"c":6,"n":[[7,1],[0,3,12,0,1972],[0,5,13,0,2022],[0,8,11,1,2002],[0,10,8,2,1962]]}],"Cry_Deoxys":[{"c":5,"n":[[7,3],[0,4,15,1,1820],[0,6,15,0,1940],[0,8,14,1,1890],[0,12,11,2,1780]]},{"c":6,"n":[[7,3],[0,4,13,1,1810],[0,6,13,0,1930],[0,8,12,1,1880],[0,12,9,2,1770]]},{"c":8,"n":[[1,4,12,1,65],[1,8,11,2,80],[1,12,9,2,95]]}]},"cris":{"252":["Cry_Treecko",0,256],"253":["Cry_Grovyle",-20,280],"254":["Cry_Sceptile",-60,340],"255":["Cry_Torchic",0,220],"256":["Cry_Combusken",-30,270],"257":["Cry_Blaziken",-70,350],"258":["Cry_Mudkip",0,240],"259":["Cry_Marshtomp",-30,290],"260":["Cry_Swampert",-80,380],"261":["Cry_Poochyena",0,230],"262":["Cry_Mightyena",-50,320],"263":["Cry_Zigzagoon",0,220],"264":["Cry_Linoone",-30,260],"265":["Cry_Wurmple",0,200],"266":["Cry_Silcoon",-10,220],"267":["Cry_Beautifly",20,280],"268":["Cry_Silcoon",-20,230],"269":["Cry_Dustox",-30,300],"270":["Cry_Lotad",0,230],"271":["Cry_Lotad",-25,270],"272":["Cry_Ludicolo",-50,340],"273":["Cry_Seedot",0,210],"274":["Cry_Seedot",-30,260],"275":["Cry_Shiftry",-70,350],"276":["Cry_Taillow",0,220],"277":["Cry_Swellow",-40,290],"278":["Cry_Wingull",0,240],"279":["Cry_Pelipper",-50,310],"280":["Cry_Ralts",0,230],"281":["Cry_Ralts",-20,260],"282":["Cry_Gardevoir",-45,330],"283":["Cry_Surskit",0,210],"284":["Cry_Surskit",-40,280],"285":["Cry_Shroomish",0,220],"286":["Cry_Breloom",-45,300],"287":["Cry_Slakoth",0,280],"288":["Cry_Poochyena",-40,270],"289":["Cry_Slaking",-90,380],"290":["Cry_Nincada",0,230],"291":["Cry_Ninjask",30,260],"292":["Cry_Shedinja",-40,290],"293":["Cry_Whismur",0,240],"294":["Cry_Loudred",-40,300],"295":["Cry_Exploud",-90,400],"296":["Cry_Makuhita",0,250],"297":["Cry_Hariyama",-60,340],"298":["Cry_Mudkip",40,200],"299":["Cry_Nosepass",0,270],"300":["Cry_Skitty",0,220],"301":["Cry_Skitty",-30,270],"302":["Cry_Sableye",0,260],"303":["Cry_Mawile",0,270],"304":["Cry_Aron",0,240],"305":["Cry_Aron",-40,300],"306":["Cry_Aggron",-80,380],"307":["Cry_Meditite",0,240],"308":["Cry_Meditite",-40,300],"309":["Cry_Electrike",0,230],"310":["Cry_Manectric",-50,310],"311":["Cry_Plusle",10,210],"312":["Cry_Plusle",-10,210],"313":["Cry_Volbeat",0,240],"314":["Cry_Volbeat",20,240],"315":["Cry_Roselia",0,250],"316":["Cry_Gulpin",0,240],"317":["Cry_Gulpin",-50,320],"318":["Cry_Carvanha",0,240],"319":["Cry_Carvanha",-60,320],"320":["Cry_Wailmer",0,280],"321":["Cry_Wailmer",-90,420],"322":["Cry_Numel",0,250],"323":["Cry_Numel",-60,340],"324":["Cry_Torkoal",0,300],"325":["Cry_Spoink",0,220],"326":["Cry_Spoink",-40,290],"327":["Cry_Spoink",20,250],"328":["Cry_Trapinch",0,230],"329":["Cry_Flygon",30,270],"330":["Cry_Flygon",-40,330],"331":["Cry_Seedot",20,230],"332":["Cry_Shiftry",-50,310],"333":["Cry_Swablu",0,240],"334":["Cry_Altaria",-40,330],"335":["Cry_Zangoose",0,270],"336":["Cry_Seviper",0,290],"337":["Cry_Lunatone",0,270],"338":["Cry_Lunatone",-30,290],"339":["Cry_Barboach",0,220],"340":["Cry_Barboach",-50,310],"341":["Cry_Corphish",0,240],"342":["Cry_Corphish",-50,310],"343":["Cry_Claydol",30,250],"344":["Cry_Claydol",-40,320],"345":["Cry_Shroomish",20,260],"346":["Cry_Shroomish",-40,330],"347":["Cry_Surskit",10,250],"348":["Cry_Breloom",-30,320],"349":["Cry_Feebas",0,210],"350":["Cry_Milotic",-40,360],"351":["Cry_Castform",0,220],"352":["Cry_Kecleon",0,250],"353":["Cry_Shuppet",0,240],"354":["Cry_Shuppet",-40,300],"355":["Cry_Duskull",0,260],"356":["Cry_Duskull",-50,330],"357":["Cry_Tropius",-40,340],"358":["Cry_Chimecho",0,260],"359":["Cry_Absol",0,310],"360":["Cry_Wynaut",0,220],"361":["Cry_Snorunt",0,230],"362":["Cry_Snorunt",-50,310],"363":["Cry_Spheal",0,240],"364":["Cry_Spheal",-30,280],"365":["Cry_Walrein",-70,360],"366":["Cry_Clamperl",0,230],"367":["Cry_Clamperl",-40,300],"368":["Cry_Clamperl",20,290],"369":["Cry_Barboach",-40,300],"370":["Cry_Plusle",20,200],"371":["Cry_Bagon",0,240],"372":["Cry_Bagon",-30,280],"373":["Cry_Salamence",-80,380],"374":["Cry_Beldum",0,240],"375":["Cry_Beldum",-35,290],"376":["Cry_Metagross",-75,370],"377":["Cry_Regirock",-60,350],"378":["Cry_Regice",0,330],"379":["Cry_Registeel",-40,340],"380":["Cry_Latias",0,290],"381":["Cry_Latios",-30,300],"382":["Cry_Kyogre",-80,420],"383":["Cry_Groudon",-90,430],"384":["Cry_Rayquaza",-60,410],"385":["Cry_Jirachi",0,300],"386":["Cry_Deoxys",-50,360]},"tempoBase":0,"tempoSaufCanal":8};
++
++  // H├®ritage des cris ant├®rieurs si pr├®sents au moment de l'initialisation
++  var prev = W.POKE_GEN2_SONS || W.POKE_SONS;
++  if (prev && prev.cris && prev.sfx) {
++    for (var k in prev.sfx) {
++      if (!GEN3_SONS.sfx[k]) GEN3_SONS.sfx[k] = prev.sfx[k];
++    }
++    for (var id in prev.cris) {
++      if (!GEN3_SONS.cris[id]) GEN3_SONS.cris[id] = prev.cris[id];
++    }
++  }
++
++  W.POKE_GEN3_SONS = GEN3_SONS;
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/js/poke/icones.js b/js/poke/icones.js
+index ad323ab..58a05ef 100644
+--- a/js/poke/icones.js
++++ b/js/poke/icones.js
+@@ -238,15 +238,21 @@
+   //  ÔÜá´©Å LE PARAM├êTRE DE CACHE RESTE ├Ç L'APPELANT. Il vaut `?i=6` ├á certains
+   //     endroits, rien ├á d'autres, et ce n'est pas ├á cette porte d'en d├®cider :
+   //     elle dit O├Ö, pas COMBIEN DE TEMPS.
+   // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   function dossierSprite(n) {
++    if (+n > 251) return "assets/img/poke/gen3/";
+     if (+n > 151) return "assets/img/poke/gen2/";
+     var cle = W.PokeRegles ? W.PokeRegles.courant() : "gen1";
+     return cle === "gen2" ? "assets/img/poke/gen2/" : "assets/img/poke/";
+   }
+ 
+   W.PokeSprites = {
+     face: function (n, suffixe) { return dossierSprite(n) + "face/" + n + ".png" + (suffixe || ""); },
+     dos: function (n, suffixe) { return dossierSprite(n) + "dos/" + n + ".png" + (suffixe || ""); },
++    art: function (n) { return "assets/img/poke/art/" + n + ".webp"; },
++    imgFace: function (n, suffixe) { return dossierSprite(n) + "face/" + n + ".png" + (suffixe || ""); },
++    imgDos: function (n, suffixe) { return dossierSprite(n) + "dos/" + n + ".png" + (suffixe || ""); },
++    spriteFace: function (n, suffixe) { return dossierSprite(n) + "face/" + n + ".png" + (suffixe || ""); },
++    spriteDos: function (n, suffixe) { return dossierSprite(n) + "dos/" + n + ".png" + (suffixe || ""); },
+   };
+ })(typeof window !== "undefined" ? window : globalThis);
+diff --git a/js/poke/ordre.js b/js/poke/ordre.js
+index 7f7e868..cc75cd1 100644
+--- a/js/poke/ordre.js
++++ b/js/poke/ordre.js
+@@ -293,10 +293,17 @@
+   W.POKE_HOENN_ETAT = HOENN;
+   W.POKE_BANC_HOENN = hoennCharge();
+   if (W.POKE_BANC_HOENN) {
+     var iReg3 = NOYAU.indexOf("js/poke/regles.js");
+     NOYAU = NOYAU.slice(0, iReg3).concat(GEN3, NOYAU.slice(iReg3));
++    var iGen2Fin = GEN2_ECRANS.length > 0 ? ECRANS.indexOf(GEN2_ECRANS[GEN2_ECRANS.length - 1]) : -1;
++    var iPos3 = iGen2Fin >= 0 ? iGen2Fin : ECRANS.indexOf("js/poke/anim-attaque.js");
++    if (iPos3 >= 0) {
++      ECRANS = ECRANS.slice(0, iPos3 + 1).concat(GEN3_ECRANS, ECRANS.slice(iPos3 + 1));
++    } else {
++      ECRANS = ECRANS.concat(GEN3_ECRANS);
++    }
+   }
+ 
+   W.POKE_ORDRE_NOYAU = NOYAU;
+   W.POKE_ORDRE_ECRANS = ECRANS;
+   W.POKE_ORDRE = NOYAU.concat(ECRANS);
+diff --git a/js/poke/pokedex-ui.js b/js/poke/pokedex-ui.js
+index 00e7b9f..fc7fb4c 100644
+--- a/js/poke/pokedex-ui.js
++++ b/js/poke/pokedex-ui.js
+@@ -628,11 +628,11 @@
+         '<h2 class="pkdx-titre">' + T("resiste") + "</h2><p>" +
+           (r.resiste.map(function (x) { return pastille(x.t, x.m < 0.5 ? " ├ù┬╝" : ""); }).join(" ") || "ÔÇö") + "</p>" +
+         (r.immune.length ? '<h2 class="pkdx-titre">' + T("immune") + "</h2><p>" + r.immune.map(function (t) { return pastille(t); }).join(" ") + "</p>" : "") +
+         (e.evolue && e.evolue.length ? '<h2 class="pkdx-titre">' + T("evolue") + "</h2><p>" +
+           e.evolue.map(function (ev) {
+-            var cible = ESP()[ev.vers];
++            var cible = ESPECE(ev.vers);
+             var comment = ev.par === "niveau" ? T("parNiveau", { n: ev.niveau })
+               : ev.par === "pierre" ? T("parPierre", { o: nomPierre(ev.objet) }) : T("parEchange");
+             // Le nom de la forme ├®volu├®e reste cach├® tant qu'on ne l'a pas
+             // crois├®e : c'est une d├®couverte, pas une fiche technique.
+             var nomCible = etatDe(partie, ev.vers) === "inconnu" ? "ÔÇöÔÇöÔÇö" : cible.nom[LANG()];
+@@ -650,11 +650,11 @@
+     }
+ 
+     var PIERRES = {
+       FIRE_STONE: { fr: "Pierre Feu", en: "Fire Stone" }, WATER_STONE: { fr: "Pierre Eau", en: "Water Stone" },
+       THUNDER_STONE: { fr: "Pierre Foudre", en: "Thunder Stone" }, LEAF_STONE: { fr: "Pierre Plante", en: "Leaf Stone" },
+-      MOON_STONE: { fr: "Pierre Lune", en: "Moon Stone" },
++      MOON_STONE: { fr: "Pierre Lune", en: "Moon Stone" }, SUN_STONE: { fr: "Pierre Soleil", en: "Sun Stone" },
+     };
+     function nomPierre(o) { return (PIERRES[o] || { fr: o, en: o })[LANG()]; }
+ 
+     rendre();
+   }
+diff --git a/js/poke/ui.js b/js/poke/ui.js
+index 92a0601..cff8d6a 100644
+--- a/js/poke/ui.js
++++ b/js/poke/ui.js
+@@ -191,20 +191,25 @@
+     //     m├¿ne au laboratoire comme il l'a toujours fait, et cet ├®cran n'est
+     //     jamais dessin├®.
+     //  ÔÜá´©Å Le Pok├®dex du COMPTE est commun aux deux. Le dire ici, une fois,
+     //     ├®vite la question qu'on se pose devant deux mondes s├®par├®s.
+     // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+-    mondeChoixSur: { fr: "DEUX MONDES", en: "TWO WORLDS" },
++    mondeChoixSur: { fr: "TROIS MONDES", en: "THREE WORLDS" },
++    mondeChoixSur2: { fr: "DEUX MONDES", en: "TWO WORLDS" },
++    mondeChoixSur3: { fr: "TROIS MONDES", en: "THREE WORLDS" },
+     mondeChoixT: { fr: "O├╣ pars-tu ?", en: "Where are you going?" },
+     mondeKanto: { fr: "KANTO", en: "KANTO" },
+     mondeKantoDit: { fr: "Rouge ou Bleue, huit Champions, la Ligue Indigo. 151 Pok├®mon.",
+                      en: "Red or Blue, eight Leaders, the Indigo League. 151 Pok├®mon." },
+     mondeJohto: { fr: "JOHTO", en: "JOHTO" },
+     mondeJohtoDit: { fr: "Cristal, huit Champions, le Conseil 4, puis Red au Mont Argent├®. 251 Pok├®mon.",
+                      en: "Crystal, eight Leaders, the Elite Four, then Red on Mount Silver. 251 Pok├®mon." },
+-    mondeCommun: { fr: "Ton Pok├®dex est le m├¬me dans les deux.",
+-                   en: "Your Pok├®dex is the same in both." },
++    mondeHoenn: { fr: "Hoenn", en: "Hoenn" },
++    mondeHoennDit: { fr: "La r├®gion des terres et des mers",
++                     en: "The land of land and seas" },
++    mondeCommun: { fr: "Ton Pok├®dex est le m├¬me dans les trois.",
++                   en: "Your Pok├®dex is the same in all three." },
+     // [17/08, question de Darkjuampi] Ce que le compte transporte, dit avant de
+     // partir ÔÇö et rien de plus que ce qu'il fait. Voir `gardeDuCompte`.
+     compteT: { fr: "Sur cet appareil seulement", en: "This device only" },
+     compteB: { fr: "Sans compte, ton Pok├®dex reste dans ce navigateur. Avec un compte, tu le retrouves sur ton t├®l├®phone et sur ton PC. Ton d├®fi du jour te suit aussi. Le voyage en cours reste l├á o├╣ tu l'as commenc├®.",
+                en: "Without an account, your Pok├®dex stays in this browser. With one, you find it again on your phone and on your PC. Your daily challenge follows you too. The run in progress stays where you started it." },
+@@ -507,10 +512,11 @@
+     //    apr├¿s avoir pris Germignon des mains du Professeur Orme. Le bandeau du
+     //    monde ├®tait une cl├® fixe. Un ├®cran qui nomme le mauvais monde ├á la
+     //    seconde o├╣ le joueur s'y installe, c'est la classe que ce dossier
+     //    traque : *le jeu sait, et il ne dit pas.*
+     johto: { fr: "JOHTO ÔÇö SECONDE G├ëN├ëRATION", en: "JOHTO ÔÇö SECOND GENERATION" },
++    hoenn: { fr: "HOENN ÔÇö TROISI├êME G├ëN├ëRATION", en: "HOENN ÔÇö THIRD GENERATION" },
+     // ÔöÇÔöÇ LE D├ëFI DU JOUR ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+     //  ­ƒö┤ IL ├ëTAIT C├éBL├ë PARTOUT ET N'AVAIT PAS DE BOUTON. `partie.compare`
+     //     verrouille le vivier de d├®part aux trois du canon, refuse le
+     //     compagnon et scelle la version ; `POKE_GRAINE` fixe la carte pour
+     //     tout le monde ; l'├®cran de classement PROMET ┬½ une graine par jour,
+@@ -4665,10 +4671,11 @@
+   //     voyage tout droit. Aucun joueur ne voit une porte sur une pi├¿ce vide.
+   // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   var MONDES_DITS = {
+     gen1: { nom: "mondeKanto", dit: "mondeKantoDit", sur: "kanto" },
+     gen2: { nom: "mondeJohto", dit: "mondeJohtoDit", sur: "johto" },
++    gen3: { nom: "mondeHoenn", dit: "mondeHoennDit", sur: "hoenn" },
+   };
+ 
+   //  Le bandeau du monde courant. Hors voyage, le registre rend le monde par
+   //  d├®faut : en production, cette porte r├®pond ┬½ kanto ┬╗ et rien ne change.
+   //  ÔÜá´©Å ON LIT LA PARTIE, PAS LE REGISTRE. Le jeu de r├¿gles courant reste celui
+diff --git a/tests/test_gen3_ui.mjs b/tests/test_gen3_ui.mjs
+new file mode 100644
+index 0000000..58ffb6f
+--- /dev/null
++++ b/tests/test_gen3_ui.mjs
+@@ -0,0 +1,344 @@
++/**
++ * tests/test_gen3_ui.mjs
++ * Unit test suite for Task 7: WebAudio cries, UI world selector, and sprite routing.
++ *
++ * Verifies:
++ * 1. js/poke/gen3/sons.js exports W.POKE_GEN3_SONS with procedural WebAudio cry definitions for species 252-386.
++ * 2. js/poke/ordre.js includes "js/poke/gen3/sons.js" in GEN3_ECRANS and splices it into ECRANS / POKE_ORDRE_ECRANS.
++ * 3. js/poke/ui.js defines MONDES_DITS.gen3 with { nom: "mondeHoenn", dit: "mondeHoennDit", sur: "hoenn" },
++ *    with translations for mondeHoenn, mondeHoennDit, hoenn, and mondeChoixSur supporting Hoenn.
++ * 4. Sprite path resolution:
++ *    - Species 1-151: assets/img/poke/face/${n}.png (or gen2 in gen2 mode)
++ *    - Species 152-251: assets/img/poke/gen2/face/${n}.png
++ *    - Species 252-386: assets/img/poke/gen3/face/${n}.png, assets/img/poke/gen3/dos/${n}.png, assets/img/poke/art/${n}.webp
++ * 5. Pok├®dex UI: scales to 386 entries smoothly reading PokeRegles.dexTotalCompte().
++ */
++
++import fs from "node:fs";
++import path from "node:path";
++import vm from "node:vm";
++import assert from "node:assert/strict";
++import { fileURLToPath } from "node:url";
++
++const __filename = fileURLToPath(import.meta.url);
++const __dirname = path.dirname(__filename);
++const ROOT_DIR = path.resolve(__dirname, "..");
++
++let totalTests = 0;
++let passedTests = 0;
++let failedTests = 0;
++const failures = [];
++
++function suite(title) {
++  console.log(`\n\x1b[1m\x1b[36m=== ${title} ===\x1b[0m`);
++}
++
++function test(name, fn) {
++  totalTests++;
++  try {
++    fn();
++    passedTests++;
++    console.log(`  \x1b[32mÔ£ô\x1b[0m ${name}`);
++  } catch (err) {
++    failedTests++;
++    failures.push({ name, err });
++    console.log(`  \x1b[31mÔ£ù\x1b[0m ${name}`);
++    console.error(`    \x1b[31m${err.message}\x1b[0m`);
++    if (err.stack) {
++      const firstStack = err.stack.split("\n").slice(1, 4).join("\n");
++      console.error(`    \x1b[90m${firstStack}\x1b[0m`);
++    }
++  }
++}
++
++function createIsolatedContext(customGlobals = {}) {
++  const sandbox = {
++    console: console,
++    Math: Math,
++    Object: Object,
++    Array: Array,
++    String: String,
++    Number: Number,
++    Boolean: Boolean,
++    RegExp: RegExp,
++    JSON: JSON,
++    isFinite: isFinite,
++    isNaN: isNaN,
++    parseInt: parseInt,
++    parseFloat: parseFloat,
++    Date: Date,
++    ...customGlobals,
++  };
++  sandbox.globalThis = sandbox;
++  sandbox.window = sandbox;
++  return vm.createContext(sandbox);
++}
++
++function loadScriptInContext(filePath, context) {
++  const fullPath = path.join(ROOT_DIR, filePath);
++  if (!fs.existsSync(fullPath)) {
++    throw new Error(`File does not exist: ${filePath}`);
++  }
++  const code = fs.readFileSync(fullPath, "utf-8");
++  vm.runInContext(code, context, { filename: filePath });
++}
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 1: WebAudio Cries in js/poke/gen3/sons.js
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("1. WebAudio Cries in js/poke/gen3/sons.js");
++
++test("js/poke/gen3/sons.js file exists and exports W.POKE_GEN3_SONS", () => {
++  const fullPath = path.join(ROOT_DIR, "js/poke/gen3/sons.js");
++  assert.ok(fs.existsSync(fullPath), "js/poke/gen3/sons.js must exist on disk");
++
++  const ctx = createIsolatedContext();
++  loadScriptInContext("js/poke/gen3/sons.js", ctx);
++
++  assert.ok(ctx.POKE_GEN3_SONS, "W.POKE_GEN3_SONS must be exported");
++  assert.ok(typeof ctx.POKE_GEN3_SONS.cris === "object", "POKE_GEN3_SONS.cris must be an object");
++  assert.ok(typeof ctx.POKE_GEN3_SONS.sfx === "object", "POKE_GEN3_SONS.sfx must be an object");
++});
++
++test("POKE_GEN3_SONS contains procedural cries for all 135 species (252 to 386)", () => {
++  const ctx = createIsolatedContext();
++  loadScriptInContext("js/poke/gen3/sons.js", ctx);
++  const sons = ctx.POKE_GEN3_SONS;
++
++  for (let n = 252; n <= 386; n++) {
++    const cryDef = sons.cris[n] || sons.cris[String(n)];
++    assert.ok(cryDef, `Cry definition for species ${n} must exist`);
++    assert.ok(Array.isArray(cryDef), `Cry definition for ${n} must be an array`);
++    assert.strictEqual(cryDef.length, 3, `Cry definition for ${n} must have 3 elements: [sfx, pitch, duration]`);
++
++    const [sfxName, pitch, duration] = cryDef;
++    assert.strictEqual(typeof sfxName, "string", `sfxName for ${n} must be string`);
++    assert.strictEqual(typeof pitch, "number", `pitch offset for ${n} must be number`);
++    assert.strictEqual(typeof duration, "number", `duration for ${n} must be number`);
++
++    const sfxProg = sons.sfx[sfxName];
++    assert.ok(sfxProg, `sfx program '${sfxName}' referenced by species ${n} must exist in sfx dictionary`);
++    assert.ok(Array.isArray(sfxProg), `sfx program '${sfxName}' must be an array of channels`);
++    assert.ok(sfxProg.length >= 1, `sfx program '${sfxName}' must have at least 1 channel`);
++
++    for (const ch of sfxProg) {
++      assert.ok(typeof ch.c === "number", `Channel must have numeric 'c' identifier`);
++      assert.ok([5, 6, 7, 8].includes(ch.c), `Channel ${ch.c} must be 5, 6, 7, or 8`);
++      assert.ok(Array.isArray(ch.n), `Channel instructions 'n' must be an array`);
++      for (const cmd of ch.n) {
++        assert.ok(Array.isArray(cmd), `Instruction must be an array`);
++        assert.ok(typeof cmd[0] === "number", `Instruction opcode must be a number`);
++      }
++    }
++  }
++});
++
++test("POKE_GEN3_SONS synthesizes with audio.js engine without errors", () => {
++  // Create mock AudioContext to test synthesis pipeline
++  let createdBuffers = [];
++  class MockAudioBuffer {
++    constructor(options) {
++      this.sampleRate = options.sampleRate || 44100;
++      this.length = options.length;
++      this.numberOfChannels = options.numberOfChannels || 1;
++      this._data = new Float32Array(this.length);
++    }
++    getChannelData(channel) {
++      return this._data;
++    }
++  }
++
++  class MockAudioContext {
++    constructor() {
++      this.sampleRate = 44100;
++      this.state = "running";
++      this.destination = {};
++    }
++    createBuffer(channels, length, sampleRate) {
++      const buf = new MockAudioBuffer({ numberOfChannels: channels, length, sampleRate });
++      createdBuffers.push(buf);
++      return buf;
++    }
++    createBufferSource() {
++      return {
++        buffer: null,
++        connect() {},
++        start() {},
++        stop() {},
++      };
++    }
++    createGain() {
++      return {
++        gain: { value: 1 },
++        connect() {},
++      };
++    }
++    resume() {
++      return Promise.resolve();
++    }
++  }
++
++  const ctx = createIsolatedContext({
++    AudioContext: MockAudioContext,
++    webkitAudioContext: MockAudioContext,
++    localStorage: { getItem() { return "1"; }, setItem() {} },
++  });
++
++  loadScriptInContext("js/poke/sons.js", ctx);
++  loadScriptInContext("js/poke/gen2/sons.js", ctx);
++  loadScriptInContext("js/poke/gen3/sons.js", ctx);
++
++  // Set up PokeRegles stub so audio.js looks up gen3
++  ctx.PokeRegles = {
++    sons: () => ctx.POKE_GEN3_SONS,
++  };
++
++  loadScriptInContext("js/poke/audio.js", ctx);
++
++  assert.ok(ctx.PokeSon, "PokeSon must be initialized");
++
++  // Test tamponCri on Gen 3 starter species 252 (Treecko), 255 (Torchic), 258 (Mudkip), and 386 (Deoxys)
++  const starters = [252, 255, 258, 384, 386];
++  for (const n of starters) {
++    const buf = ctx.PokeSon.tamponCri(n);
++    assert.ok(buf, `tamponCri(${n}) must return an audio buffer`);
++    assert.ok(buf.length > 0, `tamponCri(${n}) audio buffer length must be > 0`);
++  }
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 2: ordre.js Gen 3 Screen Wiring
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("2. ordre.js Gen 3 Screen Wiring");
++
++test("ordre.js splices GEN3_ECRANS into ECRANS when HOENN is open", () => {
++  const ctx = createIsolatedContext();
++  loadScriptInContext("js/poke/ordre.js", ctx);
++
++  assert.ok(ctx.POKE_ORDRE_GEN3_ECRANS, "POKE_ORDRE_GEN3_ECRANS must be defined");
++  assert.ok(ctx.POKE_ORDRE_GEN3_ECRANS.includes("js/poke/gen3/sons.js"), "POKE_ORDRE_GEN3_ECRANS must include sons.js");
++
++  assert.strictEqual(ctx.POKE_BANC_HOENN, true, "POKE_BANC_HOENN must be true");
++
++  assert.ok(ctx.POKE_ORDRE_ECRANS.includes("js/poke/gen3/sons.js"), "POKE_ORDRE_ECRANS must include js/poke/gen3/sons.js");
++  assert.ok(ctx.POKE_ORDRE.includes("js/poke/gen3/sons.js"), "POKE_ORDRE must include js/poke/gen3/sons.js");
++
++  // Verify sons.js is placed in presentation order
++  const idxSons = ctx.POKE_ORDRE_ECRANS.indexOf("js/poke/gen3/sons.js");
++  const idxAnim = ctx.POKE_ORDRE_ECRANS.indexOf("js/poke/anim-attaque.js");
++  assert.ok(idxSons > idxAnim, "gen3 sons.js must be placed after anim-attaque.js in ECRANS");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 3: UI World Selection & Translations in js/poke/ui.js
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("3. UI World Selection & Translations in js/poke/ui.js");
++
++test("ui.js defines MONDES_DITS.gen3 with proper keys and translations", () => {
++  const uiContent = fs.readFileSync(path.join(ROOT_DIR, "js/poke/ui.js"), "utf-8");
++
++  // Check MONDES_DITS definition
++  assert.match(uiContent, /gen3\s*:\s*\{\s*nom\s*:\s*["']mondeHoenn["']\s*,\s*dit\s*:\s*["']mondeHoennDit["']\s*,\s*sur\s*:\s*["']hoenn["']\s*\}/,
++    "ui.js must define MONDES_DITS.gen3 with nom: 'mondeHoenn', dit: 'mondeHoennDit', sur: 'hoenn'");
++
++  // Check translations in TXT dictionary
++  assert.match(uiContent, /mondeHoenn\s*:\s*\{\s*fr\s*:\s*["']Hoenn["']\s*,\s*en\s*:\s*["']Hoenn["']\s*\}/,
++    "ui.js must contain translation for mondeHoenn");
++
++  assert.match(uiContent, /mondeHoennDit\s*:\s*\{\s*fr\s*:\s*["']La r├®gion des terres et des mers["']\s*,\s*en\s*:\s*["']The land of land and seas["']\s*\}/,
++    "ui.js must contain translation for mondeHoennDit");
++
++  assert.match(uiContent, /hoenn\s*:\s*\{\s*fr\s*:\s*["']HOENN ÔÇö TROISI├êME G├ëN├ëRATION["']/,
++    "ui.js must contain translation for hoenn surtitre");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 4: Sprite Path Routing in icones.js and ui.js
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("4. Sprite Path Routing");
++
++test("PokeSprites correctly routes sprite paths for Gen 1, Gen 2, and Gen 3", () => {
++  const ctx = createIsolatedContext();
++
++  // Load icones.js
++  loadScriptInContext("js/poke/icones.js", ctx);
++
++  assert.ok(ctx.PokeSprites, "W.PokeSprites must be exported");
++  assert.ok(typeof ctx.PokeSprites.face === "function", "PokeSprites.face must be a function");
++  assert.ok(typeof ctx.PokeSprites.dos === "function", "PokeSprites.dos must be a function");
++
++  // Setup PokeRegles stub
++  let activeGen = "gen1";
++  ctx.PokeRegles = {
++    courant: () => activeGen,
++  };
++
++  // 1. Gen 1 species (1-151) under gen 1:
++  activeGen = "gen1";
++  assert.strictEqual(ctx.PokeSprites.face(25), "assets/img/poke/face/25.png");
++  assert.strictEqual(ctx.PokeSprites.dos(25), "assets/img/poke/dos/25.png");
++
++  // 1b. Gen 1 species under gen 2 (remains gen2 sprites as expected):
++  activeGen = "gen2";
++  assert.strictEqual(ctx.PokeSprites.face(25), "assets/img/poke/gen2/face/25.png");
++  assert.strictEqual(ctx.PokeSprites.dos(25), "assets/img/poke/gen2/dos/25.png");
++
++  // 2. Gen 2 species (152-251) remain gen 2 untouched:
++  assert.strictEqual(ctx.PokeSprites.face(152), "assets/img/poke/gen2/face/152.png");
++  assert.strictEqual(ctx.PokeSprites.dos(152), "assets/img/poke/gen2/dos/152.png");
++  assert.strictEqual(ctx.PokeSprites.face(251), "assets/img/poke/gen2/face/251.png");
++  assert.strictEqual(ctx.PokeSprites.dos(251), "assets/img/poke/gen2/dos/251.png");
++
++  // 3. Gen 3 species (> 251):
++  activeGen = "gen3";
++  assert.strictEqual(ctx.PokeSprites.face(252), "assets/img/poke/gen3/face/252.png");
++  assert.strictEqual(ctx.PokeSprites.dos(252), "assets/img/poke/gen3/dos/252.png");
++  assert.strictEqual(ctx.PokeSprites.face(386), "assets/img/poke/gen3/face/386.png");
++  assert.strictEqual(ctx.PokeSprites.dos(386), "assets/img/poke/gen3/dos/386.png");
++
++  // With suffix
++  assert.strictEqual(ctx.PokeSprites.face(252, "?i=6"), "assets/img/poke/gen3/face/252.png?i=6");
++  assert.strictEqual(ctx.PokeSprites.dos(252, "?i=6"), "assets/img/poke/gen3/dos/252.png?i=6");
++});
++
++test("Gen 3 face and back sprite assets exist on disk for sample species", () => {
++  const sampleSpecies = [252, 255, 258, 384, 386];
++  for (const n of sampleSpecies) {
++    const faceFile = path.join(ROOT_DIR, `assets/img/poke/gen3/face/${n}.png`);
++    const backFile = path.join(ROOT_DIR, `assets/img/poke/gen3/dos/${n}.png`);
++    const artFile = path.join(ROOT_DIR, `assets/img/poke/art/${n}.webp`);
++
++    assert.ok(fs.existsSync(faceFile), `Face sprite must exist: ${faceFile}`);
++    assert.ok(fs.existsSync(backFile), `Back sprite must exist: ${backFile}`);
++    assert.ok(fs.existsSync(artFile), `Artwork must exist: ${artFile}`);
++  }
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 5: Pok├®dex UI scaling to 386
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("5. Pok├®dex UI scaling to 386");
++
++test("pokedex-ui.js evaluates cleanly and supports dexTotalCompte up to 386", () => {
++  const pokedexContent = fs.readFileSync(path.join(ROOT_DIR, "js/poke/pokedex-ui.js"), "utf-8");
++
++  // Verify pokedex-ui.js queries dexTotalCompte()
++  assert.match(pokedexContent, /dexTotalCompte\(\)/, "pokedex-ui.js must query dexTotalCompte()");
++
++  // Verify evolution target resolution uses ESPECE(ev.vers) or safely handles up to 386
++  assert.ok(!pokedexContent.includes("cible = ESP()[ev.vers]"),
++    "pokedex-ui.js should resolve evolution target using ESPECE(ev.vers) for cross-gen safety");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Summary
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++console.log("\n" + "ÔöÇ".repeat(60));
++console.log(`Total Tests: ${totalTests} | Passed: ${passedTests} | Failed: ${failedTests}`);
++if (failedTests > 0) {
++  console.log(`\x1b[31m${failedTests} TEST(S) FAILED!\x1b[0m`);
++  process.exit(1);
++} else {
++  console.log("\x1b[32mALL TASK 7 TESTS PASSED SUCCESSFULLY! (100% PASS RATE)\x1b[0m\n");
++  process.exit(0);
++}
