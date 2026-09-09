@@ -76,5 +76,24 @@
 
 ---
 
-## 4. Risks & Concerns
-- None. Full test suite execution is sub-300ms, all NOYAU headless constraints remain 100% verified, and PRNG / combat simulation determinism is preserved across Gen 1, Gen 2, and Gen 3.
+## 5. Fix Round 1 (Post-Review Fixes)
+
+### Review Findings Resolved:
+1. **[CRITICAL] Truncated `especes()` and `attaques()` in `js/poke/regles.js`**:
+   - Implemented cumulative lookups `toutesEspecesGen3()`, `listeEspecesGen3()`, `toutesAttaquesGen3()`, `listeAttaquesGen3()`.
+   - `JEUX.gen3.especes()` now returns the complete cumulative National Dex (386 species).
+   - `JEUX.gen3.attaques()` now returns the complete cumulative attack catalog (Gen 1 + Gen 2 + Gen 3).
+   - Fixed crashes when Gen 3 Pokémon use Gen 1/2 natural moves (Tackle, Scratch, Leer, Pound, etc.) and when spawning Gen 1/2 Pokémon on trainer teams (Roxanne's Geodude, Brawly's Machop, Wallace's Tentacruel, Steven's Skarmory).
+
+2. **[IMPORTANT] Master Suite Test Rigor in `tests/run_all_tests.mjs`**:
+   - `Turn-by-turn combat simulation reproduces identical events in Gen 3` now tests naturally spawned level 5 starters (`Treecko #252` vs `Torchic #255`) executing their natural Gen 1 learnset moves without overrides.
+   - `Cross-generational non-regression: Gen 1 combat replay invariance after Gen 3 execution` now executes an interleaved Gen 3 simulation between two Gen 1 battles and strictly asserts `assert.equal(run1.finalTirages, run2.finalTirages)`, `assert.equal(run1.combatState.fini, run2.combatState.fini)`, and `assert.deepEqual(run1.eventsLog, run2.eventsLog)`.
+   - Added new test: `All Gym Leaders, Elite Four, Wallace, and Steven teams instantiate via PokeMoteur.creer without throwing`.
+
+3. **Updated `tests/test_gen3_registry.mjs`**:
+   - Updated species and move assertions to verify the full 386 National Dex cumulative registry in `g3.especes()` and `g3.attaques()`.
+
+### Verification Post-Fix:
+- `node tests/run_all_tests.mjs`: 36/36 tests passing (100%) in 393ms.
+- All 10 standalone test suites: 100% passing.
+- Commit: `3421ce7` (`fix(gen3): Task 8 fix round 1 - cumulative species/moves in regles.js and strict replay tests`).
