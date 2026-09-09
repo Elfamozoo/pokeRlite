@@ -49,17 +49,7 @@
   var ATTL = function () { return W.PokeRegles ? W.PokeRegles.attaquesListe() : W.POKE_ATTAQUES; };
   var LANG = function () { return W.POKE_LANG || "fr"; };
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  //  LE LIEN VERS GATECIV ET SA MESURE (20/08, décision du propriétaire)
-  //  Même adresse que `game.js` (`GATECIV_LIEN`), le `utm_medium` dit d'où l'on
-  //  part. `mesure` envoie l'événement au serveur : `lien_gateciv` est dans la
-  //  liste blanche de `/api/metric`, `poke_accueil` dans celle des contextes —
-  //  le pop-up d'août n'a laissé aucun chiffre parce que ses événements n'y
-  //  étaient pas. Hors ligne, elle disparaît sans bruit.
-  // ═══════════════════════════════════════════════════════════════════════════
-  var GATECIV_LIEN = function (ctx) {
-    return "https://gateciv.com/?utm_source=roadtolegends&utm_medium=" + ctx + "&utm_campaign=rtl";
-  };
+
   function mesure(ev, ctx) {
     try {
       W.fetch((W.POKE_API || "/api") + "/metric", {
@@ -168,8 +158,8 @@
     //    le choix du monde — il ne peut donc plus nommer les chiffres de l'un
     //    des deux. Il dit ce qui est vrai des deux, et le choix dit le reste.
     sousAccueilDeuxMondes: {
-      fr: "Deux régions, seize Champions, et tout un Pokédex à remplir.",
-      en: "Two regions, sixteen Gym Leaders, and a whole Pokédex to fill.",
+      fr: "Trois régions, vingt-quatre Champions, et tout un Pokédex à remplir.",
+      en: "Three regions, twenty-four Gym Leaders, and a whole Pokédex to fill.",
     },
     // Exemples d'accord, par les deux voies prévues.
     //  · par JETON quand la phrase s'y prête — une seule ligne à maintenir ;
@@ -223,8 +213,8 @@
     //     dans le chrome, à juste titre : il ne se traduit pas, il ne se
     //     recolore pas, et il double la charge de la ligne à lire. Elle est
     //     posée par l'écran, comme `game.js` le fait pour les quatre autres.
-    monde: { fr: "{n} {n|joueur a|joueurs ont} déjà rejoint le monde",
-             en: "{n} {n|player has|players have} already joined the world" },
+    monde: { fr: "{n} {n|dresseur a|dresseurs ont} déjà rejoint l'aventure",
+             en: "{n} {n|trainer has|trainers have} already joined the adventure" },
     reprendre: { fr: "REPRENDRE LE VOYAGE", en: "RESUME JOURNEY" },
     reprendreOu: { fr: "Acte {a} sur 9 · {n} {n|badge|badges}",
                    en: "Act {a} of 9 · {n} {n|badge|badges}" },
@@ -243,12 +233,6 @@
     //  endroit où le leur dire — le signalement partait dans le vide.
     neuf: { fr: "NOUVEAUTÉS", en: "WHAT'S NEW" },
     cercle: { fr: "MON CERCLE", en: "MY CIRCLE" },
-    // La barre des univers (20/08) : les mêmes mots que `game.js`.
-    universLabel: { fr: "Choix de l'univers", en: "Choose a universe" },
-    universNaruto: { fr: "Naruto", en: "Naruto" },
-    universDbz: { fr: "Dragon Ball", en: "Dragon Ball" },
-    universPoke: { fr: "Pokémon", en: "Pokémon" },
-    universGateciv: { fr: "Stargate · autre jeu ↗", en: "Stargate · other game ↗" },
     // 💬 L'invitation Discord du soir (20→27/08) — voir `ANNONCE_DISCORD`.
     annonceTitre: { fr: "Un bug ? Une idée ? Viens le dire.", en: "A bug? An idea? Come and say it." },
     annonceDit: {
@@ -3708,36 +3692,6 @@
         "<div>" + filRang + "</div>" +
       "</div>" +
       // ═══════════════════════════════════════════════════════════════════════
-      //  LA BARRE DES UNIVERS (20/08, remarque du propriétaire : « dans Pokémon
-      //  on n'a pas, comme sur les autres modes, la possibilité de
-      //  resélectionner les autres modes »)
-      //
-      //  🔴 ELLE MANQUAIT PARCE QUE `pokemon.html` NE CHARGE PAS `game.js` — la
-      //     barre des quatre autres univers y est rendue, jamais ici. Un joueur
-      //     entré par /pokemon n'avait AUCUNE porte vers Naruto ou Dragon Ball :
-      //     il fallait retaper l'adresse. Même place que là-bas : sous
-      //     l'accroche, avant les boutons qui jouent.
-      //  ⚠️ LIENS INTERNES, chemins relatifs au site — les mêmes que `game.js`
-      //     (`/`, `/dbz`). `poke-discretion` interdit les liens SORTANTS et
-      //     l'adresse du site en clair ; changer de page sur le même site n'est
-      //     ni l'un ni l'autre (le compte passe déjà par `index.html`).
-      //  🌌 ET LA SORTIE VERS GATECIV, EN QUATRIÈME — « t'as oublié de mettre
-      //     Stargate sur la page Pokémon » (20/08). Je l'avais retirée sur le
-      //     rouge de `poke-discretion` (un fan game qui pointe vers un jeu qui
-      //     se vend) ; le propriétaire a relu l'argument et TRANCHÉ : il la
-      //     veut. La règle garde tout le reste (adresse du site marchand,
-      //     encaissement) et n'exempte que cette adresse-là. Comme sur les
-      //     autres accueils : cadre pointillé, « autre jeu ↗ », nouvel onglet,
-      //     événement `lien_gateciv` avec `poke_accueil` pour le compter.
-      // ═══════════════════════════════════════════════════════════════════════
-      '<nav class="pkdx-univers" aria-label="' + esc(T("universLabel")) + '">' +
-        '<a href="/">' + T("universNaruto") + "</a>" +
-        '<a href="/dbz">' + T("universDbz") + "</a>" +
-        '<span aria-current="page">' + T("universPoke") + "</span>" +
-        '<a class="est-sortie" id="pk-gateciv" href="' + GATECIV_LIEN("poke_accueil") +
-          '" target="_blank" rel="noopener">' + T("universGateciv") + "</a>" +
-      "</nav>" +
-      // ═══════════════════════════════════════════════════════════════════════
       //  💬 L'INVITATION DISCORD DU SOIR (20→27/08, 18 h → minuit) — demande du
       //     propriétaire : « le petit pop-up, une fois par jour, pour amener
       //     les gens sur le Discord du jeu : bug, suggestion, communauté ».
@@ -4027,8 +3981,6 @@
       son("PRESS_AB");
       W.location.href = "index.html?go=compte&retour=poke";
     });
-    var bGc = racine.querySelector("#pk-gateciv");
-    if (bGc) bGc.addEventListener("click", function () { mesure("lien_gateciv", "poke_accueil"); });
     // 💬 L'invitation Discord : montrée = vue (une fois par soir) ; rejoindre =
     //    on ne relance plus ; refermer = un refus de plus, trois et on se tait.
     var annonce = racine.querySelector("#pk-annonce");

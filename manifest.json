@@ -1,7 +1,7 @@
 {
-  "name": "Road to Legends",
-  "short_name": "Road to Legends",
-  "description": "De Genin à Kage, écris la voie d'un ninja, année après année. Chaque choix compte.",
+  "name": "Pokémon : La Voie des Maîtres",
+  "short_name": "Voie des Maîtres",
+  "description": "De jeune dresseur à Maître de la Ligue, vis un voyage roguelite à travers Kanto, Johto et Hoenn. Chaque choix compte.",
   "lang": "fr",
   "id": "/",
   "start_url": "/?src=pwa",
@@ -50,7 +50,7 @@
     {
       "name": "Nouvelle voie",
       "short_name": "Nouvelle voie",
-      "description": "Commencer une nouvelle carrière de ninja.",
+      "description": "Commencer un nouveau voyage de dresseur.",
       "url": "/?src=pwa&go=new",
       "icons": [
         {
