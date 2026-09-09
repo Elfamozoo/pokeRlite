@@ -19,3 +19,12 @@ Branch: `feat/battle-factory-talents`
 ---
 
 ## Task Progress Log
+
+- Task 1: complete (commit `f06d1faf6e8d67dd6833db7dff48ff603b24ea07`, review clean)
+- Task 2: complete (commit `7d743065412e8d910c215c2368b3387565a82c27`, review clean)
+- Task 3: complete (commit `2115a7071d7e2c94ba0576e82a939023eb41a134`, review clean, deferred minors: expanded test cases)
+- Task 4: complete (commits `f022c27`..`3fa30a6`, review clean, deferred minors: registry test sync)
+- Task 5: complete (commit `99c27ee782e4e11fa9230559ae21d98413b71569`, review clean)
+- Task 6: complete (commit `9cd8bd697df0cba1e3c8caec9dfeb44d8250b73c`, review clean)
+
+

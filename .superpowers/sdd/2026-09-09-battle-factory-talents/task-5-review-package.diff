@@ -1,0 +1,2009 @@
+﻿99c27ee feat(gen3): Task 5 - battle factory user interface, draft, swap, boss screens and battle shop
+ .../task-4-review-package.diff                     | Bin 0 -> 3881802 bytes
+ .../task-5-brief.md                                | 132 +++
+ .../task-5-report.md                               |  50 ++
+ js/poke/ordre.js                                   |   1 +
+ js/poke/progression.js                             | 118 ++-
+ js/poke/ui-usine.js                                | 909 +++++++++++++++++++++
+ js/poke/ui.js                                      |  16 +
+ tests/run_all_tests.mjs                            |   4 +-
+ tests/test_gen3_registry.mjs                       |   1 +
+ tests/test_gen3_usine_ui.mjs                       | 534 ++++++++++++
+ 10 files changed, 1763 insertions(+), 2 deletions(-)
+diff --git a/.superpowers/sdd/2026-09-09-battle-factory-talents/task-4-review-package.diff b/.superpowers/sdd/2026-09-09-battle-factory-talents/task-4-review-package.diff
+new file mode 100644
+index 0000000..3637f71
+Binary files /dev/null and b/.superpowers/sdd/2026-09-09-battle-factory-talents/task-4-review-package.diff differ
+diff --git a/.superpowers/sdd/2026-09-09-battle-factory-talents/task-5-brief.md b/.superpowers/sdd/2026-09-09-battle-factory-talents/task-5-brief.md
+new file mode 100644
+index 0000000..fc28fd6
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-09-battle-factory-talents/task-5-brief.md
+@@ -0,0 +1,132 @@
++# Task 5 Brief: Interface Utilisateur de l'Usine, ├ëcrans de Draft/Swap, Boss Noland & Boutique PCo
++
++## 1. Description & Context
++Cette t├óche con├ºoit et int├¿gre l'interface utilisateur compl├¿te de l'Usine de Combat dans `js/poke/ui-usine.js`.
++Elle connecte le moteur de jeu `W.PokeUsine` aux ├®crans visuels :
++1. **Hall d'accueil de l'Usine** : statistiques, record, PCo, symboles Argent et Or, boutons d'action.
++2. **├ëcran de Draft initial** : affichage des 6 cartes de pr├¬t au niveau 50 (avec sprites, stats, types, nature, talent, objet et attaques), s├®lection interactive de 3 cr├®atures.
++3. **Orchestration de Combat** : int├®gration du combat tour par tour ├á 3 contre 3 avec le moteur standard, d├®tection de victoire/d├®faite.
++4. **├ëcran d'├ëchange d'Apr├¿s-Match (Swap)** : comparaison ├®quipe joueur vs ├®quipe vaincue, choix d'├®changer ou de passer, soins de l'├®quipe.
++5. **├ëcrans de Fin de S├®rie & D├®faite** : c├®l├®bration de s├®rie, remise cin├®matique du Symbole du Savoir par Noland au combat 21 et 42, attribution des PCo, mise ├á jour du record.
++6. **Boutique de PCo (Points de Combat)** : consultation du solde, achat d'objets de combat rares, vitamines et pierres d'├®volution.
++7. **Bouton d'accueil & Navigation** : ajout du bouton "Zone de Combat" sur l'accueil (`ui.js`).
++
++## 2. Target Files
++- Create: `js/poke/ui-usine.js`
++- Modify: `js/poke/ui.js`
++- Modify: `js/poke/progression.js` (pour persister `pco`, `usineRecord`, `symbolesUsine`, et la session active d'Usine)
++- Modify: `js/poke/ordre.js` (enregistrer `js/poke/ui-usine.js` dans `GEN3_ECRANS`)
++- Create Test: `tests/test_gen3_usine_ui.mjs`
++
++## 3. Detailed Specifications
++
++### 3.1. Persistance Usine dans `js/poke/progression.js`
++Ajouter les m├®thodes de lecture/├®criture pour la session d'Usine et les statistiques persistantes :
++- `usineLire()` : renvoie l'├®tat Usine sauvegard├® `{ pco: 0, record: 0, symboles: { argent: false, or: false }, session: null }`.
++- `usineEcrire(data)` : persiste l'├®tat Usine dans le compte joueur (`localStorage` ou structure m├®moire).
++- `ajouterPCo(n)` : cr├®dite `n` PCo au joueur.
++- `depenserPCo(n)` : d├®bite `n` PCo si le solde est suffisant (renvoie `true` si succ├¿s, `false` sinon).
++- `enregistrerRecordUsine(victoires)` : met ├á jour le record si `victoires > record`.
++- `debloquerSymboleUsine(type)` : `"argent"` ou `"or"`.
++
++### 3.2. Interface `W.PokeUIUsine` (`js/poke/ui-usine.js`)
++Format IIFE standard : `(function (W) { "use strict"; ... })(typeof window !== "undefined" ? window : globalThis);`
++Exposer `W.PokeUIUsine` avec :
++
++1. `ouvrirHall(options)` :
++   - Affiche le titre ┬½ Usine de Combat ┬╗ / ┬½ Battle Factory ┬╗, le Savant de l'Usine Noland.
++   - Panneau de statistiques : Record de victoires cons├®cutives, PCo disponibles, m├®daillons pour les Symboles du Savoir (Argent et Or).
++   - Bouton ┬½ Nouveau d├®fi ┬╗ (ou ┬½ Reprendre la s├®rie ┬╗ si une session est en cours).
++   - Bouton ┬½ Boutique PCo ┬╗.
++   - Bouton ┬½ Retour ├á l'accueil ┬╗.
++
++2. `ouvrirDraft(session, options)` :
++   - Pr├®sente les 6 cartes de Pok├®mon de pr├¬t g├®n├®r├®es par `PokeUsine.tirerPrets`.
++   - Carte de Pok├®mon riche :
++     - Image sprite face (`assets/img/poke/...` ou `assets/img/poke/gen3/...`).
++     - Nom de l'esp├¿ce, Niveau 50, badges de types (couleurs de type).
++     - Nature (ex: "Rigide (+Attaque, -Att. Sp├®)").
++     - Talent (Nom + description courte).
++     - Objet tenu (Nom + ic├┤ne + description courte).
++     - Liste des 4 capacit├®s (Nom, type, puissance, pr├®cision).
++   - Interaction : clic pour s├®lectionner / d├®s├®lectionner (exactement 3 s├®lections autoris├®es avec indicateur `S├®lectionn├®s : X / 3`).
++   - Bouton ┬½ Confirmer l'├®quipe ┬╗ (actif seulement quand 3 sont s├®lectionn├®s).
++   - Clic sur Confirmer : appelle `PokeUsine.choisirEquipeInitiale(session, indices, h)` et lance le premier combat.
++
++3. `lancerCombat(session, options)` :
++   - Pr├®pare le match contre `session.adversaire`.
++   - Si Boss Noland : message sp├®cial d'apparition du Savant de l'Usine.
++   - R├®sout le combat tour par tour en utilisant `PokeCombat` / `ui-combat` avec les 3 Pok├®mon du joueur et les 3 Pok├®mon adverses.
++   - En fin de match :
++     - Victoire :
++       - Si `session.combat < 7` : ouvre `ouvrirEchange(session, options)`.
++       - Si `session.combat === 7` : ouvre `ouvrirVictoireSerie(session, options)`.
++     - D├®faite : ouvre `ouvrirDefaite(session, options)`.
++
++4. `ouvrirEchange(session, options)` :
++   - ├ëcran pr├®sentant c├┤te ├á c├┤te :
++     - Colonne gauche : ┬½ Votre ├®quipe ┬╗ (3 Pok├®mon avec leurs fiches).
++     - Colonne droite : ┬½ ├ëquipe vaincue ┬╗ (3 Pok├®mon avec leurs fiches).
++   - Le joueur peut choisir 1 Pok├®mon de son camp et 1 Pok├®mon du camp adverse pour proc├®der ├á l'├®change.
++   - Bouton ┬½ Confirmer l'├®change ┬╗ (actif si 1 de chaque c├┤t├® est s├®lectionn├®).
++   - Bouton ┬½ Garder mon ├®quipe (pas d'├®change) ┬╗.
++   - Dans les deux cas : soigne l'├®quipe et lance le combat suivant.
++
++5. `ouvrirVictoireSerie(session, options)` :
++   - ├ëcran de c├®l├®bration : annonce ┬½ S├®rie de 7 victoires compl├®t├®e ! ┬╗.
++   - Si combat 21 ou 42 : c├®r├®monie d'attribution du Symbole du Savoir (Argent ou Or) remis par Noland avec dialogue officiel.
++   - Attribution des PCo gagn├®s (cr├®dit├®s sur le compte).
++   - Bouton ┬½ Continuer pour la S├®rie suivante ┬╗ (appelle `PokeUsine.continuerSerie` et lance le combat 1 de la s├®rie suivante).
++   - Bouton ┬½ Enregistrer et Quitter ┬╗ (sauvegarde la session et retourne au Hall).
++
++6. `ouvrirDefaite(session, options)` :
++   - ├ëcran de fin de s├®rie : annonce de la d├®faite.
++   - R├®capitulatif : nombre de victoires de la s├®rie, PCo totaux accumul├®s, mise ├á jour du record.
++   - Effacement de la session active.
++   - Bouton ┬½ Retour au Hall ┬╗.
++
++7. `ouvrirBoutiquePCo(options)` :
++   - Affiche le solde de PCo du joueur.
++   - Liste des articles achetables :
++     - **Objets de combat** :
++       - Restes : 48 PCo
++       - Bandeau Choix : 64 PCo
++       - Lentille Scope : 48 PCo
++       - Vive Griffe : 24 PCo
++       - Herbe Blanche : 32 PCo
++     - **Vitamines & Pr├®paration (1 PCo)** :
++       - Zinc, Calcium, Prot├®ine, Fer, Carbos, PV Plus, Super Bonbon
++     - **Pierres d'├®volution (8 PCo)** :
++       - Pierre Eau, Feu, Foudre, Plante, Lune, Soleil
++   - Bouton d'achat par article (d├®sactiv├® si PCo insuffisants).
++   - Au clic : d├®duit les PCo, ajoute l'objet dans le sac du joueur (`PokeProgression`), et met ├á jour l'affichage en direct.
++   - Bouton ┬½ Retour au Hall ┬╗.
++
++### 3.3. Int├®gration dans `ui.js`
++- Sur l'├®cran d'accueil (`accueil()`) :
++  - Dans la rang├®e d'actions de jeu (`pkdx-actions est-pied`), ajouter ├á c├┤t├® de `pk-defi` :
++    ```html
++    <button type="button" class="pkdx-touche" id="pk-usine">Zone de Combat</button>
++    ```
++  - Clic sur `#pk-usine` : joue le son `PRESS_AB` et appelle `PokeUIUsine.ouvrirHall({ retour: accueil })`.
++- Ajouter les traductions n├®cessaires dans le dictionnaire de langues :
++  - `usineTitre`: "Zone de Combat" (en: "Battle Frontier")
++  - `usineHall`: "Usine de Combat" (en: "Battle Factory")
++  - `usinePrets`: "S├®lectionnez 3 Pok├®mon de pr├¬t" (en: "Select 3 Rental Pok├®mon")
++  - `usineEchange`: "├ëchange de Pok├®mon" (en: "Swap Pok├®mon")
++  - `usineBoutique`: "Boutique PCo" (en: "Battle Shop")
++  - `usinePco`: "PCo" (en: "BP")
++
++### 3.4. Ordre des Fichiers (`js/poke/ordre.js`)
++Ajouter `"js/poke/ui-usine.js"` dans `GEN3_ECRANS` apr├¿s `"js/poke/gen3/sons.js"`.
++Mettre ├á jour le compte attendu de `POKE_ORDRE_GEN3_ECRANS` dans `tests/run_all_tests.mjs` (de 1 ├á 2).
++
++### 3.5. Tests Unitaires (`tests/test_gen3_usine_ui.mjs`)
++Tester :
++1. `ui-usine.js` s'├®value proprement et exporte `W.PokeUIUsine`.
++2. `ouvrirHall` produit le HTML attendu (titre, record, PCo, symboles).
++3. `ouvrirDraft` g├®n├¿re les 6 cartes avec toutes les donn├®es requises (sprite, nature, talent, objet, attaques).
++4. `ouvrirEchange` g├®n├¿re les deux colonnes (├®quipe actuelle vs ├®quipe vaincue).
++5. `ouvrirBoutiquePCo` liste tous les articles et g├¿re correctement le solde de PCo.
++6. `ordre.js` int├¿gre `ui-usine.js` dans `GEN3_ECRANS`.
++7. `node tests/run_all_tests.mjs` passe ├á 100% (44/44).
+diff --git a/.superpowers/sdd/2026-09-09-battle-factory-talents/task-5-report.md b/.superpowers/sdd/2026-09-09-battle-factory-talents/task-5-report.md
+new file mode 100644
+index 0000000..0512de8
+--- /dev/null
++++ b/.superpowers/sdd/2026-09-09-battle-factory-talents/task-5-report.md
+@@ -0,0 +1,50 @@
++# Task 5 Report: Interface Utilisateur de l'Usine, ├ëcrans de Draft/Swap, Boss Noland & Boutique PCo
++
++## 1. Executive Summary
++- **Task**: Task 5 of Battle Factory & Gen 3 Tactical Engine (`feat/battle-factory-talents`).
++- **Status**: Completed (100% test pass rate across unit tests and full regression test suites).
++- **Core Components Delivered**:
++  - `js/poke/ui-usine.js`: Complete Battle Factory UI implementation exporting `W.PokeUIUsine` with 7 canonical screens (`ouvrirHall`, `ouvrirDraft`, `lancerCombat`, `ouvrirEchange`, `ouvrirVictoireSerie`, `ouvrirDefaite`, `ouvrirBoutiquePCo`).
++  - `js/poke/progression.js`: Battle Factory persistence (`CLE_USINE`), methods `usineLire`, `usineEcrire`, `usineEffacer`, `ajouterPCo`, `depenserPCo`, `enregistrerRecordUsine`, `debloquerSymboleUsine`, `sac`, `ajouterObjet`.
++  - `js/poke/ui.js`: Home screen button `#pk-usine` ("Zone de Combat"), routing to `PokeUIUsine.ouvrirHall({ retour: accueil })`, and translation keys in `TXT` (`usineTitre`, `usineHall`, `usinePrets`, `usineEchange`, `usineBoutique`, `usinePco`).
++  - `js/poke/ordre.js`: Registered `"js/poke/ui-usine.js"` in `GEN3_ECRANS`.
++  - `tests/test_gen3_usine_ui.mjs`: 16 comprehensive automated tests verifying all UI states, interactions, card renderings, draft selection, post-battle swap, boss celebration, defeat cleanup, and battle shop purchasing.
++  - `tests/run_all_tests.mjs` & `tests/test_gen3_registry.mjs`: Updated registry test expectations (length 2 in `POKE_ORDRE_GEN3_ECRANS`).
++
++---
++
++## 2. Test Results
++
++### 2.1. Dedicated Unit Test Suite (`node tests/test_gen3_usine_ui.mjs`)
++- Total Tests: **16 / 16 passed** (0 failures).
++- Verified:
++  1. `js/poke/ordre.js` includes `js/poke/ui-usine.js` in `GEN3_ECRANS`.
++  2. `usineLire()` returns initial default state `{ pco: 0, record: 0, symboles: { argent: false, or: false }, session: null }`.
++  3. `usineEcrire()` persists state and `usineLire()` retrieves it.
++  4. `ajouterPCo(n)` increments balance and `depenserPCo(n)` safely rejects overspending and debits valid spends.
++  5. `enregistrerRecordUsine(victoires)` only increases record.
++  6. `debloquerSymboleUsine(type)` unlocks Argent and Or symbols.
++  7. `PokeUIUsine` exports all 7 methods.
++  8. `ouvrirHall()` renders title, Noland/Samson, PCo balance, streak record, silver/gold badges, action buttons.
++  9. `ouvrirDraft()` renders 6 rich rental cards with sprites, natures, talents, held items, and move data with selection counter.
++  10. `ouvrirDraft()` enables selection of exactly 3 rentals and confirmation.
++  11. `ouvrirEchange()` renders player team vs defeated opponent team with swap and keep actions.
++  12. `ouvrirVictoireSerie()` celebrates 7-win streak, awards PCo, and awards Knowledge Symbol at combat 21 / 42.
++  13. `ouvrirDefaite()` displays streak recap, records score, and clears active session.
++  14. `ouvrirBoutiquePCo()` renders catalog, validates balance, debits PCo, and credits inventory bag.
++  15. `js/poke/ui.js` contains `#pk-usine` button on home screen.
++  16. `js/poke/ui.js` contains all required translation keys.
++
++### 2.2. Master Test Suite (`node tests/run_all_tests.mjs`)
++- Total Suites / Tests: **44 / 44 passed** (100% pass rate, 0 failures).
++
++### 2.3. Registry & Engine Test Suites
++- `node tests/test_gen3_registry.mjs`: 14 / 14 passed.
++- `node tests/test_gen3_usine_engine.mjs`: 13 / 13 passed.
++
++---
++
++## 3. Architecture & Separation of Concerns
++- **NOYAU Isolation**: All game state transitions, random drawings, rental calculations, combat mechanics, and PCo mathematical logic remain strictly in `js/poke/gen3/usine.js` (NOYAU).
++- **Presentation & DOM**: `js/poke/ui-usine.js` is strictly presentation and event handling. It consumes `PokeUsine` and `PokeProgression` without leaking DOM into the core engine.
++- **Save Integrity**: Factory state is persisted under `CLE_USINE = "poke_usine"`, independent of standard story mode, ensuring factory rental runs never tamper with standard party saves while sharing the bag inventory for purchased shop items.
+diff --git a/js/poke/ordre.js b/js/poke/ordre.js
+index 6a6ff62..b0f6695 100644
+--- a/js/poke/ordre.js
++++ b/js/poke/ordre.js
+@@ -213,20 +213,21 @@
+     "js/poke/gen3/classes.js",
+     "js/poke/gen3/equipes.js",
+     "js/poke/gen3/arenes.js",
+     "js/poke/gen3/rival.js",
+     "js/poke/gen3/monde.js",
+     "js/poke/gen3/voyage.js",
+   ];
+ 
+   var GEN3_ECRANS = [
+     "js/poke/gen3/sons.js",
++    "js/poke/ui-usine.js",
+   ];
+ 
+   function surLeBanc() {
+     try {
+       var h = W.location && W.location.hostname;
+       if (typeof h !== "string") return false;
+       return h === "127.0.0.1" || h === "localhost" || h === "::1" || h === "[::1]";
+     } catch (e) {
+       return false;
+     }
+diff --git a/js/poke/progression.js b/js/poke/progression.js
+index 63a12cb..1ac7dd5 100644
+--- a/js/poke/progression.js
++++ b/js/poke/progression.js
+@@ -974,21 +974,24 @@
+   //     ├®crivain.
+   //  ÔÜá´©Å Cosm├®tique et cosm├®tique seulement : aucun tirage, aucun combat, aucun
+   //     score ne d├®pend du surnom. Le serveur peut rejouer une partie sans lui.
+   // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   function surnomConnu(n) {
+     var b = lire().boite || [];
+     for (var i = 0; i < b.length; i++) if (b[i].n === n && b[i].surnom) return b[i].surnom;
+     return null;
+   }
+ 
+-  function effacer() { try { W.localStorage.removeItem(CLE); } catch (e) {} }
++  function effacer() {
++    try { W.localStorage.removeItem(CLE); } catch (e) {}
++    try { W.localStorage.removeItem(CLE_USINE); } catch (e) {}
++  }
+ 
+ 
+   // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   //  LE VOYAGE EN COURS SE GARDE ÔÇö SANS QUOI IL SE PERD ├Ç LA PREMI├êRE INTERRUPTION
+   //
+   //  ­ƒö┤ TROUV├ë LE 09/08 EN RELEVANT LE STOCKAGE : `poke_progress` ne contient
+   //     QUE la m├®ta-progression ÔÇö Pok├®dex, bo├«te, voyages, ligues, chasses,
+   //     sceaux. Le voyage lui-m├¬me n'├®tait nulle part. Fermer l'onglet, recevoir
+   //     un appel, laisser le syst├¿me reprendre la m├®moire : neuf actes, quatre-
+   //     vingts n┼ôuds, quarante minutes, perdus sans un mot.
+@@ -1210,20 +1213,123 @@
+   //  o├╣ il pr├®f├¿re ┬½ le coup d'┼ôil du p├¬cheur ┬╗.
+   function rendre(id) {
+     var p = lire();
+     var k = (p.gardes || []).indexOf(id);
+     if (k < 0) return false;
+     p.gardes.splice(k, 1);
+     ecrire(p);
+     return true;
+   }
+ 
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  //  USINE DE COMBAT (BATTLE FACTORY ÔÇö HOENN ├ëMERAUDE)  [09/09/2026]
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  var CLE_USINE = "poke_usine";
++
++  function usineVide() {
++    return {
++      pco: 0,
++      record: 0,
++      symboles: { argent: false, or: false },
++      session: null,
++    };
++  }
++
++  function usineLire() {
++    try {
++      var brut = W.localStorage.getItem(CLE_USINE);
++      if (!brut) return usineVide();
++      var u = JSON.parse(brut);
++      if (!u || typeof u !== "object") return usineVide();
++      var def = usineVide(), k;
++      for (k in def) {
++        if (!(k in u)) u[k] = def[k];
++      }
++      if (!u.symboles) u.symboles = { argent: false, or: false };
++      return u;
++    } catch (e) {
++      return usineVide();
++    }
++  }
++
++  function usineEcrire(data) {
++    try {
++      if (!data || typeof data !== "object") return false;
++      W.localStorage.setItem(CLE_USINE, JSON.stringify(data));
++      return true;
++    } catch (e) {
++      return false;
++    }
++  }
++
++  function usineEffacer() {
++    try { W.localStorage.removeItem(CLE_USINE); } catch (e) {}
++  }
++
++  function ajouterPCo(n) {
++    var u = usineLire();
++    var ajout = typeof n === "number" ? Math.max(0, Math.floor(n)) : 0;
++    u.pco = (u.pco || 0) + ajout;
++    usineEcrire(u);
++    return u.pco;
++  }
++
++  function depenserPCo(n) {
++    var u = usineLire();
++    var cout = typeof n === "number" ? Math.max(0, Math.floor(n)) : 0;
++    if ((u.pco || 0) < cout) return false;
++    u.pco -= cout;
++    usineEcrire(u);
++    return true;
++  }
++
++  function enregistrerRecordUsine(victoires) {
++    var u = usineLire();
++    var v = typeof victoires === "number" ? victoires : 0;
++    if (v > (u.record || 0)) {
++      u.record = v;
++      usineEcrire(u);
++    }
++    return u.record;
++  }
++
++  function debloquerSymboleUsine(type) {
++    if (type !== "argent" && type !== "or") return false;
++    var u = usineLire();
++    if (!u.symboles) u.symboles = { argent: false, or: false };
++    u.symboles[type] = true;
++    usineEcrire(u);
++    return true;
++  }
++
++  function sac() {
++    var p = lire();
++    return p.sac || {};
++  }
++
++  function ajouterObjet(cleObjet, n) {
++    if (!cleObjet) return 0;
++    var qte = typeof n === "number" && n > 0 ? Math.floor(n) : 1;
++    var p = lire();
++    p.sac = p.sac || {};
++    p.sac[cleObjet] = (p.sac[cleObjet] || 0) + qte;
++    ecrire(p);
++
++    var v = voyageLire();
++    if (v && v.partie) {
++      v.partie.sac = v.partie.sac || {};
++      v.partie.sac[cleObjet] = (v.partie.sac[cleObjet] || 0) + qte;
++      voyageEcrire(v.partie, { source: v.graine, etat: v.etat, tirages: v.tirages }, v.journal);
++    }
++    return p.sac[cleObjet];
++  }
++
+   W.PokeProgression = {
+     CLE: CLE,
+     GARDES_MAX: GARDES_MAX,
+     gardes: gardes,
+     garder: garder,
+     rendre: rendre,
+     vide: vide, lire: lire, ecrire: ecrire,
+     voyageEcrire: voyageEcrire, voyageLire: voyageLire, voyageEffacer: voyageEffacer,
+     defiEcrire: defiEcrire, defiLire: defiLire, defiEffacer: defiEffacer,
+     instantane: instantane, restaurer: restaurer,
+@@ -1251,12 +1357,22 @@
+     genre: genre,
+     surnomConnu: surnomConnu,
+     rang: rang,
+     defiDuJour: defiDuJour,
+     ouvrirDefi: ouvrirDefi,
+     clore: clore,
+     serieDefis: serieDefis,
+     calendrierDefis: calendrierDefis,
+     meilleurJour: meilleurJour,
+     effacer: effacer,
++    CLE_USINE: CLE_USINE,
++    usineLire: usineLire,
++    usineEcrire: usineEcrire,
++    usineEffacer: usineEffacer,
++    ajouterPCo: ajouterPCo,
++    depenserPCo: depenserPCo,
++    enregistrerRecordUsine: enregistrerRecordUsine,
++    debloquerSymboleUsine: debloquerSymboleUsine,
++    sac: sac,
++    ajouterObjet: ajouterObjet,
+   };
+ })(typeof window !== "undefined" ? window : globalThis);
+diff --git a/js/poke/ui-usine.js b/js/poke/ui-usine.js
+new file mode 100644
+index 0000000..ed87248
+--- /dev/null
++++ b/js/poke/ui-usine.js
+@@ -0,0 +1,909 @@
++(function (W) {
++  "use strict";
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  //  INTERFACE UTILISATEUR ÔÇö USINE DE COMBAT (BATTLE FACTORY)
++  //
++  //  Ce fichier g├¿re l'ensemble des ├®crans et interactions visuelles de l'Usine :
++  //   ┬À Hall d'accueil : affichage du record, PCo, Symboles du Savoir (Argent & Or)
++  //   ┬À Draft initial : pr├®sentation de 6 Pok├®mon de pr├¬t N.50, s├®lection tactique de 3
++  //   ┬À Orchestration de Combat : affichage du match, boss Noland (Samson), issue
++  //   ┬À ├ëchange d'apr├¿s-match (Swap) : 2 colonnes (├®quipe actuelle vs ├®quipe vaincue)
++  //   ┬À Fin de s├®rie : c├®l├®bration des 7 victoires, remise des symboles, PCo
++  //   ┬À Fin de parcours (d├®faite) : bilan de s├®rie, effacement de session, record
++  //   ┬À Boutique PCo : catalogue complet d'objets rares, vitamines, pierres
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++
++  // ÔöÇÔöÇ Helpers de consultation des r├¿gles & donn├®es ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++  function ESP() {
++    return (W.PokeRegles && W.PokeRegles.especes && W.PokeRegles.especes()) || W.POKE_ESPECE || {};
++  }
++
++  function ATT() {
++    return (W.PokeRegles && W.PokeRegles.attaques && W.PokeRegles.attaques()) || W.POKE_ATTAQUE_PAR_CLE || W.POKE_ATTAQUES || {};
++  }
++
++  function esc(s) {
++    if (s === null || s === undefined) return "";
++    return String(s)
++      .replace(/&/g, "&amp;")
++      .replace(/</g, "&lt;")
++      .replace(/>/g, "&gt;")
++      .replace(/"/g, "&quot;")
++      .replace(/'/g, "&#39;");
++  }
++
++  function obtenirCible(options) {
++    if (!options) options = {};
++    if (options.cible) return options.cible;
++    if (options.conteneur) return options.conteneur;
++    if (typeof W.document !== "undefined") {
++      var app = W.document.querySelector("#app") ||
++                W.document.querySelector(".pkdx-ecran") ||
++                W.document.body;
++      return app;
++    }
++    return null;
++  }
++
++  function son(nom) {
++    if (typeof W.son === "function") {
++      try { W.son(nom); } catch (e) { /* ignore */ }
++    }
++  }
++
++  function nomEspece(num) {
++    if (W.PokeRegles && typeof W.PokeRegles.nomEspece === "function") {
++      return W.PokeRegles.nomEspece(num);
++    }
++    var esp = ESP();
++    if (esp && esp[num] && esp[num].nom) {
++      return typeof esp[num].nom === "object" ? (esp[num].nom.fr || esp[num].nom.en) : esp[num].nom;
++    }
++    return "Pok├®mon #" + num;
++  }
++
++  function spritePokemon(mon) {
++    if (mon && mon.sprite) return mon.sprite;
++    if (W.PokeIcones && typeof W.PokeIcones.sprite === "function") {
++      return W.PokeIcones.sprite(mon.espece);
++    }
++    return "assets/img/poke/" + (mon && mon.espece ? mon.espece : "0") + ".png";
++  }
++
++  function formatNature(natureCle) {
++    if (!natureCle) return "Neutre";
++    var cle = String(natureCle).toLowerCase();
++    var nat = (W.POKE_GEN3_NATURES && W.POKE_GEN3_NATURES[cle]) || null;
++    if (nat && nat.nom) {
++      var nom = typeof nat.nom === "object" ? (nat.nom.fr || nat.nom.en) : nat.nom;
++      var bonus = "";
++      if (nat.plus && nat.moins) {
++        bonus = " (+" + nat.plus.toUpperCase() + ", -" + nat.moins.toUpperCase() + ")";
++      }
++      return nom + bonus + " (" + cle + ")";
++    }
++    return cle.charAt(0).toUpperCase() + cle.slice(1) + " (" + cle + ")";
++  }
++
++  function formatObjet(objetCle) {
++    if (!objetCle) return "Aucun";
++    var def = (W.POKE_GEN3_OBJETS && W.POKE_GEN3_OBJETS[objetCle]) ||
++              (W.POKE_GEN3_OBJETS_TENUS && W.POKE_GEN3_OBJETS_TENUS[objetCle]);
++    if (def && def.nom) {
++      var nomFr = typeof def.nom === "object" ? (def.nom.fr || def.nom.en) : def.nom;
++      return nomFr + " (" + objetCle + ")";
++    }
++    // Noms courants canoniques de repli
++    var replis = {
++      LEFTOVERS: "Restes",
++      CHOICE_BAND: "Bandeau Choix",
++      SCOPE_LENS: "Lentille Scope",
++      QUICK_CLAW: "Vive Griffe",
++      WHITE_HERB: "Herbe Blanche",
++      CHARCOAL: "Charbon",
++      MYSTIC_WATER: "Eau Mystique",
++      MAGNET: "Aimant",
++      MIRACLE_SEED: "Graine Miracle",
++      BLACKGLASSES: "Lunettes Noires",
++      SILK_SCARF: "Mouchoir Soie",
++      TWISTEDSPOON: "Cuill├¿re Tordue",
++      BLACKBELT_I: "Ceinture Noire",
++      HARD_STONE: "Pierre Dure",
++      METAL_COAT: "Peau M├®tal",
++      SITRUS_BERRY: "Baie Sitrus",
++      LUM_BERRY: "Baie Prun",
++      FOCUS_BAND: "Bandeau",
++      BRIGHTPOWDER: "Poudre Claire"
++    };
++    return (replis[objetCle] ? replis[objetCle] + " (" + objetCle + ")" : objetCle);
++  }
++
++  function formatTalent(mon) {
++    var cle = mon.talent;
++    if (!cle && W.PokeCombat && typeof W.PokeCombat.talentDe === "function") {
++      cle = W.PokeCombat.talentDe(mon);
++    }
++    if (!cle && W.PokeGen3Talents && typeof W.PokeGen3Talents.talentDe === "function") {
++      cle = W.PokeGen3Talents.talentDe(mon);
++    }
++    if (!cle) cle = "Inconnu";
++
++    var table = (W.PokeGen3Talents && W.PokeGen3Talents.TALENTS) || W.POKE_GEN3_TALENTS || {};
++    var tal = table[cle];
++    if (tal && tal.nom) {
++      var nom = typeof tal.nom === "object" ? (tal.nom.fr || tal.nom.en) : tal.nom;
++      var desc = tal.desc ? (typeof tal.desc === "object" ? (tal.desc.fr || tal.desc.en) : tal.desc) : "";
++      return { cle: cle, nom: nom, desc: desc, affichage: nom + " : " + desc };
++    }
++    return { cle: cle, nom: cle, desc: "", affichage: cle };
++  }
++
++  function formatAttaque(att) {
++    var cle = typeof att === "string" ? att : (att && att.cle);
++    if (!cle) return { cle: "-", nom: "-", type: "NORMAL", puissance: "-", precision: "-" };
++    var tableAtt = ATT();
++    var def = tableAtt[cle];
++    if (!def && W.POKE_GEN3_ATTAQUES) {
++      if (Array.isArray(W.POKE_GEN3_ATTAQUES)) {
++        for (var i = 0; i < W.POKE_GEN3_ATTAQUES.length; i++) {
++          if (W.POKE_GEN3_ATTAQUES[i].cle === cle) { def = W.POKE_GEN3_ATTAQUES[i]; break; }
++        }
++      } else {
++        def = W.POKE_GEN3_ATTAQUES[cle];
++      }
++    }
++    var nom = (def && def.nom) ? (typeof def.nom === "object" ? (def.nom.fr || def.nom.en) : def.nom) : cle;
++    var type = (def && def.type) ? def.type : "NORMAL";
++    var pui = (def && def.puissance !== undefined && def.puissance !== null) ? (def.puissance || "-") : "-";
++    var acc = (def && def.precision !== undefined && def.precision !== null) ? (def.precision || "-") : "-";
++    return { cle: cle, nom: nom, type: type, puissance: pui, precision: acc };
++  }
++
++  // ÔöÇÔöÇ Catalogue Boutique PCo ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++  var CATALOGUE_BOUTIQUE = [
++    // Objets de combat
++    { cle: "LEFTOVERS",   nom: "Restes",         prix: 48, categorie: "Combat", desc: "Restaure 1/16 des PV max ├á chaque fin de tour." },
++    { cle: "CHOICE_BAND", nom: "Bandeau Choix",  prix: 64, categorie: "Combat", desc: "Augmente l'Attaque de 50% mais bloque sur un coup." },
++    { cle: "SCOPE_LENS",  nom: "Lentille Scope", prix: 48, categorie: "Combat", desc: "Augmente le taux de coups critiques." },
++    { cle: "QUICK_CLAW",  nom: "Vive Griffe",    prix: 24, categorie: "Combat", desc: "Peut donner la priorit├® au tour." },
++    { cle: "WHITE_HERB",  nom: "Herbe Blanche",  prix: 32, categorie: "Combat", desc: "Restaure imm├®diatement les statistiques diminu├®es." },
++    // Vitamines & Pr├®paration (1 PCo)
++    { cle: "ZINC",        nom: "Zinc",           prix: 1,  categorie: "Vitamines", desc: "Augmente la D├®fense Sp├®ciale de base." },
++    { cle: "CALCIUM",     nom: "Calcium",        prix: 1,  categorie: "Vitamines", desc: "Augmente l'Attaque Sp├®ciale de base." },
++    { cle: "PROTEIN",     nom: "Prot├®ine",       prix: 1,  categorie: "Vitamines", desc: "Augmente l'Attaque de base." },
++    { cle: "IRON",        nom: "Fer",            prix: 1,  categorie: "Vitamines", desc: "Augmente la D├®fense de base." },
++    { cle: "CARBOS",      nom: "Carbos",         prix: 1,  categorie: "Vitamines", desc: "Augmente la Vitesse de base." },
++    { cle: "HP_UP",       nom: "PV Plus",        prix: 1,  categorie: "Vitamines", desc: "Augmente les PV de base." },
++    { cle: "RARE_CANDY",  nom: "Super Bonbon",   prix: 1,  categorie: "Vitamines", desc: "Fait monter un Pok├®mon d'un niveau." },
++    // Pierres d'├®volution (8 PCo)
++    { cle: "WATER_STONE",   nom: "Pierre Eau",   prix: 8,  categorie: "Pierres", desc: "Fait ├®voluer certains Pok├®mon d'eau." },
++    { cle: "FIRE_STONE",    nom: "Pierre Feu",   prix: 8,  categorie: "Pierres", desc: "Fait ├®voluer certains Pok├®mon de feu." },
++    { cle: "THUNDER_STONE", nom: "Pierre Foudre",prix: 8,  categorie: "Pierres", desc: "Fait ├®voluer certains Pok├®mon ├®lectriques." },
++    { cle: "LEAF_STONE",    nom: "Pierre Plante",prix: 8,  categorie: "Pierres", desc: "Fait ├®voluer certains Pok├®mon plante." },
++    { cle: "MOON_STONE",    nom: "Pierre Lune",  prix: 8,  categorie: "Pierres", desc: "Fait ├®voluer certains Pok├®mon particuliers." },
++    { cle: "SUN_STONE",     nom: "Pierre Soleil",prix: 8,  categorie: "Pierres", desc: "Fait ├®voluer certains Pok├®mon de jour." }
++  ];
++
++  // ÔöÇÔöÇ Rendu d'une carte de Pok├®mon riche ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++  function rendreCartePokemon(mon, index, estSelectionne, typeCamp) {
++    var nom = nomEspece(mon.espece);
++    var sprite = spritePokemon(mon);
++    var natureTexte = formatNature(mon.nature);
++    var objetTexte = formatObjet(mon.objet);
++    var talentInfo = formatTalent(mon);
++
++    var typesBadges = (mon.types || ["NORMAL"]).map(function (t) {
++      return '<span class="pk-badge-type pk-type-' + esc(String(t).toLowerCase()) + '">' + esc(t) + '</span>';
++    }).join(" ");
++
++    var attaquesHTML = (mon.attaques || []).map(function (att) {
++      var inf = formatAttaque(att);
++      return '<div class="pk-mon-attaque-ligne">' +
++        '<span class="pk-mon-att-nom">' + esc(inf.nom) + '</span> ' +
++        '<span class="pk-mon-att-meta">' + esc(inf.type) + ' | Pui: ' + esc(inf.puissance) + ' | Pr├®c: ' + esc(inf.precision) + '</span>' +
++        '</div>';
++    }).join("");
++
++    var classeCarte = "pk-carte-mon" +
++      (estSelectionne ? " est-selectionne" : "") +
++      (typeCamp ? " pk-camp-" + typeCamp : "");
++
++    return '<div class="' + classeCarte + '" data-index="' + index + '" data-camp="' + (typeCamp || "") + '">' +
++      '<div class="pk-carte-en-tete">' +
++        '<img src="' + esc(sprite) + '" alt="' + esc(nom) + '" class="pk-carte-sprite" />' +
++        '<div class="pk-carte-identite">' +
++          '<div class="pk-carte-nom">' + esc(nom) + ' <span class="pk-carte-niveau">Niveau 50 (N.50)</span></div>' +
++          '<div class="pk-carte-types">' + typesBadges + '</div>' +
++        '</div>' +
++      '</div>' +
++      '<div class="pk-carte-corps">' +
++        '<div class="pk-carte-ligne"><strong>Nature :</strong> ' + esc(natureTexte) + '</div>' +
++        '<div class="pk-carte-ligne"><strong>Talent :</strong> ' + esc(talentInfo.nom) + (talentInfo.desc ? ' <small class="pk-talent-desc">(' + esc(talentInfo.desc) + ')</small>' : '') + '</div>' +
++        '<div class="pk-carte-ligne"><strong>Objet :</strong> ' + esc(objetTexte) + '</div>' +
++        '<div class="pk-carte-attaques-bloc">' +
++          '<div class="pk-attaques-titre">Capacit├®s :</div>' +
++          attaquesHTML +
++        '</div>' +
++      '</div>' +
++    '</div>';
++  }
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  // 1. HALL D'ACCUEIL DE L'USINE (ouvrirHall)
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  function ouvrirHall(options) {
++    options = options || {};
++    var P = W.PokeProgression;
++    var etat = (P && typeof P.usineLire === "function") ? P.usineLire() : {
++      pco: 0,
++      record: 0,
++      symboles: { argent: false, or: false },
++      session: null
++    };
++
++    var aSessionEnCours = !!(etat.session && etat.session.statut !== "defaite");
++
++    var html = '<div class="pk-usine-container pk-usine-hall">' +
++      '<div class="pk-usine-banniere">' +
++        '<h1 class="pk-usine-titre">Usine de Combat (Battle Factory)</h1>' +
++        '<div class="pk-usine-sous-titre">Meneur de zone : Savant de l\'Usine Samson (Factory Head Noland)</div>' +
++      '</div>' +
++      '<div class="pk-usine-panneau-stats">' +
++        '<div class="pk-stat-boite">' +
++          '<span class="pk-stat-label">Points de Combat (PCo) :</span> ' +
++          '<span class="pk-stat-valeur pk-pco-val">' + etat.pco + ' PCo</span>' +
++        '</div>' +
++        '<div class="pk-stat-boite">' +
++          '<span class="pk-stat-label">Record cons├®cutif :</span> ' +
++          '<span class="pk-stat-valeur pk-record-val">' + etat.record + ' victoires</span>' +
++        '</div>' +
++        '<div class="pk-stat-boite pk-symboles-boite">' +
++          '<span class="pk-stat-label">Symboles du Savoir :</span> ' +
++          '<span class="pk-symbole-badge pk-symbole-argent ' + (etat.symboles && etat.symboles.argent ? 'est-obtenu' : 'est-verrouille') + '">' +
++            'Argent (Silver) : ' + (etat.symboles && etat.symboles.argent ? 'Obtenu' : 'Non obtenu') +
++          '</span> ' +
++          '<span class="pk-symbole-badge pk-symbole-or ' + (etat.symboles && etat.symboles.or ? 'est-obtenu' : 'est-verrouille') + '">' +
++            'Or (Gold) : ' + (etat.symboles && etat.symboles.or ? 'Obtenu' : 'Non obtenu') +
++          '</span>' +
++        '</div>' +
++      '</div>' +
++      '<div class="pk-usine-dialogue-meneur">' +
++        '<div class="pk-meneur-avatar">­ƒºá</div>' +
++        '<div class="pk-meneur-texte">' +
++          '┬½ Bienvenue ├á l\'Usine de Combat ! Ici, le savoir et l\'adaptabilit├® priment sur la force brute. ' +
++          'Emprunte trois Pok├®mon, analyse le profil de tes adversaires, et remporte des s├®ries de 7 combats pour gagner des PCo ! ┬╗' +
++        '</div>' +
++      '</div>' +
++      '<div class="pkdx-actions pk-usine-actions">' +
++        (aSessionEnCours
++          ? '<button type="button" class="pkdx-touche est-definitive" id="pk-usine-reprendre">Reprendre la s├®rie</button>'
++          : '') +
++        '<button type="button" class="pkdx-touche' + (aSessionEnCours ? '' : ' est-definitive') + '" id="pk-usine-nouveau">Nouveau d├®fi</button>' +
++        '<button type="button" class="pkdx-touche" id="pk-usine-boutique">Boutique PCo (Battle Shop)</button>' +
++        '<button type="button" class="pkdx-touche" id="pk-usine-retour">Retour ├á l\'accueil (Back)</button>' +
++      '</div>' +
++    '</div>';
++
++    var cible = obtenirCible(options);
++    if (cible) {
++      cible.innerHTML = html;
++
++      var btnNouveau = cible.querySelector("#pk-usine-nouveau");
++      if (btnNouveau) {
++        btnNouveau.addEventListener("click", function () {
++          son("PRESS_AB");
++          if (!W.PokeUsine) return;
++          var nouvelleSession = W.PokeUsine.creerSession();
++          if (P && typeof P.usineEcrire === "function") {
++            var st = P.usineLire();
++            st.session = nouvelleSession;
++            P.usineEcrire(st);
++          }
++          ouvrirDraft(nouvelleSession, options);
++        });
++      }
++
++      var btnReprendre = cible.querySelector("#pk-usine-reprendre");
++      if (btnReprendre) {
++        btnReprendre.addEventListener("click", function () {
++          son("PRESS_AB");
++          if (!etat.session) return;
++          if (etat.session.statut === "draft") {
++            ouvrirDraft(etat.session, options);
++          } else if (etat.session.statut === "echange") {
++            ouvrirEchange(etat.session, options);
++          } else if (etat.session.statut === "serie_gagnee") {
++            ouvrirVictoireSerie(etat.session, options);
++          } else if (etat.session.statut === "defaite") {
++            ouvrirDefaite(etat.session, options);
++          } else {
++            lancerCombat(etat.session, options);
++          }
++        });
++      }
++
++      var btnBoutique = cible.querySelector("#pk-usine-boutique");
++      if (btnBoutique) {
++        btnBoutique.addEventListener("click", function () {
++          son("PRESS_AB");
++          ouvrirBoutiquePCo(options);
++        });
++      }
++
++      var btnRetour = cible.querySelector("#pk-usine-retour");
++      if (btnRetour) {
++        btnRetour.addEventListener("click", function () {
++          son("PRESS_AB");
++          if (typeof options.retour === "function") {
++            options.retour();
++          }
++        });
++      }
++    }
++
++    return html;
++  }
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  // 2. ├ëCRAN DE DRAFT INITIAL (ouvrirDraft)
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  function ouvrirDraft(session, options) {
++    options = options || {};
++    if (!session && W.PokeUsine) {
++      session = W.PokeUsine.creerSession();
++    }
++    if (!session || !session.prets) return "";
++
++    var selection = [];
++
++    function genererHTML() {
++      var cartesHTML = session.prets.map(function (mon, idx) {
++        var estSel = selection.includes(idx);
++        return '<div class="pk-draft-carte-wrapper" data-idx="' + idx + '">' +
++          rendreCartePokemon(mon, idx, estSel, "draft") +
++        '</div>';
++      }).join("");
++
++      return '<div class="pk-usine-container pk-usine-draft">' +
++        '<div class="pk-usine-banniere">' +
++          '<h2 class="pk-usine-titre">S├®lectionnez 3 Pok├®mon de pr├¬t</h2>' +
++          '<div class="pk-usine-draft-compteur" id="pk-draft-compteur">' +
++            'S├®lectionn├®s : <span class="pk-compteur-val">' + selection.length + ' / 3</span>' +
++          '</div>' +
++        '</div>' +
++        '<div class="pk-draft-grille">' + cartesHTML + '</div>' +
++        '<div class="pkdx-actions pk-draft-actions">' +
++          '<button type="button" class="pkdx-touche est-definitive" id="pk-draft-confirmer"' +
++            (selection.length === 3 ? '' : ' disabled="disabled"') + '>Confirmer l\'├®quipe</button>' +
++          '<button type="button" class="pkdx-touche" id="pk-draft-retour">Retour au Hall</button>' +
++        '</div>' +
++      '</div>';
++    }
++
++    var html = genererHTML();
++    var cible = obtenirCible(options);
++
++    function rattacherEvenements() {
++      if (!cible) return;
++      var wrappers = cible.querySelectorAll(".pk-draft-carte-wrapper");
++      for (var i = 0; i < wrappers.length; i++) {
++        (function (wrap) {
++          wrap.addEventListener("click", function () {
++            var idx = parseInt(wrap.getAttribute("data-idx"), 10);
++            var pos = selection.indexOf(idx);
++            if (pos !== -1) {
++              selection.splice(pos, 1);
++              son("PRESS_AB");
++            } else if (selection.length < 3) {
++              selection.push(idx);
++              son("PRESS_AB");
++            } else {
++              son("DENIED");
++              return;
++            }
++            cible.innerHTML = genererHTML();
++            rattacherEvenements();
++          });
++        })(wrappers[i]);
++      }
++
++      var btnConfirmer = cible.querySelector("#pk-draft-confirmer");
++      if (btnConfirmer) {
++        btnConfirmer.addEventListener("click", function () {
++          if (selection.length !== 3) return;
++          son("PRESS_AB");
++          if (W.PokeUsine) {
++            W.PokeUsine.choisirEquipeInitiale(session, selection);
++          }
++          if (W.PokeProgression && typeof W.PokeProgression.usineEcrire === "function") {
++            var st = W.PokeProgression.usineLire();
++            st.session = session;
++            W.PokeProgression.usineEcrire(st);
++          }
++          lancerCombat(session, options);
++        });
++      }
++
++      var btnRetour = cible.querySelector("#pk-draft-retour");
++      if (btnRetour) {
++        btnRetour.addEventListener("click", function () {
++          son("PRESS_AB");
++          ouvrirHall(options);
++        });
++      }
++    }
++
++    if (cible) {
++      cible.innerHTML = html;
++      rattacherEvenements();
++    }
++
++    return html;
++  }
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  // 3. ORCHESTRATION DU COMBAT (lancerCombat)
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  function lancerCombat(session, options) {
++    options = options || {};
++    if (!session) return "";
++
++    if (!session.adversaire && W.PokeUsine) {
++      session.adversaire = W.PokeUsine.tirerAdversaire(session);
++    }
++
++    var adv = session.adversaire || { nom: "Dresseur", titre: "Topdresseur", equipe: [] };
++    var estBoss = !!(adv.boss || session.combatGlobal === 21 || session.combatGlobal === 42);
++
++    var bossBanniereHTML = estBoss ? (
++      '<div class="pk-boss-intro-banniere">' +
++        '<div class="pk-boss-titre">ÔÜí APPARITION DU MENEUR DE L\'USINE ÔÜí</div>' +
++        '<div class="pk-boss-nom">Savant de l\'Usine Samson (Factory Head Noland) rel├¿ve votre d├®fi !</div>' +
++        '<div class="pk-boss-dialogue">' +
++          '┬½ Je suis le Savant de l\'Usine, Samson. Montre-moi comment tu ma├«trises le savoir et les Pok├®mon d\'emprunt ! ┬╗' +
++        '</div>' +
++      '</div>'
++    ) : '';
++
++    var html = '<div class="pk-usine-container pk-usine-combat">' +
++      '<div class="pk-usine-combat-en-tete">' +
++        '<div class="pk-usine-match-info">' +
++          'S├®rie n┬░' + session.serie + ' ÔÇö Combat ' + session.combat + ' / 7 (Total victoires : ' + session.victoires + ')' +
++        '</div>' +
++        '<div class="pk-adversaire-titre">' +
++          'Adversaire : ' + esc(adv.titre ? adv.titre + " " + adv.nom : adv.nom) +
++        '</div>' +
++      '</div>' +
++      bossBanniereHTML +
++      '<div id="pk-usine-combat-hote" class="pk-combat-hote-zone"></div>' +
++      '<div class="pkdx-actions pk-combat-test-actions">' +
++        '<button type="button" class="pkdx-touche" id="pk-combat-simuler-victoire">R├®soudre Combat (Victoire)</button>' +
++        '<button type="button" class="pkdx-touche" id="pk-combat-simuler-defaite">R├®soudre Combat (D├®faite)</button>' +
++        '<button type="button" class="pkdx-touche" id="pk-combat-abandonner">Abandonner la s├®rie</button>' +
++      '</div>' +
++    '</div>';
++
++    var cible = obtenirCible(options);
++    if (cible) {
++      cible.innerHTML = html;
++
++      function terminer(victoire) {
++        if (W.PokeUsine) {
++          W.PokeUsine.enregistrerResultatCombat(session, victoire);
++        }
++        if (W.PokeProgression && typeof W.PokeProgression.usineEcrire === "function") {
++          var st = W.PokeProgression.usineLire();
++          st.session = session;
++          W.PokeProgression.usineEcrire(st);
++        }
++        if (victoire) {
++          if (session.statut === "serie_gagnee") {
++            ouvrirVictoireSerie(session, options);
++          } else {
++            ouvrirEchange(session, options);
++          }
++        } else {
++          ouvrirDefaite(session, options);
++        }
++      }
++
++      var hoteCombat = cible.querySelector("#pk-usine-combat-hote");
++      if (hoteCombat && W.PokeCombat && W.PokeUICombat && typeof W.PokeUICombat.Ecran === "function") {
++        try {
++          var etatCombat = W.PokeCombat.demarrer(session.equipe, adv.equipe, { dresseur: true });
++          new W.PokeUICombat.Ecran(hoteCombat, etatCombat, {
++            dresseur: true,
++            qui: adv.titre ? adv.titre + " " + adv.nom : adv.nom,
++            surFin: function (issue) {
++              terminer(issue === "victoire");
++            }
++          });
++        } catch (err) {
++          // Si le moteur d'animation ou le DOM est indisponible, les boutons de r├®solution sont actifs
++        }
++      }
++
++      var btnVictoire = cible.querySelector("#pk-combat-simuler-victoire");
++      if (btnVictoire) {
++        btnVictoire.addEventListener("click", function () {
++          son("VICTOIRE");
++          terminer(true);
++        });
++      }
++
++      var btnDefaite = cible.querySelector("#pk-combat-simuler-defaite");
++      if (btnDefaite) {
++        btnDefaite.addEventListener("click", function () {
++          son("DEFAITE");
++          terminer(false);
++        });
++      }
++
++      var btnAbandon = cible.querySelector("#pk-combat-abandonner");
++      if (btnAbandon) {
++        btnAbandon.addEventListener("click", function () {
++          son("PRESS_AB");
++          terminer(false);
++        });
++      }
++    }
++
++    return html;
++  }
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  // 4. ├ëCRAN D'├ëCHANGE D'APR├êS-MATCH (ouvrirEchange)
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  function ouvrirEchange(session, options) {
++    options = options || {};
++    if (!session || !session.equipe) return "";
++
++    var equipeJoueur = session.equipe;
++    var equipeAdverse = (session.adversaire && session.adversaire.equipe) ? session.adversaire.equipe : [];
++
++    var selJoueur = null;
++    var selAdverse = null;
++
++    function genererHTML() {
++      var colJoueurHTML = equipeJoueur.map(function (mon, idx) {
++        var estSel = (selJoueur === idx);
++        return '<div class="pk-swap-carte-wrap" data-side="joueur" data-idx="' + idx + '">' +
++          rendreCartePokemon(mon, idx, estSel, "joueur") +
++        '</div>';
++      }).join("");
++
++      var colAdverseHTML = equipeAdverse.map(function (mon, idx) {
++        var estSel = (selAdverse === idx);
++        return '<div class="pk-swap-carte-wrap" data-side="adverse" data-idx="' + idx + '">' +
++          rendreCartePokemon(mon, idx, estSel, "adverse") +
++        '</div>';
++      }).join("");
++
++      return '<div class="pk-usine-container pk-usine-echange">' +
++        '<div class="pk-usine-banniere">' +
++          '<h2 class="pk-usine-titre">├ëchange de Pok├®mon d\'apr├¿s-match (Swap)</h2>' +
++          '<div class="pk-usine-sous-titre">Vous pouvez ├®changer un Pok├®mon de votre ├®quipe contre un Pok├®mon de l\'├®quipe adverse vaincue.</div>' +
++        '</div>' +
++        '<div class="pk-echange-colonnes">' +
++          '<div class="pk-echange-colonne pk-col-joueur">' +
++            '<h3 class="pk-col-titre">Votre ├®quipe (Player Team)</h3>' +
++            '<div class="pk-echange-liste">' + colJoueurHTML + '</div>' +
++          '</div>' +
++          '<div class="pk-echange-colonne pk-col-adverse">' +
++            '<h3 class="pk-col-titre">├ëquipe vaincue (Defeated Team)</h3>' +
++            '<div class="pk-echange-liste">' + colAdverseHTML + '</div>' +
++          '</div>' +
++        '</div>' +
++        '<div class="pkdx-actions pk-echange-actions">' +
++          '<button type="button" class="pkdx-touche est-definitive" id="pk-swap-confirmer"' +
++            (selJoueur !== null && selAdverse !== null ? '' : ' disabled="disabled"') + '>Confirmer l\'├®change (├ëchanger)</button>' +
++          '<button type="button" class="pkdx-touche" id="pk-swap-garder">Garder mon ├®quipe (Conserver)</button>' +
++        '</div>' +
++      '</div>';
++    }
++
++    var html = genererHTML();
++    var cible = obtenirCible(options);
++
++    function rattacherEvenements() {
++      if (!cible) return;
++
++      var wraps = cible.querySelectorAll(".pk-swap-carte-wrap");
++      for (var i = 0; i < wraps.length; i++) {
++        (function (wrap) {
++          wrap.addEventListener("click", function () {
++            var side = wrap.getAttribute("data-side");
++            var idx = parseInt(wrap.getAttribute("data-idx"), 10);
++            if (side === "joueur") {
++              selJoueur = (selJoueur === idx ? null : idx);
++            } else {
++              selAdverse = (selAdverse === idx ? null : idx);
++            }
++            son("PRESS_AB");
++            cible.innerHTML = genererHTML();
++            rattacherEvenements();
++          });
++        })(wraps[i]);
++      }
++
++      var btnConfirmer = cible.querySelector("#pk-swap-confirmer");
++      if (btnConfirmer) {
++        btnConfirmer.addEventListener("click", function () {
++          if (selJoueur === null || selAdverse === null) return;
++          son("PRESS_AB");
++          if (W.PokeUsine) {
++            W.PokeUsine.appliquerEchange(session, selJoueur, selAdverse);
++          }
++          if (W.PokeProgression && typeof W.PokeProgression.usineEcrire === "function") {
++            var st = W.PokeProgression.usineLire();
++            st.session = session;
++            W.PokeProgression.usineEcrire(st);
++          }
++          lancerCombat(session, options);
++        });
++      }
++
++      var btnGarder = cible.querySelector("#pk-swap-garder");
++      if (btnGarder) {
++        btnGarder.addEventListener("click", function () {
++          son("PRESS_AB");
++          if (W.PokeUsine) {
++            W.PokeUsine.garderEquipe(session);
++          }
++          if (W.PokeProgression && typeof W.PokeProgression.usineEcrire === "function") {
++            var st = W.PokeProgression.usineLire();
++            st.session = session;
++            W.PokeProgression.usineEcrire(st);
++          }
++          lancerCombat(session, options);
++        });
++      }
++    }
++
++    if (cible) {
++      cible.innerHTML = html;
++      rattacherEvenements();
++    }
++
++    return html;
++  }
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  // 5. ├ëCRAN DE FIN DE S├ëRIE & C├ëL├ëBRATION (ouvrirVictoireSerie)
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  function ouvrirVictoireSerie(session, options) {
++    options = options || {};
++    if (!session) return "";
++
++    var P = W.PokeProgression;
++    var estArgent = (session.combatGlobal === 21 || (session.symboles && session.symboles.argent));
++    var estOr = (session.combatGlobal === 42 || (session.symboles && session.symboles.or));
++
++    if (P) {
++      if (estArgent && typeof P.debloquerSymboleUsine === "function") {
++        P.debloquerSymboleUsine("argent");
++      }
++      if (estOr && typeof P.debloquerSymboleUsine === "function") {
++        P.debloquerSymboleUsine("or");
++      }
++      if (session.pcoGagnes > 0 && typeof P.ajouterPCo === "function") {
++        P.ajouterPCo(session.pcoGagnes);
++        session.pcoGagnes = 0;
++      }
++      if (typeof P.enregistrerRecordUsine === "function") {
++        P.enregistrerRecordUsine(session.victoires);
++      }
++    }
++
++    var symboleSectionHTML = "";
++    if (estArgent || estOr) {
++      var metal = estOr ? "Or (Gold)" : "Argent (Silver)";
++      var dialogue = estOr
++        ? "┬½ Incroyable ! Tu as triomph├® 42 fois cons├®cutives et atteint l'apog├®e du savoir tactique. Re├ºois le Symbole du Savoir d'Or ! ┬╗"
++        : "┬½ Bravo dresseur ! Ton savoir et ta ma├«trise des cr├®atures d'emprunt ont surpass├® les miens. Je te d├®cerne le Symbole du Savoir d'Argent ! ┬╗";
++
++      symboleSectionHTML = '<div class="pk-ceremonie-symbole">' +
++        '<div class="pk-symbole-embleme">­ƒÄû´©Å</div>' +
++        '<h3 class="pk-symbole-titre">Remise officielle du Symbole du Savoir (' + metal + ')</h3>' +
++        '<div class="pk-dialogue-noland">' + esc(dialogue) + '</div>' +
++      '</div>';
++    }
++
++    var html = '<div class="pk-usine-container pk-usine-victoire">' +
++      '<div class="pk-usine-banniere">' +
++        '<h2 class="pk-usine-titre">Victoire de la S├®rie de 7 combats !</h2>' +
++        '<div class="pk-usine-sous-titre">F├®licitations ! Vous avez compl├®t├® avec succ├¿s la s├®rie ' + session.serie + ' !</div>' +
++      '</div>' +
++      '<div class="pk-victoire-recap">' +
++        '<div class="pk-victoire-stat">Victoires cons├®cutives totales : <strong>' + session.victoires + '</strong></div>' +
++        '<div class="pk-victoire-stat">Points de Combat (PCo) remport├®s : <strong>+' + W.PokeUsine.calculerGainPCo(session.serie, estArgent || estOr) + ' PCo</strong></div>' +
++      '</div>' +
++      symboleSectionHTML +
++      '<div class="pkdx-actions pk-victoire-actions">' +
++        '<button type="button" class="pkdx-touche est-definitive" id="pk-victoire-continuer">Continuer pour la S├®rie suivante</button>' +
++        '<button type="button" class="pkdx-touche" id="pk-victoire-quitter">Enregistrer et Quitter (Retour au Hall)</button>' +
++      '</div>' +
++    '</div>';
++
++    var cible = obtenirCible(options);
++    if (cible) {
++      cible.innerHTML = html;
++
++      var btnContinuer = cible.querySelector("#pk-victoire-continuer");
++      if (btnContinuer) {
++        btnContinuer.addEventListener("click", function () {
++          son("PRESS_AB");
++          if (W.PokeUsine) {
++            W.PokeUsine.continuerSerie(session);
++          }
++          if (P && typeof P.usineEcrire === "function") {
++            var st = P.usineLire();
++            st.session = session;
++            P.usineEcrire(st);
++          }
++          lancerCombat(session, options);
++        });
++      }
++
++      var btnQuitter = cible.querySelector("#pk-victoire-quitter");
++      if (btnQuitter) {
++        btnQuitter.addEventListener("click", function () {
++          son("PRESS_AB");
++          if (P && typeof P.usineEcrire === "function") {
++            var st = P.usineLire();
++            st.session = session;
++            P.usineEcrire(st);
++          }
++          ouvrirHall(options);
++        });
++      }
++    }
++
++    return html;
++  }
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  // 6. ├ëCRAN DE D├ëFAITE (ouvrirDefaite)
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  function ouvrirDefaite(session, options) {
++    options = options || {};
++    var victoires = (session && typeof session.victoires === "number") ? session.victoires : 0;
++    var pcoGagnes = (session && typeof session.pcoGagnes === "number") ? session.pcoGagnes : 0;
++
++    var P = W.PokeProgression;
++    if (P) {
++      if (typeof P.enregistrerRecordUsine === "function") {
++        P.enregistrerRecordUsine(victoires);
++      }
++      if (typeof P.usineLire === "function" && typeof P.usineEcrire === "function") {
++        var st = P.usineLire();
++        st.session = null;
++        P.usineEcrire(st);
++      }
++    }
++
++    var html = '<div class="pk-usine-container pk-usine-defaite">' +
++      '<div class="pk-usine-banniere">' +
++        '<h2 class="pk-usine-titre">D├®faite... fin de s├®rie</h2>' +
++        '<div class="pk-usine-sous-titre">Votre parcours ├á l\'Usine de Combat s\'arr├¬te ici pour cette session.</div>' +
++      '</div>' +
++      '<div class="pk-defaite-recap">' +
++        '<div class="pk-defaite-stat">Victoires cons├®cutives atteintes : <strong>' + victoires + '</strong></div>' +
++        '<div class="pk-defaite-stat">Points de Combat (PCo) accumul├®s : <strong>' + pcoGagnes + ' PCo</strong></div>' +
++      '</div>' +
++      '<div class="pk-defaite-conseil">' +
++        '┬½ La d├®faite est le meilleur professeur. Retente ta chance avec une nouvelle s├®lection de pr├¬t ! ┬╗' +
++      '</div>' +
++      '<div class="pkdx-actions pk-defaite-actions">' +
++        '<button type="button" class="pkdx-touche est-definitive" id="pk-defaite-retour">Retour au Hall de l\'Usine</button>' +
++      '</div>' +
++    '</div>';
++
++    var cible = obtenirCible(options);
++    if (cible) {
++      cible.innerHTML = html;
++
++      var btnRetour = cible.querySelector("#pk-defaite-retour");
++      if (btnRetour) {
++        btnRetour.addEventListener("click", function () {
++          son("PRESS_AB");
++          ouvrirHall(options);
++        });
++      }
++    }
++
++    return html;
++  }
++
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  // 7. BOUTIQUE DE POINTS DE COMBAT (ouvrirBoutiquePCo)
++  // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
++  function ouvrirBoutiquePCo(options) {
++    options = options || {};
++    var P = W.PokeProgression;
++    var soldePCo = (P && typeof P.usineLire === "function") ? P.usineLire().pco : 0;
++
++    var articlesHTML = CATALOGUE_BOUTIQUE.map(function (item) {
++      var peutAcheter = soldePCo >= item.prix;
++      return '<div class="pk-boutique-carte pk-cat-' + esc(item.categorie.toLowerCase()) + '">' +
++        '<div class="pk-boutique-info">' +
++          '<div class="pk-boutique-nom">' + esc(item.nom) + ' <span class="pk-boutique-code">(' + esc(item.cle) + ')</span></div>' +
++          '<div class="pk-boutique-desc">' + esc(item.desc) + '</div>' +
++          '<div class="pk-boutique-meta">' +
++            '<span class="pk-boutique-categorie">' + esc(item.categorie) + '</span> ' +
++            '<span class="pk-boutique-prix"><strong>' + item.prix + ' PCo</strong></span>' +
++          '</div>' +
++        '</div>' +
++        '<button type="button" class="pkdx-touche pk-boutique-acheter" data-cle="' + esc(item.cle) + '"' +
++          (peutAcheter ? '' : ' disabled="disabled"') + '>Acheter</button>' +
++      '</div>';
++    }).join("");
++
++    var html = '<div class="pk-usine-container pk-usine-boutique">' +
++      '<div class="pk-usine-banniere">' +
++        '<h2 class="pk-usine-titre">Boutique PCo (Battle Shop)</h2>' +
++        '<div class="pk-boutique-solde-cadre">' +
++          'Solde disponible : <span class="pk-solde-pco-val"><strong>' + soldePCo + ' PCo</strong></span>' +
++        '</div>' +
++      '</div>' +
++      '<div class="pk-boutique-grille">' + articlesHTML + '</div>' +
++      '<div class="pkdx-actions pk-boutique-actions">' +
++        '<button type="button" class="pkdx-touche" id="pk-boutique-retour">Retour au Hall</button>' +
++      '</div>' +
++    '</div>';
++
++    var cible = obtenirCible(options);
++    if (cible) {
++      cible.innerHTML = html;
++
++      var boutons = cible.querySelectorAll(".pk-boutique-acheter");
++      for (var b = 0; b < boutons.length; b++) {
++        (function (btn) {
++          btn.addEventListener("click", function () {
++            var cle = btn.getAttribute("data-cle");
++            var itemTrouve = null;
++            for (var k = 0; k < CATALOGUE_BOUTIQUE.length; k++) {
++              if (CATALOGUE_BOUTIQUE[k].cle === cle) {
++                itemTrouve = CATALOGUE_BOUTIQUE[k];
++                break;
++              }
++            }
++            if (!itemTrouve || !P) return;
++            var ok = P.depenserPCo(itemTrouve.prix);
++            if (ok) {
++              P.ajouterObjet(itemTrouve.cle, 1);
++              son("ACHAT");
++              ouvrirBoutiquePCo(options);
++            } else {
++              son("DENIED");
++            }
++          });
++        })(boutons[b]);
++      }
++
++      var btnRetour = cible.querySelector("#pk-boutique-retour");
++      if (btnRetour) {
++        btnRetour.addEventListener("click", function () {
++          son("PRESS_AB");
++          ouvrirHall(options);
++        });
++      }
++    }
++
++    return html;
++  }
++
++  // ÔöÇÔöÇ Export public ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++  W.PokeUIUsine = {
++    ouvrirHall: ouvrirHall,
++    ouvrirDraft: ouvrirDraft,
++    lancerCombat: lancerCombat,
++    ouvrirEchange: ouvrirEchange,
++    ouvrirVictoireSerie: ouvrirVictoireSerie,
++    ouvrirDefaite: ouvrirDefaite,
++    ouvrirBoutiquePCo: ouvrirBoutiquePCo,
++    CATALOGUE_BOUTIQUE: CATALOGUE_BOUTIQUE
++  };
++
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/js/poke/ui.js b/js/poke/ui.js
+index 57c70f1..8a717ca 100644
+--- a/js/poke/ui.js
++++ b/js/poke/ui.js
+@@ -226,20 +226,26 @@
+       en: "This journey stays on this device. Your Pok├®dex follows your account everywhere.",
+     },
+     classement: { fr: "CLASSEMENT", en: "LADDER" },
+     carnet: { fr: "CARNET DE CHASSE", en: "HUNT LOG" },
+     //  Les nouveaut├®s du mode. ­ƒö┤ CE MODE N'AVAIT AUCUNE PAGE DE NOTES : le
+     //  ┬½ Quoi de neuf ┬╗ du site vit dans `js/game.js`, que `pokemon.html` ne
+     //  charge pas. Une semaine de correctifs demand├®s par les joueurs, et aucun
+     //  endroit o├╣ le leur dire ÔÇö le signalement partait dans le vide.
+     neuf: { fr: "NOUVEAUT├ëS", en: "WHAT'S NEW" },
+     cercle: { fr: "MON CERCLE", en: "MY CIRCLE" },
++    usineTitre: { fr: "Zone de Combat", en: "Battle Frontier" },
++    usineHall: { fr: "Usine de Combat", en: "Battle Factory" },
++    usinePrets: { fr: "S├®lectionnez 3 Pok├®mon de pr├¬t", en: "Select 3 Rental Pok├®mon" },
++    usineEchange: { fr: "├ëchange de Pok├®mon", en: "Swap Pok├®mon" },
++    usineBoutique: { fr: "Boutique PCo", en: "Battle Shop" },
++    usinePco: { fr: "PCo", en: "BP" },
+     // ­ƒÆ¼ L'invitation Discord du soir (20ÔåÆ27/08) ÔÇö voir `ANNONCE_DISCORD`.
+     annonceTitre: { fr: "Un bug ? Une id├®e ? Viens le dire.", en: "A bug? An idea? Come and say it." },
+     annonceDit: {
+       fr: "Le Discord du jeu a deux salons pour ├ºa : report-bug et suggestions. Chaque message est lu, et beaucoup partent en correctif le jour m├¬me. Et c'est l├á que les dresseurs se retrouvent.",
+       en: "The game's Discord has two channels for it: report-bug and suggestions. Every message gets read, and many ship as a fix the same day. And that is where trainers meet.",
+     },
+     annonceOui: { fr: "REJOINDRE LE DISCORD Ôåù", en: "JOIN THE DISCORD Ôåù" },
+     annonceNon: { fr: "PAS CE SOIR", en: "NOT TONIGHT" },
+     neufTitre: { fr: "Ce qui a chang├®", en: "What changed" },
+     neufVide: { fr: "Rien de neuf pour l'instant.", en: "Nothing new for now." },
+@@ -3729,20 +3735,21 @@
+               '<span class="pkdx-touche-note">' +
+                 esc(T("reprendreOu", { a: voyageEnAttente.partie.acte || 1,
+                                        n: (voyageEnAttente.partie.badges || []).length })) +
+               "</span></button>"
+           : "") +
+         '<button type="button" class="pkdx-touche' + (voyageEnAttente ? "" : " est-definitive") + '" id="pk-go">' +
+           W.PokeIcones.svg("ball") + T("commencer") +
+           (voyageEnAttente ? '<span class="pkdx-touche-note">' + esc(T("reprendreNeuf")) + "</span>" : "") +
+           "</button>" +
+         '<button type="button" class="pkdx-touche" id="pk-defi">' + T("defi") + "</button>" +
++        '<button type="button" class="pkdx-touche" id="pk-usine">' + T("usineTitre") + "</button>" +
+         // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+         //  ­ƒö┤ [20/08, Angel sur Discord] ┬½ LES RUNS NE SONT PAS SAUVEGARD├ëES
+         //     ENTRE LES APPAREILS ? J'EN AVAIS COMMENC├ë UNE HIER, L├Ç JE DOIS
+         //     REPRENDRE DU D├ëBUT (JE SUIS BIEN CONNECT├ë) ┬╗. Il a raison, et il
+         //     a fait exactement ce qu'il fallait : le compte synchronise le
+         //     POK├ëDEX (`/api/poke/sync`), pas le VOYAGE ÔÇö celui-ci vit dans le
+         //     stockage du navigateur et n'est jamais envoy├® au serveur.
+         //  ­ƒöæ Un joueur connect├® suppose que tout suit son compte, et rien ne
+         //     lui disait le contraire. On le dit l├á o├╣ la question se pose :
+         //     sous le bouton qui reprend un voyage. Faire suivre le voyage est
+@@ -3970,20 +3977,29 @@
+       //    lanc├®e apr├¿s un d├®fi rejouerait la carte du d├®fi : `demarrerPartie`
+       //    laisse `POKE_GRAINE` ma├«tre quand elle existe, et rien ne l'effa├ºait.
+       W.POKE_GRAINE = null;
+       if (gardeDuCompte(function () { W.POKE_GRAINE = null; ouvrirDepart(); })) return;
+       ouvrirDepart();
+     });
+     racine.querySelector("#pk-defi").addEventListener("click", function () {
+       son("PRESS_AB");
+       ecranDefi();
+     });
++    var boutonUsine = racine.querySelector("#pk-usine");
++    if (boutonUsine) {
++      boutonUsine.addEventListener("click", function () {
++        son("PRESS_AB");
++        if (W.PokeUIUsine && W.PokeUIUsine.ouvrirHall) {
++          W.PokeUIUsine.ouvrirHall({ retour: accueil });
++        }
++      });
++    }
+     racine.querySelector("#pk-compte").addEventListener("click", function () {
+       son("PRESS_AB");
+       W.location.href = "index.html?go=compte&retour=poke";
+     });
+     // ­ƒÆ¼ L'invitation Discord : montr├®e = vue (une fois par soir) ; rejoindre =
+     //    on ne relance plus ; refermer = un refus de plus, trois et on se tait.
+     var annonce = racine.querySelector("#pk-annonce");
+     if (annonce) {
+       annonceDiscordVue();
+       racine.querySelector("#pk-annonce-oui").addEventListener("click", function () {
+diff --git a/tests/run_all_tests.mjs b/tests/run_all_tests.mjs
+index eb4f3e9..0e8705c 100644
+--- a/tests/run_all_tests.mjs
++++ b/tests/run_all_tests.mjs
+@@ -126,24 +126,26 @@ test("POKE_ORDRE_GEN2_ECRANS contains sound and animation presentation files", (
+ test("POKE_ORDRE_GEN3 contains pure logic/data and NO sound/animation files", () => {
+   const gen3 = ordreContext.POKE_ORDRE_GEN3;
+   assert.ok(Array.isArray(gen3), "POKE_ORDRE_GEN3 must be an array");
+   assert.strictEqual(gen3.length, 19, "POKE_ORDRE_GEN3 must contain exactly 19 files");
+   for (const f of gen3) {
+     assert.ok(!f.includes("sons"), `File ${f} must NOT be in GEN3 (NOYAU)`);
+     assert.ok(!f.includes("anim"), `File ${f} must NOT be in GEN3 (NOYAU)`);
+   }
+ });
+ 
+-test("POKE_ORDRE_GEN3_ECRANS contains sound presentation files", () => {
++test("POKE_ORDRE_GEN3_ECRANS contains sound and UI presentation files", () => {
+   const gen3Ecrans = ordreContext.POKE_ORDRE_GEN3_ECRANS;
+   assert.ok(Array.isArray(gen3Ecrans), "POKE_ORDRE_GEN3_ECRANS must be an array");
++  assert.strictEqual(gen3Ecrans.length, 2, "POKE_ORDRE_GEN3_ECRANS must contain exactly 2 files");
+   assert.ok(gen3Ecrans.includes("js/poke/gen3/sons.js"), "gen3/sons.js must be in GEN3_ECRANS");
++  assert.ok(gen3Ecrans.includes("js/poke/ui-usine.js"), "ui-usine.js must be in GEN3_ECRANS");
+ });
+ 
+ test("Zero intersection between NOYAU and ECRANS file lists", () => {
+   const noyau = new Set(ordreContext.POKE_ORDRE_NOYAU);
+   const ecrans = new Set(ordreContext.POKE_ORDRE_ECRANS);
+   for (const f of ecrans) {
+     assert.ok(!noyau.has(f), `File ${f} exists in both NOYAU and ECRANS!`);
+   }
+ });
+ 
+diff --git a/tests/test_gen3_registry.mjs b/tests/test_gen3_registry.mjs
+index a32c566..43131d3 100644
+--- a/tests/test_gen3_registry.mjs
++++ b/tests/test_gen3_registry.mjs
+@@ -111,20 +111,21 @@ const EXPECTED_GEN3_NOYAU = [
+   "js/poke/gen3/classes.js",
+   "js/poke/gen3/equipes.js",
+   "js/poke/gen3/arenes.js",
+   "js/poke/gen3/rival.js",
+   "js/poke/gen3/monde.js",
+   "js/poke/gen3/voyage.js",
+ ];
+ 
+ const EXPECTED_GEN3_ECRANS = [
+   "js/poke/gen3/sons.js",
++  "js/poke/ui-usine.js",
+ ];
+ 
+ let ordreContext;
+ test("ordre.js exports POKE_ORDRE_GEN3 and POKE_ORDRE_GEN3_ECRANS", () => {
+   ordreContext = createIsolatedContext();
+   loadScriptInContext("js/poke/ordre.js", ordreContext);
+ 
+   assert.ok(ordreContext.POKE_ORDRE_GEN3, "POKE_ORDRE_GEN3 must be defined");
+   assert.ok(Array.isArray(ordreContext.POKE_ORDRE_GEN3), "POKE_ORDRE_GEN3 must be an array");
+   assert.deepStrictEqual([...ordreContext.POKE_ORDRE_GEN3], EXPECTED_GEN3_NOYAU);
+diff --git a/tests/test_gen3_usine_ui.mjs b/tests/test_gen3_usine_ui.mjs
+new file mode 100644
+index 0000000..b98169d
+--- /dev/null
++++ b/tests/test_gen3_usine_ui.mjs
+@@ -0,0 +1,534 @@
++/**
++ * tests/test_gen3_usine_ui.mjs
++ * Comprehensive automated test suite for Task 5: Battle Factory UI, Draft, Swap, Boss & Battle Shop.
++ *
++ * Verifies:
++ * 1. js/poke/ui-usine.js evaluates cleanly in isolated context and exports W.PokeUIUsine.
++ * 2. PokeProgression methods: usineLire, usineEcrire, ajouterPCo, depenserPCo, enregistrerRecordUsine, debloquerSymboleUsine.
++ * 3. PokeUIUsine.ouvrirHall: title, Noland/Samson, stats panel (record, PCo, symbols), action buttons.
++ * 4. PokeUIUsine.ouvrirDraft: 6 rich rental cards (sprite, nature, talent, held item, 4 attacks), interactive 3/3 selection.
++ * 5. PokeUIUsine.lancerCombat: orchestration, boss introduction, battle resolution, branching.
++ * 6. PokeUIUsine.ouvrirEchange: 2-column swap UI (player team vs defeated team), swap confirmation & keep team.
++ * 7. PokeUIUsine.ouvrirVictoireSerie: 7-win streak celebration, Noland Knowledge symbol award (Silver/Gold), PCo attribution.
++ * 8. PokeUIUsine.ouvrirDefaite: streak recap, PCo, record update, active session cleanup.
++ * 9. PokeUIUsine.ouvrirBoutiquePCo: catalog (combat items, vitamins, stones), PCo balance deduction, inventory addition.
++ * 10. js/poke/ordre.js: includes "js/poke/ui-usine.js" in GEN3_ECRANS.
++ * 11. js/poke/ui.js: includes "#pk-usine" button, translation keys, and routing to PokeUIUsine.ouvrirHall.
++ */
++
++import fs from "node:fs";
++import path from "node:path";
++import vm from "node:vm";
++import assert from "node:assert/strict";
++import { fileURLToPath } from "node:url";
++
++const __filename = fileURLToPath(import.meta.url);
++const __dirname = path.dirname(__filename);
++const ROOT_DIR = path.resolve(__dirname, "..");
++
++let totalTests = 0;
++let passedTests = 0;
++let failedTests = 0;
++const failures = [];
++
++function suite(title) {
++  console.log(`\n\x1b[1m\x1b[36m=== ${title} ===\x1b[0m`);
++}
++
++function test(name, fn) {
++  totalTests++;
++  try {
++    fn();
++    passedTests++;
++    console.log(`  \x1b[32mÔ£ô\x1b[0m ${name}`);
++  } catch (err) {
++    failedTests++;
++    failures.push({ name, err });
++    console.log(`  \x1b[31mÔ£ù\x1b[0m ${name}`);
++    console.error(`    \x1b[31m${err.message}\x1b[0m`);
++    if (err.stack) {
++      const firstStack = err.stack.split("\n").slice(1, 4).join("\n");
++      console.error(`    \x1b[90m${firstStack}\x1b[0m`);
++    }
++  }
++}
++
++function createMockElement(tag = "div") {
++  const attrs = new Map();
++  const classes = new Set();
++  const children = [];
++  const listeners = new Map();
++
++  const el = {
++    tagName: tag.toUpperCase(),
++    className: "",
++    innerHTML: "",
++    textContent: "",
++    disabled: false,
++    dataset: {},
++    parentNode: null,
++    children: children,
++    getAttribute: (name) => attrs.get(name) || null,
++    setAttribute: (name, val) => attrs.set(name, String(val)),
++    removeAttribute: (name) => attrs.delete(name),
++    hasAttribute: (name) => attrs.has(name),
++    classList: {
++      add: (c) => classes.add(c),
++      remove: (c) => classes.delete(c),
++      contains: (c) => classes.has(c),
++      toggle: (c) => (classes.has(c) ? (classes.delete(c), false) : (classes.add(c), true)),
++    },
++    appendChild: (child) => {
++      child.parentNode = el;
++      children.push(child);
++      return child;
++    },
++    remove: () => {},
++    addEventListener: (type, fn) => {
++      if (!listeners.has(type)) listeners.set(type, []);
++      listeners.get(type).push(fn);
++    },
++    removeEventListener: (type, fn) => {
++      if (!listeners.has(type)) return;
++      listeners.set(type, listeners.get(type).filter((f) => f !== fn));
++    },
++    click: () => {
++      const list = listeners.get("click") || [];
++      const ev = { target: el, currentTarget: el, preventDefault: () => {}, stopPropagation: () => {} };
++      for (const fn of list) fn(ev);
++    },
++    querySelector: (sel) => {
++      if (el.innerHTML && typeof el.innerHTML === "string") {
++        if (sel.startsWith("#")) {
++          const id = sel.slice(1);
++          if (el.innerHTML.includes(`id="${id}"`) || el.innerHTML.includes(`id='${id}'`)) {
++            const found = createMockElement("div");
++            found.id = id;
++            return found;
++          }
++        }
++      }
++      return createMockElement(sel && sel.includes("img") ? "img" : "div");
++    },
++    querySelectorAll: (sel) => [],
++  };
++  return el;
++}
++
++function createMockStorage() {
++  const store = new Map();
++  return {
++    getItem: (key) => (store.has(key) ? store.get(key) : null),
++    setItem: (key, val) => store.set(key, String(val)),
++    removeItem: (key) => store.delete(key),
++    clear: () => store.clear(),
++  };
++}
++
++function createIsolatedContext(customGlobals = {}) {
++  const mockStorage = createMockStorage();
++  const mockDoc = {
++    createElement: (tag) => createMockElement(tag),
++    querySelector: () => createMockElement("div"),
++    querySelectorAll: () => [],
++    body: createMockElement("body"),
++    addEventListener: () => {},
++    removeEventListener: () => {},
++  };
++
++  const sandbox = {
++    console: console,
++    Math: Math,
++    Object: Object,
++    Array: Array,
++    String: String,
++    Number: Number,
++    Boolean: Boolean,
++    RegExp: RegExp,
++    JSON: JSON,
++    isFinite: isFinite,
++    isNaN: isNaN,
++    parseInt: parseInt,
++    parseFloat: parseFloat,
++    Date: Date,
++    localStorage: mockStorage,
++    sessionStorage: mockStorage,
++    document: mockDoc,
++    window: null,
++    setTimeout: (fn) => setTimeout(fn, 0),
++    clearTimeout: (id) => clearTimeout(id),
++    ...customGlobals,
++  };
++  sandbox.globalThis = sandbox;
++  sandbox.window = sandbox;
++  return vm.createContext(sandbox);
++}
++
++function loadScriptInContext(filePath, context) {
++  const fullPath = path.join(ROOT_DIR, filePath);
++  if (!fs.existsSync(fullPath)) {
++    throw new Error(`File does not exist: ${filePath}`);
++  }
++  const code = fs.readFileSync(fullPath, "utf-8");
++  vm.runInContext(code, context, { filename: filePath });
++}
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 1: ordre.js Integration & Exports
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("1. Module Architecture & ordre.js Integration");
++
++test("js/poke/ordre.js contains 'js/poke/ui-usine.js' in GEN3_ECRANS", () => {
++  const ctx = createIsolatedContext();
++  loadScriptInContext("js/poke/ordre.js", ctx);
++
++  assert.ok(ctx.POKE_ORDRE_GEN3_ECRANS, "POKE_ORDRE_GEN3_ECRANS must exist");
++  assert.ok(
++    ctx.POKE_ORDRE_GEN3_ECRANS.includes("js/poke/ui-usine.js"),
++    "GEN3_ECRANS must include 'js/poke/ui-usine.js'"
++  );
++  assert.ok(
++    ctx.POKE_ORDRE_ECRANS.includes("js/poke/ui-usine.js"),
++    "POKE_ORDRE_ECRANS must include 'js/poke/ui-usine.js'"
++  );
++  assert.ok(
++    ctx.POKE_ORDRE.includes("js/poke/ui-usine.js"),
++    "POKE_ORDRE must include 'js/poke/ui-usine.js'"
++  );
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 2: Persistence in js/poke/progression.js
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("2. Battle Factory Persistence in js/poke/progression.js");
++
++let progCtx;
++function initProgContext() {
++  progCtx = createIsolatedContext();
++  // Load NOYAU core dependencies needed by progression.js
++  loadScriptInContext("js/poke/rng.js", progCtx);
++  loadScriptInContext("js/poke/genre.js", progCtx);
++  loadScriptInContext("js/poke/types.js", progCtx);
++  loadScriptInContext("js/poke/regles.js", progCtx);
++  loadScriptInContext("js/poke/especes.js", progCtx);
++  loadScriptInContext("js/poke/moteur.js", progCtx);
++  loadScriptInContext("js/poke/progression.js", progCtx);
++}
++
++test("usineLire() returns initial empty state when no saved state exists", () => {
++  initProgContext();
++  const P = progCtx.PokeProgression;
++  assert.ok(typeof P.usineLire === "function", "PokeProgression.usineLire must be a function");
++
++  const etat = JSON.parse(JSON.stringify(P.usineLire()));
++  assert.deepStrictEqual(etat, {
++    pco: 0,
++    record: 0,
++    symboles: { argent: false, or: false },
++    session: null,
++  });
++});
++
++test("usineEcrire(data) persists data and usineLire() retrieves it", () => {
++  initProgContext();
++  const P = progCtx.PokeProgression;
++  const mockState = {
++    pco: 42,
++    record: 14,
++    symboles: { argent: true, or: false },
++    session: { serie: 2, combat: 3 },
++  };
++
++  const ok = P.usineEcrire(mockState);
++  assert.strictEqual(ok, true, "usineEcrire must return true");
++
++  const lu = P.usineLire();
++  assert.strictEqual(lu.pco, 42);
++  assert.strictEqual(lu.record, 14);
++  assert.strictEqual(lu.symboles.argent, true);
++  assert.strictEqual(lu.symboles.or, false);
++  assert.strictEqual(lu.session.serie, 2);
++});
++
++test("ajouterPCo(n) credits points and depenserPCo(n) safely debits", () => {
++  initProgContext();
++  const P = progCtx.PokeProgression;
++
++  assert.strictEqual(P.usineLire().pco, 0);
++
++  // Add 50 PCo
++  const solde1 = P.ajouterPCo(50);
++  assert.strictEqual(solde1, 50);
++  assert.strictEqual(P.usineLire().pco, 50);
++
++  // Attempt to spend 60 (exceeds balance) => should fail and return false
++  const okTrop = P.depenserPCo(60);
++  assert.strictEqual(okTrop, false, "depenserPCo must reject when balance is insufficient");
++  assert.strictEqual(P.usineLire().pco, 50, "Balance must remain unchanged after rejected spend");
++
++  // Spend 30 => should succeed
++  const okDepense = P.depenserPCo(30);
++  assert.strictEqual(okDepense, true, "depenserPCo must return true on valid spend");
++  assert.strictEqual(P.usineLire().pco, 20, "Balance must be 20 PCo");
++});
++
++test("enregistrerRecordUsine(victoires) only updates if higher than current record", () => {
++  initProgContext();
++  const P = progCtx.PokeProgression;
++
++  P.enregistrerRecordUsine(7);
++  assert.strictEqual(P.usineLire().record, 7);
++
++  // Lesser score should not overwrite
++  P.enregistrerRecordUsine(4);
++  assert.strictEqual(P.usineLire().record, 7);
++
++  // Higher score should overwrite
++  P.enregistrerRecordUsine(21);
++  assert.strictEqual(P.usineLire().record, 21);
++});
++
++test("debloquerSymboleUsine(type) unlocks argent and or symbols", () => {
++  initProgContext();
++  const P = progCtx.PokeProgression;
++
++  assert.strictEqual(P.usineLire().symboles.argent, false);
++  assert.strictEqual(P.usineLire().symboles.or, false);
++
++  P.debloquerSymboleUsine("argent");
++  assert.strictEqual(P.usineLire().symboles.argent, true);
++  assert.strictEqual(P.usineLire().symboles.or, false);
++
++  P.debloquerSymboleUsine("or");
++  assert.strictEqual(P.usineLire().symboles.argent, true);
++  assert.strictEqual(P.usineLire().symboles.or, true);
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 3: PokeUIUsine Module & Screens
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("3. PokeUIUsine UI Screens & Interactions");
++
++let fullCtx;
++function initFullContext() {
++  fullCtx = createIsolatedContext();
++  loadScriptInContext("js/poke/ordre.js", fullCtx);
++  for (const f of fullCtx.POKE_ORDRE_NOYAU) {
++    loadScriptInContext(f, fullCtx);
++  }
++  for (const f of fullCtx.POKE_ORDRE_ECRANS) {
++    loadScriptInContext(f, fullCtx);
++  }
++  if (fullCtx.PokeRegles && typeof fullCtx.PokeRegles.poser === "function") {
++    fullCtx.PokeRegles.poser("gen3");
++  }
++}
++
++test("js/poke/ui-usine.js exports W.PokeUIUsine with all 7 canonical methods", () => {
++  initFullContext();
++  const U = fullCtx.PokeUIUsine;
++  assert.ok(U, "W.PokeUIUsine must be defined");
++  assert.strictEqual(typeof U.ouvrirHall, "function", "ouvrirHall must be a function");
++  assert.strictEqual(typeof U.ouvrirDraft, "function", "ouvrirDraft must be a function");
++  assert.strictEqual(typeof U.lancerCombat, "function", "lancerCombat must be a function");
++  assert.strictEqual(typeof U.ouvrirEchange, "function", "ouvrirEchange must be a function");
++  assert.strictEqual(typeof U.ouvrirVictoireSerie, "function", "ouvrirVictoireSerie must be a function");
++  assert.strictEqual(typeof U.ouvrirDefaite, "function", "ouvrirDefaite must be a function");
++  assert.strictEqual(typeof U.ouvrirBoutiquePCo, "function", "ouvrirBoutiquePCo must be a function");
++});
++
++test("ouvrirHall renders Battle Factory title, Noland/Samson, PCo, record, symbols and buttons", () => {
++  initFullContext();
++  const U = fullCtx.PokeUIUsine;
++  const P = fullCtx.PokeProgression;
++  P.ajouterPCo(35);
++  P.enregistrerRecordUsine(14);
++  P.debloquerSymboleUsine("argent");
++
++  const cible = createMockElement("div");
++  const html = U.ouvrirHall({ cible });
++  const content = html || cible.innerHTML;
++
++  assert.ok(content.includes("Usine de Combat") || content.includes("Battle Factory"), "Must show Hall title");
++  assert.ok(content.includes("Samson") || content.includes("Noland"), "Must mention Factory Head Noland / Samson");
++  assert.ok(content.includes("35"), "Must show 35 PCo");
++  assert.ok(content.includes("14"), "Must show 14 record");
++  assert.ok(content.includes("Argent") || content.includes("Silver"), "Must display Argent symbol badge");
++  assert.ok(content.includes("pk-usine-nouveau") || content.includes("Nouveau"), "Must have new streak / start button");
++  assert.ok(content.includes("Boutique") || content.includes("Shop"), "Must have Battle Shop button");
++  assert.ok(content.includes("Retour") || content.includes("Back"), "Must have return button");
++});
++
++test("ouvrirDraft renders 6 rich rental cards with sprites, nature, talent, held item, and moves", () => {
++  initFullContext();
++  const U = fullCtx.PokeUIUsine;
++  const session = fullCtx.PokeUsine.creerSession({ graine: "TEST-DRAFT-SEED" });
++
++  const cible = createMockElement("div");
++  const html = U.ouvrirDraft(session, { cible });
++  const content = html || cible.innerHTML;
++
++  assert.strictEqual(session.prets.length, 6, "Session must contain exactly 6 rental Pok├®mon");
++  for (let i = 0; i < 6; i++) {
++    const mon = session.prets[i];
++    assert.ok(content.includes(mon.nature) || content.includes("Rigide") || content.includes("Modeste") || content.includes("Timide") || content.includes("Jovial") || content.includes("Hardi") || content.includes("Brave") || content.includes("Calme") || content.includes("Assur├®") || content.includes("Discret"), `Card ${i} must show nature`);
++    assert.ok(content.includes(mon.objet) || content.includes("Restes") || content.includes("Bandeau") || content.includes("Lentil") || content.includes("Charbon") || content.includes("Aimant") || content.includes("Baie") || content.includes("Graine") || content.includes("Eau"), `Card ${i} must show held item`);
++  }
++  assert.ok(content.includes("/ 3") || content.includes("S├®lectionn├®s"), "Must show selection counter indicator");
++  assert.ok(content.includes("pk-draft-confirmer") || content.includes("Confirmer"), "Must have team confirm button");
++});
++
++test("ouvrirDraft allows selecting exactly 3 cards and confirming team", () => {
++  initFullContext();
++  const U = fullCtx.PokeUIUsine;
++  const session = fullCtx.PokeUsine.creerSession({ graine: "TEST-SELECTION" });
++
++  const cible = createMockElement("div");
++  U.ouvrirDraft(session, { cible });
++
++  // Simulate selecting 3 items (indices 0, 2, 4)
++  fullCtx.PokeUsine.choisirEquipeInitiale(session, [0, 2, 4]);
++  assert.strictEqual(session.equipe.length, 3, "Team must have 3 Pok├®mon after selection");
++  assert.strictEqual(session.statut, "combat", "Status must switch to combat");
++  assert.ok(session.adversaire, "Opponent must be drawn");
++});
++
++test("ouvrirEchange presents both teams side by side for post-match swap", () => {
++  initFullContext();
++  const U = fullCtx.PokeUIUsine;
++  const session = fullCtx.PokeUsine.creerSession({ graine: "TEST-SWAP" });
++  fullCtx.PokeUsine.choisirEquipeInitiale(session, [0, 1, 2]);
++
++  const cible = createMockElement("div");
++  const html = U.ouvrirEchange(session, { cible });
++  const content = html || cible.innerHTML;
++
++  assert.ok(content.includes("Votre ├®quipe") || content.includes("├ëquipe actuelle") || content.includes("Player"), "Must show player team column");
++  assert.ok(content.includes("├ëquipe vaincue") || content.includes("Adversaire") || content.includes("Defeated"), "Must show defeated opponent team column");
++  assert.ok(content.includes("pk-swap-confirmer") || content.includes("├ëchanger") || content.includes("Confirmer"), "Must have swap button");
++  assert.ok(content.includes("pk-swap-garder") || content.includes("Garder") || content.includes("Conserver"), "Must have keep team button");
++});
++
++test("ouvrirVictoireSerie celebrates streak, awards PCo, and awards Symbol against Noland", () => {
++  initFullContext();
++  const U = fullCtx.PokeUIUsine;
++  const P = fullCtx.PokeProgression;
++  const session = fullCtx.PokeUsine.creerSession({ graine: "TEST-WIN-21" });
++  session.serie = 3;
++  session.combat = 7;
++  session.combatGlobal = 21;
++  session.victoires = 21;
++  session.symboles.argent = true;
++
++  const cible = createMockElement("div");
++  const html = U.ouvrirVictoireSerie(session, { cible });
++  const content = html || cible.innerHTML;
++
++  assert.ok(content.includes("S├®rie") || content.includes("Victoire") || content.includes("7"), "Must announce streak completion");
++  assert.ok(content.includes("Symbole du Savoir") || content.includes("Argent") || content.includes("Knowledge Symbol"), "Must celebrate Argent symbol award at battle 21");
++  assert.ok(content.includes("Continuer") || content.includes("suivante"), "Must have button to proceed to next streak");
++  assert.ok(content.includes("Enregistrer") || content.includes("Quitter") || content.includes("Hall"), "Must have save & exit button");
++});
++
++test("ouvrirDefaite recaps streak results, clears active session, and saves record", () => {
++  initFullContext();
++  const U = fullCtx.PokeUIUsine;
++  const P = fullCtx.PokeProgression;
++  const session = fullCtx.PokeUsine.creerSession({ graine: "TEST-DEFEAT" });
++  session.victoires = 12;
++  session.pcoGagnes = 6;
++  P.usineEcrire({ pco: 6, record: 5, symboles: { argent: false, or: false }, session });
++
++  const cible = createMockElement("div");
++  const html = U.ouvrirDefaite(session, { cible });
++  const content = html || cible.innerHTML;
++
++  assert.ok(content.includes("D├®faite") || content.includes("fin de s├®rie") || content.includes("Defeat"), "Must announce defeat");
++  assert.ok(content.includes("12"), "Must show 12 victories in recap");
++
++  const etatApres = P.usineLire();
++  assert.strictEqual(etatApres.session, null, "Active session must be cleared after defeat");
++  assert.strictEqual(etatApres.record, 12, "Record must be updated to 12");
++});
++
++test("ouvrirBoutiquePCo displays full catalog, checks balance, and credits items to bag", () => {
++  initFullContext();
++  const U = fullCtx.PokeUIUsine;
++  const P = fullCtx.PokeProgression;
++  P.ajouterPCo(50); // Player has 50 PCo
++
++  const cible = createMockElement("div");
++  const html = U.ouvrirBoutiquePCo({ cible });
++  const content = html || cible.innerHTML;
++
++  assert.ok(content.includes("50"), "Must display 50 available PCo");
++
++  // Verify presence of items across all categories
++  assert.ok(content.includes("Restes") || content.includes("LEFTOVERS"), "Must sell Leftovers");
++  assert.ok(content.includes("Bandeau Choix") || content.includes("CHOICE_BAND"), "Must sell Choice Band");
++  assert.ok(content.includes("Lentille Scope") || content.includes("Lentilscope") || content.includes("SCOPE_LENS"), "Must sell Scope Lens");
++  assert.ok(content.includes("Vive Griffe") || content.includes("QUICK_CLAW"), "Must sell Quick Claw");
++  assert.ok(content.includes("Herbe Blanche") || content.includes("WHITE_HERB"), "Must sell White Herb");
++  assert.ok(content.includes("Zinc") || content.includes("ZINC"), "Must sell Zinc");
++  assert.ok(content.includes("Super Bonbon") || content.includes("RARE_CANDY"), "Must sell Super Bonbon");
++  assert.ok(content.includes("Pierre Eau") || content.includes("WATER_STONE"), "Must sell Water Stone");
++
++  // Buy Leftovers (48 PCo): 50 - 48 = 2 remaining
++  const okAchat = P.depenserPCo(48);
++  assert.strictEqual(okAchat, true, "Purchase of Leftovers must succeed");
++  assert.strictEqual(P.usineLire().pco, 2, "Remaining balance must be 2 PCo");
++
++  P.ajouterObjet("LEFTOVERS", 1);
++  const bag = P.sac ? P.sac() : P.lire().sac;
++  assert.strictEqual(bag.LEFTOVERS, 1, "Leftovers must be added to bag");
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Suite 4: UI Integration in js/poke/ui.js
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++suite("4. Home Screen Button & Translations in js/poke/ui.js");
++
++test("js/poke/ui.js has Zone de Combat button (#pk-usine) next to #pk-defi", () => {
++  const uiContent = fs.readFileSync(path.join(ROOT_DIR, "js/poke/ui.js"), "utf-8");
++  assert.ok(
++    uiContent.includes('id="pk-usine"'),
++    "ui.js must contain button with id='pk-usine'"
++  );
++  assert.ok(
++    uiContent.includes("Zone de Combat") || uiContent.includes("usineTitre"),
++    "ui.js must label #pk-usine with 'Zone de Combat' or translation key 'usineTitre'"
++  );
++});
++
++test("js/poke/ui.js includes all required translation keys in TXT", () => {
++  const uiContent = fs.readFileSync(path.join(ROOT_DIR, "js/poke/ui.js"), "utf-8");
++  const requiredKeys = [
++    "usineTitre",
++    "usineHall",
++    "usinePrets",
++    "usineEchange",
++    "usineBoutique",
++    "usinePco",
++  ];
++  for (const k of requiredKeys) {
++    assert.ok(uiContent.includes(k), `ui.js TXT must contain key '${k}'`);
++  }
++});
++
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++// Final Summary & Exit
++// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
++console.log(`\n\x1b[1m\x1b[35m------------------------------------------------------------\x1b[0m`);
++console.log(`Total Tests: \x1b[1m${totalTests}\x1b[0m | Passed: \x1b[32m${passedTests}\x1b[0m | Failed: \x1b[31m${failedTests}\x1b[0m`);
++
++if (failedTests > 0) {
++  console.log(`\n\x1b[31m\x1b[1mFAILURES:\x1b[0m`);
++  for (const { name, err } of failures) {
++    console.log(`  \x1b[31mÔ£ù ${name}\x1b[0m`);
++    console.log(`    ${err.message}`);
++  }
++  process.exit(1);
++} else {
++  console.log(`\x1b[32m\x1b[1mALL USINE UI TESTS PASSED!\x1b[0m\n`);
++  process.exit(0);
++}
