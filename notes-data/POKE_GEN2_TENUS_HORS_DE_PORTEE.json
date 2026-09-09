@@ -1,0 +1,7 @@
+{
+ "HELD_FOCUS_BAND": "Bandeau — survivrait à 1 PV (30/256)",
+ "HELD_AMULET_COIN": "Pièce Rune — doublerait l'argent, hors combat",
+ "HELD_CLEANSE_TAG": "Rune Purifiante — éloignerait les sauvages, hors combat",
+ "HELD_ESCAPE": "Boule Fumée — fuite garantie",
+ "HELD_HEAL_CONFUSION": "Baie Amère — lèverait la confusion (un volatil, pas un statut)"
+}

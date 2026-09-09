@@ -1,0 +1,113 @@
+{
+ "LISTE": [
+  {
+   "id": "chasse",
+   "nom": {
+    "fr": "Journée de chasse",
+    "en": "Hunting day"
+   },
+   "dit": {
+    "fr": "Les Poké Balls tiennent mieux. L'expérience rentre moins vite.",
+    "en": "Poké Balls hold better. Experience comes in slower."
+   },
+   "effet": {
+    "capture": 2,
+    "expGain": 0.8
+   }
+  },
+  {
+   "id": "mainLegere",
+   "nom": {
+    "fr": "Main légère",
+    "en": "Light hand"
+   },
+   "dit": {
+    "fr": "Trois Pokémon au plus. Ils grandissent moitié plus vite.",
+    "en": "Three Pokémon at most. They grow half again as fast."
+   },
+   "effet": {
+    "equipeMax": 3,
+    "expGain": 1.5
+   }
+  },
+  {
+   "id": "pochesPleines",
+   "nom": {
+    "fr": "Les poches pleines",
+    "en": "Full pockets"
+   },
+   "dit": {
+    "fr": "L'argent double. Une carte de butin de plus à chaque fois.",
+    "en": "Money doubles. One more loot card each time."
+   },
+   "effet": {
+    "argent": 2,
+    "butinChoix": 1
+   }
+  },
+  {
+   "id": "sangFroid",
+   "nom": {
+    "fr": "Sang-froid",
+    "en": "Cold blood"
+   },
+   "dit": {
+    "fr": "Tes coups critiques sont plus fréquents. Tu encaisses plus.",
+    "en": "Your critical hits come more often. You take more."
+   },
+   "effet": {
+    "critBonus": 0.25,
+    "degatsSubis": 1.15
+   }
+  },
+  {
+   "id": "marcheForcee",
+   "nom": {
+    "fr": "Marche forcée",
+    "en": "Forced march"
+   },
+   "dit": {
+    "fr": "Les Champions gagnent deux niveaux. Le butin s'élargit.",
+    "en": "Gym Leaders gain two levels. The loot widens."
+   },
+   "effet": {
+    "bossNiveau": 2,
+    "butinChoix": 1
+   }
+  },
+  {
+   "id": "economieDeGuerre",
+   "nom": {
+    "fr": "Économie de guerre",
+    "en": "War economy"
+   },
+   "dit": {
+    "fr": "Aucun soin en combat. L'argent rentre moitié plus.",
+    "en": "No healing in battle. Money comes in half again."
+   },
+   "effet": {
+    "soinInterdit": true,
+    "argent": 1.5
+   }
+  },
+  {
+   "id": "jourDesBraves",
+   "nom": {
+    "fr": "Le jour des braves",
+    "en": "The brave day"
+   },
+   "dit": {
+    "fr": "Tout frappe plus fort, des deux côtés.",
+    "en": "Everything hits harder, on both sides."
+   },
+   "effet": {
+    "degatsInfliges": 1.25,
+    "degatsSubis": 1.25
+   }
+  }
+ ],
+ "pour": "[fonction pour]",
+ "demain": "[fonction demain]",
+ "de": "[fonction de]",
+ "effetDe": "[fonction effetDe]"
+}

@@ -1,0 +1,14 @@
+{
+ "replayDaily": "[fonction replayDaily]",
+ "dureeMinimale": "[fonction dureeMinimale]",
+ "normaliser": "[fonction normaliser]",
+ "plafondNiveau": "[fonction plafondNiveau]",
+ "LIMITES": {
+  "badges": 8,
+  "acte": 9,
+  "equipe": 6,
+  "niveau": 100,
+  "especes": 151,
+  "legendaires": 5
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "nom": "Red",
+ "nomEn": "Red",
+ "equipe": [
+  {
+   "n": 25,
+   "niveau": 81,
+   "attaques": [
+    "CHARM",
+    "QUICK_ATTACK",
+    "THUNDERBOLT",
+    "THUNDER"
+   ]
+  },
+  {
+   "n": 196,
+   "niveau": 73,
+   "attaques": [
+    "MUD_SLAP",
+    "REFLECT",
+    "SWIFT",
+    "PSYCHIC_M"
+   ]
+  },
+  {
+   "n": 143,
+   "niveau": 75,
+   "attaques": [
+    "AMNESIA",
+    "SNORE",
+    "REST",
+    "BODY_SLAM"
+   ]
+  },
+  {
+   "n": 3,
+   "niveau": 77,
+   "attaques": [
+    "SUNNY_DAY",
+    "GIGA_DRAIN",
+    "SYNTHESIS",
+    "SOLARBEAM"
+   ]
+  },
+  {
+   "n": 6,
+   "niveau": 77,
+   "attaques": [
+    "FLAMETHROWER",
+    "WING_ATTACK",
+    "SLASH",
+    "FIRE_SPIN"
+   ]
+  },
+  {
+   "n": 9,
+   "niveau": 77,
+   "attaques": [
+    "RAIN_DANCE",
+    "SURF",
+    "BLIZZARD",
+    "WHIRLPOOL"
+   ]
+  }
+ ]
+}

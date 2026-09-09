@@ -1,0 +1,250 @@
+[
+ {
+  "ordre": 1,
+  "ville": "pewter-city",
+  "nom": {
+   "fr": "Arène d'Argenta",
+   "en": "Pewter Gym"
+  },
+  "champion": "Pierre",
+  "championEn": "Brock",
+  "badge": "Roche",
+  "badgeEn": "Boulder",
+  "type": "Roche",
+  "ct": "TM_BIDE",
+  "equipe": [
+   {
+    "n": 74,
+    "niveau": 12
+   },
+   {
+    "n": 95,
+    "niveau": 14
+   }
+  ]
+ },
+ {
+  "ordre": 2,
+  "ville": "cerulean-city",
+  "nom": {
+   "fr": "Arène d'Azuria",
+   "en": "Cerulean Gym"
+  },
+  "champion": "Ondine",
+  "championEn": "Misty",
+  "badge": "Cascade",
+  "badgeEn": "Cascade",
+  "type": "Eau",
+  "ct": "TM_BUBBLEBEAM",
+  "equipe": [
+   {
+    "n": 120,
+    "niveau": 18
+   },
+   {
+    "n": 121,
+    "niveau": 21
+   }
+  ]
+ },
+ {
+  "ordre": 3,
+  "ville": "vermilion-city",
+  "nom": {
+   "fr": "Arène de Carmin sur Mer",
+   "en": "Vermilion Gym"
+  },
+  "champion": "Major Bob",
+  "championEn": "Lt. Surge",
+  "badge": "Foudre",
+  "badgeEn": "Thunder",
+  "type": "Électrik",
+  "ct": "TM_THUNDERBOLT",
+  "equipe": [
+   {
+    "n": 100,
+    "niveau": 21
+   },
+   {
+    "n": 25,
+    "niveau": 18
+   },
+   {
+    "n": 26,
+    "niveau": 24
+   }
+  ]
+ },
+ {
+  "ordre": 4,
+  "ville": "celadon-city",
+  "nom": {
+   "fr": "Arène de Céladopole",
+   "en": "Celadon Gym"
+  },
+  "champion": "Erika",
+  "championEn": "Erika",
+  "badge": "Prisme",
+  "badgeEn": "Rainbow",
+  "type": "Plante",
+  "ct": "TM_MEGA_DRAIN",
+  "equipe": [
+   {
+    "n": 71,
+    "niveau": 29
+   },
+   {
+    "n": 114,
+    "niveau": 24
+   },
+   {
+    "n": 45,
+    "niveau": 29
+   }
+  ]
+ },
+ {
+  "ordre": 5,
+  "ville": "fuchsia-city",
+  "nom": {
+   "fr": "Arène de Parmanie",
+   "en": "Fuchsia Gym"
+  },
+  "champion": "Koga",
+  "championEn": "Koga",
+  "badge": "Âme",
+  "badgeEn": "Soul",
+  "type": "Poison",
+  "ct": "TM_TOXIC",
+  "equipe": [
+   {
+    "n": 109,
+    "niveau": 37
+   },
+   {
+    "n": 42,
+    "niveau": 40
+   },
+   {
+    "n": 89,
+    "niveau": 39
+   },
+   {
+    "n": 49,
+    "niveau": 43
+   },
+   {
+    "n": 110,
+    "niveau": 43
+   }
+  ]
+ },
+ {
+  "ordre": 6,
+  "ville": "saffron-city",
+  "nom": {
+   "fr": "Arène de Safrania",
+   "en": "Saffron Gym"
+  },
+  "champion": "Morgane",
+  "championEn": "Sabrina",
+  "badge": "Marais",
+  "badgeEn": "Marsh",
+  "type": "Psy",
+  "ct": "TM_PSYWAVE",
+  "equipe": [
+   {
+    "n": 64,
+    "niveau": 40
+   },
+   {
+    "n": 122,
+    "niveau": 39
+   },
+   {
+    "n": 49,
+    "niveau": 40
+   },
+   {
+    "n": 97,
+    "niveau": 44
+   },
+   {
+    "n": 65,
+    "niveau": 48
+   }
+  ]
+ },
+ {
+  "ordre": 7,
+  "ville": "cinnabar-island",
+  "nom": {
+   "fr": "Arène de Cramois'Île",
+   "en": "Cinnabar Gym"
+  },
+  "champion": "Auguste",
+  "championEn": "Blaine",
+  "badge": "Volcan",
+  "badgeEn": "Volcano",
+  "type": "Feu",
+  "ct": "TM_FIRE_BLAST",
+  "equipe": [
+   {
+    "n": 58,
+    "niveau": 42
+   },
+   {
+    "n": 77,
+    "niveau": 40
+   },
+   {
+    "n": 78,
+    "niveau": 42
+   },
+   {
+    "n": 126,
+    "niveau": 45
+   },
+   {
+    "n": 59,
+    "niveau": 47
+   }
+  ]
+ },
+ {
+  "ordre": 8,
+  "ville": "viridian-city",
+  "nom": {
+   "fr": "Arène de Jadielle",
+   "en": "Viridian Gym"
+  },
+  "champion": "Giovanni",
+  "championEn": "Giovanni",
+  "badge": "Terre",
+  "badgeEn": "Earth",
+  "type": "Sol",
+  "ct": "TM_FISSURE",
+  "equipe": [
+   {
+    "n": 111,
+    "niveau": 45
+   },
+   {
+    "n": 51,
+    "niveau": 42
+   },
+   {
+    "n": 31,
+    "niveau": 44
+   },
+   {
+    "n": 34,
+    "niveau": 45
+   },
+   {
+    "n": 112,
+    "niveau": 50
+   }
+  ]
+ }
+]

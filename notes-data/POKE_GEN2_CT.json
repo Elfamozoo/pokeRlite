@@ -1,0 +1,230 @@
+[
+ {
+  "genre": "ct",
+  "attaque": "DYNAMICPUNCH"
+ },
+ {
+  "genre": "ct",
+  "attaque": "HEADBUTT"
+ },
+ {
+  "genre": "ct",
+  "attaque": "CURSE"
+ },
+ {
+  "genre": "ct",
+  "attaque": "ROLLOUT"
+ },
+ {
+  "genre": "ct",
+  "attaque": "ROAR"
+ },
+ {
+  "genre": "ct",
+  "attaque": "TOXIC"
+ },
+ {
+  "genre": "ct",
+  "attaque": "ZAP_CANNON"
+ },
+ {
+  "genre": "ct",
+  "attaque": "ROCK_SMASH"
+ },
+ {
+  "genre": "ct",
+  "attaque": "PSYCH_UP"
+ },
+ {
+  "genre": "ct",
+  "attaque": "HIDDEN_POWER"
+ },
+ {
+  "genre": "ct",
+  "attaque": "SUNNY_DAY"
+ },
+ {
+  "genre": "ct",
+  "attaque": "SWEET_SCENT"
+ },
+ {
+  "genre": "ct",
+  "attaque": "SNORE"
+ },
+ {
+  "genre": "ct",
+  "attaque": "BLIZZARD"
+ },
+ {
+  "genre": "ct",
+  "attaque": "HYPER_BEAM"
+ },
+ {
+  "genre": "ct",
+  "attaque": "ICY_WIND"
+ },
+ {
+  "genre": "ct",
+  "attaque": "PROTECT"
+ },
+ {
+  "genre": "ct",
+  "attaque": "RAIN_DANCE"
+ },
+ {
+  "genre": "ct",
+  "attaque": "GIGA_DRAIN"
+ },
+ {
+  "genre": "ct",
+  "attaque": "ENDURE"
+ },
+ {
+  "genre": "ct",
+  "attaque": "FRUSTRATION"
+ },
+ {
+  "genre": "ct",
+  "attaque": "SOLARBEAM"
+ },
+ {
+  "genre": "ct",
+  "attaque": "IRON_TAIL"
+ },
+ {
+  "genre": "ct",
+  "attaque": "DRAGONBREATH"
+ },
+ {
+  "genre": "ct",
+  "attaque": "THUNDER"
+ },
+ {
+  "genre": "ct",
+  "attaque": "EARTHQUAKE"
+ },
+ {
+  "genre": "ct",
+  "attaque": "RETURN"
+ },
+ {
+  "genre": "ct",
+  "attaque": "DIG"
+ },
+ {
+  "genre": "ct",
+  "attaque": "PSYCHIC_M"
+ },
+ {
+  "genre": "ct",
+  "attaque": "SHADOW_BALL"
+ },
+ {
+  "genre": "ct",
+  "attaque": "MUD_SLAP"
+ },
+ {
+  "genre": "ct",
+  "attaque": "DOUBLE_TEAM"
+ },
+ {
+  "genre": "ct",
+  "attaque": "ICE_PUNCH"
+ },
+ {
+  "genre": "ct",
+  "attaque": "SWAGGER"
+ },
+ {
+  "genre": "ct",
+  "attaque": "SLEEP_TALK"
+ },
+ {
+  "genre": "ct",
+  "attaque": "SLUDGE_BOMB"
+ },
+ {
+  "genre": "ct",
+  "attaque": "SANDSTORM"
+ },
+ {
+  "genre": "ct",
+  "attaque": "FIRE_BLAST"
+ },
+ {
+  "genre": "ct",
+  "attaque": "SWIFT"
+ },
+ {
+  "genre": "ct",
+  "attaque": "DEFENSE_CURL"
+ },
+ {
+  "genre": "ct",
+  "attaque": "THUNDERPUNCH"
+ },
+ {
+  "genre": "ct",
+  "attaque": "DREAM_EATER"
+ },
+ {
+  "genre": "ct",
+  "attaque": "DETECT"
+ },
+ {
+  "genre": "ct",
+  "attaque": "REST"
+ },
+ {
+  "genre": "ct",
+  "attaque": "ATTRACT"
+ },
+ {
+  "genre": "ct",
+  "attaque": "THIEF"
+ },
+ {
+  "genre": "ct",
+  "attaque": "STEEL_WING"
+ },
+ {
+  "genre": "ct",
+  "attaque": "FIRE_PUNCH"
+ },
+ {
+  "genre": "ct",
+  "attaque": "FURY_CUTTER"
+ },
+ {
+  "genre": "ct",
+  "attaque": "NIGHTMARE"
+ },
+ {
+  "genre": "cs",
+  "attaque": "CUT"
+ },
+ {
+  "genre": "cs",
+  "attaque": "FLY"
+ },
+ {
+  "genre": "cs",
+  "attaque": "SURF"
+ },
+ {
+  "genre": "cs",
+  "attaque": "STRENGTH"
+ },
+ {
+  "genre": "cs",
+  "attaque": "FLASH"
+ },
+ {
+  "genre": "cs",
+  "attaque": "WHIRLPOOL"
+ },
+ {
+  "genre": "cs",
+  "attaque": "WATERFALL"
+ }
+]

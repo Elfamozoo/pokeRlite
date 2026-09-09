@@ -1,0 +1,857 @@
+{
+ "Shore_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "KRABBY",
+   "niveau": 10
+  }
+ ],
+ "Shore_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 70,
+   "espece": "KRABBY",
+   "niveau": 20
+  },
+  {
+   "seuil": 91,
+   "espece": "KRABBY",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "CORSOLA",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "STARYU",
+   "niveau": 20
+  }
+ ],
+ "Shore_Super": [
+  {
+   "seuil": 40,
+   "espece": "KRABBY",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "CORSOLA",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "STARYU",
+   "niveau": 40
+  },
+  {
+   "seuil": 91,
+   "espece": "KRABBY",
+   "niveau": 40
+  },
+  {
+   "seuil": 100,
+   "espece": "KINGLER",
+   "niveau": 40
+  }
+ ],
+ "Ocean_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "TENTACOOL",
+   "niveau": 10
+  }
+ ],
+ "Ocean_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 70,
+   "espece": "TENTACOOL",
+   "niveau": 20
+  },
+  {
+   "seuil": 91,
+   "espece": "CHINCHOU",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "SHELLDER",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "SHELLDER",
+   "niveau": 20
+  }
+ ],
+ "Ocean_Super": [
+  {
+   "seuil": 40,
+   "espece": "CHINCHOU",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "SHELLDER",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "SHELLDER",
+   "niveau": 40
+  },
+  {
+   "seuil": 91,
+   "espece": "TENTACRUEL",
+   "niveau": 40
+  },
+  {
+   "seuil": 100,
+   "espece": "LANTURN",
+   "niveau": 40
+  }
+ ],
+ "Lake_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "GOLDEEN",
+   "niveau": 10
+  }
+ ],
+ "Lake_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 70,
+   "espece": "GOLDEEN",
+   "niveau": 20
+  },
+  {
+   "seuil": 91,
+   "espece": "GOLDEEN",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "GOLDEEN",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "GOLDEEN",
+   "niveau": 20
+  }
+ ],
+ "Lake_Super": [
+  {
+   "seuil": 40,
+   "espece": "GOLDEEN",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "GOLDEEN",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "GOLDEEN",
+   "niveau": 40
+  },
+  {
+   "seuil": 91,
+   "espece": "MAGIKARP",
+   "niveau": 40
+  },
+  {
+   "seuil": 100,
+   "espece": "SEAKING",
+   "niveau": 40
+  }
+ ],
+ "Pond_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "POLIWAG",
+   "niveau": 10
+  }
+ ],
+ "Pond_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 70,
+   "espece": "POLIWAG",
+   "niveau": 20
+  },
+  {
+   "seuil": 91,
+   "espece": "POLIWAG",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "POLIWAG",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "POLIWAG",
+   "niveau": 20
+  }
+ ],
+ "Pond_Super": [
+  {
+   "seuil": 40,
+   "espece": "POLIWAG",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "POLIWAG",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "POLIWAG",
+   "niveau": 40
+  },
+  {
+   "seuil": 91,
+   "espece": "MAGIKARP",
+   "niveau": 40
+  },
+  {
+   "seuil": 100,
+   "espece": "POLIWAG",
+   "niveau": 40
+  }
+ ],
+ "Dratini_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  }
+ ],
+ "Dratini_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 70,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 91,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "DRATINI",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "DRATINI",
+   "niveau": 20
+  }
+ ],
+ "Dratini_Super": [
+  {
+   "seuil": 40,
+   "espece": "MAGIKARP",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "DRATINI",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "DRATINI",
+   "niveau": 40
+  },
+  {
+   "seuil": 91,
+   "espece": "MAGIKARP",
+   "niveau": 40
+  },
+  {
+   "seuil": 100,
+   "espece": "DRAGONAIR",
+   "niveau": 40
+  }
+ ],
+ "Qwilfish_Swarm_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 5
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 5
+  },
+  {
+   "seuil": 100,
+   "espece": "QWILFISH",
+   "niveau": 5
+  }
+ ],
+ "Qwilfish_Swarm_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 70,
+   "espece": "QWILFISH",
+   "niveau": 20
+  },
+  {
+   "seuil": 91,
+   "espece": "QWILFISH",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "QWILFISH",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "QWILFISH",
+   "niveau": 20
+  }
+ ],
+ "Qwilfish_Swarm_Super": [
+  {
+   "seuil": 40,
+   "espece": "QWILFISH",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "QWILFISH",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "QWILFISH",
+   "niveau": 40
+  },
+  {
+   "seuil": 91,
+   "espece": "QWILFISH",
+   "niveau": 40
+  },
+  {
+   "seuil": 100,
+   "espece": "QWILFISH",
+   "niveau": 40
+  }
+ ],
+ "Remoraid_Swarm_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "REMORAID",
+   "niveau": 10
+  }
+ ],
+ "Remoraid_Swarm_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 70,
+   "espece": "REMORAID",
+   "niveau": 20
+  },
+  {
+   "seuil": 91,
+   "espece": "REMORAID",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "REMORAID",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "REMORAID",
+   "niveau": 20
+  }
+ ],
+ "Remoraid_Swarm_Super": [
+  {
+   "seuil": 40,
+   "espece": "REMORAID",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "REMORAID",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "REMORAID",
+   "niveau": 40
+  },
+  {
+   "seuil": 91,
+   "espece": "REMORAID",
+   "niveau": 40
+  },
+  {
+   "seuil": 100,
+   "espece": "REMORAID",
+   "niveau": 40
+  }
+ ],
+ "Gyarados_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  }
+ ],
+ "Gyarados_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 70,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 91,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "GYARADOS",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "GYARADOS",
+   "niveau": 20
+  }
+ ],
+ "Gyarados_Super": [
+  {
+   "seuil": 40,
+   "espece": "MAGIKARP",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "GYARADOS",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "GYARADOS",
+   "niveau": 40
+  },
+  {
+   "seuil": 91,
+   "espece": "MAGIKARP",
+   "niveau": 40
+  },
+  {
+   "seuil": 100,
+   "espece": "MAGIKARP",
+   "niveau": 40
+  }
+ ],
+ "Dratini_2_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  }
+ ],
+ "Dratini_2_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 70,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 91,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "DRATINI",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "DRATINI",
+   "niveau": 10
+  }
+ ],
+ "Dratini_2_Super": [
+  {
+   "seuil": 40,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 70,
+   "espece": "DRATINI",
+   "niveau": 10
+  },
+  {
+   "seuil": 70,
+   "espece": "DRATINI",
+   "niveau": 10
+  },
+  {
+   "seuil": 91,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "DRAGONAIR",
+   "niveau": 10
+  }
+ ],
+ "WhirlIslands_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "KRABBY",
+   "niveau": 10
+  }
+ ],
+ "WhirlIslands_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 70,
+   "espece": "KRABBY",
+   "niveau": 20
+  },
+  {
+   "seuil": 91,
+   "espece": "KRABBY",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "HORSEA",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "HORSEA",
+   "niveau": 20
+  }
+ ],
+ "WhirlIslands_Super": [
+  {
+   "seuil": 40,
+   "espece": "KRABBY",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "HORSEA",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "HORSEA",
+   "niveau": 40
+  },
+  {
+   "seuil": 91,
+   "espece": "KINGLER",
+   "niveau": 40
+  },
+  {
+   "seuil": 100,
+   "espece": "SEADRA",
+   "niveau": 40
+  }
+ ],
+ "Qwilfish_NoSwarm_Old": [],
+ "Qwilfish_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "TENTACOOL",
+   "niveau": 10
+  }
+ ],
+ "Qwilfish_NoSwarm_Good": [],
+ "Qwilfish_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 70,
+   "espece": "TENTACOOL",
+   "niveau": 20
+  },
+  {
+   "seuil": 91,
+   "espece": "TENTACOOL",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "TENTACOOL",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "TENTACOOL",
+   "niveau": 20
+  }
+ ],
+ "Qwilfish_NoSwarm_Super": [],
+ "Qwilfish_Super": [
+  {
+   "seuil": 40,
+   "espece": "TENTACOOL",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "TENTACOOL",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "TENTACOOL",
+   "niveau": 40
+  },
+  {
+   "seuil": 91,
+   "espece": "MAGIKARP",
+   "niveau": 40
+  },
+  {
+   "seuil": 100,
+   "espece": "QWILFISH",
+   "niveau": 40
+  }
+ ],
+ "Remoraid_Old": [
+  {
+   "seuil": 71,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 86,
+   "espece": "MAGIKARP",
+   "niveau": 10
+  },
+  {
+   "seuil": 100,
+   "espece": "POLIWAG",
+   "niveau": 10
+  }
+ ],
+ "Remoraid_Good": [
+  {
+   "seuil": 35,
+   "espece": "MAGIKARP",
+   "niveau": 20
+  },
+  {
+   "seuil": 70,
+   "espece": "POLIWAG",
+   "niveau": 20
+  },
+  {
+   "seuil": 91,
+   "espece": "POLIWAG",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "POLIWAG",
+   "niveau": 20
+  },
+  {
+   "seuil": 100,
+   "espece": "POLIWAG",
+   "niveau": 20
+  }
+ ],
+ "Remoraid_Super": [
+  {
+   "seuil": 40,
+   "espece": "POLIWAG",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "POLIWAG",
+   "niveau": 40
+  },
+  {
+   "seuil": 70,
+   "espece": "POLIWAG",
+   "niveau": 40
+  },
+  {
+   "seuil": 91,
+   "espece": "MAGIKARP",
+   "niveau": 40
+  },
+  {
+   "seuil": 100,
+   "espece": "REMORAID",
+   "niveau": 40
+  }
+ ]
+}

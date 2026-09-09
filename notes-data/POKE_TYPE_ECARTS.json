@@ -1,0 +1,9 @@
+[
+ {
+  "de": "ghost",
+  "vers": "psychic",
+  "rom": 0,
+  "retenu": 2,
+  "raison": "Bug de la génération 1. Sans la correction, le type Spectre est inutile contre Morgane et Agatha."
+ }
+]

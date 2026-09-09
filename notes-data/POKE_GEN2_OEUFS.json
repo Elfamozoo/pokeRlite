@@ -1,0 +1,48 @@
+[
+ {
+  "cle": "togepi",
+  "etape": "mauville",
+  "niveau": 5,
+  "table": [
+   {
+    "n": 175,
+    "poids": 100
+   }
+  ]
+ },
+ {
+  "cle": "etrange",
+  "etape": "route-34",
+  "niveau": 5,
+  "table": [
+   {
+    "n": 172,
+    "poids": 9
+   },
+   {
+    "n": 173,
+    "poids": 19
+   },
+   {
+    "n": 174,
+    "poids": 19
+   },
+   {
+    "n": 238,
+    "poids": 16
+   },
+   {
+    "n": 240,
+    "poids": 12
+   },
+   {
+    "n": 239,
+    "poids": 14
+   },
+   {
+    "n": 236,
+    "poids": 11
+   }
+  ]
+ }
+]

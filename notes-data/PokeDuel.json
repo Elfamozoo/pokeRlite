@@ -1,0 +1,14 @@
+{
+ "sceller": "[fonction sceller]",
+ "valider": "[fonction valider]",
+ "reconstituer": "[fonction reconstituer]",
+ "graineDuel": "[fonction graineDuel]",
+ "choisir": "[fonction choisir]",
+ "jouer": "[fonction jouer]",
+ "coder": "[fonction coder]",
+ "decoder": "[fonction decoder]",
+ "coderPalmares": "[fonction coderPalmares]",
+ "decoderPalmares": "[fonction decoderPalmares]",
+ "defis": "[fonction defis]",
+ "scellerDefi": "[fonction scellerDefi]"
+}

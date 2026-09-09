@@ -1,0 +1,26 @@
+[
+ {
+  "donne": 63,
+  "recoit": 66,
+  "surnom": "MUSCLE",
+  "etape": "doublonville"
+ },
+ {
+  "donne": 69,
+  "recoit": 95,
+  "surnom": "ROCKY",
+  "etape": "mauville"
+ },
+ {
+  "donne": 98,
+  "recoit": 100,
+  "surnom": "VOLTY",
+  "etape": "oliville-port"
+ },
+ {
+  "donne": 148,
+  "recoit": 85,
+  "surnom": "DORIS",
+  "etape": "ebenelle"
+ }
+]

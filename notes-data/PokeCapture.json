@@ -1,0 +1,42 @@
+{
+ "BALLS": {
+  "POKE_BALL": {
+   "tirage": 256,
+   "facteur": 12,
+   "safari": false
+  },
+  "GREAT_BALL": {
+   "tirage": 201,
+   "facteur": 8,
+   "safari": false
+  },
+  "ULTRA_BALL": {
+   "tirage": 151,
+   "facteur": 12,
+   "safari": false
+  },
+  "SAFARI_BALL": {
+   "tirage": 151,
+   "facteur": 12,
+   "safari": true
+  },
+  "MASTER_BALL": {
+   "tirage": 0,
+   "facteur": 0,
+   "safari": false
+  }
+ },
+ "AIDE_STATUT": {
+  "sommeil": 25,
+  "gel": 25,
+  "para": 12,
+  "brulure": 12,
+  "poison": 12,
+  "poisonGrave": 12
+ },
+ "tenter": "[fonction tenter]",
+ "chance": "[fonction chance]",
+ "tenterSafari": "[fonction tenterSafari]",
+ "chanceSafari": "[fonction chanceSafari]",
+ "fuit": "[fonction fuit]"
+}

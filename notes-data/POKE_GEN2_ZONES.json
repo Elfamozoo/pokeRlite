@@ -1,0 +1,4017 @@
+[
+ {
+  "id": "SPROUT_TOWER_2F",
+  "lieu": "sprout-tower",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 5,
+     "poids": 8
+    },
+    {
+     "n": 19,
+     "niveau": 3,
+     "poids": 5
+    },
+    {
+     "n": 19,
+     "niveau": 4,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 6,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 3,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 4,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 5,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 6,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "SPROUT_TOWER_3F",
+  "lieu": "sprout-tower",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 5,
+     "poids": 8
+    },
+    {
+     "n": 19,
+     "niveau": 3,
+     "poids": 5
+    },
+    {
+     "n": 19,
+     "niveau": 4,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 6,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 3,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 4,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 5,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 6,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "TIN_TOWER_2F",
+  "lieu": "bell-tower",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 24,
+     "poids": 6
+    },
+    {
+     "n": 19,
+     "niveau": 22,
+     "poids": 5
+    },
+    {
+     "n": 19,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 21,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 21,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 22,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "TIN_TOWER_3F",
+  "lieu": "bell-tower",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 24,
+     "poids": 6
+    },
+    {
+     "n": 19,
+     "niveau": 22,
+     "poids": 5
+    },
+    {
+     "n": 19,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 21,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 21,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 22,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "TIN_TOWER_4F",
+  "lieu": "bell-tower",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 24,
+     "poids": 6
+    },
+    {
+     "n": 19,
+     "niveau": 22,
+     "poids": 5
+    },
+    {
+     "n": 19,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 21,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 21,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 22,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "TIN_TOWER_5F",
+  "lieu": "bell-tower",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 24,
+     "poids": 6
+    },
+    {
+     "n": 19,
+     "niveau": 22,
+     "poids": 5
+    },
+    {
+     "n": 19,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 21,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 21,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 22,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "TIN_TOWER_6F",
+  "lieu": "bell-tower",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 24,
+     "poids": 6
+    },
+    {
+     "n": 19,
+     "niveau": 22,
+     "poids": 5
+    },
+    {
+     "n": 19,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 21,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 21,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 22,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "TIN_TOWER_7F",
+  "lieu": "bell-tower",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 24,
+     "poids": 6
+    },
+    {
+     "n": 19,
+     "niveau": 22,
+     "poids": 5
+    },
+    {
+     "n": 19,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 21,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 21,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 22,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "TIN_TOWER_8F",
+  "lieu": "bell-tower",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 24,
+     "poids": 6
+    },
+    {
+     "n": 19,
+     "niveau": 22,
+     "poids": 5
+    },
+    {
+     "n": 19,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 21,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 21,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 22,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "TIN_TOWER_9F",
+  "lieu": "bell-tower",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 24,
+     "poids": 6
+    },
+    {
+     "n": 19,
+     "niveau": 22,
+     "poids": 5
+    },
+    {
+     "n": 19,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 21,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 21,
+     "poids": 1
+    },
+    {
+     "n": 92,
+     "niveau": 22,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "BURNED_TOWER_1F",
+  "lieu": "burned-tower",
+  "taux": 4,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 15,
+     "poids": 6
+    },
+    {
+     "n": 20,
+     "niveau": 15,
+     "poids": 6
+    },
+    {
+     "n": 19,
+     "niveau": 13,
+     "poids": 3
+    },
+    {
+     "n": 109,
+     "niveau": 14,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 14,
+     "poids": 3
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "BURNED_TOWER_B1F",
+  "lieu": "burned-tower",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 109,
+     "niveau": 16,
+     "poids": 6
+    },
+    {
+     "n": 109,
+     "niveau": 12,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 14,
+     "poids": 3
+    },
+    {
+     "n": 109,
+     "niveau": 14,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 15,
+     "poids": 3
+    },
+    {
+     "n": 110,
+     "niveau": 16,
+     "poids": 3
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "NATIONAL_PARK",
+  "lieu": "national-park",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 13,
+     "niveau": 10,
+     "poids": 4
+    },
+    {
+     "n": 10,
+     "niveau": 10,
+     "poids": 2
+    },
+    {
+     "n": 32,
+     "niveau": 12,
+     "poids": 2
+    },
+    {
+     "n": 29,
+     "niveau": 12,
+     "poids": 2
+    },
+    {
+     "n": 48,
+     "niveau": 12,
+     "poids": 2
+    },
+    {
+     "n": 16,
+     "niveau": 13,
+     "poids": 2
+    },
+    {
+     "n": 48,
+     "niveau": 10,
+     "poids": 1
+    },
+    {
+     "n": 54,
+     "niveau": 12,
+     "poids": 1
+    },
+    {
+     "n": 163,
+     "niveau": 13,
+     "poids": 1
+    },
+    {
+     "n": 165,
+     "niveau": 14,
+     "poids": 1
+    },
+    {
+     "n": 191,
+     "niveau": 14,
+     "poids": 1
+    },
+    {
+     "n": 167,
+     "niveau": 14,
+     "poids": 1
+    },
+    {
+     "n": 163,
+     "niveau": 15,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "RUINS_OF_ALPH_OUTSIDE",
+  "lieu": "ruins-of-alph",
+  "taux": 4,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 235,
+     "niveau": 22,
+     "poids": 4
+    },
+    {
+     "n": 177,
+     "niveau": 18,
+     "poids": 3
+    },
+    {
+     "n": 177,
+     "niveau": 20,
+     "poids": 3
+    },
+    {
+     "n": 177,
+     "niveau": 22,
+     "poids": 3
+    },
+    {
+     "n": 177,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 235,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 195,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 194,
+     "niveau": 22,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 194,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 195,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 195,
+     "niveau": 15,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "RUINS_OF_ALPH_INNER_CHAMBER",
+  "lieu": "ruins-of-alph",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 201,
+     "niveau": 5,
+     "poids": 21
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "UNION_CAVE_1F",
+  "lieu": "union-cave",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 95,
+     "niveau": 6,
+     "poids": 6
+    },
+    {
+     "n": 19,
+     "niveau": 4,
+     "poids": 3
+    },
+    {
+     "n": 74,
+     "niveau": 6,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 7,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 5,
+     "poids": 2
+    },
+    {
+     "n": 27,
+     "niveau": 6,
+     "poids": 2
+    },
+    {
+     "n": 194,
+     "niveau": 5,
+     "poids": 1
+    },
+    {
+     "n": 19,
+     "niveau": 6,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 194,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 195,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 195,
+     "niveau": 15,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "UNION_CAVE_B1F",
+  "lieu": "union-cave",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 8,
+     "poids": 6
+    },
+    {
+     "n": 41,
+     "niveau": 6,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 6,
+     "poids": 3
+    },
+    {
+     "n": 74,
+     "niveau": 8,
+     "poids": 3
+    },
+    {
+     "n": 95,
+     "niveau": 8,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 8,
+     "poids": 2
+    },
+    {
+     "n": 194,
+     "niveau": 8,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 194,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 195,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 195,
+     "niveau": 15,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "UNION_CAVE_B2F",
+  "lieu": "union-cave",
+  "taux": 4,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 95,
+     "niveau": 23,
+     "poids": 6
+    },
+    {
+     "n": 41,
+     "niveau": 22,
+     "poids": 5
+    },
+    {
+     "n": 74,
+     "niveau": 20,
+     "poids": 3
+    },
+    {
+     "n": 20,
+     "niveau": 21,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 22,
+     "poids": 3
+    },
+    {
+     "n": 195,
+     "niveau": 22,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 4,
+   "cristal": [
+    {
+     "n": 72,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 195,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "SLOWPOKE_WELL_B1F",
+  "lieu": "slowpoke-well",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 79,
+     "niveau": 8,
+     "poids": 6
+    },
+    {
+     "n": 41,
+     "niveau": 5,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 6,
+     "poids": 3
+    },
+    {
+     "n": 79,
+     "niveau": 6,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 7,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 8,
+     "poids": 3
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 79,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 79,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 79,
+     "niveau": 10,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "SLOWPOKE_WELL_B2F",
+  "lieu": "slowpoke-well",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 79,
+     "niveau": 23,
+     "poids": 6
+    },
+    {
+     "n": 41,
+     "niveau": 19,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 21,
+     "poids": 3
+    },
+    {
+     "n": 79,
+     "niveau": 21,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 23,
+     "poids": 3
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 79,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 79,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 80,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ILEX_FOREST",
+  "lieu": "ilex-forest",
+  "taux": 4,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 46,
+     "niveau": 6,
+     "poids": 6
+    },
+    {
+     "n": 10,
+     "niveau": 5,
+     "poids": 2
+    },
+    {
+     "n": 13,
+     "niveau": 5,
+     "poids": 2
+    },
+    {
+     "n": 11,
+     "niveau": 7,
+     "poids": 2
+    },
+    {
+     "n": 14,
+     "niveau": 7,
+     "poids": 2
+    },
+    {
+     "n": 16,
+     "niveau": 7,
+     "poids": 2
+    },
+    {
+     "n": 43,
+     "niveau": 5,
+     "poids": 1
+    },
+    {
+     "n": 48,
+     "niveau": 5,
+     "poids": 1
+    },
+    {
+     "n": 43,
+     "niveau": 7,
+     "poids": 1
+    },
+    {
+     "n": 54,
+     "niveau": 7,
+     "poids": 1
+    },
+    {
+     "n": 163,
+     "niveau": 7,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 54,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 54,
+     "niveau": 10,
+     "poids": 1
+    },
+    {
+     "n": 55,
+     "niveau": 15,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "MOUNT_MORTAR_1F_OUTSIDE",
+  "lieu": "mt-mortar",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 20,
+     "niveau": 16,
+     "poids": 6
+    },
+    {
+     "n": 41,
+     "niveau": 13,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 13,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 14,
+     "poids": 3
+    },
+    {
+     "n": 74,
+     "niveau": 14,
+     "poids": 3
+    },
+    {
+     "n": 66,
+     "niveau": 14,
+     "poids": 2
+    },
+    {
+     "n": 183,
+     "niveau": 14,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 4,
+   "cristal": [
+    {
+     "n": 118,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 183,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 119,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "MOUNT_MORTAR_1F_INSIDE",
+  "lieu": "mt-mortar",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 42,
+     "niveau": 15,
+     "poids": 6
+    },
+    {
+     "n": 74,
+     "niveau": 13,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 14,
+     "poids": 3
+    },
+    {
+     "n": 20,
+     "niveau": 14,
+     "poids": 2
+    },
+    {
+     "n": 66,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 41,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 41,
+     "niveau": 14,
+     "poids": 1
+    },
+    {
+     "n": 20,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 183,
+     "niveau": 15,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "MOUNT_MORTAR_2F_INSIDE",
+  "lieu": "mt-mortar",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 42,
+     "niveau": 30,
+     "poids": 5
+    },
+    {
+     "n": 20,
+     "niveau": 30,
+     "poids": 3
+    },
+    {
+     "n": 75,
+     "niveau": 31,
+     "poids": 3
+    },
+    {
+     "n": 74,
+     "niveau": 31,
+     "poids": 3
+    },
+    {
+     "n": 66,
+     "niveau": 28,
+     "poids": 2
+    },
+    {
+     "n": 67,
+     "niveau": 32,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 32,
+     "poids": 2
+    },
+    {
+     "n": 183,
+     "niveau": 28,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 118,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 183,
+     "niveau": 25,
+     "poids": 1
+    },
+    {
+     "n": 119,
+     "niveau": 25,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "MOUNT_MORTAR_B1F",
+  "lieu": "mt-mortar",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 20,
+     "niveau": 18,
+     "poids": 6
+    },
+    {
+     "n": 41,
+     "niveau": 15,
+     "poids": 3
+    },
+    {
+     "n": 74,
+     "niveau": 16,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 17,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 17,
+     "poids": 3
+    },
+    {
+     "n": 66,
+     "niveau": 16,
+     "poids": 2
+    },
+    {
+     "n": 183,
+     "niveau": 16,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 118,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 183,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 119,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ICE_PATH_1F",
+  "lieu": "ice-path",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 42,
+     "niveau": 22,
+     "poids": 9
+    },
+    {
+     "n": 41,
+     "niveau": 22,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 220,
+     "niveau": 21,
+     "poids": 2
+    },
+    {
+     "n": 220,
+     "niveau": 23,
+     "poids": 2
+    },
+    {
+     "n": 225,
+     "niveau": 21,
+     "poids": 1
+    },
+    {
+     "n": 225,
+     "niveau": 23,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "ICE_PATH_B1F",
+  "lieu": "ice-path",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 42,
+     "niveau": 23,
+     "poids": 6
+    },
+    {
+     "n": 41,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 25,
+     "poids": 3
+    },
+    {
+     "n": 220,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 124,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 220,
+     "niveau": 24,
+     "poids": 2
+    },
+    {
+     "n": 225,
+     "niveau": 22,
+     "poids": 1
+    },
+    {
+     "n": 215,
+     "niveau": 22,
+     "poids": 1
+    },
+    {
+     "n": 225,
+     "niveau": 24,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "ICE_PATH_B2F_MAHOGANY_SIDE",
+  "lieu": "ice-path",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 41,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 26,
+     "poids": 3
+    },
+    {
+     "n": 124,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 220,
+     "niveau": 23,
+     "poids": 2
+    },
+    {
+     "n": 124,
+     "niveau": 24,
+     "poids": 2
+    },
+    {
+     "n": 220,
+     "niveau": 25,
+     "poids": 2
+    },
+    {
+     "n": 215,
+     "niveau": 22,
+     "poids": 1
+    },
+    {
+     "n": 225,
+     "niveau": 23,
+     "poids": 1
+    },
+    {
+     "n": 215,
+     "niveau": 24,
+     "poids": 1
+    },
+    {
+     "n": 225,
+     "niveau": 25,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "ICE_PATH_B2F_BLACKTHORN_SIDE",
+  "lieu": "ice-path",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 41,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 26,
+     "poids": 3
+    },
+    {
+     "n": 124,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 220,
+     "niveau": 23,
+     "poids": 2
+    },
+    {
+     "n": 124,
+     "niveau": 24,
+     "poids": 2
+    },
+    {
+     "n": 220,
+     "niveau": 25,
+     "poids": 2
+    },
+    {
+     "n": 215,
+     "niveau": 22,
+     "poids": 1
+    },
+    {
+     "n": 225,
+     "niveau": 23,
+     "poids": 1
+    },
+    {
+     "n": 215,
+     "niveau": 24,
+     "poids": 1
+    },
+    {
+     "n": 225,
+     "niveau": 25,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "ICE_PATH_B3F",
+  "lieu": "ice-path",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 41,
+     "niveau": 25,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 25,
+     "poids": 3
+    },
+    {
+     "n": 124,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 220,
+     "niveau": 24,
+     "poids": 2
+    },
+    {
+     "n": 124,
+     "niveau": 24,
+     "poids": 2
+    },
+    {
+     "n": 220,
+     "niveau": 26,
+     "poids": 2
+    },
+    {
+     "n": 124,
+     "niveau": 26,
+     "poids": 2
+    },
+    {
+     "n": 215,
+     "niveau": 22,
+     "poids": 1
+    },
+    {
+     "n": 225,
+     "niveau": 24,
+     "poids": 1
+    },
+    {
+     "n": 215,
+     "niveau": 24,
+     "poids": 1
+    },
+    {
+     "n": 225,
+     "niveau": 26,
+     "poids": 1
+    },
+    {
+     "n": 215,
+     "niveau": 26,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "WHIRL_ISLAND_NW",
+  "lieu": "whirl-islands",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 98,
+     "niveau": 22,
+     "poids": 4
+    },
+    {
+     "n": 86,
+     "niveau": 24,
+     "poids": 4
+    },
+    {
+     "n": 41,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 98,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 25,
+     "poids": 3
+    },
+    {
+     "n": 86,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 24,
+     "poids": 2
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "WHIRL_ISLAND_NE",
+  "lieu": "whirl-islands",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 98,
+     "niveau": 22,
+     "poids": 4
+    },
+    {
+     "n": 86,
+     "niveau": 24,
+     "poids": 4
+    },
+    {
+     "n": 41,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 98,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 25,
+     "poids": 3
+    },
+    {
+     "n": 86,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 24,
+     "poids": 2
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "WHIRL_ISLAND_SW",
+  "lieu": "whirl-islands",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 98,
+     "niveau": 22,
+     "poids": 4
+    },
+    {
+     "n": 86,
+     "niveau": 24,
+     "poids": 4
+    },
+    {
+     "n": 41,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 98,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 25,
+     "poids": 3
+    },
+    {
+     "n": 86,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 24,
+     "poids": 2
+    }
+   ]
+  },
+  "eau": {
+   "taux": 4,
+   "cristal": [
+    {
+     "n": 72,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 116,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "WHIRL_ISLAND_CAVE",
+  "lieu": "whirl-islands",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 98,
+     "niveau": 22,
+     "poids": 4
+    },
+    {
+     "n": 86,
+     "niveau": 24,
+     "poids": 4
+    },
+    {
+     "n": 41,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 98,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 25,
+     "poids": 3
+    },
+    {
+     "n": 86,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 24,
+     "poids": 2
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "WHIRL_ISLAND_SE",
+  "lieu": "whirl-islands",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 98,
+     "niveau": 22,
+     "poids": 4
+    },
+    {
+     "n": 86,
+     "niveau": 24,
+     "poids": 4
+    },
+    {
+     "n": 41,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 98,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 25,
+     "poids": 3
+    },
+    {
+     "n": 86,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 24,
+     "poids": 2
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "WHIRL_ISLAND_B1F",
+  "lieu": "whirl-islands",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 98,
+     "niveau": 23,
+     "poids": 4
+    },
+    {
+     "n": 86,
+     "niveau": 25,
+     "poids": 4
+    },
+    {
+     "n": 41,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 98,
+     "niveau": 25,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 26,
+     "poids": 3
+    },
+    {
+     "n": 86,
+     "niveau": 23,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 25,
+     "poids": 2
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "WHIRL_ISLAND_B2F",
+  "lieu": "whirl-islands",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 98,
+     "niveau": 24,
+     "poids": 4
+    },
+    {
+     "n": 86,
+     "niveau": 26,
+     "poids": 4
+    },
+    {
+     "n": 41,
+     "niveau": 25,
+     "poids": 3
+    },
+    {
+     "n": 98,
+     "niveau": 26,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 27,
+     "poids": 3
+    },
+    {
+     "n": 86,
+     "niveau": 24,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 26,
+     "poids": 2
+    }
+   ]
+  },
+  "eau": {
+   "taux": 4,
+   "cristal": [
+    {
+     "n": 116,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 116,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "WHIRL_ISLAND_LUGIA_CHAMBER",
+  "lieu": "whirl-islands",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 98,
+     "niveau": 25,
+     "poids": 4
+    },
+    {
+     "n": 86,
+     "niveau": 27,
+     "poids": 4
+    },
+    {
+     "n": 41,
+     "niveau": 26,
+     "poids": 3
+    },
+    {
+     "n": 98,
+     "niveau": 27,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 28,
+     "poids": 3
+    },
+    {
+     "n": 86,
+     "niveau": 25,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 27,
+     "poids": 2
+    }
+   ]
+  },
+  "eau": {
+   "taux": 4,
+   "cristal": [
+    {
+     "n": 116,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 117,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "SILVER_CAVE_ROOM_1",
+  "lieu": "mt-silver-cave",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 95,
+     "niveau": 42,
+     "poids": 3
+    },
+    {
+     "n": 75,
+     "niveau": 43,
+     "poids": 3
+    },
+    {
+     "n": 246,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 246,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 217,
+     "niveau": 44,
+     "poids": 2
+    },
+    {
+     "n": 126,
+     "niveau": 45,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 45,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 46,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 42,
+     "poids": 1
+    },
+    {
+     "n": 42,
+     "niveau": 44,
+     "poids": 1
+    },
+    {
+     "n": 55,
+     "niveau": 45,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "SILVER_CAVE_ROOM_2",
+  "lieu": "mt-silver-cave",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 47,
+     "niveau": 46,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 48,
+     "poids": 3
+    },
+    {
+     "n": 47,
+     "niveau": 48,
+     "poids": 3
+    },
+    {
+     "n": 246,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 246,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 200,
+     "niveau": 45,
+     "poids": 2
+    },
+    {
+     "n": 217,
+     "niveau": 47,
+     "poids": 2
+    },
+    {
+     "n": 67,
+     "niveau": 48,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 46,
+     "poids": 1
+    },
+    {
+     "n": 55,
+     "niveau": 48,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 119,
+     "niveau": 35,
+     "poids": 1
+    },
+    {
+     "n": 55,
+     "niveau": 35,
+     "poids": 1
+    },
+    {
+     "n": 118,
+     "niveau": 35,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "SILVER_CAVE_ROOM_3",
+  "lieu": "mt-silver-cave",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 95,
+     "niveau": 48,
+     "poids": 3
+    },
+    {
+     "n": 75,
+     "niveau": 48,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 51,
+     "poids": 3
+    },
+    {
+     "n": 246,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 246,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 247,
+     "niveau": 20,
+     "poids": 2
+    },
+    {
+     "n": 217,
+     "niveau": 50,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 53,
+     "poids": 2
+    },
+    {
+     "n": 55,
+     "niveau": 45,
+     "poids": 1
+    },
+    {
+     "n": 42,
+     "niveau": 49,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "SILVER_CAVE_ITEM_ROOMS",
+  "lieu": "mt-silver-cave",
+  "taux": 6,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 47,
+     "niveau": 46,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 48,
+     "poids": 3
+    },
+    {
+     "n": 47,
+     "niveau": 48,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 50,
+     "poids": 3
+    },
+    {
+     "n": 47,
+     "niveau": 50,
+     "poids": 3
+    },
+    {
+     "n": 47,
+     "niveau": 52,
+     "poids": 3
+    },
+    {
+     "n": 42,
+     "niveau": 46,
+     "poids": 2
+    },
+    {
+     "n": 200,
+     "niveau": 45,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "DARK_CAVE_VIOLET_ENTRANCE",
+  "lieu": "dark-cave",
+  "taux": 4,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 41,
+     "niveau": 2,
+     "poids": 5
+    },
+    {
+     "n": 74,
+     "niveau": 2,
+     "poids": 3
+    },
+    {
+     "n": 74,
+     "niveau": 3,
+     "poids": 3
+    },
+    {
+     "n": 74,
+     "niveau": 4,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 4,
+     "poids": 3
+    },
+    {
+     "n": 206,
+     "niveau": 4,
+     "poids": 3
+    },
+    {
+     "n": 216,
+     "niveau": 2,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 129,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 10,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 5,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "DARK_CAVE_BLACKTHORN_ENTRANCE",
+  "lieu": "dark-cave",
+  "taux": 4,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 42,
+     "niveau": 23,
+     "poids": 6
+    },
+    {
+     "n": 74,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 41,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 75,
+     "niveau": 25,
+     "poids": 3
+    },
+    {
+     "n": 217,
+     "niveau": 25,
+     "poids": 2
+    },
+    {
+     "n": 216,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 202,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 202,
+     "niveau": 25,
+     "poids": 1
+    },
+    {
+     "n": 217,
+     "niveau": 30,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 129,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 10,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 5,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_29",
+  "lieu": "johto-route-29",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 2,
+     "poids": 4
+    },
+    {
+     "n": 187,
+     "niveau": 3,
+     "poids": 4
+    },
+    {
+     "n": 163,
+     "niveau": 3,
+     "poids": 3
+    },
+    {
+     "n": 16,
+     "niveau": 2,
+     "poids": 2
+    },
+    {
+     "n": 161,
+     "niveau": 2,
+     "poids": 2
+    },
+    {
+     "n": 16,
+     "niveau": 3,
+     "poids": 2
+    },
+    {
+     "n": 161,
+     "niveau": 3,
+     "poids": 2
+    },
+    {
+     "n": 163,
+     "niveau": 2,
+     "poids": 1
+    },
+    {
+     "n": 19,
+     "niveau": 3,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "ROUTE_30",
+  "lieu": "johto-route-30",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 187,
+     "niveau": 4,
+     "poids": 4
+    },
+    {
+     "n": 163,
+     "niveau": 4,
+     "poids": 3
+    },
+    {
+     "n": 10,
+     "niveau": 3,
+     "poids": 2
+    },
+    {
+     "n": 13,
+     "niveau": 3,
+     "poids": 2
+    },
+    {
+     "n": 10,
+     "niveau": 4,
+     "poids": 2
+    },
+    {
+     "n": 16,
+     "niveau": 4,
+     "poids": 2
+    },
+    {
+     "n": 165,
+     "niveau": 3,
+     "poids": 1
+    },
+    {
+     "n": 16,
+     "niveau": 3,
+     "poids": 1
+    },
+    {
+     "n": 167,
+     "niveau": 3,
+     "poids": 1
+    },
+    {
+     "n": 163,
+     "niveau": 3,
+     "poids": 1
+    },
+    {
+     "n": 41,
+     "niveau": 3,
+     "poids": 1
+    },
+    {
+     "n": 60,
+     "niveau": 4,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 60,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 60,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 61,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_31",
+  "lieu": "johto-route-31",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 187,
+     "niveau": 5,
+     "poids": 4
+    },
+    {
+     "n": 69,
+     "niveau": 5,
+     "poids": 3
+    },
+    {
+     "n": 10,
+     "niveau": 4,
+     "poids": 2
+    },
+    {
+     "n": 13,
+     "niveau": 4,
+     "poids": 2
+    },
+    {
+     "n": 16,
+     "niveau": 5,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 5,
+     "poids": 2
+    },
+    {
+     "n": 165,
+     "niveau": 4,
+     "poids": 1
+    },
+    {
+     "n": 16,
+     "niveau": 4,
+     "poids": 1
+    },
+    {
+     "n": 167,
+     "niveau": 4,
+     "poids": 1
+    },
+    {
+     "n": 60,
+     "niveau": 4,
+     "poids": 1
+    },
+    {
+     "n": 41,
+     "niveau": 4,
+     "poids": 1
+    },
+    {
+     "n": 163,
+     "niveau": 5,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 60,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 60,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 61,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_32",
+  "lieu": "johto-route-32",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 187,
+     "niveau": 7,
+     "poids": 4
+    },
+    {
+     "n": 19,
+     "niveau": 5,
+     "poids": 3
+    },
+    {
+     "n": 69,
+     "niveau": 7,
+     "poids": 3
+    },
+    {
+     "n": 23,
+     "niveau": 4,
+     "poids": 2
+    },
+    {
+     "n": 187,
+     "niveau": 6,
+     "poids": 2
+    },
+    {
+     "n": 16,
+     "niveau": 7,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 7,
+     "poids": 2
+    },
+    {
+     "n": 194,
+     "niveau": 4,
+     "poids": 1
+    },
+    {
+     "n": 41,
+     "niveau": 6,
+     "poids": 1
+    },
+    {
+     "n": 163,
+     "niveau": 7,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 6,
+   "cristal": [
+    {
+     "n": 72,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 195,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_33",
+  "lieu": "johto-route-33",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 187,
+     "niveau": 7,
+     "poids": 4
+    },
+    {
+     "n": 19,
+     "niveau": 6,
+     "poids": 3
+    },
+    {
+     "n": 74,
+     "niveau": 6,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 7,
+     "poids": 3
+    },
+    {
+     "n": 21,
+     "niveau": 6,
+     "poids": 2
+    },
+    {
+     "n": 187,
+     "niveau": 6,
+     "poids": 2
+    },
+    {
+     "n": 41,
+     "niveau": 6,
+     "poids": 2
+    },
+    {
+     "n": 23,
+     "niveau": 7,
+     "poids": 2
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "ROUTE_34",
+  "lieu": "johto-route-34",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 132,
+     "niveau": 10,
+     "poids": 6
+    },
+    {
+     "n": 63,
+     "niveau": 10,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 11,
+     "poids": 3
+    },
+    {
+     "n": 39,
+     "niveau": 12,
+     "poids": 3
+    },
+    {
+     "n": 209,
+     "niveau": 10,
+     "poids": 2
+    },
+    {
+     "n": 16,
+     "niveau": 12,
+     "poids": 2
+    },
+    {
+     "n": 96,
+     "niveau": 12,
+     "poids": 1
+    },
+    {
+     "n": 163,
+     "niveau": 12,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 6,
+   "cristal": [
+    {
+     "n": 72,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 72,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_35",
+  "lieu": "johto-route-35",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 63,
+     "niveau": 10,
+     "poids": 3
+    },
+    {
+     "n": 132,
+     "niveau": 10,
+     "poids": 3
+    },
+    {
+     "n": 39,
+     "niveau": 12,
+     "poids": 3
+    },
+    {
+     "n": 193,
+     "niveau": 12,
+     "poids": 3
+    },
+    {
+     "n": 209,
+     "niveau": 12,
+     "poids": 2
+    },
+    {
+     "n": 58,
+     "niveau": 13,
+     "poids": 2
+    },
+    {
+     "n": 16,
+     "niveau": 14,
+     "poids": 2
+    },
+    {
+     "n": 96,
+     "niveau": 12,
+     "poids": 1
+    },
+    {
+     "n": 54,
+     "niveau": 13,
+     "poids": 1
+    },
+    {
+     "n": 163,
+     "niveau": 14,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 4,
+   "cristal": [
+    {
+     "n": 54,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 54,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 55,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_36",
+  "lieu": "johto-route-36",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 16,
+     "niveau": 6,
+     "poids": 4
+    },
+    {
+     "n": 16,
+     "niveau": 4,
+     "poids": 3
+    },
+    {
+     "n": 69,
+     "niveau": 5,
+     "poids": 3
+    },
+    {
+     "n": 58,
+     "niveau": 5,
+     "poids": 2
+    },
+    {
+     "n": 16,
+     "niveau": 5,
+     "poids": 2
+    },
+    {
+     "n": 163,
+     "niveau": 5,
+     "poids": 2
+    },
+    {
+     "n": 92,
+     "niveau": 5,
+     "poids": 2
+    },
+    {
+     "n": 165,
+     "niveau": 4,
+     "poids": 1
+    },
+    {
+     "n": 167,
+     "niveau": 4,
+     "poids": 1
+    },
+    {
+     "n": 163,
+     "niveau": 4,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "ROUTE_37",
+  "lieu": "johto-route-37",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 16,
+     "niveau": 15,
+     "poids": 4
+    },
+    {
+     "n": 58,
+     "niveau": 14,
+     "poids": 2
+    },
+    {
+     "n": 17,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 166,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 168,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 58,
+     "niveau": 16,
+     "poids": 2
+    },
+    {
+     "n": 165,
+     "niveau": 13,
+     "poids": 1
+    },
+    {
+     "n": 16,
+     "niveau": 13,
+     "poids": 1
+    },
+    {
+     "n": 167,
+     "niveau": 13,
+     "poids": 1
+    },
+    {
+     "n": 234,
+     "niveau": 14,
+     "poids": 1
+    },
+    {
+     "n": 163,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 164,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 234,
+     "niveau": 16,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "ROUTE_38",
+  "lieu": "johto-route-38",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 241,
+     "niveau": 13,
+     "poids": 4
+    },
+    {
+     "n": 52,
+     "niveau": 16,
+     "poids": 4
+    },
+    {
+     "n": 20,
+     "niveau": 16,
+     "poids": 3
+    },
+    {
+     "n": 81,
+     "niveau": 16,
+     "poids": 3
+    },
+    {
+     "n": 128,
+     "niveau": 13,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 16,
+     "poids": 2
+    },
+    {
+     "n": 17,
+     "niveau": 16,
+     "poids": 2
+    },
+    {
+     "n": 164,
+     "niveau": 16,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "ROUTE_39",
+  "lieu": "johto-route-39",
+  "taux": 2,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 128,
+     "niveau": 15,
+     "poids": 4
+    },
+    {
+     "n": 20,
+     "niveau": 16,
+     "poids": 3
+    },
+    {
+     "n": 81,
+     "niveau": 16,
+     "poids": 3
+    },
+    {
+     "n": 52,
+     "niveau": 18,
+     "poids": 3
+    },
+    {
+     "n": 241,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 16,
+     "poids": 2
+    },
+    {
+     "n": 17,
+     "niveau": 16,
+     "poids": 2
+    },
+    {
+     "n": 52,
+     "niveau": 16,
+     "poids": 1
+    },
+    {
+     "n": 164,
+     "niveau": 16,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "ROUTE_42",
+  "lieu": "johto-route-42",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 22,
+     "niveau": 16,
+     "poids": 4
+    },
+    {
+     "n": 42,
+     "niveau": 16,
+     "poids": 3
+    },
+    {
+     "n": 23,
+     "niveau": 13,
+     "poids": 2
+    },
+    {
+     "n": 21,
+     "niveau": 14,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 24,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 20,
+     "niveau": 16,
+     "poids": 2
+    },
+    {
+     "n": 19,
+     "niveau": 13,
+     "poids": 1
+    },
+    {
+     "n": 41,
+     "niveau": 14,
+     "poids": 1
+    },
+    {
+     "n": 20,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 183,
+     "niveau": 15,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 4,
+   "cristal": [
+    {
+     "n": 118,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 118,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 119,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_43",
+  "lieu": "johto-route-43",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 162,
+     "niveau": 17,
+     "poids": 4
+    },
+    {
+     "n": 20,
+     "niveau": 17,
+     "poids": 3
+    },
+    {
+     "n": 161,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 162,
+     "niveau": 15,
+     "poids": 2
+    },
+    {
+     "n": 17,
+     "niveau": 16,
+     "poids": 2
+    },
+    {
+     "n": 83,
+     "niveau": 16,
+     "poids": 2
+    },
+    {
+     "n": 49,
+     "niveau": 17,
+     "poids": 2
+    },
+    {
+     "n": 48,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 164,
+     "niveau": 16,
+     "poids": 1
+    },
+    {
+     "n": 20,
+     "niveau": 16,
+     "poids": 1
+    },
+    {
+     "n": 48,
+     "niveau": 17,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 129,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 10,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_44",
+  "lieu": "johto-route-44",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 108,
+     "niveau": 26,
+     "poids": 4
+    },
+    {
+     "n": 69,
+     "niveau": 22,
+     "poids": 3
+    },
+    {
+     "n": 114,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 70,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 108,
+     "niveau": 22,
+     "poids": 2
+    },
+    {
+     "n": 108,
+     "niveau": 24,
+     "poids": 2
+    },
+    {
+     "n": 61,
+     "niveau": 26,
+     "poids": 2
+    },
+    {
+     "n": 60,
+     "niveau": 22,
+     "poids": 1
+    },
+    {
+     "n": 61,
+     "niveau": 24,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 60,
+     "niveau": 25,
+     "poids": 1
+    },
+    {
+     "n": 60,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 61,
+     "niveau": 25,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_45",
+  "lieu": "johto-route-45",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 227,
+     "niveau": 27,
+     "poids": 4
+    },
+    {
+     "n": 74,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 75,
+     "niveau": 23,
+     "poids": 3
+    },
+    {
+     "n": 207,
+     "niveau": 24,
+     "poids": 3
+    },
+    {
+     "n": 75,
+     "niveau": 27,
+     "poids": 3
+    },
+    {
+     "n": 232,
+     "niveau": 25,
+     "poids": 2
+    },
+    {
+     "n": 231,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 75,
+     "niveau": 25,
+     "poids": 1
+    },
+    {
+     "n": 232,
+     "niveau": 30,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 129,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 5,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_46",
+  "lieu": "johto-route-46",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 19,
+     "niveau": 2,
+     "poids": 9
+    },
+    {
+     "n": 74,
+     "niveau": 2,
+     "poids": 3
+    },
+    {
+     "n": 74,
+     "niveau": 3,
+     "poids": 3
+    },
+    {
+     "n": 19,
+     "niveau": 3,
+     "poids": 3
+    },
+    {
+     "n": 21,
+     "niveau": 2,
+     "poids": 2
+    },
+    {
+     "n": 231,
+     "niveau": 2,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": null
+ },
+ {
+  "id": "SILVER_CAVE_OUTSIDE",
+  "lieu": "mt-silver-cave",
+  "taux": 10,
+  "herbe": {
+   "cristal": [
+    {
+     "n": 85,
+     "niveau": 43,
+     "poids": 4
+    },
+    {
+     "n": 114,
+     "niveau": 41,
+     "poids": 3
+    },
+    {
+     "n": 84,
+     "niveau": 41,
+     "poids": 2
+    },
+    {
+     "n": 77,
+     "niveau": 42,
+     "poids": 2
+    },
+    {
+     "n": 24,
+     "niveau": 42,
+     "poids": 2
+    },
+    {
+     "n": 78,
+     "niveau": 44,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 44,
+     "poids": 2
+    },
+    {
+     "n": 42,
+     "niveau": 40,
+     "poids": 1
+    },
+    {
+     "n": 61,
+     "niveau": 42,
+     "poids": 1
+    },
+    {
+     "n": 42,
+     "niveau": 42,
+     "poids": 1
+    },
+    {
+     "n": 61,
+     "niveau": 44,
+     "poids": 1
+    }
+   ]
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 61,
+     "niveau": 35,
+     "poids": 1
+    },
+    {
+     "n": 61,
+     "niveau": 40,
+     "poids": 1
+    },
+    {
+     "n": 60,
+     "niveau": 35,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "DRAGONS_DEN_B1F",
+  "lieu": "dragons-den",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 4,
+   "cristal": [
+    {
+     "n": 129,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 10,
+     "poids": 1
+    },
+    {
+     "n": 147,
+     "niveau": 10,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "OLIVINE_PORT",
+  "lieu": "olivine-city",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 72,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 72,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_40",
+  "lieu": "johto-sea-route-40",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 6,
+   "cristal": [
+    {
+     "n": 72,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 72,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ROUTE_41",
+  "lieu": "johto-sea-route-41",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 6,
+   "cristal": [
+    {
+     "n": 72,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 226,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "NEW_BARK_TOWN",
+  "lieu": "new-bark-town",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 6,
+   "cristal": [
+    {
+     "n": 72,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 72,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "CHERRYGROVE_CITY",
+  "lieu": "cherrygrove-city",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 6,
+   "cristal": [
+    {
+     "n": 72,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 72,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "VIOLET_CITY",
+  "lieu": "violet-city",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 60,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 60,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 61,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "CIANWOOD_CITY",
+  "lieu": "cianwood-city",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 6,
+   "cristal": [
+    {
+     "n": 72,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 72,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "OLIVINE_CITY",
+  "lieu": "olivine-city",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 6,
+   "cristal": [
+    {
+     "n": 72,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 72,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 73,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "ECRUTEAK_CITY",
+  "lieu": "ecruteak-city",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 2,
+   "cristal": [
+    {
+     "n": 60,
+     "niveau": 20,
+     "poids": 1
+    },
+    {
+     "n": 60,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 61,
+     "niveau": 20,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "LAKE_OF_RAGE",
+  "lieu": "lake-of-rage",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 6,
+   "cristal": [
+    {
+     "n": 129,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 10,
+     "poids": 1
+    },
+    {
+     "n": 130,
+     "niveau": 15,
+     "poids": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "BLACKTHORN_CITY",
+  "lieu": "blackthorn-city",
+  "taux": 0,
+  "herbe": {
+   "cristal": []
+  },
+  "eau": {
+   "taux": 4,
+   "cristal": [
+    {
+     "n": 129,
+     "niveau": 15,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 10,
+     "poids": 1
+    },
+    {
+     "n": 129,
+     "niveau": 5,
+     "poids": 1
+    }
+   ]
+  }
+ }
+]

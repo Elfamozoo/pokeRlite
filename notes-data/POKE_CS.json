@@ -1,0 +1,27 @@
+[
+ {
+  "n": 1,
+  "cle": "CUT",
+  "type": "normal"
+ },
+ {
+  "n": 2,
+  "cle": "FLY",
+  "type": "flying"
+ },
+ {
+  "n": 3,
+  "cle": "SURF",
+  "type": "water"
+ },
+ {
+  "n": 4,
+  "cle": "STRENGTH",
+  "type": "normal"
+ },
+ {
+  "n": 5,
+  "cle": "FLASH",
+  "type": "normal"
+ }
+]

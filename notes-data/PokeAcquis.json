@@ -1,0 +1,238 @@
+{
+ "LISTE": [
+  {
+   "id": "bourse",
+   "nom": {
+    "fr": "La bourse tenue",
+    "en": "A tight purse"
+   },
+   "dit": {
+    "fr": "L'argent rentre moitié plus. Une carte de butin de plus.",
+    "en": "Money comes in half again. One more loot card."
+   },
+   "effet": {
+    "argent": 1.5,
+    "butinChoix": 1
+   }
+  },
+  {
+   "id": "poignet",
+   "nom": {
+    "fr": "Le poignet du lanceur",
+    "en": "The thrower's wrist"
+   },
+   "dit": {
+    "fr": "Tes Poké Balls tiennent un tiers mieux. Un peu plus de coups critiques.",
+    "en": "Your Poké Balls hold a third better. A few more critical hits."
+   },
+   "effet": {
+    "capture": 1.33,
+    "critBonus": 0.08
+   }
+  },
+  {
+   "id": "oeil",
+   "nom": {
+    "fr": "L'œil du dresseur",
+    "en": "The trainer's eye"
+   },
+   "dit": {
+    "fr": "Un coup critique sur dix de plus.",
+    "en": "One more critical hit in ten."
+   },
+   "effet": {
+    "critBonus": 0.1
+   }
+  },
+  {
+   "id": "garde",
+   "nom": {
+    "fr": "La garde haute",
+    "en": "Guard up"
+   },
+   "dit": {
+    "fr": "Tu prends un huitième de dégâts en moins.",
+    "en": "You take an eighth less damage."
+   },
+   "effet": {
+    "degatsSubis": 0.88
+   }
+  },
+  {
+   "id": "poigne",
+   "nom": {
+    "fr": "La poigne",
+    "en": "The grip"
+   },
+   "dit": {
+    "fr": "Tu frappes un cinquième plus fort. En échange, tu encaisses un dixième de plus.",
+    "en": "You hit a fifth harder. In return, you take a tenth more."
+   },
+   "effet": {
+    "degatsInfliges": 1.2,
+    "degatsSubis": 1.1
+   }
+  },
+  {
+   "id": "flair",
+   "nom": {
+    "fr": "Le flair",
+    "en": "A nose for it"
+   },
+   "dit": {
+    "fr": "Une carte de butin de plus à chaque fois.",
+    "en": "One more loot card each time."
+   },
+   "effet": {
+    "butinChoix": 1
+   }
+  },
+  {
+   "id": "carnet",
+   "nom": {
+    "fr": "Le carnet tenu",
+    "en": "A kept notebook"
+   },
+   "dit": {
+    "fr": "L'expérience monte d'un quart. En échange, l'argent baisse d'un cinquième.",
+    "en": "Experience rises by a quarter. In return, money drops by a fifth."
+   },
+   "effet": {
+    "expGain": 1.25,
+    "argent": 0.8
+   }
+  },
+  {
+   "id": "acharnement",
+   "nom": {
+    "fr": "L'acharnement",
+    "en": "Doggedness"
+   },
+   "dit": {
+    "fr": "L'expérience monte d'un quart. En échange, une carte de butin de moins.",
+    "en": "Experience rises by a quarter. In return, one fewer loot card."
+   },
+   "effet": {
+    "expGain": 1.25,
+    "butinChoix": -1
+   }
+  },
+  {
+   "id": "course",
+   "nom": {
+    "fr": "Le pas de course",
+    "en": "At a run"
+   },
+   "dit": {
+    "fr": "L'expérience monte d'un tiers. En échange, les Centres ne te soignent plus.",
+    "en": "Experience rises by a third. In return, Centers no longer heal you."
+   },
+   "effet": {
+    "expGain": 1.34,
+    "centreInterdit": true
+   }
+  },
+  {
+   "id": "recruteur",
+   "nom": {
+    "fr": "Le recruteur",
+    "en": "The recruiter"
+   },
+   "dit": {
+    "fr": "Tes captures arrivent au niveau de ta tête. En échange, un sixième d'expérience en moins.",
+    "en": "Your catches arrive at your lead's level. You gain a sixth less experience."
+   },
+   "effet": {
+    "captureNiveau": true,
+    "expGain": 0.88
+   }
+  },
+  {
+   "id": "revanche",
+   "seuil": 25,
+   "nom": {
+    "fr": "La revanche",
+    "en": "Payback"
+   },
+   "dit": {
+    "fr": "Tu frappes un tiers plus fort. En échange, tu encaisses un cinquième de plus.",
+    "en": "You hit a third harder. In return, you take a fifth more."
+   },
+   "effet": {
+    "degatsInfliges": 1.3,
+    "degatsSubis": 1.2
+   }
+  },
+  {
+   "id": "collection",
+   "seuil": 45,
+   "nom": {
+    "fr": "L'appel du collectionneur",
+    "en": "The collector's call"
+   },
+   "dit": {
+    "fr": "Tes Poké Balls tiennent deux fois mieux. Une carte de butin de plus.",
+    "en": "Your Poké Balls hold twice as well. One more loot card."
+   },
+   "effet": {
+    "capture": 2,
+    "butinChoix": 1
+   }
+  },
+  {
+   "id": "veteran",
+   "seuil": 70,
+   "nom": {
+    "fr": "Le vétéran",
+    "en": "The veteran"
+   },
+   "dit": {
+    "fr": "Un coup critique sur cinq de plus.",
+    "en": "One more critical hit in five."
+   },
+   "effet": {
+    "critBonus": 0.2
+   }
+  },
+  {
+   "id": "dernier",
+   "nom": {
+    "fr": "Le dernier debout",
+    "en": "Last one standing"
+   },
+   "dit": {
+    "fr": "Quand il ne t'en reste qu'un, il frappe deux fois plus fort.",
+    "en": "When only one is left, it hits twice as hard."
+   },
+   "effet": {
+    "dernierDebout": 2
+   }
+  },
+  {
+   "id": "troupe",
+   "nom": {
+    "fr": "L'esprit de troupe",
+    "en": "Team spirit"
+   },
+   "dit": {
+    "fr": "Toute l'équipe gagne l'expérience. Chacun en reçoit un quart de moins.",
+    "en": "The whole team gains experience. Each gets a quarter less."
+   },
+   "effet": {
+    "expPartage": true,
+    "expGain": 0.75
+   }
+  }
+ ],
+ "de": "[fonction de]",
+ "porte": "[fonction porte]",
+ "ouverts": "[fonction ouverts]",
+ "prochainPalier": "[fonction prochainPalier]",
+ "prisesDuCompte": "[fonction prisesDuCompte]",
+ "offrir": "[fonction offrir]",
+ "combien": "[fonction combien]",
+ "triplet": "[fonction triplet]",
+ "poser": "[fonction poser]",
+ "effets": "[fonction effets]",
+ "nombre": "[fonction nombre]"
+}

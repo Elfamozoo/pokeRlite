@@ -1,0 +1,4520 @@
+[
+ {
+  "id": 1,
+  "cle": "POUND",
+  "nom": {
+   "fr": "Écras’Face",
+   "en": "Pound"
+  },
+  "type": "normal",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 35,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Écrase l’ennemi avec les pattes avant, la queue, etc.",
+   "en": "Pounds with fore legs or tail."
+  }
+ },
+ {
+  "id": 2,
+  "cle": "KARATE_CHOP",
+  "nom": {
+   "fr": "Poing Karaté",
+   "en": "Karate Chop"
+  },
+  "type": "fighting",
+  "puissance": 50,
+  "precision": 100,
+  "pp": 25,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "L’ennemi est tranché violemment. Taux de critiques élevé.",
+   "en": "Has a high criti cal hit ratio."
+  }
+ },
+ {
+  "id": 3,
+  "cle": "DOUBLESLAP",
+  "nom": {
+   "fr": "Torgnoles",
+   "en": "Double Slap"
+  },
+  "type": "normal",
+  "puissance": 15,
+  "precision": 85,
+  "pp": 10,
+  "effet": "EFFECT_MULTI_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Gifle rapidement l’ennemi de 2 à 5 fois d’affilée.",
+   "en": "Repeatedly slaps 2-5 times."
+  }
+ },
+ {
+  "id": 4,
+  "cle": "COMET_PUNCH",
+  "nom": {
+   "fr": "Poing Comète",
+   "en": "Comet Punch"
+  },
+  "type": "normal",
+  "puissance": 18,
+  "precision": 85,
+  "pp": 15,
+  "effet": "EFFECT_MULTI_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une tornade de coups de poing qui frappe de 2 à 5 fois d’affilée.",
+   "en": "Repeatedly punches 2-5 times."
+  }
+ },
+ {
+  "id": 5,
+  "cle": "MEGA_PUNCH",
+  "nom": {
+   "fr": "Ultimapoing",
+   "en": "Mega Punch"
+  },
+  "type": "normal",
+  "puissance": 80,
+  "precision": 85,
+  "pp": 20,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "L’ennemi reçoit un coup de poing d’une puissance incroyable.",
+   "en": "A powerful punch thrown very hard."
+  }
+ },
+ {
+  "id": 6,
+  "cle": "PAY_DAY",
+  "nom": {
+   "fr": "Jackpot",
+   "en": "Pay Day"
+  },
+  "type": "normal",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_PAY_DAY",
+  "chance": 0,
+  "dit": {
+   "fr": "Des pièces sont lancées sur l’ennemi. Permet d’obtenir de l’argent à la fin du combat.",
+   "en": "Throws coins. Gets them back later."
+  }
+ },
+ {
+  "id": 7,
+  "cle": "FIRE_PUNCH",
+  "nom": {
+   "fr": "Poing Feu",
+   "en": "Fire Punch"
+  },
+  "type": "fire",
+  "puissance": 75,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_BURN_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Un coup de poing enflammé vient frapper l’ennemi. Peut le brûler.",
+   "en": "A fiery punch. May cause a burn."
+  }
+ },
+ {
+  "id": 8,
+  "cle": "ICE_PUNCH",
+  "nom": {
+   "fr": "Poing Glace",
+   "en": "Ice Punch"
+  },
+  "type": "ice",
+  "puissance": 75,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_FREEZE_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Un coup de poing glacé vient frapper l’ennemi. Peut le geler.",
+   "en": "An icy punch. May cause freezing."
+  }
+ },
+ {
+  "id": 9,
+  "cle": "THUNDERPUNCH",
+  "nom": {
+   "fr": "Poing Éclair",
+   "en": "Thunder Punch"
+  },
+  "type": "electric",
+  "puissance": 75,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_PARALYZE_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Un coup de poing électrique vient frapper l’ennemi. Peut le paralyser.",
+   "en": "An electric punch. It may paralyze."
+  }
+ },
+ {
+  "id": 10,
+  "cle": "SCRATCH",
+  "nom": {
+   "fr": "Griffe",
+   "en": "Scratch"
+  },
+  "type": "normal",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 35,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Lacère l’ennemi avec des griffes acérées pour lui infliger des dégâts.",
+   "en": "Scratches with sharp claws."
+  }
+ },
+ {
+  "id": 11,
+  "cle": "VICEGRIP",
+  "nom": {
+   "fr": "Force Poigne",
+   "en": "Vise Grip"
+  },
+  "type": "normal",
+  "puissance": 55,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "L’ennemi est attrapé et compressé par les côtés.",
+   "en": "Grips with power ful pincers."
+  }
+ },
+ {
+  "id": 12,
+  "cle": "GUILLOTINE",
+  "nom": {
+   "fr": "Guillotine",
+   "en": "Guillotine"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 30,
+  "pp": 5,
+  "effet": "EFFECT_OHKO",
+  "chance": 0,
+  "dit": {
+   "fr": "De méchantes pinces lacèrent l’ennemi, le mettant K.O. sur le coup s’il est touché.",
+   "en": "A one-hit KO, pincer attack."
+  }
+ },
+ {
+  "id": 13,
+  "cle": "RAZOR_WIND",
+  "nom": {
+   "fr": "Coupe-Vent",
+   "en": "Razor Wind"
+  },
+  "type": "normal",
+  "puissance": 80,
+  "precision": 75,
+  "pp": 10,
+  "effet": "EFFECT_RAZOR_WIND",
+  "chance": 0,
+  "dit": {
+   "fr": "Attaque en 2 tours. Des lames de vent frappent l’ennemi au 2è tour. Taux de critiques élevé.",
+   "en": "1st turn: Prepare 2nd turn: Attack"
+  }
+ },
+ {
+  "id": 14,
+  "cle": "SWORDS_DANCE",
+  "nom": {
+   "fr": "Danse Lames",
+   "en": "Swords Dance"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_ATTACK_UP_2",
+  "chance": 0,
+  "dit": {
+   "fr": "Danse frénétique qui exalte l’esprit combatif. Augmente beaucoup l’Attaque du lanceur.",
+   "en": "A dance that in creases ATTACK."
+  }
+ },
+ {
+  "id": 15,
+  "cle": "CUT",
+  "nom": {
+   "fr": "Coupe",
+   "en": "Cut"
+  },
+  "type": "normal",
+  "puissance": 50,
+  "precision": 95,
+  "pp": 30,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Coupe l’ennemi avec des lames ou des griffes. Hors combat, permet de couper des arbres fins.",
+   "en": "Cuts using claws, scythes, etc."
+  }
+ },
+ {
+  "id": 16,
+  "cle": "GUST",
+  "nom": {
+   "fr": "Tornade",
+   "en": "Gust"
+  },
+  "type": "flying",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 35,
+  "effet": "EFFECT_GUST",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur bat des ailes pour générer une bourrasque qui blesse l’ennemi.",
+   "en": "Whips up a strong gust of wind."
+  }
+ },
+ {
+  "id": 17,
+  "cle": "WING_ATTACK",
+  "nom": {
+   "fr": "Cru-Ailes",
+   "en": "Wing Attack"
+  },
+  "type": "flying",
+  "puissance": 60,
+  "precision": 100,
+  "pp": 35,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "L’ennemi est frappé par de larges ailes déployées pour infliger des dégâts.",
+   "en": "Strikes the target with wings."
+  }
+ },
+ {
+  "id": 18,
+  "cle": "WHIRLWIND",
+  "nom": {
+   "fr": "Cyclone",
+   "en": "Whirlwind"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_FORCE_SWITCH",
+  "chance": 0,
+  "dit": {
+   "fr": "Éjecte le Pokémon ennemi et le remplace par un autre. Dans la nature, met fin au combat.",
+   "en": "Blows away the foe & ends battle."
+  }
+ },
+ {
+  "id": 19,
+  "cle": "FLY",
+  "nom": {
+   "fr": "Vol",
+   "en": "Fly"
+  },
+  "type": "flying",
+  "puissance": 70,
+  "precision": 95,
+  "pp": 15,
+  "effet": "EFFECT_FLY",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur s’envole au 1er tour et frappe au 2è. Permet aussi de voler jusqu’à une ville déjà visitée.",
+   "en": "1st turn: Fly 2nd turn: Attack"
+  }
+ },
+ {
+  "id": 20,
+  "cle": "BIND",
+  "nom": {
+   "fr": "Étreinte",
+   "en": "Bind"
+  },
+  "type": "normal",
+  "puissance": 15,
+  "precision": 75,
+  "pp": 20,
+  "effet": "EFFECT_TRAP_TARGET",
+  "chance": 0,
+  "dit": {
+   "fr": "Ligote l’ennemi avec les tentacules ou le corps pour l’écraser durant 4 à 5 tours.",
+   "en": "Binds the target for 2-5 turns."
+  }
+ },
+ {
+  "id": 21,
+  "cle": "SLAM",
+  "nom": {
+   "fr": "Souplesse",
+   "en": "Slam"
+  },
+  "type": "normal",
+  "puissance": 80,
+  "precision": 75,
+  "pp": 20,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Fouette l’ennemi avec la queue, une liane, etc. pour infliger des dégâts.",
+   "en": "Slams the foe with a tail, vine, etc."
+  }
+ },
+ {
+  "id": 22,
+  "cle": "VINE_WHIP",
+  "nom": {
+   "fr": "Fouet Lianes",
+   "en": "Vine Whip"
+  },
+  "type": "grass",
+  "puissance": 35,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Fouette l’ennemi avec de fines lianes pour infliger des dégâts.",
+   "en": "Whips the foe with slender vines."
+  }
+ },
+ {
+  "id": 23,
+  "cle": "STOMP",
+  "nom": {
+   "fr": "Écrasement",
+   "en": "Stomp"
+  },
+  "type": "normal",
+  "puissance": 65,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_STOMP",
+  "chance": 30,
+  "dit": {
+   "fr": "Écrase l’ennemi avec un énorme pied. Peut aussi l’apeurer.",
+   "en": "An attack that may cause flinching."
+  }
+ },
+ {
+  "id": 24,
+  "cle": "DOUBLE_KICK",
+  "nom": {
+   "fr": "Double Pied",
+   "en": "Double Kick"
+  },
+  "type": "fighting",
+  "puissance": 30,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_DOUBLE_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Deux coups de pied qui frappent l’ennemi deux fois d’affilée.",
+   "en": "A double kicking attack."
+  }
+ },
+ {
+  "id": 25,
+  "cle": "MEGA_KICK",
+  "nom": {
+   "fr": "Ultimawashi",
+   "en": "Mega Kick"
+  },
+  "type": "normal",
+  "puissance": 120,
+  "precision": 75,
+  "pp": 5,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Un coup de pied surpuissant qui frappe l’ennemi.",
+   "en": "A powerful kicking attack."
+  }
+ },
+ {
+  "id": 26,
+  "cle": "JUMP_KICK",
+  "nom": {
+   "fr": "Pied Sauté",
+   "en": "Jump Kick"
+  },
+  "type": "fighting",
+  "puissance": 70,
+  "precision": 95,
+  "pp": 25,
+  "effet": "EFFECT_JUMP_KICK",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur s’envole pour décocher un coup de pied sauté. S’il échoue, le lanceur se blesse.",
+   "en": "May miss, damaging the user."
+  }
+ },
+ {
+  "id": 27,
+  "cle": "ROLLING_KICK",
+  "nom": {
+   "fr": "Mawashi Geri",
+   "en": "Rolling Kick"
+  },
+  "type": "fighting",
+  "puissance": 60,
+  "precision": 85,
+  "pp": 15,
+  "effet": "EFFECT_FLINCH_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Le lanceur effectue un coup de pied tournoyant et extrêmement rapide. Peut apeurer l’ennemi.",
+   "en": "A fast, spinning kick."
+  }
+ },
+ {
+  "id": 28,
+  "cle": "SAND_ATTACK",
+  "nom": {
+   "fr": "Jet de Sable",
+   "en": "Sand Attack"
+  },
+  "type": "ground",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_ACCURACY_DOWN",
+  "chance": 0,
+  "dit": {
+   "fr": "Lance du sable au visage de l’ennemi pour baisser sa Précision.",
+   "en": "Reduces accuracy by throwing sand."
+  }
+ },
+ {
+  "id": 29,
+  "cle": "HEADBUTT",
+  "nom": {
+   "fr": "Coup d’Boule",
+   "en": "Headbutt"
+  },
+  "type": "normal",
+  "puissance": 70,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_FLINCH_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Le lanceur donne un coup de tête. Peut apeurer l’ennemi.",
+   "en": "An attack that may make foe flinch."
+  }
+ },
+ {
+  "id": 30,
+  "cle": "HORN_ATTACK",
+  "nom": {
+   "fr": "Koud’Korne",
+   "en": "Horn Attack"
+  },
+  "type": "normal",
+  "puissance": 65,
+  "precision": 100,
+  "pp": 25,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Frappe l’ennemi d’un coup de corne pointue pour infliger des dégâts.",
+   "en": "An attack using a horn to jab."
+  }
+ },
+ {
+  "id": 31,
+  "cle": "FURY_ATTACK",
+  "nom": {
+   "fr": "Furie",
+   "en": "Fury Attack"
+  },
+  "type": "normal",
+  "puissance": 15,
+  "precision": 85,
+  "pp": 20,
+  "effet": "EFFECT_MULTI_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Frappe l’ennemi 2 à 5 fois d’affilée avec un bec ou une corne.",
+   "en": "Jabs the target 2-5 times."
+  }
+ },
+ {
+  "id": 32,
+  "cle": "HORN_DRILL",
+  "nom": {
+   "fr": "Empal’Korne",
+   "en": "Horn Drill"
+  },
+  "type": "normal",
+  "puissance": 1,
+  "precision": 30,
+  "pp": 5,
+  "effet": "EFFECT_OHKO",
+  "chance": 0,
+  "dit": {
+   "fr": "Un coup de corne en vrille qui empale l’ennemi, le mettant K.O. sur le coup s’il est touché.",
+   "en": "A one-hit KO, drill attack."
+  }
+ },
+ {
+  "id": 33,
+  "cle": "TACKLE",
+  "nom": {
+   "fr": "Charge",
+   "en": "Tackle"
+  },
+  "type": "normal",
+  "puissance": 35,
+  "precision": 95,
+  "pp": 35,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur charge l’ennemi et le percute de tout son corps.",
+   "en": "A full-body charge attack."
+  }
+ },
+ {
+  "id": 34,
+  "cle": "BODY_SLAM",
+  "nom": {
+   "fr": "Plaquage",
+   "en": "Body Slam"
+  },
+  "type": "normal",
+  "puissance": 85,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_PARALYZE_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Le lanceur se laisse tomber sur l’ennemi de tout son poids. Peut le paralyser.",
+   "en": "An attack that may cause paralysis."
+  }
+ },
+ {
+  "id": 35,
+  "cle": "WRAP",
+  "nom": {
+   "fr": "Ligotage",
+   "en": "Wrap"
+  },
+  "type": "normal",
+  "puissance": 15,
+  "precision": 85,
+  "pp": 20,
+  "effet": "EFFECT_TRAP_TARGET",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur ligote l’ennemi avec des lianes ou son corps pour l’écraser durant 4 à 5 tours.",
+   "en": "Squeezes the foe for 2-5 turns."
+  }
+ },
+ {
+  "id": 36,
+  "cle": "TAKE_DOWN",
+  "nom": {
+   "fr": "Bélier",
+   "en": "Take Down"
+  },
+  "type": "normal",
+  "puissance": 90,
+  "precision": 85,
+  "pp": 20,
+  "effet": "EFFECT_RECOIL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une charge violente qui blesse aussi légèrement le lanceur.",
+   "en": "A tackle that also hurts the user."
+  }
+ },
+ {
+  "id": 37,
+  "cle": "THRASH",
+  "nom": {
+   "fr": "Mania",
+   "en": "Thrash"
+  },
+  "type": "normal",
+  "puissance": 90,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_RAMPAGE",
+  "chance": 0,
+  "dit": {
+   "fr": "Une attaque furieuse qui dure de 2 à 3 tours. Le lanceur devient confus.",
+   "en": "Works 2-3 turns and confuses user."
+  }
+ },
+ {
+  "id": 38,
+  "cle": "DOUBLE_EDGE",
+  "nom": {
+   "fr": "Damoclès",
+   "en": "Double-Edge"
+  },
+  "type": "normal",
+  "puissance": 120,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_RECOIL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une dangereuse charge. Inflige aussi des dégâts assez importants au lanceur.",
+   "en": "A tackle that also hurts the user."
+  }
+ },
+ {
+  "id": 39,
+  "cle": "TAIL_WHIP",
+  "nom": {
+   "fr": "Mimi-Queue",
+   "en": "Tail Whip"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_DEFENSE_DOWN",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur remue son adorable queue pour tromper la vigilance de l’ennemi et baisser sa Défense.",
+   "en": "Lowers the foe's DEFENSE."
+  }
+ },
+ {
+  "id": 40,
+  "cle": "POISON_STING",
+  "nom": {
+   "fr": "Dard-Venin",
+   "en": "Poison Sting"
+  },
+  "type": "poison",
+  "puissance": 15,
+  "precision": 100,
+  "pp": 35,
+  "effet": "EFFECT_POISON_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Un dard toxique qui transperce l’ennemi. Peut aussi l’empoisonner.",
+   "en": "An attack that may poison the target."
+  }
+ },
+ {
+  "id": 41,
+  "cle": "TWINEEDLE",
+  "nom": {
+   "fr": "Double Dard",
+   "en": "Twineedle"
+  },
+  "type": "bug",
+  "puissance": 25,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_POISON_MULTI_HIT",
+  "chance": 20,
+  "dit": {
+   "fr": "Un double coup de dard qui transperce l’ennemi 2 fois d’affilée. Peut aussi l’empoisonner.",
+   "en": "Jabs the foe twice using stingers."
+  }
+ },
+ {
+  "id": 42,
+  "cle": "PIN_MISSILE",
+  "nom": {
+   "fr": "Dard-Nuée",
+   "en": "Pin Missile"
+  },
+  "type": "bug",
+  "puissance": 14,
+  "precision": 85,
+  "pp": 20,
+  "effet": "EFFECT_MULTI_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Envoie une rafale de dards. Peut toucher de 2 à 5 fois.",
+   "en": "Fires pins that strike 2-5 times."
+  }
+ },
+ {
+  "id": 43,
+  "cle": "LEER",
+  "nom": {
+   "fr": "Groz’Yeux",
+   "en": "Leer"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_DEFENSE_DOWN",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur fait les gros yeux à l’ennemi pour l’intimider et baisser sa Défense.",
+   "en": "Reduces the foe's DEFENSE."
+  }
+ },
+ {
+  "id": 44,
+  "cle": "BITE",
+  "nom": {
+   "fr": "Morsure",
+   "en": "Bite"
+  },
+  "type": "dark",
+  "puissance": 60,
+  "precision": 100,
+  "pp": 25,
+  "effet": "EFFECT_FLINCH_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "L’ennemi est mordu par de tranchantes canines. Peut l’apeurer.",
+   "en": "An attack that may cause flinching."
+  }
+ },
+ {
+  "id": 45,
+  "cle": "GROWL",
+  "nom": {
+   "fr": "Rugissement",
+   "en": "Growl"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 40,
+  "effet": "EFFECT_ATTACK_DOWN",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur pousse un cri tout mimi pour tromper la vigilance de l’ennemi et baisser son Attaque.",
+   "en": "Reduces the foe's ATTACK."
+  }
+ },
+ {
+  "id": 46,
+  "cle": "ROAR",
+  "nom": {
+   "fr": "Hurlement",
+   "en": "Roar"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_FORCE_SWITCH",
+  "chance": 0,
+  "dit": {
+   "fr": "Effraie le Pokémon ennemi et le remplace par un autre. Dans la nature, met fin au combat.",
+   "en": "Scares wild foes to end battle."
+  }
+ },
+ {
+  "id": 47,
+  "cle": "SING",
+  "nom": {
+   "fr": "Berceuse",
+   "en": "Sing"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 55,
+  "pp": 15,
+  "effet": "EFFECT_SLEEP",
+  "chance": 0,
+  "dit": {
+   "fr": "Une berceuse plonge l’ennemi dans un profond sommeil.",
+   "en": "May cause the foe to fall asleep."
+  }
+ },
+ {
+  "id": 48,
+  "cle": "SUPERSONIC",
+  "nom": {
+   "fr": "Ultrason",
+   "en": "Supersonic"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 55,
+  "pp": 20,
+  "effet": "EFFECT_CONFUSE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur produit d’étranges ondes sonores qui rendent confus.",
+   "en": "Sound waves that cause confusion."
+  }
+ },
+ {
+  "id": 49,
+  "cle": "SONICBOOM",
+  "nom": {
+   "fr": "Sonic Boom",
+   "en": "Sonic Boom"
+  },
+  "type": "normal",
+  "puissance": 20,
+  "precision": 90,
+  "pp": 20,
+  "effet": "EFFECT_STATIC_DAMAGE",
+  "chance": 0,
+  "dit": {
+   "fr": "Une onde de choc destructrice qui inflige toujours 20 PV de dégâts.",
+   "en": "Always inflicts 20HP damage."
+  }
+ },
+ {
+  "id": 50,
+  "cle": "DISABLE",
+  "nom": {
+   "fr": "Entrave",
+   "en": "Disable"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 55,
+  "pp": 20,
+  "effet": "EFFECT_DISABLE",
+  "chance": 0,
+  "dit": {
+   "fr": "Empêche l’ennemi d’employer à nouveau sa dernière attaque. Dure quatre tours.",
+   "en": "Disables the foe's most recent move."
+  }
+ },
+ {
+  "id": 51,
+  "cle": "ACID",
+  "nom": {
+   "fr": "Acide",
+   "en": "Acid"
+  },
+  "type": "poison",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_DEFENSE_DOWN_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Le lanceur attaque l’ennemi avec un jet d’acide corrosif. Peut aussi baisser la Défense Spéciale de l’ennemi.",
+   "en": "An attack that may lower DEFENSE."
+  }
+ },
+ {
+  "id": 52,
+  "cle": "EMBER",
+  "nom": {
+   "fr": "Flammèche",
+   "en": "Ember"
+  },
+  "type": "fire",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 25,
+  "effet": "EFFECT_BURN_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "L’ennemi est attaqué par de faibles flammes. Peut aussi le brûler.",
+   "en": "An attack that may inflict a burn."
+  }
+ },
+ {
+  "id": 53,
+  "cle": "FLAMETHROWER",
+  "nom": {
+   "fr": "Lance-Flammes",
+   "en": "Flamethrower"
+  },
+  "type": "fire",
+  "puissance": 95,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_BURN_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "L’ennemi reçoit un torrent de flammes. Peut aussi le brûler.",
+   "en": "An attack that may inflict a burn."
+  }
+ },
+ {
+  "id": 54,
+  "cle": "MIST",
+  "nom": {
+   "fr": "Brume",
+   "en": "Mist"
+  },
+  "type": "ice",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_MIST",
+  "chance": 0,
+  "dit": {
+   "fr": "Une brume blanche enveloppe l’équipe du lanceur et empêche la réduction des stats pour 5 tours.",
+   "en": "Prevents stat reduction."
+  }
+ },
+ {
+  "id": 55,
+  "cle": "WATER_GUN",
+  "nom": {
+   "fr": "Pistolet à O",
+   "en": "Water Gun"
+  },
+  "type": "water",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 25,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "De l’eau est projetée sur l’ennemi en arc de cercle.",
+   "en": "Squirts water to attack."
+  }
+ },
+ {
+  "id": 56,
+  "cle": "HYDRO_PUMP",
+  "nom": {
+   "fr": "Hydrocanon",
+   "en": "Hydro Pump"
+  },
+  "type": "water",
+  "puissance": 120,
+  "precision": 80,
+  "pp": 5,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Un puissant jet d’eau est dirigé sur l’ennemi.",
+   "en": "A powerful water- type attack."
+  }
+ },
+ {
+  "id": 57,
+  "cle": "SURF",
+  "nom": {
+   "fr": "Surf",
+   "en": "Surf"
+  },
+  "type": "water",
+  "puissance": 95,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une énorme vague s’abat sur le champ de bataille. Permet aussi de voyager sur l’eau.",
+   "en": "A strong water- type attack."
+  }
+ },
+ {
+  "id": 58,
+  "cle": "ICE_BEAM",
+  "nom": {
+   "fr": "Laser Glace",
+   "en": "Ice Beam"
+  },
+  "type": "ice",
+  "puissance": 95,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_FREEZE_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Un rayon de glace frappe l’ennemi. Peut aussi le geler.",
+   "en": "An attack that may freeze the foe."
+  }
+ },
+ {
+  "id": 59,
+  "cle": "BLIZZARD",
+  "nom": {
+   "fr": "Blizzard",
+   "en": "Blizzard"
+  },
+  "type": "ice",
+  "puissance": 120,
+  "precision": 70,
+  "pp": 5,
+  "effet": "EFFECT_FREEZE_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Une violente tempête de neige est déclenchée sur l’ennemi. Peut aussi le geler.",
+   "en": "An attack that may freeze the foe."
+  }
+ },
+ {
+  "id": 60,
+  "cle": "PSYBEAM",
+  "nom": {
+   "fr": "Rafale Psy",
+   "en": "Psybeam"
+  },
+  "type": "psychic",
+  "puissance": 65,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_CONFUSE_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Un étrange rayon frappe l’ennemi. Peut aussi le rendre confus.",
+   "en": "An attack that may confuse the foe."
+  }
+ },
+ {
+  "id": 61,
+  "cle": "BUBBLEBEAM",
+  "nom": {
+   "fr": "Bulles d’O",
+   "en": "Bubble Beam"
+  },
+  "type": "water",
+  "puissance": 65,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_SPEED_DOWN_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Des bulles sont envoyées avec puissance sur l’ennemi. Peut aussi baisser sa Vitesse.",
+   "en": "An attack that may lower SPEED."
+  }
+ },
+ {
+  "id": 62,
+  "cle": "AURORA_BEAM",
+  "nom": {
+   "fr": "Onde Boréale",
+   "en": "Aurora Beam"
+  },
+  "type": "ice",
+  "puissance": 65,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_ATTACK_DOWN_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Envoie un rayon arc-en-ciel sur l’ennemi. Peut aussi baisser son Attaque.",
+   "en": "An attack that may lower ATTACK."
+  }
+ },
+ {
+  "id": 63,
+  "cle": "HYPER_BEAM",
+  "nom": {
+   "fr": "Ultralaser",
+   "en": "Hyper Beam"
+  },
+  "type": "normal",
+  "puissance": 150,
+  "precision": 90,
+  "pp": 5,
+  "effet": "EFFECT_HYPER_BEAM",
+  "chance": 0,
+  "dit": {
+   "fr": "Projette un puissant rayon sur l’ennemi. Le lanceur doit se reposer au tour suivant.",
+   "en": "1st turn: Attack 2nd turn: Rest"
+  }
+ },
+ {
+  "id": 64,
+  "cle": "PECK",
+  "nom": {
+   "fr": "Picpic",
+   "en": "Peck"
+  },
+  "type": "flying",
+  "puissance": 35,
+  "precision": 100,
+  "pp": 35,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Frappe l’ennemi d’un bec pointu ou d’une corne pour infliger des dégâts.",
+   "en": "Jabs the foe with a beak, etc."
+  }
+ },
+ {
+  "id": 65,
+  "cle": "DRILL_PECK",
+  "nom": {
+   "fr": "Bec Vrille",
+   "en": "Drill Peck"
+  },
+  "type": "flying",
+  "puissance": 80,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une attaque utilisant le bec comme une perceuse.",
+   "en": "A strong, spin ning-peck attack."
+  }
+ },
+ {
+  "id": 66,
+  "cle": "SUBMISSION",
+  "nom": {
+   "fr": "Sacrifice",
+   "en": "Submission"
+  },
+  "type": "fighting",
+  "puissance": 80,
+  "precision": 80,
+  "pp": 25,
+  "effet": "EFFECT_RECOIL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur agrippe l’ennemi et l’écrase au sol. Blesse aussi légèrement le lanceur.",
+   "en": "An attack that al so hurts the user."
+  }
+ },
+ {
+  "id": 67,
+  "cle": "LOW_KICK",
+  "nom": {
+   "fr": "Balayage",
+   "en": "Low Kick"
+  },
+  "type": "fighting",
+  "puissance": 50,
+  "precision": 90,
+  "pp": 20,
+  "effet": "EFFECT_FLINCH_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Un puissant coup de pied bas qui fauche l’ennemi. Il est plus efficace contre les ennemis lourds.",
+   "en": "An attack that may cause flinching."
+  }
+ },
+ {
+  "id": 68,
+  "cle": "COUNTER",
+  "nom": {
+   "fr": "Riposte",
+   "en": "Counter"
+  },
+  "type": "fighting",
+  "puissance": 1,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_COUNTER",
+  "chance": 0,
+  "dit": {
+   "fr": "Une riposte qui répond à toute attaque physique en infligeant le double de dégâts.",
+   "en": "Returns a physical blow double."
+  }
+ },
+ {
+  "id": 69,
+  "cle": "SEISMIC_TOSS",
+  "nom": {
+   "fr": "Frappe Atlas",
+   "en": "Seismic Toss"
+  },
+  "type": "fighting",
+  "puissance": 1,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_LEVEL_DAMAGE",
+  "chance": 0,
+  "dit": {
+   "fr": "L’ennemi est projeté grâce au pouvoir de la gravité. Inflige des dégâts équivalents au niveau du lanceur.",
+   "en": "The user's level equals damage HP."
+  }
+ },
+ {
+  "id": 70,
+  "cle": "STRENGTH",
+  "nom": {
+   "fr": "Force",
+   "en": "Strength"
+  },
+  "type": "normal",
+  "puissance": 80,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur cogne l’ennemi de toutes ses forces. Permet aussi de déplacer des rochers.",
+   "en": "A powerful physi cal attack."
+  }
+ },
+ {
+  "id": 71,
+  "cle": "ABSORB",
+  "nom": {
+   "fr": "Vole-Vie",
+   "en": "Absorb"
+  },
+  "type": "grass",
+  "puissance": 20,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_LEECH_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une attaque qui convertit la moitié des dégâts infligés en PV.",
+   "en": "Steals 1/2 of the damage inflicted."
+  }
+ },
+ {
+  "id": 72,
+  "cle": "MEGA_DRAIN",
+  "nom": {
+   "fr": "Méga-Sangsue",
+   "en": "Mega Drain"
+  },
+  "type": "grass",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_LEECH_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une attaque qui convertit la moitié des dégâts infligés en PV.",
+   "en": "Steals 1/2 of the damage inflicted."
+  }
+ },
+ {
+  "id": 73,
+  "cle": "LEECH_SEED",
+  "nom": {
+   "fr": "Vampigraine",
+   "en": "Leech Seed"
+  },
+  "type": "grass",
+  "puissance": 0,
+  "precision": 90,
+  "pp": 10,
+  "effet": "EFFECT_LEECH_SEED",
+  "chance": 0,
+  "dit": {
+   "fr": "Une graine est semée sur l’ennemi. À chaque tour, elle lui dérobe des PV que le lanceur récupère.",
+   "en": "Steals HP from the foe on every turn."
+  }
+ },
+ {
+  "id": 74,
+  "cle": "GROWTH",
+  "nom": {
+   "fr": "Croissance",
+   "en": "Growth"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 40,
+  "effet": "EFFECT_SP_ATK_UP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le corps du lanceur se développe. Augmente l’Attaque et l’Attaque Spéciale.",
+   "en": "Raises the SPCL. ATK rating."
+  }
+ },
+ {
+  "id": 75,
+  "cle": "RAZOR_LEAF",
+  "nom": {
+   "fr": "Tranch’Herbe",
+   "en": "Razor Leaf"
+  },
+  "type": "grass",
+  "puissance": 55,
+  "precision": 95,
+  "pp": 25,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Des feuilles aiguisées comme des rasoirs entaillent l’ennemi. Taux de critiques élevé.",
+   "en": "Has a high criti cal hit ratio."
+  }
+ },
+ {
+  "id": 76,
+  "cle": "SOLARBEAM",
+  "nom": {
+   "fr": "Lance-Soleil",
+   "en": "Solar Beam"
+  },
+  "type": "grass",
+  "puissance": 120,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_SOLARBEAM",
+  "chance": 0,
+  "dit": {
+   "fr": "Absorbe la lumière au premier tour et envoie un rayon puissant au tour suivant.",
+   "en": "1st turn: Prepare 2nd turn: Attack"
+  }
+ },
+ {
+  "id": 77,
+  "cle": "POISONPOWDER",
+  "nom": {
+   "fr": "Poudre Toxik",
+   "en": "Poison Powder"
+  },
+  "type": "poison",
+  "puissance": 0,
+  "precision": 75,
+  "pp": 35,
+  "effet": "EFFECT_POISON",
+  "chance": 0,
+  "dit": {
+   "fr": "Une poudre toxique empoisonne l’ennemi.",
+   "en": "A move that may poison the foe."
+  }
+ },
+ {
+  "id": 78,
+  "cle": "STUN_SPORE",
+  "nom": {
+   "fr": "Para-Spore",
+   "en": "Stun Spore"
+  },
+  "type": "grass",
+  "puissance": 0,
+  "precision": 75,
+  "pp": 30,
+  "effet": "EFFECT_PARALYZE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur répand sur l’ennemi une poudre qui le paralyse.",
+   "en": "A move that may paralyze the foe."
+  }
+ },
+ {
+  "id": 79,
+  "cle": "SLEEP_POWDER",
+  "nom": {
+   "fr": "Poudre Dodo",
+   "en": "Sleep Powder"
+  },
+  "type": "grass",
+  "puissance": 0,
+  "precision": 75,
+  "pp": 15,
+  "effet": "EFFECT_SLEEP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur répand une poudre soporifique qui endort la cible.",
+   "en": "May cause the foe to fall asleep."
+  }
+ },
+ {
+  "id": 80,
+  "cle": "PETAL_DANCE",
+  "nom": {
+   "fr": "Danse Fleurs",
+   "en": "Petal Dance"
+  },
+  "type": "grass",
+  "puissance": 70,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_RAMPAGE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur attaque en projetant des pétales pendant 2 à 3 tours avant de céder à la confusion.",
+   "en": "Works 2-3 turns and confuses user."
+  }
+ },
+ {
+  "id": 81,
+  "cle": "STRING_SHOT",
+  "nom": {
+   "fr": "Sécrétion",
+   "en": "String Shot"
+  },
+  "type": "bug",
+  "puissance": 0,
+  "precision": 95,
+  "pp": 40,
+  "effet": "EFFECT_SPEED_DOWN",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur crache de la soie pour ligoter l’ennemi et baisser sa Vitesse.",
+   "en": "A move that lowers the foe's SPEED."
+  }
+ },
+ {
+  "id": 82,
+  "cle": "DRAGON_RAGE",
+  "nom": {
+   "fr": "Draco-Rage",
+   "en": "Dragon Rage"
+  },
+  "type": "dragon",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_STATIC_DAMAGE",
+  "chance": 0,
+  "dit": {
+   "fr": "La colère du lanceur déclenche une onde de choc destructrice qui inflige toujours 40 PV de dégâts.",
+   "en": "Always inflicts 40HP damage."
+  }
+ },
+ {
+  "id": 83,
+  "cle": "FIRE_SPIN",
+  "nom": {
+   "fr": "Danse Flammes",
+   "en": "Fire Spin"
+  },
+  "type": "fire",
+  "puissance": 15,
+  "precision": 70,
+  "pp": 15,
+  "effet": "EFFECT_TRAP_TARGET",
+  "chance": 0,
+  "dit": {
+   "fr": "Un tourbillon de flammes emprisonne l’ennemi pendant 4 à 5 tours.",
+   "en": "Traps foe in fire for 2-5 turns."
+  }
+ },
+ {
+  "id": 84,
+  "cle": "THUNDERSHOCK",
+  "nom": {
+   "fr": "Éclair",
+   "en": "Thunder Shock"
+  },
+  "type": "electric",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_PARALYZE_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Une décharge électrique tombe sur l’ennemi. Peut aussi le paralyser.",
+   "en": "An attack that may cause paralysis."
+  }
+ },
+ {
+  "id": 85,
+  "cle": "THUNDERBOLT",
+  "nom": {
+   "fr": "Tonnerre",
+   "en": "Thunderbolt"
+  },
+  "type": "electric",
+  "puissance": 95,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_PARALYZE_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Une grosse décharge électrique tombe sur l’ennemi. Peut aussi le paralyser.",
+   "en": "An attack that may cause paralysis."
+  }
+ },
+ {
+  "id": 86,
+  "cle": "THUNDER_WAVE",
+  "nom": {
+   "fr": "Cage Éclair",
+   "en": "Thunder Wave"
+  },
+  "type": "electric",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_PARALYZE",
+  "chance": 0,
+  "dit": {
+   "fr": "Un faible choc électrique frappe l’ennemi. Si l’attaque touche, celui-ci est paralysé.",
+   "en": "A move that may cause paralysis."
+  }
+ },
+ {
+  "id": 87,
+  "cle": "THUNDER",
+  "nom": {
+   "fr": "Fatal-Foudre",
+   "en": "Thunder"
+  },
+  "type": "electric",
+  "puissance": 120,
+  "precision": 70,
+  "pp": 10,
+  "effet": "EFFECT_THUNDER",
+  "chance": 30,
+  "dit": {
+   "fr": "La foudre tombe sur l’ennemi pour lui infliger des dégâts. Peut aussi le paralyser.",
+   "en": "An attack that may cause paralysis."
+  }
+ },
+ {
+  "id": 88,
+  "cle": "ROCK_THROW",
+  "nom": {
+   "fr": "Jet-Pierres",
+   "en": "Rock Throw"
+  },
+  "type": "rock",
+  "puissance": 50,
+  "precision": 90,
+  "pp": 15,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur lâche une pierre sur l’ennemi.",
+   "en": "Drops rocks on the enemy."
+  }
+ },
+ {
+  "id": 89,
+  "cle": "EARTHQUAKE",
+  "nom": {
+   "fr": "Séisme",
+   "en": "Earthquake"
+  },
+  "type": "ground",
+  "puissance": 100,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_EARTHQUAKE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur provoque un tremblement de terre touchant tous les Pokémon autour de lui.",
+   "en": "Tough but useless vs. flying foes."
+  }
+ },
+ {
+  "id": 90,
+  "cle": "FISSURE",
+  "nom": {
+   "fr": "Abîme",
+   "en": "Fissure"
+  },
+  "type": "ground",
+  "puissance": 1,
+  "precision": 30,
+  "pp": 5,
+  "effet": "EFFECT_OHKO",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur fait tomber l’ennemi dans une crevasse. Si cette attaque réussit, elle met K.O. sur le coup.",
+   "en": "A ground-type, one-hit KO attack."
+  }
+ },
+ {
+  "id": 91,
+  "cle": "DIG",
+  "nom": {
+   "fr": "Tunnel",
+   "en": "Dig"
+  },
+  "type": "ground",
+  "puissance": 60,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_FLY",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur creuse au 1er tour et frappe au 2è. Permet aussi de s’échapper d’un donjon.",
+   "en": "1st turn: Burrow 2nd turn: Attack"
+  }
+ },
+ {
+  "id": 92,
+  "cle": "TOXIC",
+  "nom": {
+   "fr": "Toxik",
+   "en": "Toxic"
+  },
+  "type": "poison",
+  "puissance": 0,
+  "precision": 85,
+  "pp": 10,
+  "effet": "EFFECT_TOXIC",
+  "chance": 0,
+  "dit": {
+   "fr": "Empoisonne gravement l’ennemi. Les dégâts dus au poison augmentent à chaque tour.",
+   "en": "A poison move with increasing damage."
+  }
+ },
+ {
+  "id": 93,
+  "cle": "CONFUSION",
+  "nom": {
+   "fr": "Choc Mental",
+   "en": "Confusion"
+  },
+  "type": "psychic",
+  "puissance": 50,
+  "precision": 100,
+  "pp": 25,
+  "effet": "EFFECT_CONFUSE_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Une faible vague télékinésique frappe l’ennemi. Peut aussi le plonger dans la confusion.",
+   "en": "An attack that may cause confusion."
+  }
+ },
+ {
+  "id": 94,
+  "cle": "PSYCHIC_M",
+  "nom": {
+   "fr": "Psyko",
+   "en": "Psychic"
+  },
+  "type": "psychic",
+  "puissance": 90,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_SP_DEF_DOWN_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Une puissante force télékinésique frappe l’ennemi. Peut aussi faire baisser sa Défense Spéciale.",
+   "en": "An attack that may lower SPCL.DEF."
+  }
+ },
+ {
+  "id": 95,
+  "cle": "HYPNOSIS",
+  "nom": {
+   "fr": "Hypnose",
+   "en": "Hypnosis"
+  },
+  "type": "psychic",
+  "puissance": 0,
+  "precision": 60,
+  "pp": 20,
+  "effet": "EFFECT_SLEEP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur hypnotise l’ennemi pour le plonger dans un profond sommeil.",
+   "en": "May put the foe to sleep."
+  }
+ },
+ {
+  "id": 96,
+  "cle": "MEDITATE",
+  "nom": {
+   "fr": "Yoga",
+   "en": "Meditate"
+  },
+  "type": "psychic",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 40,
+  "effet": "EFFECT_ATTACK_UP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur médite pour éveiller son pouvoir latent et augmenter son Attaque.",
+   "en": "Raises the user's ATTACK."
+  }
+ },
+ {
+  "id": 97,
+  "cle": "AGILITY",
+  "nom": {
+   "fr": "Hâte",
+   "en": "Agility"
+  },
+  "type": "psychic",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_SPEED_UP_2",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur se relaxe et allège son corps pour augmenter considérablement sa Vitesse.",
+   "en": "Sharply increases the user's SPEED."
+  }
+ },
+ {
+  "id": 98,
+  "cle": "QUICK_ATTACK",
+  "nom": {
+   "fr": "Vive-Attaque",
+   "en": "Quick Attack"
+  },
+  "type": "normal",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_PRIORITY_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur fonce sur l’ennemi si rapidement qu’on parvient à peine à le discerner. Frappe en premier.",
+   "en": "Lets the user get in the first hit."
+  }
+ },
+ {
+  "id": 99,
+  "cle": "RAGE",
+  "nom": {
+   "fr": "Frénésie",
+   "en": "Rage"
+  },
+  "type": "normal",
+  "puissance": 20,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_RAGE",
+  "chance": 0,
+  "dit": {
+   "fr": "Une fois activée, cette capacité augmente l’Attaque du lanceur à mesure que celui-ci subit des attaques.",
+   "en": "Raises ATTACK if the user is hit."
+  }
+ },
+ {
+  "id": 100,
+  "cle": "TELEPORT",
+  "nom": {
+   "fr": "Téléport",
+   "en": "Teleport"
+  },
+  "type": "psychic",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_TELEPORT",
+  "chance": 0,
+  "dit": {
+   "fr": "Permet de fuir un Pokémon sauvage. Permet aussi de revenir au dernier Centre Pokémon visité.",
+   "en": "A move for fleeing from battle."
+  }
+ },
+ {
+  "id": 101,
+  "cle": "NIGHT_SHADE",
+  "nom": {
+   "fr": "Ombre Nocturne",
+   "en": "Night Shade"
+  },
+  "type": "ghost",
+  "puissance": 1,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_LEVEL_DAMAGE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur invoque un mirage. Inflige des dégâts équivalents au niveau du lanceur.",
+   "en": "The user's level equals damage HP."
+  }
+ },
+ {
+  "id": 102,
+  "cle": "MIMIC",
+  "nom": {
+   "fr": "Copie",
+   "en": "Mimic"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_MIMIC",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur copie la dernière capacité utilisée par la cible et la conserve tant qu’il reste au combat.",
+   "en": "Copies a move used by the foe."
+  }
+ },
+ {
+  "id": 103,
+  "cle": "SCREECH",
+  "nom": {
+   "fr": "Grincement",
+   "en": "Screech"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 85,
+  "pp": 40,
+  "effet": "EFFECT_DEFENSE_DOWN_2",
+  "chance": 0,
+  "dit": {
+   "fr": "Cri strident qui baisse beaucoup la Défense ennemie.",
+   "en": "Sharply reduces the foe's DEFENSE."
+  }
+ },
+ {
+  "id": 104,
+  "cle": "DOUBLE_TEAM",
+  "nom": {
+   "fr": "Reflet",
+   "en": "Double Team"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_EVASION_UP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur se déplace si vite qu’il crée des copies illusoires de lui, augmentant son Esquive.",
+   "en": "Heightens evasive ness."
+  }
+ },
+ {
+  "id": 105,
+  "cle": "RECOVER",
+  "nom": {
+   "fr": "Soin",
+   "en": "Recover"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_HEAL",
+  "chance": 0,
+  "dit": {
+   "fr": "Un soin qui permet au lanceur de récupérer jusqu’à la moitié de ses PV max.",
+   "en": "Restores HP by 1/2 the max HP."
+  }
+ },
+ {
+  "id": 106,
+  "cle": "HARDEN",
+  "nom": {
+   "fr": "Armure",
+   "en": "Harden"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_DEFENSE_UP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur contracte tous ses muscles pour augmenter sa Défense.",
+   "en": "Raises the user's DEFENSE."
+  }
+ },
+ {
+  "id": 107,
+  "cle": "MINIMIZE",
+  "nom": {
+   "fr": "Lilliput",
+   "en": "Minimize"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_EVASION_UP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur comprime son corps pour se faire tout petit et augmenter fortement son Esquive.",
+   "en": "Heightens evasive ness."
+  }
+ },
+ {
+  "id": 108,
+  "cle": "SMOKESCREEN",
+  "nom": {
+   "fr": "Brouillard",
+   "en": "Smokescreen"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_ACCURACY_DOWN",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur disperse un nuage d’encre ou de fumée. Réduit la Précision de l’ennemi.",
+   "en": "Lowers the foe's accuracy."
+  }
+ },
+ {
+  "id": 109,
+  "cle": "CONFUSE_RAY",
+  "nom": {
+   "fr": "Onde Folie",
+   "en": "Confuse Ray"
+  },
+  "type": "ghost",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_CONFUSE",
+  "chance": 0,
+  "dit": {
+   "fr": "Un rayon sinistre qui plonge l’ennemi dans un état de confusion.",
+   "en": "A move that causes confusion."
+  }
+ },
+ {
+  "id": 110,
+  "cle": "WITHDRAW",
+  "nom": {
+   "fr": "Repli",
+   "en": "Withdraw"
+  },
+  "type": "water",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 40,
+  "effet": "EFFECT_DEFENSE_UP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur se recroqueville dans sa carapace, ce qui augmente sa Défense.",
+   "en": "Heightens the user's DEFENSE."
+  }
+ },
+ {
+  "id": 111,
+  "cle": "DEFENSE_CURL",
+  "nom": {
+   "fr": "Boul’Armure",
+   "en": "Defense Curl"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 40,
+  "effet": "EFFECT_DEFENSE_CURL",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur s’enroule pour cacher ses points faibles, ce qui augmente sa Défense.",
+   "en": "Heightens the user's DEFENSE."
+  }
+ },
+ {
+  "id": 112,
+  "cle": "BARRIER",
+  "nom": {
+   "fr": "Bouclier",
+   "en": "Barrier"
+  },
+  "type": "psychic",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_DEFENSE_UP_2",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur érige un mur solide qui augmente fortement sa Défense.",
+   "en": "Sharply increases user's DEFENSE."
+  }
+ },
+ {
+  "id": 113,
+  "cle": "LIGHT_SCREEN",
+  "nom": {
+   "fr": "Mur Lumière",
+   "en": "Light Screen"
+  },
+  "type": "psychic",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_LIGHT_SCREEN",
+  "chance": 0,
+  "dit": {
+   "fr": "Un fabuleux mur de lumière qui réduit les dégâts causés par les attaques spéciales durant 5 tours.",
+   "en": "Ups SPCL.DEF with a wall of light."
+  }
+ },
+ {
+  "id": 114,
+  "cle": "HAZE",
+  "nom": {
+   "fr": "Buée Noire",
+   "en": "Haze"
+  },
+  "type": "ice",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_RESET_STATS",
+  "chance": 0,
+  "dit": {
+   "fr": "Un brouillard qui annule les changements de stats de tous les Pokémon au combat.",
+   "en": "Eliminates all stat changes."
+  }
+ },
+ {
+  "id": 115,
+  "cle": "REFLECT",
+  "nom": {
+   "fr": "Protection",
+   "en": "Reflect"
+  },
+  "type": "psychic",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_REFLECT",
+  "chance": 0,
+  "dit": {
+   "fr": "Un fabuleux mur de lumière qui réduit les dégâts causés par les attaques physiques durant 5 tours.",
+   "en": "Raises DEFENSE with a barrier."
+  }
+ },
+ {
+  "id": 116,
+  "cle": "FOCUS_ENERGY",
+  "nom": {
+   "fr": "Puissance",
+   "en": "Focus Energy"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_FOCUS_ENERGY",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur prend une profonde inspiration et se concentre pour augmenter son taux de critiques.",
+   "en": "Raises the criti cal hit ratio."
+  }
+ },
+ {
+  "id": 117,
+  "cle": "BIDE",
+  "nom": {
+   "fr": "Patience",
+   "en": "Bide"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_BIDE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur encaisse les coups durant 2 tours et réplique en infligeant le double des dégâts subis.",
+   "en": "Waits 2-3 turns & hits back double."
+  }
+ },
+ {
+  "id": 118,
+  "cle": "METRONOME",
+  "nom": {
+   "fr": "Métronome",
+   "en": "Metronome"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_METRONOME",
+  "chance": 0,
+  "dit": {
+   "fr": "Agite un doigt et stimule le cerveau pour utiliser presque n’importe quelle capacité au hasard.",
+   "en": "Randomly uses any POKéMON move."
+  }
+ },
+ {
+  "id": 119,
+  "cle": "MIRROR_MOVE",
+  "nom": {
+   "fr": "Mimique",
+   "en": "Mirror Move"
+  },
+  "type": "flying",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_MIRROR_MOVE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur riposte à l’attaque de l’ennemi avec la même attaque.",
+   "en": "Counters with the same move."
+  }
+ },
+ {
+  "id": 120,
+  "cle": "SELFDESTRUCT",
+  "nom": {
+   "fr": "Destruction",
+   "en": "Self-Destruct"
+  },
+  "type": "normal",
+  "puissance": 200,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_SELFDESTRUCT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur explose en blessant tous les Pokémon autour de lui. Le lanceur tombe K.O.",
+   "en": "Powerful but makes the user faint."
+  }
+ },
+ {
+  "id": 121,
+  "cle": "EGG_BOMB",
+  "nom": {
+   "fr": "Bombe Œuf",
+   "en": "Egg Bomb"
+  },
+  "type": "normal",
+  "puissance": 100,
+  "precision": 75,
+  "pp": 10,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "De toutes ses forces, le lanceur jette un gros œuf sur l’ennemi pour lui infliger des dégâts.",
+   "en": "Eggs are hurled at the foe."
+  }
+ },
+ {
+  "id": 122,
+  "cle": "LICK",
+  "nom": {
+   "fr": "Léchouille",
+   "en": "Lick"
+  },
+  "type": "ghost",
+  "puissance": 20,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_PARALYZE_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Un grand coup de langue qui inflige des dégâts à l’ennemi. Peut aussi le paralyser.",
+   "en": "An attack that may cause paralysis."
+  }
+ },
+ {
+  "id": 123,
+  "cle": "SMOG",
+  "nom": {
+   "fr": "Purédpois",
+   "en": "Smog"
+  },
+  "type": "poison",
+  "puissance": 20,
+  "precision": 70,
+  "pp": 20,
+  "effet": "EFFECT_POISON_HIT",
+  "chance": 40,
+  "dit": {
+   "fr": "Le lanceur attaque à l’aide d’une éruption de gaz répugnants. Peut aussi empoisonner l’ennemi.",
+   "en": "An attack that may poison the foe."
+  }
+ },
+ {
+  "id": 124,
+  "cle": "SLUDGE",
+  "nom": {
+   "fr": "Détritus",
+   "en": "Sludge"
+  },
+  "type": "poison",
+  "puissance": 65,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_POISON_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Des détritus toxiques sont projetés sur l’ennemi. Peut aussi l’empoisonner.",
+   "en": "An attack that may poison the foe."
+  }
+ },
+ {
+  "id": 125,
+  "cle": "BONE_CLUB",
+  "nom": {
+   "fr": "Massd’Os",
+   "en": "Bone Club"
+  },
+  "type": "ground",
+  "puissance": 65,
+  "precision": 85,
+  "pp": 20,
+  "effet": "EFFECT_FLINCH_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Le lanceur frappe l’ennemi à grands coups d’os. Peut aussi apeurer l’ennemi.",
+   "en": "An attack that may cause flinching."
+  }
+ },
+ {
+  "id": 126,
+  "cle": "FIRE_BLAST",
+  "nom": {
+   "fr": "Déflagration",
+   "en": "Fire Blast"
+  },
+  "type": "fire",
+  "puissance": 120,
+  "precision": 85,
+  "pp": 5,
+  "effet": "EFFECT_BURN_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Un déluge de flammes ardentes submerge l’ennemi. Peut aussi le brûler.",
+   "en": "An attack that may cause a burn."
+  }
+ },
+ {
+  "id": 127,
+  "cle": "WATERFALL",
+  "nom": {
+   "fr": "Cascade",
+   "en": "Waterfall"
+  },
+  "type": "water",
+  "puissance": 80,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur charge l’ennemi à une vitesse remarquable, ce qui peut l’apeurer. Permet aussi de franchir une cascade.",
+   "en": "An aquatic charge attack."
+  }
+ },
+ {
+  "id": 128,
+  "cle": "CLAMP",
+  "nom": {
+   "fr": "Claquoir",
+   "en": "Clamp"
+  },
+  "type": "water",
+  "puissance": 35,
+  "precision": 75,
+  "pp": 10,
+  "effet": "EFFECT_TRAP_TARGET",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur piège l’ennemi dans sa dure coquille et l’écrase pendant 4 à 5 tours.",
+   "en": "Traps the foe for 2-5 turns."
+  }
+ },
+ {
+  "id": 129,
+  "cle": "SWIFT",
+  "nom": {
+   "fr": "Météores",
+   "en": "Swift"
+  },
+  "type": "normal",
+  "puissance": 60,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_ALWAYS_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur envoie des rayons d’étoiles. Touche toujours l’ennemi.",
+   "en": "An attack that never misses."
+  }
+ },
+ {
+  "id": 130,
+  "cle": "SKULL_BASH",
+  "nom": {
+   "fr": "Coud’Krâne",
+   "en": "Skull Bash"
+  },
+  "type": "normal",
+  "puissance": 100,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_SKULL_BASH",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur baisse la tête pour augmenter sa Défense au 1er tour et percuter l’ennemi au 2è.",
+   "en": "1st turn: Prepare 2nd turn: Attack"
+  }
+ },
+ {
+  "id": 131,
+  "cle": "SPIKE_CANNON",
+  "nom": {
+   "fr": "Picanon",
+   "en": "Spike Cannon"
+  },
+  "type": "normal",
+  "puissance": 20,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_MULTI_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Envoie une rafale de dards. Peut toucher de 2 à 5 fois.",
+   "en": "Fires spikes to hit 2-5 times."
+  }
+ },
+ {
+  "id": 132,
+  "cle": "CONSTRICT",
+  "nom": {
+   "fr": "Constriction",
+   "en": "Constrict"
+  },
+  "type": "normal",
+  "puissance": 10,
+  "precision": 100,
+  "pp": 35,
+  "effet": "EFFECT_SPEED_DOWN_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "De longs tentacules ou lianes attaquent l’ennemi. Peut aussi baisser sa Vitesse.",
+   "en": "An attack that may lower SPEED."
+  }
+ },
+ {
+  "id": 133,
+  "cle": "AMNESIA",
+  "nom": {
+   "fr": "Amnésie",
+   "en": "Amnesia"
+  },
+  "type": "psychic",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_SP_DEF_UP_2",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur fait le vide dans son esprit pour oublier ses soucis. Augmente fortement sa Défense Spéciale.",
+   "en": "Sharply raises the user's SPCL.DEF."
+  }
+ },
+ {
+  "id": 134,
+  "cle": "KINESIS",
+  "nom": {
+   "fr": "Télékinésie",
+   "en": "Kinesis"
+  },
+  "type": "psychic",
+  "puissance": 0,
+  "precision": 80,
+  "pp": 15,
+  "effet": "EFFECT_ACCURACY_DOWN",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur distrait l’ennemi en pliant une cuillère. Peut baisser la Précision de l’ennemi.",
+   "en": "Reduces the foe's accuracy."
+  }
+ },
+ {
+  "id": 135,
+  "cle": "SOFTBOILED",
+  "nom": {
+   "fr": "E-Coque",
+   "en": "Soft-Boiled"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_HEAL",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur récupère jusqu’à la moitié de ses PV max. En dehors des combats, permet de transférer des PV du lanceur à un allié.",
+   "en": "Restores HP by 1/2 the user's max HP."
+  }
+ },
+ {
+  "id": 136,
+  "cle": "HI_JUMP_KICK",
+  "nom": {
+   "fr": "Pied Voltige",
+   "en": "High Jump Kick"
+  },
+  "type": "fighting",
+  "puissance": 85,
+  "precision": 90,
+  "pp": 20,
+  "effet": "EFFECT_JUMP_KICK",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur s’élance pour effectuer un coup de genou sauté. S’il échoue, le lanceur se blesse.",
+   "en": "May miss and hurt the user."
+  }
+ },
+ {
+  "id": 137,
+  "cle": "GLARE",
+  "nom": {
+   "fr": "Regard Médusant",
+   "en": "Glare"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 75,
+  "pp": 30,
+  "effet": "EFFECT_PARALYZE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur intimide l’ennemi grâce à son regard terrifiant pour le paralyser.",
+   "en": "A move that may cause paralysis."
+  }
+ },
+ {
+  "id": 138,
+  "cle": "DREAM_EATER",
+  "nom": {
+   "fr": "Dévorêve",
+   "en": "Dream Eater"
+  },
+  "type": "psychic",
+  "puissance": 100,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_DREAM_EATER",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur mange le rêve de l’ennemi endormi. Le lanceur récupère en PV la moitié des dégâts infligés.",
+   "en": "Steals HP from a sleeping victim."
+  }
+ },
+ {
+  "id": 139,
+  "cle": "POISON_GAS",
+  "nom": {
+   "fr": "Gaz Toxik",
+   "en": "Poison Gas"
+  },
+  "type": "poison",
+  "puissance": 0,
+  "precision": 55,
+  "pp": 40,
+  "effet": "EFFECT_POISON",
+  "chance": 0,
+  "dit": {
+   "fr": "Un nuage de gaz toxique est projeté au visage de l’ennemi. Peut l’empoisonner.",
+   "en": "A move that may poison the foe."
+  }
+ },
+ {
+  "id": 140,
+  "cle": "BARRAGE",
+  "nom": {
+   "fr": "Pilonnage",
+   "en": "Barrage"
+  },
+  "type": "normal",
+  "puissance": 15,
+  "precision": 85,
+  "pp": 20,
+  "effet": "EFFECT_MULTI_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Projette de 2 à 5 grosses boules sur l’ennemi.",
+   "en": "Throws orbs to hit 2-5 times."
+  }
+ },
+ {
+  "id": 141,
+  "cle": "LEECH_LIFE",
+  "nom": {
+   "fr": "Vampirisme",
+   "en": "Leech Life"
+  },
+  "type": "bug",
+  "puissance": 20,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_LEECH_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une attaque qui aspire le sang de l’ennemi. La moitié des dégâts sont convertis en PV pour le lanceur.",
+   "en": "Steals 1/2 of the damage inflicted."
+  }
+ },
+ {
+  "id": 142,
+  "cle": "LOVELY_KISS",
+  "nom": {
+   "fr": "Grobisou",
+   "en": "Lovely Kiss"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 75,
+  "pp": 10,
+  "effet": "EFFECT_SLEEP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur fait un bisou à l’ennemi en prenant une mine effrayante. Endort l’ennemi.",
+   "en": "May cause the foe to fall asleep."
+  }
+ },
+ {
+  "id": 143,
+  "cle": "SKY_ATTACK",
+  "nom": {
+   "fr": "Piqué",
+   "en": "Sky Attack"
+  },
+  "type": "flying",
+  "puissance": 140,
+  "precision": 90,
+  "pp": 5,
+  "effet": "EFFECT_SKY_ATTACK",
+  "chance": 0,
+  "dit": {
+   "fr": "Une attaque en 2 tours au taux de critiques élevé. Peut aussi apeurer l’ennemi.",
+   "en": "1st turn: Prepare 2nd turn: Attack"
+  }
+ },
+ {
+  "id": 144,
+  "cle": "TRANSFORM",
+  "nom": {
+   "fr": "Morphing",
+   "en": "Transform"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_TRANSFORM",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur devient une copie de sa cible et obtient la même palette de capacités.",
+   "en": "The user assumes the foe's guise."
+  }
+ },
+ {
+  "id": 145,
+  "cle": "BUBBLE",
+  "nom": {
+   "fr": "Écume",
+   "en": "Bubble"
+  },
+  "type": "water",
+  "puissance": 20,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_SPEED_DOWN_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Des bulles frappent l’ennemi. Peut réduire sa Vitesse.",
+   "en": "An attack that may reduce SPEED."
+  }
+ },
+ {
+  "id": 146,
+  "cle": "DIZZY_PUNCH",
+  "nom": {
+   "fr": "Uppercut",
+   "en": "Dizzy Punch"
+  },
+  "type": "normal",
+  "puissance": 70,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_CONFUSE_HIT",
+  "chance": 20,
+  "dit": {
+   "fr": "Un enchaînement de coups de poing cadencés. Peut aussi rendre confus.",
+   "en": "An attack that may cause confusion."
+  }
+ },
+ {
+  "id": 147,
+  "cle": "SPORE",
+  "nom": {
+   "fr": "Spore",
+   "en": "Spore"
+  },
+  "type": "grass",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_SLEEP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur répand un nuage de spores qui endort.",
+   "en": "A move that induces sleep."
+  }
+ },
+ {
+  "id": 148,
+  "cle": "FLASH",
+  "nom": {
+   "fr": "Flash",
+   "en": "Flash"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 70,
+  "pp": 20,
+  "effet": "EFFECT_ACCURACY_DOWN",
+  "chance": 0,
+  "dit": {
+   "fr": "Explosion lumineuse qui fait baisser la Précision de l’ennemi. Permet aussi d’éclairer les grottes.",
+   "en": "Blinds the foe to reduce accuracy."
+  }
+ },
+ {
+  "id": 149,
+  "cle": "PSYWAVE",
+  "nom": {
+   "fr": "Vague Psy",
+   "en": "Psywave"
+  },
+  "type": "psychic",
+  "puissance": 1,
+  "precision": 80,
+  "pp": 15,
+  "effet": "EFFECT_PSYWAVE",
+  "chance": 0,
+  "dit": {
+   "fr": "Une étrange onde d’énergie chaude frappe l’ennemi. Cette attaque est d’intensité variable.",
+   "en": "An attack with variable power."
+  }
+ },
+ {
+  "id": 150,
+  "cle": "SPLASH",
+  "nom": {
+   "fr": "Trempette",
+   "en": "Splash"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 40,
+  "effet": "EFFECT_SPLASH",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur barbote et éclabousse les environs. Cette capacité n’a aucun effet.",
+   "en": "Has no effect whatsoever."
+  }
+ },
+ {
+  "id": 151,
+  "cle": "ACID_ARMOR",
+  "nom": {
+   "fr": "Acidarmure",
+   "en": "Acid Armor"
+  },
+  "type": "poison",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 40,
+  "effet": "EFFECT_DEFENSE_UP_2",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur modifie sa structure moléculaire pour se liquéfier et augmenter fortement sa Défense.",
+   "en": "Sharply raises the user's DEFENSE."
+  }
+ },
+ {
+  "id": 152,
+  "cle": "CRABHAMMER",
+  "nom": {
+   "fr": "Pince-Masse",
+   "en": "Crabhammer"
+  },
+  "type": "water",
+  "puissance": 90,
+  "precision": 85,
+  "pp": 10,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une grande pince martèle l’ennemi. Taux de critiques élevé.",
+   "en": "Has a high criti cal hit ratio."
+  }
+ },
+ {
+  "id": 153,
+  "cle": "EXPLOSION",
+  "nom": {
+   "fr": "Explosion",
+   "en": "Explosion"
+  },
+  "type": "normal",
+  "puissance": 250,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_SELFDESTRUCT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur explose et inflige des dégâts à tous les Pokémon autour de lui. Met K.O. le lanceur.",
+   "en": "Very powerful but makes user faint."
+  }
+ },
+ {
+  "id": 154,
+  "cle": "FURY_SWIPES",
+  "nom": {
+   "fr": "Combo-Griffe",
+   "en": "Fury Swipes"
+  },
+  "type": "normal",
+  "puissance": 18,
+  "precision": 80,
+  "pp": 15,
+  "effet": "EFFECT_MULTI_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "L’ennemi est lacéré par des faux ou des griffes de 2 à 5 fois.",
+   "en": "Quickly scratches 2-5 times."
+  }
+ },
+ {
+  "id": 155,
+  "cle": "BONEMERANG",
+  "nom": {
+   "fr": "Osmerang",
+   "en": "Bonemerang"
+  },
+  "type": "ground",
+  "puissance": 50,
+  "precision": 90,
+  "pp": 10,
+  "effet": "EFFECT_DOUBLE_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur projette son os comme un boomerang. Cette attaque frappe à l’aller et au retour.",
+   "en": "An attack that strikes twice."
+  }
+ },
+ {
+  "id": 156,
+  "cle": "REST",
+  "nom": {
+   "fr": "Repos",
+   "en": "Rest"
+  },
+  "type": "psychic",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_HEAL",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur dort pendant 2 tours. Il regagne tous ses PV et n’a plus de problèmes de statut.",
+   "en": "Sleep for 2 turns to fully recover."
+  }
+ },
+ {
+  "id": 157,
+  "cle": "ROCK_SLIDE",
+  "nom": {
+   "fr": "Éboulement",
+   "en": "Rock Slide"
+  },
+  "type": "rock",
+  "puissance": 75,
+  "precision": 90,
+  "pp": 10,
+  "effet": "EFFECT_FLINCH_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Envoie de gros rochers sur l’ennemi pour infliger des dégâts. Peut aussi l’apeurer.",
+   "en": "An attack that may cause flinching."
+  }
+ },
+ {
+  "id": 158,
+  "cle": "HYPER_FANG",
+  "nom": {
+   "fr": "Croc de Mort",
+   "en": "Hyper Fang"
+  },
+  "type": "normal",
+  "puissance": 80,
+  "precision": 90,
+  "pp": 15,
+  "effet": "EFFECT_FLINCH_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Le lanceur mord l’ennemi à l’aide de ses incisives aiguisées. Peut aussi apeurer l’ennemi.",
+   "en": "An attack that may cause flinching."
+  }
+ },
+ {
+  "id": 159,
+  "cle": "SHARPEN",
+  "nom": {
+   "fr": "Affûtage",
+   "en": "Sharpen"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_ATTACK_UP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur réduit son nombre de polygones pour accentuer ses angles et augmenter son Attaque.",
+   "en": "A move that raises the user's ATTACK."
+  }
+ },
+ {
+  "id": 160,
+  "cle": "CONVERSION",
+  "nom": {
+   "fr": "Conversion",
+   "en": "Conversion"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_CONVERSION",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur change de type pour prendre celui de l’une de ses capacités.",
+   "en": "Change user's type to a move's type."
+  }
+ },
+ {
+  "id": 161,
+  "cle": "TRI_ATTACK",
+  "nom": {
+   "fr": "Triplattaque",
+   "en": "Tri Attack"
+  },
+  "type": "normal",
+  "puissance": 80,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_TRI_ATTACK",
+  "chance": 20,
+  "dit": {
+   "fr": "Le lanceur envoie trois boules d’énergie simultanément. Peut aussi paralyser, brûler ou geler l’ennemi.",
+   "en": "Fires three kinds of beams at once."
+  }
+ },
+ {
+  "id": 162,
+  "cle": "SUPER_FANG",
+  "nom": {
+   "fr": "Croc Fatal",
+   "en": "Super Fang"
+  },
+  "type": "normal",
+  "puissance": 1,
+  "precision": 90,
+  "pp": 10,
+  "effet": "EFFECT_SUPER_FANG",
+  "chance": 0,
+  "dit": {
+   "fr": "Une vilaine morsure d’incisives qui réduit de moitié les PV de l’ennemi.",
+   "en": "Cuts the foe's HP by 1/2."
+  }
+ },
+ {
+  "id": 163,
+  "cle": "SLASH",
+  "nom": {
+   "fr": "Tranche",
+   "en": "Slash"
+  },
+  "type": "normal",
+  "puissance": 70,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Un coup de griffe ou autre tranche l’ennemi. Taux de critiques élevé.",
+   "en": "Has a high criti cal hit ratio."
+  }
+ },
+ {
+  "id": 164,
+  "cle": "SUBSTITUTE",
+  "nom": {
+   "fr": "Clonage",
+   "en": "Substitute"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_SUBSTITUTE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur fait une copie de lui-même en sacrifiant quelques PV. La copie sert de leurre.",
+   "en": "Makes a decoy with 1/4 user's max HP."
+  }
+ },
+ {
+  "id": 165,
+  "cle": "STRUGGLE",
+  "nom": {
+   "fr": "Lutte",
+   "en": "Struggle"
+  },
+  "type": "normal",
+  "puissance": 50,
+  "precision": 100,
+  "pp": 1,
+  "effet": "EFFECT_RECOIL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une attaque désespérée, lancée quand le lanceur n’a plus de PP. Le blesse aussi légèrement.",
+   "en": "Used only if all PP are exhausted."
+  }
+ },
+ {
+  "id": 166,
+  "cle": "SKETCH",
+  "nom": {
+   "fr": "Gribouille",
+   "en": "Sketch"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 1,
+  "effet": "EFFECT_SKETCH",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur apprend le dernier coup utilisé par la cible. Gribouille disparaît après utilisation.",
+   "en": "Copies the foe's move permanently."
+  }
+ },
+ {
+  "id": 167,
+  "cle": "TRIPLE_KICK",
+  "nom": {
+   "fr": "Triple Pied",
+   "en": "Triple Kick"
+  },
+  "type": "fighting",
+  "puissance": 10,
+  "precision": 90,
+  "pp": 10,
+  "effet": "EFFECT_TRIPLE_KICK",
+  "chance": 0,
+  "dit": {
+   "fr": "Une salve de 1 à 3 coups de pied dont la puissance augmente à chaque coup porté.",
+   "en": "Hits three times with rising power."
+  }
+ },
+ {
+  "id": 168,
+  "cle": "THIEF",
+  "nom": {
+   "fr": "Larcin",
+   "en": "Thief"
+  },
+  "type": "dark",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_THIEF",
+  "chance": 100,
+  "dit": {
+   "fr": "Le lanceur attaque la cible et vole son objet. Le lanceur ne peut rien voler s’il tient déjà un objet.",
+   "en": "An attack that may steal a held item."
+  }
+ },
+ {
+  "id": 169,
+  "cle": "SPIDER_WEB",
+  "nom": {
+   "fr": "Toile",
+   "en": "Spider Web"
+  },
+  "type": "bug",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_MEAN_LOOK",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur enserre l’ennemi à l’aide d’une fine soie gluante pour l’empêcher de fuir le combat.",
+   "en": "Prevents fleeing or switching."
+  }
+ },
+ {
+  "id": 170,
+  "cle": "MIND_READER",
+  "nom": {
+   "fr": "Lire-Esprit",
+   "en": "Mind Reader"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_LOCK_ON",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur analyse les mouvements de l’ennemi pour être sûr de toucher au coup suivant.",
+   "en": "Ensures the next attack will hit."
+  }
+ },
+ {
+  "id": 171,
+  "cle": "NIGHTMARE",
+  "nom": {
+   "fr": "Cauchemar",
+   "en": "Nightmare"
+  },
+  "type": "ghost",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_NIGHTMARE",
+  "chance": 0,
+  "dit": {
+   "fr": "Un cauchemar qui inflige des dégâts à chaque tour à un ennemi endormi.",
+   "en": "A sleeper loses 1/4 HP every turn."
+  }
+ },
+ {
+  "id": 172,
+  "cle": "FLAME_WHEEL",
+  "nom": {
+   "fr": "Roue de Feu",
+   "en": "Flame Wheel"
+  },
+  "type": "fire",
+  "puissance": 60,
+  "precision": 100,
+  "pp": 25,
+  "effet": "EFFECT_FLAME_WHEEL",
+  "chance": 10,
+  "dit": {
+   "fr": "Le lanceur s’entoure de feu et charge l’ennemi. Peut aussi brûler l’ennemi.",
+   "en": "An attack that may cause a burn."
+  }
+ },
+ {
+  "id": 173,
+  "cle": "SNORE",
+  "nom": {
+   "fr": "Ronflement",
+   "en": "Snore"
+  },
+  "type": "normal",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_SNORE",
+  "chance": 30,
+  "dit": {
+   "fr": "Une attaque qui ne fonctionne que si le lanceur est endormi. Le boucan peut aussi apeurer l’ennemi.",
+   "en": "An attack useable only while asleep."
+  }
+ },
+ {
+  "id": 174,
+  "cle": "CURSE",
+  "nom": {
+   "fr": "Malédiction",
+   "en": "Curse"
+  },
+  "type": null,
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_CURSE",
+  "chance": 0,
+  "dit": {
+   "fr": "Une capacité à l’effet différent selon que le lanceur est un Pokémon Spectre ou non.",
+   "en": "Works differently for ghost-types."
+  }
+ },
+ {
+  "id": 175,
+  "cle": "FLAIL",
+  "nom": {
+   "fr": "Gigotage",
+   "en": "Flail"
+  },
+  "type": "normal",
+  "puissance": 1,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_REVERSAL",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur fait tournoyer son fléau. Plus ses PV sont bas, plus l’attaque est puissante.",
+   "en": "Stronger if the user's HP is low."
+  }
+ },
+ {
+  "id": 176,
+  "cle": "CONVERSION2",
+  "nom": {
+   "fr": "Conversion 2",
+   "en": "Conversion 2"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_CONVERSION2",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur change de type pour être résistant au type de la dernière attaque lancée par sa cible.",
+   "en": "The user's type is made resistant."
+  }
+ },
+ {
+  "id": 177,
+  "cle": "AEROBLAST",
+  "nom": {
+   "fr": "Aéroblast",
+   "en": "Aeroblast"
+  },
+  "type": "flying",
+  "puissance": 100,
+  "precision": 95,
+  "pp": 5,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur projette une tornade sur l’ennemi pour infliger des dégâts. Taux de critiques élevé.",
+   "en": "Has a high criti cal hit ratio."
+  }
+ },
+ {
+  "id": 178,
+  "cle": "COTTON_SPORE",
+  "nom": {
+   "fr": "Spore Coton",
+   "en": "Cotton Spore"
+  },
+  "type": "grass",
+  "puissance": 0,
+  "precision": 85,
+  "pp": 40,
+  "effet": "EFFECT_SPEED_DOWN_2",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur libère des spores cotonneuses qui collent à l’ennemi et baissent fortement sa Vitesse.",
+   "en": "Sharply reduces the foe's SPEED."
+  }
+ },
+ {
+  "id": 179,
+  "cle": "REVERSAL",
+  "nom": {
+   "fr": "Contre",
+   "en": "Reversal"
+  },
+  "type": "fighting",
+  "puissance": 1,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_REVERSAL",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur ne retient plus ses coups. Plus ses PV sont bas et plus l’attaque est puissante.",
+   "en": "Stronger if the user's HP is low."
+  }
+ },
+ {
+  "id": 180,
+  "cle": "SPITE",
+  "nom": {
+   "fr": "Dépit",
+   "en": "Spite"
+  },
+  "type": "ghost",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_SPITE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur exprime son ressentiment en retirant 4 PP de la dernière attaque de l’ennemi.",
+   "en": "Cuts the PP of the foe's last move."
+  }
+ },
+ {
+  "id": 181,
+  "cle": "POWDER_SNOW",
+  "nom": {
+   "fr": "Poudreuse",
+   "en": "Powder Snow"
+  },
+  "type": "ice",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 25,
+  "effet": "EFFECT_FREEZE_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Le lanceur projette de la neige poudreuse. Peut aussi geler l’ennemi.",
+   "en": "An attack that may cause freezing."
+  }
+ },
+ {
+  "id": 182,
+  "cle": "PROTECT",
+  "nom": {
+   "fr": "Abri",
+   "en": "Protect"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_PROTECT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur esquive toutes les attaques. Plus la capacité est utilisée de fois à la suite, plus elle risque d’échouer.",
+   "en": "Foils attack that turn. It may fail."
+  }
+ },
+ {
+  "id": 183,
+  "cle": "MACH_PUNCH",
+  "nom": {
+   "fr": "Mach Punch",
+   "en": "Mach Punch"
+  },
+  "type": "fighting",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_PRIORITY_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Coup de poing fulgurant. Frappe en premier.",
+   "en": "A fast punch that lands first."
+  }
+ },
+ {
+  "id": 184,
+  "cle": "SCARY_FACE",
+  "nom": {
+   "fr": "Grimace",
+   "en": "Scary Face"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 90,
+  "pp": 10,
+  "effet": "EFFECT_SPEED_DOWN_2",
+  "chance": 0,
+  "dit": {
+   "fr": "Une grimace qui effraie l’ennemi et réduit fortement sa Vitesse.",
+   "en": "Sharply reduces the foe's SPEED."
+  }
+ },
+ {
+  "id": 185,
+  "cle": "FAINT_ATTACK",
+  "nom": {
+   "fr": "Feinte",
+   "en": "Feint Attack"
+  },
+  "type": "dark",
+  "puissance": 60,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_ALWAYS_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur s’approche l’air de rien avant de frapper par surprise. N’échoue jamais.",
+   "en": "An attack that never misses."
+  }
+ },
+ {
+  "id": 186,
+  "cle": "SWEET_KISS",
+  "nom": {
+   "fr": "Doux Baiser",
+   "en": "Sweet Kiss"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 75,
+  "pp": 10,
+  "effet": "EFFECT_CONFUSE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur envoie un bisou si mignon et désarmant qu’il plonge l’ennemi dans la confusion.",
+   "en": "A move that causes confusion."
+  }
+ },
+ {
+  "id": 187,
+  "cle": "BELLY_DRUM",
+  "nom": {
+   "fr": "Cognobidon",
+   "en": "Belly Drum"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_BELLY_DRUM",
+  "chance": 0,
+  "dit": {
+   "fr": "Améliore l’Attaque au maximum en sacrifiant la moitié des PV max.",
+   "en": "Reduces own HP to maximize ATTACK."
+  }
+ },
+ {
+  "id": 188,
+  "cle": "SLUDGE_BOMB",
+  "nom": {
+   "fr": "Bombe Beurk",
+   "en": "Sludge Bomb"
+  },
+  "type": "poison",
+  "puissance": 90,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_POISON_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Des détritus toxiques sont projetés sur l’ennemi. Peut aussi l’empoisonner.",
+   "en": "An attack that may poison the foe."
+  }
+ },
+ {
+  "id": 189,
+  "cle": "MUD_SLAP",
+  "nom": {
+   "fr": "Coud’Boue",
+   "en": "Mud-Slap"
+  },
+  "type": "ground",
+  "puissance": 20,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_ACCURACY_DOWN_HIT",
+  "chance": 100,
+  "dit": {
+   "fr": "Le lanceur envoie de la boue au visage de l’ennemi pour infliger des dégâts et baisser sa Précision.",
+   "en": "Reduces the foe's accuracy."
+  }
+ },
+ {
+  "id": 190,
+  "cle": "OCTAZOOKA",
+  "nom": {
+   "fr": "Octazooka",
+   "en": "Octazooka"
+  },
+  "type": "water",
+  "puissance": 65,
+  "precision": 85,
+  "pp": 10,
+  "effet": "EFFECT_ACCURACY_DOWN_HIT",
+  "chance": 50,
+  "dit": {
+   "fr": "Le lanceur attaque en projetant de l’encre au visage de l’ennemi. Peut aussi baisser la Précision de l’ennemi.",
+   "en": "An attack that may reduce accuracy."
+  }
+ },
+ {
+  "id": 191,
+  "cle": "SPIKES",
+  "nom": {
+   "fr": "Picots",
+   "en": "Spikes"
+  },
+  "type": "ground",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_SPIKES",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur disperse des piquants sur le sol pour blesser tout ennemi qui entre au combat.",
+   "en": "Hurts foes when they switch out."
+  }
+ },
+ {
+  "id": 192,
+  "cle": "ZAP_CANNON",
+  "nom": {
+   "fr": "Élecanon",
+   "en": "Zap Cannon"
+  },
+  "type": "electric",
+  "puissance": 100,
+  "precision": 50,
+  "pp": 5,
+  "effet": "EFFECT_PARALYZE_HIT",
+  "chance": 100,
+  "dit": {
+   "fr": "Un boulet de canon électrifié qui inflige des dégâts et paralyse l’ennemi.",
+   "en": "An attack that always paralyzes."
+  }
+ },
+ {
+  "id": 193,
+  "cle": "FORESIGHT",
+  "nom": {
+   "fr": "Clairvoyance",
+   "en": "Foresight"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 40,
+  "effet": "EFFECT_FORESIGHT",
+  "chance": 0,
+  "dit": {
+   "fr": "Permet de toucher un Pokémon Spectre avec n’importe quelle capacité et de toucher un ennemi insaisissable.",
+   "en": "Negates accuracy reduction moves."
+  }
+ },
+ {
+  "id": 194,
+  "cle": "DESTINY_BOND",
+  "nom": {
+   "fr": "Lien du Destin",
+   "en": "Destiny Bond"
+  },
+  "type": "ghost",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_DESTINY_BOND",
+  "chance": 0,
+  "dit": {
+   "fr": "Quand cette capacité est activée, elle met K.O. un ennemi qui porte un coup fatal au lanceur.",
+   "en": "The foe faints if the user does."
+  }
+ },
+ {
+  "id": 195,
+  "cle": "PERISH_SONG",
+  "nom": {
+   "fr": "Requiem",
+   "en": "Perish Song"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_PERISH_SONG",
+  "chance": 0,
+  "dit": {
+   "fr": "Tout Pokémon qui entend ce requiem est K.O. dans 3 tours à moins qu’il ne quitte le combat.",
+   "en": "Both user and foe faint in 3 turns."
+  }
+ },
+ {
+  "id": 196,
+  "cle": "ICY_WIND",
+  "nom": {
+   "fr": "Vent Glace",
+   "en": "Icy Wind"
+  },
+  "type": "ice",
+  "puissance": 55,
+  "precision": 95,
+  "pp": 15,
+  "effet": "EFFECT_SPEED_DOWN_HIT",
+  "chance": 100,
+  "dit": {
+   "fr": "Une bourrasque de vent froid blesse l’ennemi. Réduit aussi sa Vitesse.",
+   "en": "An icy attack that lowers SPEED."
+  }
+ },
+ {
+  "id": 197,
+  "cle": "DETECT",
+  "nom": {
+   "fr": "Détection",
+   "en": "Detect"
+  },
+  "type": "fighting",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_PROTECT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur esquive toutes les attaques. Plus la capacité est utilisée de fois à la suite, plus elle risque d’échouer.",
+   "en": "Evades attack that turn. It may fail."
+  }
+ },
+ {
+  "id": 198,
+  "cle": "BONE_RUSH",
+  "nom": {
+   "fr": "Charge Os",
+   "en": "Bone Rush"
+  },
+  "type": "ground",
+  "puissance": 25,
+  "precision": 80,
+  "pp": 10,
+  "effet": "EFFECT_MULTI_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur frappe l’ennemi 2 à 5 fois avec un os.",
+   "en": "An attack that hits 2-5 times."
+  }
+ },
+ {
+  "id": 199,
+  "cle": "LOCK_ON",
+  "nom": {
+   "fr": "Verrouillage",
+   "en": "Lock-On"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_LOCK_ON",
+  "chance": 0,
+  "dit": {
+   "fr": "Verrouille l’ennemi pour ne pas le rater au tour suivant.",
+   "en": "Ensures the next attack will hit."
+  }
+ },
+ {
+  "id": 200,
+  "cle": "OUTRAGE",
+  "nom": {
+   "fr": "Colère",
+   "en": "Outrage"
+  },
+  "type": "dragon",
+  "puissance": 90,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_RAMPAGE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur laisse éclater sa rage et attaque pendant 2 à 3 tours avant de céder à la confusion.",
+   "en": "Works 2-3 turns and confuses user."
+  }
+ },
+ {
+  "id": 201,
+  "cle": "SANDSTORM",
+  "nom": {
+   "fr": "Tempête de Sable",
+   "en": "Sandstorm"
+  },
+  "type": "rock",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_SANDSTORM",
+  "chance": 0,
+  "dit": {
+   "fr": "Une tempête de sable de 5 tours qui blesse tous les Pokémon sauf les types Roche, Sol et Acier.",
+   "en": "Inflicts damage every turn."
+  }
+ },
+ {
+  "id": 202,
+  "cle": "GIGA_DRAIN",
+  "nom": {
+   "fr": "Giga-Sangsue",
+   "en": "Giga Drain"
+  },
+  "type": "grass",
+  "puissance": 60,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_LEECH_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une attaque qui convertit la moitié des dégâts infligés en PV.",
+   "en": "Steals 1/2 of the damage inflicted."
+  }
+ },
+ {
+  "id": 203,
+  "cle": "ENDURE",
+  "nom": {
+   "fr": "Ténacité",
+   "en": "Endure"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_ENDURE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur résiste aux attaques avec 1 PV. Peut échouer si utilisée plusieurs fois de suite.",
+   "en": "Always leaves at least 1HP."
+  }
+ },
+ {
+  "id": 204,
+  "cle": "CHARM",
+  "nom": {
+   "fr": "Charme",
+   "en": "Charm"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_ATTACK_DOWN_2",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur fait les yeux doux pour berner l’ennemi et réduire considérablement son Attaque.",
+   "en": "Sharply lowers the foe's ATTACK."
+  }
+ },
+ {
+  "id": 205,
+  "cle": "ROLLOUT",
+  "nom": {
+   "fr": "Roulade",
+   "en": "Rollout"
+  },
+  "type": "rock",
+  "puissance": 30,
+  "precision": 90,
+  "pp": 20,
+  "effet": "EFFECT_ROLLOUT",
+  "chance": 0,
+  "dit": {
+   "fr": "Un rocher roule sur l’ennemi pendant 5 tours. L’attaque gagne en puissance à chaque coup.",
+   "en": "Attacks 5 turns with rising power."
+  }
+ },
+ {
+  "id": 206,
+  "cle": "FALSE_SWIPE",
+  "nom": {
+   "fr": "Faux-Chage",
+   "en": "False Swipe"
+  },
+  "type": "normal",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 40,
+  "effet": "EFFECT_FALSE_SWIPE",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur retient ses coups pour que l’ennemi garde au moins 1 PV et ne tombe pas K.O.",
+   "en": "Leaves the foe with at least 1HP."
+  }
+ },
+ {
+  "id": 207,
+  "cle": "SWAGGER",
+  "nom": {
+   "fr": "Vantardise",
+   "en": "Swagger"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 90,
+  "pp": 15,
+  "effet": "EFFECT_SWAGGER",
+  "chance": 100,
+  "dit": {
+   "fr": "Fait enrager la cible et la plonge dans la confusion, mais augmente fortement son Attaque.",
+   "en": "Causes confusion and raises ATTACK."
+  }
+ },
+ {
+  "id": 208,
+  "cle": "MILK_DRINK",
+  "nom": {
+   "fr": "Lait à Boire",
+   "en": "Milk Drink"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_HEAL",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur récupère jusqu’à la moitié de ses PV max. En dehors des combats, permet de transférer des PV du lanceur à un allié.",
+   "en": "Restores HP by 1/2 the max HP."
+  }
+ },
+ {
+  "id": 209,
+  "cle": "SPARK",
+  "nom": {
+   "fr": "Étincelle",
+   "en": "Spark"
+  },
+  "type": "electric",
+  "puissance": 65,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_PARALYZE_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Lance une charge électrique sur l’ennemi. Peut aussi le paralyser.",
+   "en": "An attack that may cause paralysis."
+  }
+ },
+ {
+  "id": 210,
+  "cle": "FURY_CUTTER",
+  "nom": {
+   "fr": "Taillade",
+   "en": "Fury Cutter"
+  },
+  "type": "bug",
+  "puissance": 10,
+  "precision": 95,
+  "pp": 20,
+  "effet": "EFFECT_FURY_CUTTER",
+  "chance": 0,
+  "dit": {
+   "fr": "Un coup de faux ou de griffe dont la force augmente quand il touche plusieurs fois d’affilée.",
+   "en": "Successive hits raise power."
+  }
+ },
+ {
+  "id": 211,
+  "cle": "STEEL_WING",
+  "nom": {
+   "fr": "Ailes d’Acier",
+   "en": "Steel Wing"
+  },
+  "type": "steel",
+  "puissance": 70,
+  "precision": 90,
+  "pp": 25,
+  "effet": "EFFECT_DEFENSE_UP_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Le lanceur frappe l’ennemi avec des ailes d’acier. Peut aussi augmenter la Défense du lanceur.",
+   "en": "Stiff wings strike the foe."
+  }
+ },
+ {
+  "id": 212,
+  "cle": "MEAN_LOOK",
+  "nom": {
+   "fr": "Regard Noir",
+   "en": "Mean Look"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_MEAN_LOOK",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur pétrifie l’ennemi en lui lançant un regard noir. Il devient incapable de s’enfuir.",
+   "en": "Prevents fleeing or switching."
+  }
+ },
+ {
+  "id": 213,
+  "cle": "ATTRACT",
+  "nom": {
+   "fr": "Attraction",
+   "en": "Attract"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_ATTRACT",
+  "chance": 0,
+  "dit": {
+   "fr": "Si l’ennemi est du sexe opposé, il tombe amoureux et rechigne alors à attaquer.",
+   "en": "Makes the opposite gender infatuated."
+  }
+ },
+ {
+  "id": 214,
+  "cle": "SLEEP_TALK",
+  "nom": {
+   "fr": "Blabla Dodo",
+   "en": "Sleep Talk"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_SLEEP_TALK",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur utilise un de ses coups au hasard pendant qu’il dort.",
+   "en": "Randomly attacks while asleep."
+  }
+ },
+ {
+  "id": 215,
+  "cle": "HEAL_BELL",
+  "nom": {
+   "fr": "Glas de Soin",
+   "en": "Heal Bell"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_HEAL_BELL",
+  "chance": 0,
+  "dit": {
+   "fr": "Carillon apaisant qui soigne les problèmes de statut de tous les Pokémon de l’équipe.",
+   "en": "Eliminates all status problems."
+  }
+ },
+ {
+  "id": 216,
+  "cle": "RETURN",
+  "nom": {
+   "fr": "Retour",
+   "en": "Return"
+  },
+  "type": "normal",
+  "puissance": 1,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_RETURN",
+  "chance": 0,
+  "dit": {
+   "fr": "Une attaque furieuse dont la puissance augmente quand le Pokémon apprécie son Dresseur.",
+   "en": "An attack that is based on loyalty."
+  }
+ },
+ {
+  "id": 217,
+  "cle": "PRESENT",
+  "nom": {
+   "fr": "Cadeau",
+   "en": "Present"
+  },
+  "type": "normal",
+  "puissance": 1,
+  "precision": 90,
+  "pp": 15,
+  "effet": "EFFECT_PRESENT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur attaque en offrant un cadeau piégé à la cible. Peut à l’inverse restaurer certains de ses PV.",
+   "en": "A bomb that may restore HP."
+  }
+ },
+ {
+  "id": 218,
+  "cle": "FRUSTRATION",
+  "nom": {
+   "fr": "Frustration",
+   "en": "Frustration"
+  },
+  "type": "normal",
+  "puissance": 1,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_FRUSTRATION",
+  "chance": 0,
+  "dit": {
+   "fr": "Moins le Pokémon aime son Dresseur, plus cette attaque est puissante.",
+   "en": "An attack based on lack of loyalty."
+  }
+ },
+ {
+  "id": 219,
+  "cle": "SAFEGUARD",
+  "nom": {
+   "fr": "Rune Protect",
+   "en": "Safeguard"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 25,
+  "effet": "EFFECT_SAFEGUARD",
+  "chance": 0,
+  "dit": {
+   "fr": "Champ protecteur empêchant tous les problèmes de statut pendant 5 tours.",
+   "en": "Prevents all status problems."
+  }
+ },
+ {
+  "id": 220,
+  "cle": "PAIN_SPLIT",
+  "nom": {
+   "fr": "Balance",
+   "en": "Pain Split"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_PAIN_SPLIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur ajoute ses PV à ceux de sa cible et les répartit équitablement.",
+   "en": "Adds user & foe's HPs. Shares total."
+  }
+ },
+ {
+  "id": 221,
+  "cle": "SACRED_FIRE",
+  "nom": {
+   "fr": "Feu Sacré",
+   "en": "Sacred Fire"
+  },
+  "type": "fire",
+  "puissance": 100,
+  "precision": 95,
+  "pp": 5,
+  "effet": "EFFECT_SACRED_FIRE",
+  "chance": 50,
+  "dit": {
+   "fr": "Un feu mystique d’une intensité redoutable attaque l’ennemi. Peut aussi le brûler.",
+   "en": "An attack that may inflict a burn."
+  }
+ },
+ {
+  "id": 222,
+  "cle": "MAGNITUDE",
+  "nom": {
+   "fr": "Ampleur",
+   "en": "Magnitude"
+  },
+  "type": "ground",
+  "puissance": 1,
+  "precision": 100,
+  "pp": 30,
+  "effet": "EFFECT_MAGNITUDE",
+  "chance": 0,
+  "dit": {
+   "fr": "Un tremblement de terre d’intensité variable qui affecte tous les Pokémon alentour. L’efficacité varie.",
+   "en": "A ground attack with random power."
+  }
+ },
+ {
+  "id": 223,
+  "cle": "DYNAMICPUNCH",
+  "nom": {
+   "fr": "Dynamo-Poing",
+   "en": "Dynamic Punch"
+  },
+  "type": "fighting",
+  "puissance": 100,
+  "precision": 50,
+  "pp": 5,
+  "effet": "EFFECT_CONFUSE_HIT",
+  "chance": 100,
+  "dit": {
+   "fr": "Le lanceur rassemble ses forces et envoie un coup de poing à l’ennemi. S’il est touché, il est confus.",
+   "en": "An attack that always confuses."
+  }
+ },
+ {
+  "id": 224,
+  "cle": "MEGAHORN",
+  "nom": {
+   "fr": "Mégacorne",
+   "en": "Megahorn"
+  },
+  "type": "bug",
+  "puissance": 120,
+  "precision": 85,
+  "pp": 10,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur utilise ses gigantesques cornes pour charger l’ennemi.",
+   "en": "A powerful charge attack."
+  }
+ },
+ {
+  "id": 225,
+  "cle": "DRAGONBREATH",
+  "nom": {
+   "fr": "Draco-Souffle",
+   "en": "Dragon Breath"
+  },
+  "type": "dragon",
+  "puissance": 60,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_PARALYZE_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Le lanceur souffle fort sur l’ennemi pour infliger des dégâts. Peut aussi le paralyser.",
+   "en": "A strong breath attack."
+  }
+ },
+ {
+  "id": 226,
+  "cle": "BATON_PASS",
+  "nom": {
+   "fr": "Relais",
+   "en": "Baton Pass"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 40,
+  "effet": "EFFECT_BATON_PASS",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur échange sa place et tout changement de stat avec un Pokémon de l’équipe.",
+   "en": "Switches while keeping effects."
+  }
+ },
+ {
+  "id": 227,
+  "cle": "ENCORE",
+  "nom": {
+   "fr": "Encore",
+   "en": "Encore"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_ENCORE",
+  "chance": 0,
+  "dit": {
+   "fr": "Oblige l’ennemi à répéter la dernière capacité utilisée durant 3 tours.",
+   "en": "Makes the foe re peat 2-6 times."
+  }
+ },
+ {
+  "id": 228,
+  "cle": "PURSUIT",
+  "nom": {
+   "fr": "Poursuite",
+   "en": "Pursuit"
+  },
+  "type": "dark",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_PURSUIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une attaque qui inflige deux fois plus de dégâts à un ennemi qui quitte le combat.",
+   "en": "Heavily strikes switching POKéMON."
+  }
+ },
+ {
+  "id": 229,
+  "cle": "RAPID_SPIN",
+  "nom": {
+   "fr": "Tour Rapide",
+   "en": "Rapid Spin"
+  },
+  "type": "normal",
+  "puissance": 20,
+  "precision": 100,
+  "pp": 40,
+  "effet": "EFFECT_RAPID_SPIN",
+  "chance": 0,
+  "dit": {
+   "fr": "Une attaque tournoyante pouvant aussi annuler par ex. Étreinte, Ligotage, Vampigraine ou Picots.",
+   "en": "A high-speed spinning attack."
+  }
+ },
+ {
+  "id": 230,
+  "cle": "SWEET_SCENT",
+  "nom": {
+   "fr": "Doux Parfum",
+   "en": "Sweet Scent"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_EVASION_DOWN",
+  "chance": 0,
+  "dit": {
+   "fr": "Un doux parfum qui réduit l’Esquive de l’ennemi. Attire aussi les Pokémon sauvages.",
+   "en": "Reduces the foe's evasiveness."
+  }
+ },
+ {
+  "id": 231,
+  "cle": "IRON_TAIL",
+  "nom": {
+   "fr": "Queue de Fer",
+   "en": "Iron Tail"
+  },
+  "type": "steel",
+  "puissance": 100,
+  "precision": 75,
+  "pp": 15,
+  "effet": "EFFECT_DEFENSE_DOWN_HIT",
+  "chance": 30,
+  "dit": {
+   "fr": "Attaque l’ennemi avec une queue de fer. Peut aussi baisser la Défense de l’ennemi.",
+   "en": "An attack that may reduce DEFENSE."
+  }
+ },
+ {
+  "id": 232,
+  "cle": "METAL_CLAW",
+  "nom": {
+   "fr": "Griffe Acier",
+   "en": "Metal Claw"
+  },
+  "type": "steel",
+  "puissance": 50,
+  "precision": 95,
+  "pp": 35,
+  "effet": "EFFECT_ATTACK_UP_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Attaque avec des griffes d’acier. Peut aussi augmenter l’Attaque du lanceur.",
+   "en": "An attack that may up user's ATTACK."
+  }
+ },
+ {
+  "id": 233,
+  "cle": "VITAL_THROW",
+  "nom": {
+   "fr": "Corps Perdu",
+   "en": "Vital Throw"
+  },
+  "type": "fighting",
+  "puissance": 70,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_ALWAYS_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur porte son coup en dernier. En échange, cette capacité n’échoue jamais.",
+   "en": "A 2nd-strike move that never misses."
+  }
+ },
+ {
+  "id": 234,
+  "cle": "MORNING_SUN",
+  "nom": {
+   "fr": "Aurore",
+   "en": "Morning Sun"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_MORNING_SUN",
+  "chance": 0,
+  "dit": {
+   "fr": "Un soin qui restaure des PV au lanceur. Son efficacité varie en fonction de la météo.",
+   "en": "Restores HP (varies by time)."
+  }
+ },
+ {
+  "id": 235,
+  "cle": "SYNTHESIS",
+  "nom": {
+   "fr": "Synthèse",
+   "en": "Synthesis"
+  },
+  "type": "grass",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_SYNTHESIS",
+  "chance": 0,
+  "dit": {
+   "fr": "Un soin qui restaure des PV au lanceur. Son efficacité varie en fonction de la météo.",
+   "en": "Restores HP (varies by time)."
+  }
+ },
+ {
+  "id": 236,
+  "cle": "MOONLIGHT",
+  "nom": {
+   "fr": "Rayon Lune",
+   "en": "Moonlight"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_MOONLIGHT",
+  "chance": 0,
+  "dit": {
+   "fr": "Un soin qui restaure des PV au lanceur. Son efficacité varie en fonction de la météo.",
+   "en": "Restores HP (varies by time)."
+  }
+ },
+ {
+  "id": 237,
+  "cle": "HIDDEN_POWER",
+  "nom": {
+   "fr": "Puissance Cachée",
+   "en": "Hidden Power"
+  },
+  "type": "normal",
+  "puissance": 1,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_HIDDEN_POWER",
+  "chance": 0,
+  "dit": {
+   "fr": "Attaque dont la puissance et le type dépendent du Pokémon qui l’utilise.",
+   "en": "The power varies with the POKéMON."
+  }
+ },
+ {
+  "id": 238,
+  "cle": "CROSS_CHOP",
+  "nom": {
+   "fr": "Coup Croix",
+   "en": "Cross Chop"
+  },
+  "type": "fighting",
+  "puissance": 100,
+  "precision": 80,
+  "pp": 5,
+  "effet": "EFFECT_NORMAL_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur délivre un coup double en croisant les avant-bras. Taux de critiques élevé.",
+   "en": "Has a high criti cal hit ratio."
+  }
+ },
+ {
+  "id": 239,
+  "cle": "TWISTER",
+  "nom": {
+   "fr": "Ouragan",
+   "en": "Twister"
+  },
+  "type": "dragon",
+  "puissance": 40,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_TWISTER",
+  "chance": 20,
+  "dit": {
+   "fr": "Déclenche un terrible ouragan sur l’ennemi. Peut aussi l’apeurer.",
+   "en": "Whips up a tornado to attack."
+  }
+ },
+ {
+  "id": 240,
+  "cle": "RAIN_DANCE",
+  "nom": {
+   "fr": "Danse Pluie",
+   "en": "Rain Dance"
+  },
+  "type": "water",
+  "puissance": 0,
+  "precision": 90,
+  "pp": 5,
+  "effet": "EFFECT_RAIN_DANCE",
+  "chance": 0,
+  "dit": {
+   "fr": "Invoque de fortes pluies qui durent 5 tours et améliorent les capacités de type Eau.",
+   "en": "Boosts water-type moves for 5 turns."
+  }
+ },
+ {
+  "id": 241,
+  "cle": "SUNNY_DAY",
+  "nom": {
+   "fr": "Zénith",
+   "en": "Sunny Day"
+  },
+  "type": "fire",
+  "puissance": 0,
+  "precision": 90,
+  "pp": 5,
+  "effet": "EFFECT_SUNNY_DAY",
+  "chance": 0,
+  "dit": {
+   "fr": "Fait briller le soleil pendant 5 tours et améliore les capacités de type Feu.",
+   "en": "Boosts fire-type moves for 5 turns."
+  }
+ },
+ {
+  "id": 242,
+  "cle": "CRUNCH",
+  "nom": {
+   "fr": "Mâchouille",
+   "en": "Crunch"
+  },
+  "type": "dark",
+  "puissance": 80,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_SP_DEF_DOWN_HIT",
+  "chance": 20,
+  "dit": {
+   "fr": "Le lanceur mord l’ennemi de ses crocs pointus. Peut aussi baisser la Défense de l’ennemi.",
+   "en": "An attack that may lower SPCL.DEF."
+  }
+ },
+ {
+  "id": 243,
+  "cle": "MIRROR_COAT",
+  "nom": {
+   "fr": "Voile Miroir",
+   "en": "Mirror Coat"
+  },
+  "type": "psychic",
+  "puissance": 1,
+  "precision": 100,
+  "pp": 20,
+  "effet": "EFFECT_MIRROR_COAT",
+  "chance": 0,
+  "dit": {
+   "fr": "Une riposte qui contre n’importe quelle attaque spéciale en infligeant le double des dégâts subis.",
+   "en": "Counters a SPCL. ATK. move double."
+  }
+ },
+ {
+  "id": 244,
+  "cle": "PSYCH_UP",
+  "nom": {
+   "fr": "Boost",
+   "en": "Psych Up"
+  },
+  "type": "normal",
+  "puissance": 0,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_PSYCH_UP",
+  "chance": 0,
+  "dit": {
+   "fr": "Une autohypnose qui permet au lanceur de copier les changements de stats de la cible.",
+   "en": "Copies the foe's stat changes."
+  }
+ },
+ {
+  "id": 245,
+  "cle": "EXTREMESPEED",
+  "nom": {
+   "fr": "Vitesse Extrême",
+   "en": "Extreme Speed"
+  },
+  "type": "normal",
+  "puissance": 80,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_PRIORITY_HIT",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur charge à une vitesse renversante. Cette attaque a toujours l’initiative.",
+   "en": "A powerful first- strike move."
+  }
+ },
+ {
+  "id": 246,
+  "cle": "ANCIENTPOWER",
+  "nom": {
+   "fr": "Pouvoir Antique",
+   "en": "Ancient Power"
+  },
+  "type": "rock",
+  "puissance": 60,
+  "precision": 100,
+  "pp": 5,
+  "effet": "EFFECT_ALL_UP_HIT",
+  "chance": 10,
+  "dit": {
+   "fr": "Une attaque préhistorique qui peut augmenter toutes les stats du lanceur d’un seul coup.",
+   "en": "An attack that may raise all stats."
+  }
+ },
+ {
+  "id": 247,
+  "cle": "SHADOW_BALL",
+  "nom": {
+   "fr": "Ball’Ombre",
+   "en": "Shadow Ball"
+  },
+  "type": "ghost",
+  "puissance": 80,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_SP_DEF_DOWN_HIT",
+  "chance": 20,
+  "dit": {
+   "fr": "Projette une grande ombre sur l’ennemi. Peut aussi faire baisser sa Défense Spéciale.",
+   "en": "An attack that may lower SPCL.DEF."
+  }
+ },
+ {
+  "id": 248,
+  "cle": "FUTURE_SIGHT",
+  "nom": {
+   "fr": "Prescience",
+   "en": "Future Sight"
+  },
+  "type": "psychic",
+  "puissance": 80,
+  "precision": 90,
+  "pp": 15,
+  "effet": "EFFECT_FUTURE_SIGHT",
+  "chance": 0,
+  "dit": {
+   "fr": "De l’énergie psychique vient frapper l’ennemi 2 tours après l’utilisation de cette capacité.",
+   "en": "An attack that hits on 3rd turn."
+  }
+ },
+ {
+  "id": 249,
+  "cle": "ROCK_SMASH",
+  "nom": {
+   "fr": "Éclate-Roc",
+   "en": "Rock Smash"
+  },
+  "type": "fighting",
+  "puissance": 20,
+  "precision": 100,
+  "pp": 15,
+  "effet": "EFFECT_DEFENSE_DOWN_HIT",
+  "chance": 50,
+  "dit": {
+   "fr": "Porte un coup dévastateur à l’ennemi. Peut briser des rochers fissurés. Peut baisser la Défense.",
+   "en": "An attack that may lower DEFENSE."
+  }
+ },
+ {
+  "id": 250,
+  "cle": "WHIRLPOOL",
+  "nom": {
+   "fr": "Siphon",
+   "en": "Whirlpool"
+  },
+  "type": "water",
+  "puissance": 15,
+  "precision": 70,
+  "pp": 15,
+  "effet": "EFFECT_TRAP_TARGET",
+  "chance": 0,
+  "dit": {
+   "fr": "Piège l’ennemi dans une trombe d’eau pendant 4 à 5 tours.",
+   "en": "Traps the foe for 2-5 turns."
+  }
+ },
+ {
+  "id": 251,
+  "cle": "BEAT_UP",
+  "nom": {
+   "fr": "Baston",
+   "en": "Beat Up"
+  },
+  "type": "dark",
+  "puissance": 10,
+  "precision": 100,
+  "pp": 10,
+  "effet": "EFFECT_BEAT_UP",
+  "chance": 0,
+  "dit": {
+   "fr": "Le lanceur appelle tous les Pokémon de son équipe à attaquer. Plus ils sont nombreux, plus il y a d’attaques.",
+   "en": "Party POKéMON join in the attack."
+  }
+ }
+]

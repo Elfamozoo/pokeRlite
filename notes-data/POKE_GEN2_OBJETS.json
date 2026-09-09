@@ -1,0 +1,1130 @@
+{
+ "ULTRA_BALL": {
+  "nom": {
+   "fr": "Hyper Ball",
+   "en": "ULTRA BALL"
+  },
+  "prix": 1200,
+  "tenu": null
+ },
+ "BRIGHTPOWDER": {
+  "nom": {
+   "fr": "Poudre Claire",
+   "en": "BRIGHTPOWDER"
+  },
+  "prix": 10,
+  "tenu": "HELD_BRIGHTPOWDER"
+ },
+ "GREAT_BALL": {
+  "nom": {
+   "fr": "Super Ball",
+   "en": "GREAT BALL"
+  },
+  "prix": 600,
+  "tenu": null
+ },
+ "POKE_BALL": {
+  "nom": {
+   "fr": "Poké Ball",
+   "en": "POKé BALL"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "MOON_STONE": {
+  "nom": {
+   "fr": "Pierre Lune",
+   "en": "MOON STONE"
+  },
+  "prix": 0,
+  "tenu": null
+ },
+ "ANTIDOTE": {
+  "nom": {
+   "fr": "Antidote",
+   "en": "ANTIDOTE"
+  },
+  "prix": 100,
+  "tenu": null
+ },
+ "BURN_HEAL": {
+  "nom": {
+   "fr": "Anti-Brûle",
+   "en": "BURN HEAL"
+  },
+  "prix": 250,
+  "tenu": null
+ },
+ "ICE_HEAL": {
+  "nom": {
+   "fr": "Antigel",
+   "en": "ICE HEAL"
+  },
+  "prix": 250,
+  "tenu": null
+ },
+ "AWAKENING": {
+  "nom": {
+   "fr": "Réveil",
+   "en": "AWAKENING"
+  },
+  "prix": 250,
+  "tenu": null
+ },
+ "PARLYZ_HEAL": {
+  "nom": {
+   "fr": "Anti-Para",
+   "en": "PARLYZ HEAL"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "FULL_RESTORE": {
+  "nom": {
+   "fr": "Guérison",
+   "en": "FULL RESTORE"
+  },
+  "prix": 3000,
+  "tenu": null
+ },
+ "MAX_POTION": {
+  "nom": {
+   "fr": "Potion Max",
+   "en": "MAX POTION"
+  },
+  "prix": 2500,
+  "tenu": null
+ },
+ "HYPER_POTION": {
+  "nom": {
+   "fr": "Hyper Potion",
+   "en": "HYPER POTION"
+  },
+  "prix": 1200,
+  "tenu": null
+ },
+ "SUPER_POTION": {
+  "nom": {
+   "fr": "Super Potion",
+   "en": "SUPER POTION"
+  },
+  "prix": 700,
+  "tenu": null
+ },
+ "POTION": {
+  "nom": {
+   "fr": "Potion",
+   "en": "POTION"
+  },
+  "prix": 300,
+  "tenu": null
+ },
+ "ESCAPE_ROPE": {
+  "nom": {
+   "fr": "Corde Sortie",
+   "en": "ESCAPE ROPE"
+  },
+  "prix": 550,
+  "tenu": null
+ },
+ "REPEL": {
+  "nom": {
+   "fr": "Repousse",
+   "en": "REPEL"
+  },
+  "prix": 350,
+  "tenu": null
+ },
+ "MAX_ELIXER": {
+  "nom": {
+   "fr": "Élixir Max",
+   "en": "MAX ELIXER"
+  },
+  "prix": 4500,
+  "tenu": null
+ },
+ "FIRE_STONE": {
+  "nom": {
+   "fr": "Pierre Feu",
+   "en": "FIRE STONE"
+  },
+  "prix": 2100,
+  "tenu": null
+ },
+ "THUNDERSTONE": {
+  "nom": {
+   "fr": "Pierre Foudre",
+   "en": "THUNDERSTONE"
+  },
+  "prix": 2100,
+  "tenu": null
+ },
+ "WATER_STONE": {
+  "nom": {
+   "fr": "Pierre Eau",
+   "en": "WATER STONE"
+  },
+  "prix": 2100,
+  "tenu": null
+ },
+ "HP_UP": {
+  "nom": {
+   "fr": "PV Plus",
+   "en": "HP UP"
+  },
+  "prix": 9800,
+  "tenu": null
+ },
+ "PROTEIN": {
+  "nom": {
+   "fr": "Protéine",
+   "en": "PROTEIN"
+  },
+  "prix": 9800,
+  "tenu": null
+ },
+ "IRON": {
+  "nom": {
+   "fr": "Fer",
+   "en": "IRON"
+  },
+  "prix": 9800,
+  "tenu": null
+ },
+ "CARBOS": {
+  "nom": {
+   "fr": "Carbone",
+   "en": "CARBOS"
+  },
+  "prix": 9800,
+  "tenu": null
+ },
+ "LUCKY_PUNCH": {
+  "nom": {
+   "fr": "Poing Chance",
+   "en": "LUCKY PUNCH"
+  },
+  "prix": 10,
+  "tenu": null
+ },
+ "CALCIUM": {
+  "nom": {
+   "fr": "Calcium",
+   "en": "CALCIUM"
+  },
+  "prix": 9800,
+  "tenu": null
+ },
+ "RARE_CANDY": {
+  "nom": {
+   "fr": "Super Bonbon",
+   "en": "RARE CANDY"
+  },
+  "prix": 4800,
+  "tenu": null
+ },
+ "X_ACCURACY": {
+  "nom": {
+   "fr": "Précision +",
+   "en": "X ACCURACY"
+  },
+  "prix": 950,
+  "tenu": null
+ },
+ "LEAF_STONE": {
+  "nom": {
+   "fr": "Pierre Plante",
+   "en": "LEAF STONE"
+  },
+  "prix": 2100,
+  "tenu": null
+ },
+ "METAL_POWDER": {
+  "nom": {
+   "fr": "Poudre Métal",
+   "en": "METAL POWDER"
+  },
+  "prix": 10,
+  "tenu": "HELD_METAL_POWDER"
+ },
+ "NUGGET": {
+  "nom": {
+   "fr": "Pépite",
+   "en": "NUGGET"
+  },
+  "prix": 10000,
+  "tenu": null
+ },
+ "POKE_DOLL": {
+  "nom": {
+   "fr": "Poké Poupée",
+   "en": "POKé DOLL"
+  },
+  "prix": 1000,
+  "tenu": null
+ },
+ "FULL_HEAL": {
+  "nom": {
+   "fr": "Total Soin",
+   "en": "FULL HEAL"
+  },
+  "prix": 600,
+  "tenu": null
+ },
+ "REVIVE": {
+  "nom": {
+   "fr": "Rappel",
+   "en": "REVIVE"
+  },
+  "prix": 1500,
+  "tenu": null
+ },
+ "MAX_REVIVE": {
+  "nom": {
+   "fr": "Rappel Max",
+   "en": "MAX REVIVE"
+  },
+  "prix": 4000,
+  "tenu": null
+ },
+ "GUARD_SPEC": {
+  "nom": {
+   "fr": "Garde-Stats",
+   "en": "GUARD SPEC."
+  },
+  "prix": 700,
+  "tenu": null
+ },
+ "SUPER_REPEL": {
+  "nom": {
+   "fr": "Super Repousse",
+   "en": "SUPER REPEL"
+  },
+  "prix": 500,
+  "tenu": null
+ },
+ "MAX_REPEL": {
+  "nom": {
+   "fr": "Repousse Max",
+   "en": "MAX REPEL"
+  },
+  "prix": 700,
+  "tenu": null
+ },
+ "DIRE_HIT": {
+  "nom": {
+   "fr": "Muscle +",
+   "en": "DIRE HIT"
+  },
+  "prix": 650,
+  "tenu": null
+ },
+ "FRESH_WATER": {
+  "nom": {
+   "fr": "Eau Fraîche",
+   "en": "FRESH WATER"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "SODA_POP": {
+  "nom": {
+   "fr": "Soda Cool",
+   "en": "SODA POP"
+  },
+  "prix": 300,
+  "tenu": null
+ },
+ "LEMONADE": {
+  "nom": {
+   "fr": "Limonade",
+   "en": "LEMONADE"
+  },
+  "prix": 350,
+  "tenu": null
+ },
+ "X_ATTACK": {
+  "nom": {
+   "fr": "Attaque +",
+   "en": "X ATTACK"
+  },
+  "prix": 500,
+  "tenu": null
+ },
+ "X_DEFEND": {
+  "nom": {
+   "fr": "Défense +",
+   "en": "X DEFEND"
+  },
+  "prix": 550,
+  "tenu": null
+ },
+ "X_SPEED": {
+  "nom": {
+   "fr": "Vitesse +",
+   "en": "X SPEED"
+  },
+  "prix": 350,
+  "tenu": null
+ },
+ "X_SPECIAL": {
+  "nom": {
+   "fr": "Atq. Spé. +",
+   "en": "X SPECIAL"
+  },
+  "prix": 350,
+  "tenu": null
+ },
+ "EXP_SHARE": {
+  "nom": {
+   "fr": "Multi Exp",
+   "en": "EXP.SHARE"
+  },
+  "prix": 3000,
+  "tenu": null
+ },
+ "SILVER_LEAF": {
+  "nom": {
+   "fr": "Feuille Argentée",
+   "en": "SILVER LEAF"
+  },
+  "prix": 1000,
+  "tenu": null
+ },
+ "PP_UP": {
+  "nom": {
+   "fr": "PP Plus",
+   "en": "PP UP"
+  },
+  "prix": 9800,
+  "tenu": null
+ },
+ "ETHER": {
+  "nom": {
+   "fr": "Huile",
+   "en": "ETHER"
+  },
+  "prix": 1200,
+  "tenu": null
+ },
+ "MAX_ETHER": {
+  "nom": {
+   "fr": "Huile Max",
+   "en": "MAX ETHER"
+  },
+  "prix": 2000,
+  "tenu": null
+ },
+ "ELIXER": {
+  "nom": {
+   "fr": "Élixir",
+   "en": "ELIXER"
+  },
+  "prix": 3000,
+  "tenu": null
+ },
+ "MOOMOO_MILK": {
+  "nom": {
+   "fr": "Lait Meumeu",
+   "en": "MOOMOO MILK"
+  },
+  "prix": 500,
+  "tenu": null
+ },
+ "QUICK_CLAW": {
+  "nom": {
+   "fr": "Vive Griffe",
+   "en": "QUICK CLAW"
+  },
+  "prix": 100,
+  "tenu": "HELD_QUICK_CLAW"
+ },
+ "PSNCUREBERRY": {
+  "nom": {
+   "fr": "Baie Pêcha",
+   "en": "PSNCUREBERRY"
+  },
+  "prix": 10,
+  "tenu": "HELD_HEAL_POISON"
+ },
+ "GOLD_LEAF": {
+  "nom": {
+   "fr": "Feuille Dorée",
+   "en": "GOLD LEAF"
+  },
+  "prix": 1000,
+  "tenu": null
+ },
+ "SOFT_SAND": {
+  "nom": {
+   "fr": "Sable Doux",
+   "en": "SOFT SAND"
+  },
+  "prix": 100,
+  "tenu": "HELD_GROUND_BOOST"
+ },
+ "SHARP_BEAK": {
+  "nom": {
+   "fr": "Bec Pointu",
+   "en": "SHARP BEAK"
+  },
+  "prix": 100,
+  "tenu": "HELD_FLYING_BOOST"
+ },
+ "PRZCUREBERRY": {
+  "nom": {
+   "fr": "Baie Ceriz",
+   "en": "PRZCUREBERRY"
+  },
+  "prix": 10,
+  "tenu": "HELD_HEAL_PARALYZE"
+ },
+ "BURNT_BERRY": {
+  "nom": {
+   "fr": "Baie Willia",
+   "en": "BURNT BERRY"
+  },
+  "prix": 10,
+  "tenu": "HELD_HEAL_FREEZE"
+ },
+ "ICE_BERRY": {
+  "nom": {
+   "fr": "Baie Fraive",
+   "en": "ICE BERRY"
+  },
+  "prix": 10,
+  "tenu": "HELD_HEAL_BURN"
+ },
+ "POISON_BARB": {
+  "nom": {
+   "fr": "Pic Venin",
+   "en": "POISON BARB"
+  },
+  "prix": 100,
+  "tenu": "HELD_POISON_BOOST"
+ },
+ "KINGS_ROCK": {
+  "nom": {
+   "fr": "Roche Royale",
+   "en": "KING'S ROCK"
+  },
+  "prix": 100,
+  "tenu": "HELD_FLINCH"
+ },
+ "BITTER_BERRY": {
+  "nom": {
+   "fr": "Baie Kika",
+   "en": "BITTER BERRY"
+  },
+  "prix": 10,
+  "tenu": "HELD_HEAL_CONFUSION"
+ },
+ "MINT_BERRY": {
+  "nom": {
+   "fr": "Baie Maron",
+   "en": "MINT BERRY"
+  },
+  "prix": 10,
+  "tenu": "HELD_HEAL_SLEEP"
+ },
+ "RED_APRICORN": {
+  "nom": {
+   "fr": "Noigrume Rouge",
+   "en": "RED APRICORN"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "TINYMUSHROOM": {
+  "nom": {
+   "fr": "Petit Champi",
+   "en": "TINYMUSHROOM"
+  },
+  "prix": 500,
+  "tenu": null
+ },
+ "BIG_MUSHROOM": {
+  "nom": {
+   "fr": "Gros Champi",
+   "en": "BIG MUSHROOM"
+  },
+  "prix": 5000,
+  "tenu": null
+ },
+ "SILVERPOWDER": {
+  "nom": {
+   "fr": "Poudre Argentée",
+   "en": "SILVERPOWDER"
+  },
+  "prix": 100,
+  "tenu": "HELD_BUG_BOOST"
+ },
+ "BLU_APRICORN": {
+  "nom": {
+   "fr": "Noigrume Bleu",
+   "en": "BLU APRICORN"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "AMULET_COIN": {
+  "nom": {
+   "fr": "Pièce Rune",
+   "en": "AMULET COIN"
+  },
+  "prix": 100,
+  "tenu": "HELD_AMULET_COIN"
+ },
+ "YLW_APRICORN": {
+  "nom": {
+   "fr": "Noigrume Jaune",
+   "en": "YLW APRICORN"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "GRN_APRICORN": {
+  "nom": {
+   "fr": "Noigrume Vert",
+   "en": "GRN APRICORN"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "CLEANSE_TAG": {
+  "nom": {
+   "fr": "Rune Purifiante",
+   "en": "CLEANSE TAG"
+  },
+  "prix": 200,
+  "tenu": "HELD_CLEANSE_TAG"
+ },
+ "MYSTIC_WATER": {
+  "nom": {
+   "fr": "Eau Mystique",
+   "en": "MYSTIC WATER"
+  },
+  "prix": 100,
+  "tenu": "HELD_WATER_BOOST"
+ },
+ "TWISTEDSPOON": {
+  "nom": {
+   "fr": "Cuillère Tordue",
+   "en": "TWISTEDSPOON"
+  },
+  "prix": 100,
+  "tenu": "HELD_PSYCHIC_BOOST"
+ },
+ "WHT_APRICORN": {
+  "nom": {
+   "fr": "Noigrume Blanc",
+   "en": "WHT APRICORN"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "BLACKBELT_I": {
+  "nom": {
+   "fr": "Ceinture Noire",
+   "en": "BLACKBELT"
+  },
+  "prix": 100,
+  "tenu": "HELD_FIGHTING_BOOST"
+ },
+ "BLK_APRICORN": {
+  "nom": {
+   "fr": "Noigrume Noir",
+   "en": "BLK APRICORN"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "PNK_APRICORN": {
+  "nom": {
+   "fr": "Noigrume Rose",
+   "en": "PNK APRICORN"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "BLACKGLASSES": {
+  "nom": {
+   "fr": "Lunettes Noires",
+   "en": "BLACKGLASSES"
+  },
+  "prix": 100,
+  "tenu": "HELD_DARK_BOOST"
+ },
+ "SLOWPOKETAIL": {
+  "nom": {
+   "fr": "Queue Ramoloss",
+   "en": "SLOWPOKETAIL"
+  },
+  "prix": 9800,
+  "tenu": null
+ },
+ "PINK_BOW": {
+  "nom": {
+   "fr": "PINK BOW",
+   "en": "PINK BOW"
+  },
+  "prix": 100,
+  "tenu": "HELD_NORMAL_BOOST"
+ },
+ "STICK": {
+  "nom": {
+   "fr": "Poireau",
+   "en": "STICK"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "SMOKE_BALL": {
+  "nom": {
+   "fr": "Boule Fumée",
+   "en": "SMOKE BALL"
+  },
+  "prix": 200,
+  "tenu": "HELD_ESCAPE"
+ },
+ "NEVERMELTICE": {
+  "nom": {
+   "fr": "Glace Éternelle",
+   "en": "NEVERMELTICE"
+  },
+  "prix": 100,
+  "tenu": "HELD_ICE_BOOST"
+ },
+ "MAGNET": {
+  "nom": {
+   "fr": "Aimant",
+   "en": "MAGNET"
+  },
+  "prix": 100,
+  "tenu": "HELD_ELECTRIC_BOOST"
+ },
+ "MIRACLEBERRY": {
+  "nom": {
+   "fr": "Baie Prine",
+   "en": "MIRACLEBERRY"
+  },
+  "prix": 10,
+  "tenu": "HELD_HEAL_STATUS"
+ },
+ "PEARL": {
+  "nom": {
+   "fr": "Perle",
+   "en": "PEARL"
+  },
+  "prix": 1400,
+  "tenu": null
+ },
+ "BIG_PEARL": {
+  "nom": {
+   "fr": "Grande Perle",
+   "en": "BIG PEARL"
+  },
+  "prix": 7500,
+  "tenu": null
+ },
+ "EVERSTONE": {
+  "nom": {
+   "fr": "Pierre Stase",
+   "en": "EVERSTONE"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "SPELL_TAG": {
+  "nom": {
+   "fr": "Rune Sort",
+   "en": "SPELL TAG"
+  },
+  "prix": 100,
+  "tenu": "HELD_GHOST_BOOST"
+ },
+ "RAGECANDYBAR": {
+  "nom": {
+   "fr": "Bonbon Rage",
+   "en": "RAGECANDYBAR"
+  },
+  "prix": 300,
+  "tenu": null
+ },
+ "MIRACLE_SEED": {
+  "nom": {
+   "fr": "Graine Miracle",
+   "en": "MIRACLE SEED"
+  },
+  "prix": 100,
+  "tenu": "HELD_GRASS_BOOST"
+ },
+ "THICK_CLUB": {
+  "nom": {
+   "fr": "Masse Os",
+   "en": "THICK CLUB"
+  },
+  "prix": 500,
+  "tenu": null
+ },
+ "FOCUS_BAND": {
+  "nom": {
+   "fr": "Bandeau",
+   "en": "FOCUS BAND"
+  },
+  "prix": 200,
+  "tenu": "HELD_FOCUS_BAND"
+ },
+ "ENERGYPOWDER": {
+  "nom": {
+   "fr": "Poudrénergie",
+   "en": "ENERGYPOWDER"
+  },
+  "prix": 500,
+  "tenu": null
+ },
+ "ENERGY_ROOT": {
+  "nom": {
+   "fr": "Racinénergie",
+   "en": "ENERGY ROOT"
+  },
+  "prix": 800,
+  "tenu": null
+ },
+ "HEAL_POWDER": {
+  "nom": {
+   "fr": "Poudre Soin",
+   "en": "HEAL POWDER"
+  },
+  "prix": 450,
+  "tenu": null
+ },
+ "REVIVAL_HERB": {
+  "nom": {
+   "fr": "Herbe Rappel",
+   "en": "REVIVAL HERB"
+  },
+  "prix": 2800,
+  "tenu": null
+ },
+ "HARD_STONE": {
+  "nom": {
+   "fr": "Pierre Dure",
+   "en": "HARD STONE"
+  },
+  "prix": 100,
+  "tenu": "HELD_ROCK_BOOST"
+ },
+ "LUCKY_EGG": {
+  "nom": {
+   "fr": "Œuf Chance",
+   "en": "LUCKY EGG"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "STARDUST": {
+  "nom": {
+   "fr": "Poussière Étoile",
+   "en": "STARDUST"
+  },
+  "prix": 2000,
+  "tenu": null
+ },
+ "STAR_PIECE": {
+  "nom": {
+   "fr": "Morceau d’Étoile",
+   "en": "STAR PIECE"
+  },
+  "prix": 9800,
+  "tenu": null
+ },
+ "CHARCOAL": {
+  "nom": {
+   "fr": "Charbon",
+   "en": "CHARCOAL"
+  },
+  "prix": 9800,
+  "tenu": "HELD_FIRE_BOOST"
+ },
+ "BERRY_JUICE": {
+  "nom": {
+   "fr": "Jus de Baie",
+   "en": "BERRY JUICE"
+  },
+  "prix": 100,
+  "tenu": "HELD_BERRY"
+ },
+ "SCOPE_LENS": {
+  "nom": {
+   "fr": "Lentilscope",
+   "en": "SCOPE LENS"
+  },
+  "prix": 200,
+  "tenu": "HELD_CRITICAL_UP"
+ },
+ "METAL_COAT": {
+  "nom": {
+   "fr": "Peau Métal",
+   "en": "METAL COAT"
+  },
+  "prix": 100,
+  "tenu": "HELD_STEEL_BOOST"
+ },
+ "DRAGON_FANG": {
+  "nom": {
+   "fr": "Croc Dragon",
+   "en": "DRAGON FANG"
+  },
+  "prix": 100,
+  "tenu": null
+ },
+ "LEFTOVERS": {
+  "nom": {
+   "fr": "Restes",
+   "en": "LEFTOVERS"
+  },
+  "prix": 200,
+  "tenu": "HELD_LEFTOVERS"
+ },
+ "MYSTERYBERRY": {
+  "nom": {
+   "fr": "Baie Mepo",
+   "en": "MYSTERYBERRY"
+  },
+  "prix": 10,
+  "tenu": "HELD_RESTORE_PP"
+ },
+ "DRAGON_SCALE": {
+  "nom": {
+   "fr": "Écaille Draco",
+   "en": "DRAGON SCALE"
+  },
+  "prix": 2100,
+  "tenu": "HELD_DRAGON_BOOST"
+ },
+ "BERSERK_GENE": {
+  "nom": {
+   "fr": "BERSERK GENE",
+   "en": "BERSERK GENE"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "SACRED_ASH": {
+  "nom": {
+   "fr": "Cendre Sacrée",
+   "en": "SACRED ASH"
+  },
+  "prix": 200,
+  "tenu": null
+ },
+ "HEAVY_BALL": {
+  "nom": {
+   "fr": "Masse Ball",
+   "en": "HEAVY BALL"
+  },
+  "prix": 150,
+  "tenu": null
+ },
+ "FLOWER_MAIL": {
+  "nom": {
+   "fr": "FLOWER MAIL",
+   "en": "FLOWER MAIL"
+  },
+  "prix": 50,
+  "tenu": null
+ },
+ "LEVEL_BALL": {
+  "nom": {
+   "fr": "Niveau Ball",
+   "en": "LEVEL BALL"
+  },
+  "prix": 150,
+  "tenu": null
+ },
+ "LURE_BALL": {
+  "nom": {
+   "fr": "Appât Ball",
+   "en": "LURE BALL"
+  },
+  "prix": 150,
+  "tenu": null
+ },
+ "FAST_BALL": {
+  "nom": {
+   "fr": "Speed Ball",
+   "en": "FAST BALL"
+  },
+  "prix": 150,
+  "tenu": null
+ },
+ "LIGHT_BALL": {
+  "nom": {
+   "fr": "Balle Lumière",
+   "en": "LIGHT BALL"
+  },
+  "prix": 100,
+  "tenu": null
+ },
+ "FRIEND_BALL": {
+  "nom": {
+   "fr": "Copain Ball",
+   "en": "FRIEND BALL"
+  },
+  "prix": 150,
+  "tenu": null
+ },
+ "MOON_BALL": {
+  "nom": {
+   "fr": "Lune Ball",
+   "en": "MOON BALL"
+  },
+  "prix": 150,
+  "tenu": null
+ },
+ "LOVE_BALL": {
+  "nom": {
+   "fr": "Love Ball",
+   "en": "LOVE BALL"
+  },
+  "prix": 150,
+  "tenu": null
+ },
+ "NORMAL_BOX": {
+  "nom": {
+   "fr": "NORMAL BOX",
+   "en": "NORMAL BOX"
+  },
+  "prix": 10,
+  "tenu": null
+ },
+ "GORGEOUS_BOX": {
+  "nom": {
+   "fr": "GORGEOUS BOX",
+   "en": "GORGEOUS BOX"
+  },
+  "prix": 10,
+  "tenu": null
+ },
+ "SUN_STONE": {
+  "nom": {
+   "fr": "Pierre Soleil",
+   "en": "SUN STONE"
+  },
+  "prix": 2100,
+  "tenu": null
+ },
+ "POLKADOT_BOW": {
+  "nom": {
+   "fr": "POLKADOT BOW",
+   "en": "POLKADOT BOW"
+  },
+  "prix": 100,
+  "tenu": "HELD_NORMAL_BOOST"
+ },
+ "UP_GRADE": {
+  "nom": {
+   "fr": "Améliorator",
+   "en": "UP-GRADE"
+  },
+  "prix": 2100,
+  "tenu": null
+ },
+ "BERRY": {
+  "nom": {
+   "fr": "Baie Oran",
+   "en": "BERRY"
+  },
+  "prix": 10,
+  "tenu": "HELD_BERRY"
+ },
+ "GOLD_BERRY": {
+  "nom": {
+   "fr": "Baie Sitrus",
+   "en": "GOLD BERRY"
+  },
+  "prix": 10,
+  "tenu": "HELD_BERRY"
+ },
+ "BRICK_PIECE": {
+  "nom": {
+   "fr": "BRICK PIECE",
+   "en": "BRICK PIECE"
+  },
+  "prix": 50,
+  "tenu": null
+ },
+ "SURF_MAIL": {
+  "nom": {
+   "fr": "SURF MAIL",
+   "en": "SURF MAIL"
+  },
+  "prix": 50,
+  "tenu": null
+ },
+ "LITEBLUEMAIL": {
+  "nom": {
+   "fr": "LITEBLUEMAIL",
+   "en": "LITEBLUEMAIL"
+  },
+  "prix": 50,
+  "tenu": null
+ },
+ "PORTRAITMAIL": {
+  "nom": {
+   "fr": "PORTRAITMAIL",
+   "en": "PORTRAITMAIL"
+  },
+  "prix": 50,
+  "tenu": null
+ },
+ "LOVELY_MAIL": {
+  "nom": {
+   "fr": "LOVELY MAIL",
+   "en": "LOVELY MAIL"
+  },
+  "prix": 50,
+  "tenu": null
+ },
+ "EON_MAIL": {
+  "nom": {
+   "fr": "EON MAIL",
+   "en": "EON MAIL"
+  },
+  "prix": 50,
+  "tenu": null
+ },
+ "MORPH_MAIL": {
+  "nom": {
+   "fr": "MORPH MAIL",
+   "en": "MORPH MAIL"
+  },
+  "prix": 50,
+  "tenu": null
+ },
+ "BLUESKY_MAIL": {
+  "nom": {
+   "fr": "BLUESKY MAIL",
+   "en": "BLUESKY MAIL"
+  },
+  "prix": 50,
+  "tenu": null
+ },
+ "MUSIC_MAIL": {
+  "nom": {
+   "fr": "MUSIC MAIL",
+   "en": "MUSIC MAIL"
+  },
+  "prix": 50,
+  "tenu": null
+ },
+ "MIRAGE_MAIL": {
+  "nom": {
+   "fr": "MIRAGE MAIL",
+   "en": "MIRAGE MAIL"
+  },
+  "prix": 50,
+  "tenu": null
+ }
+}

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- 🔴 LE MODE EST FERMÉ. `noindex` reste jusqu'à un ordre explicite du
+     propriétaire, et /pokemon n'entre pas dans sitemap.xml. -->
+<meta name="robots" content="noindex, nofollow">
+<!-- ⚠️ La description est LUE : par le premier affichage, par un moteur de
+     recherche, par un lien partagé. Sur le mode Dragon Ball, le mot « palmarès »
+     — un mot de football — y était resté, invisible pour tous les lints. -->
+<meta name="description" content="Un voyage de dresseur à travers Kanto. Les 151 premiers Pokémon, huit arènes, un Pokédex à remplir.">
+<title>Pokémon — Road to Legends</title>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     LE MODE DOIT ÊTRE JOUABLE SUR TÉLÉPHONE, INSTALLÉ, HORS LIGNE.
+     🔴 CETTE PAGE N'AVAIT NI MANIFESTE NI SERVICE WORKER — les trois autres
+        modes les ont depuis juillet. Elle n'était donc ni installable ni
+        jouable hors ligne, alors que le cahier des charges l'exige.
+        Le service worker, lui, est enregistré par `js/poke/gate.js` : il ne
+        peut pas l'être ici, parce que la page n'embarque aucun script de jeu
+        avant le verrou — c'est ce qui empêche de lire le mode fermé dans
+        l'onglet réseau.
+     ⚠️ Le manifeste est celui du site, déjà public : son `start_url` reste
+        l'accueil. Un manifeste propre au mode Pokémon annoncerait le mode
+        fermé, ce qui est exactement ce qu'on ne veut pas. -->
+<link rel="manifest" href="/manifest.json?v=3">
+<!-- 🔴 LA COULEUR DE THÈME EST CELLE DE CETTE PAGE, PAS CELLE DU SITE. Elle
+     valait #171310 — le brun des modes ninja — alors que le mode Pokémon peint
+     #0d1420, un marine profond. Sur Android la barre d'adresse et sur iOS la
+     zone d'état prenaient donc le brun au-dessus d'un écran bleu : une couture
+     visible en permanence, et c'est précisément ce qu'une installation sur
+     l'écran d'accueil met en avant. Mesuré dans le navigateur :
+     `getComputedStyle(document.body).backgroundColor` = rgb(13, 20, 32).
+     ⚠️ Le MANIFESTE reste celui du site, à dessein (voir plus haut) : il est
+     public, et il ne doit pas annoncer un mode fermé. La couleur de thème,
+     elle, est une propriété de LA PAGE. -->
+<meta name="theme-color" content="#0d1420">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Road to Legends">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/img/logo-192.png?i=5">
+<link rel="apple-touch-icon" href="assets/img/logo-192.png?i=5">
+<link rel="stylesheet" href="css/poke.css?v=773">
+</head>
+<body class="mode-poke">
+
+<div id="poke-racine"></div>
+
+<!--
+  🔴 LES SCRIPTS DU JEU NE SONT PAS DANS LA PAGE.
+     Ils sont listés ici et injectés par le verrou : sans la clé, ils ne sont
+     même pas TÉLÉCHARGÉS. C'est la différence entre un écran d'attente et un
+     jeu qu'on peut lire dans l'onglet réseau.
+
+  🔴 L'ORDRE N'EST PAS ÉCRIT ICI. Il vit dans `js/poke/ordre.js`, seule source,
+     lue aussi par `tools/poke-sim.mjs` et par `api/server.mjs`. Il l'a été en
+     quatre copies : une divergence d'ordre entre le client et le serveur, c'est
+     un score refusé chez un joueur honnête.
+-->
+<script data-v="773" src="js/poke/gate.js?v=773"></script>
+
+</body>
+</html>

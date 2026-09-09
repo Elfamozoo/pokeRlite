@@ -1,0 +1,25 @@
+{
+ "CLES": {
+  "degatsInfliges": 1,
+  "degatsSubis": 1,
+  "critBonus": 0,
+  "capture": 1,
+  "argent": 1,
+  "expGain": 1,
+  "butinChoix": 0,
+  "equipeMax": 6,
+  "soinInterdit": false,
+  "centreInterdit": false,
+  "fuiteInterdite": false,
+  "bossNiveau": 0,
+  "plafondChampion": false,
+  "expPartage": false,
+  "captureNiveau": false,
+  "dernierDebout": 1
+ },
+ "neutre": "[fonction neutre]",
+ "effet": "[fonction effet]",
+ "offrir": "[fonction offrir]",
+ "prendre": "[fonction prendre]",
+ "de": "[fonction de]"
+}

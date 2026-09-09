@@ -1,0 +1,201 @@
+{
+ "canne": [
+  {
+   "n": 129,
+   "niveau": 5
+  }
+ ],
+ "bonne": [
+  {
+   "n": 118,
+   "niveau": 10
+  },
+  {
+   "n": 60,
+   "niveau": 10
+  }
+ ],
+ "mega": {
+  "groupes": {
+   "Group1": [
+    {
+     "n": 72,
+     "niveau": 15
+    },
+    {
+     "n": 60,
+     "niveau": 15
+    }
+   ],
+   "Group2": [
+    {
+     "n": 118,
+     "niveau": 15
+    },
+    {
+     "n": 60,
+     "niveau": 15
+    }
+   ],
+   "Group3": [
+    {
+     "n": 54,
+     "niveau": 15
+    },
+    {
+     "n": 118,
+     "niveau": 15
+    },
+    {
+     "n": 98,
+     "niveau": 15
+    }
+   ],
+   "Group4": [
+    {
+     "n": 98,
+     "niveau": 15
+    },
+    {
+     "n": 90,
+     "niveau": 15
+    }
+   ],
+   "Group5": [
+    {
+     "n": 61,
+     "niveau": 23
+    },
+    {
+     "n": 79,
+     "niveau": 15
+    }
+   ],
+   "Group6": [
+    {
+     "n": 147,
+     "niveau": 15
+    },
+    {
+     "n": 98,
+     "niveau": 15
+    },
+    {
+     "n": 54,
+     "niveau": 15
+    },
+    {
+     "n": 79,
+     "niveau": 15
+    }
+   ],
+   "Group7": [
+    {
+     "n": 72,
+     "niveau": 5
+    },
+    {
+     "n": 98,
+     "niveau": 15
+    },
+    {
+     "n": 118,
+     "niveau": 15
+    },
+    {
+     "n": 129,
+     "niveau": 15
+    }
+   ],
+   "Group8": [
+    {
+     "n": 120,
+     "niveau": 15
+    },
+    {
+     "n": 116,
+     "niveau": 15
+    },
+    {
+     "n": 90,
+     "niveau": 15
+    },
+    {
+     "n": 118,
+     "niveau": 15
+    }
+   ],
+   "Group9": [
+    {
+     "n": 80,
+     "niveau": 23
+    },
+    {
+     "n": 119,
+     "niveau": 23
+    },
+    {
+     "n": 99,
+     "niveau": 23
+    },
+    {
+     "n": 117,
+     "niveau": 23
+    }
+   ],
+   "Group10": [
+    {
+     "n": 119,
+     "niveau": 23
+    },
+    {
+     "n": 98,
+     "niveau": 15
+    },
+    {
+     "n": 118,
+     "niveau": 15
+    },
+    {
+     "n": 129,
+     "niveau": 15
+    }
+   ]
+  },
+  "parCarte": {
+   "PALLET_TOWN": "Group1",
+   "VIRIDIAN_CITY": "Group1",
+   "CERULEAN_CITY": "Group3",
+   "VERMILION_CITY": "Group4",
+   "CELADON_CITY": "Group5",
+   "FUCHSIA_CITY": "Group10",
+   "CINNABAR_ISLAND": "Group8",
+   "ROUTE_4": "Group3",
+   "ROUTE_6": "Group4",
+   "ROUTE_10": "Group5",
+   "ROUTE_11": "Group4",
+   "ROUTE_12": "Group7",
+   "ROUTE_13": "Group7",
+   "ROUTE_17": "Group7",
+   "ROUTE_18": "Group7",
+   "ROUTE_19": "Group8",
+   "ROUTE_20": "Group8",
+   "ROUTE_21": "Group8",
+   "ROUTE_22": "Group2",
+   "ROUTE_23": "Group9",
+   "ROUTE_24": "Group3",
+   "ROUTE_25": "Group3",
+   "CERULEAN_GYM": "Group3",
+   "VERMILION_DOCK": "Group4",
+   "SEAFOAM_ISLANDS_B3F": "Group8",
+   "SEAFOAM_ISLANDS_B4F": "Group8",
+   "SAFARI_ZONE_EAST": "Group6",
+   "SAFARI_ZONE_NORTH": "Group6",
+   "SAFARI_ZONE_WEST": "Group6",
+   "SAFARI_ZONE_CENTER": "Group6",
+   "CERULEAN_CAVE_2F": "Group9",
+   "CERULEAN_CAVE_B1F": "Group9",
+   "CERULEAN_CAVE_1F": "Group9"
+  }
+ }
+}

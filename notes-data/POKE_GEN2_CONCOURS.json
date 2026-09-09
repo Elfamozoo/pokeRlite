@@ -1,0 +1,93 @@
+{
+ "vivier": [
+  {
+   "n": 10,
+   "poids": 20,
+   "min": 7,
+   "max": 18
+  },
+  {
+   "n": 13,
+   "poids": 20,
+   "min": 7,
+   "max": 18
+  },
+  {
+   "n": 11,
+   "poids": 10,
+   "min": 9,
+   "max": 18
+  },
+  {
+   "n": 14,
+   "poids": 10,
+   "min": 9,
+   "max": 18
+  },
+  {
+   "n": 12,
+   "poids": 5,
+   "min": 12,
+   "max": 15
+  },
+  {
+   "n": 15,
+   "poids": 5,
+   "min": 12,
+   "max": 15
+  },
+  {
+   "n": 48,
+   "poids": 10,
+   "min": 10,
+   "max": 16
+  },
+  {
+   "n": 46,
+   "poids": 10,
+   "min": 10,
+   "max": 17
+  },
+  {
+   "n": 123,
+   "poids": 5,
+   "min": 13,
+   "max": 14
+  },
+  {
+   "n": 127,
+   "poids": 5,
+   "min": 13,
+   "max": 14
+  }
+ ],
+ "jamaisTire": {
+  "n": 49,
+  "pourquoi": "rang terminateur -1, le vivier somme deja a 100 %"
+ },
+ "prix": {
+  "premier": "SUN_STONE",
+  "deuxieme": "EVERSTONE",
+  "troisieme": "GOLD_BERRY",
+  "participation": "BERRY"
+ },
+ "bareme": {
+  "pvMax": 4,
+  "atk": 1,
+  "def": 1,
+  "vit": 1,
+  "sat": 1,
+  "sdf": 1,
+  "pvRestantsSur": 8,
+  "objetTenu": 1,
+  "dvBit": 2,
+  "dvPoids": {
+   "vit": 1,
+   "spe": 4,
+   "atk": 8,
+   "def": 16
+  }
+ },
+ "balls": 20,
+ "etape": "parc-national"
+}

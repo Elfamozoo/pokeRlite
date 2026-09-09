@@ -1,0 +1,12 @@
+{
+ "construire": "[fonction construire]",
+ "acteDe": "[fonction acteDe]",
+ "plafondDe": "[fonction plafondDe]",
+ "plafondPour": "[fonction plafondPour]",
+ "monteeChampion": "[fonction monteeChampion]",
+ "monteeLigue": "[fonction monteeLigue]",
+ "hautDeLaLigue": "[fonction hautDeLaLigue]",
+ "MARGE_PLAFOND": 8,
+ "nombre": "[fonction nombre]",
+ "nomActe": "[fonction nomActe]"
+}

@@ -1,0 +1,70 @@
+{
+ "normal": {
+  "fr": "Normal",
+  "en": "Normal"
+ },
+ "fighting": {
+  "fr": "Combat",
+  "en": "Fighting"
+ },
+ "flying": {
+  "fr": "Vol",
+  "en": "Flying"
+ },
+ "poison": {
+  "fr": "Poison",
+  "en": "Poison"
+ },
+ "ground": {
+  "fr": "Sol",
+  "en": "Ground"
+ },
+ "rock": {
+  "fr": "Roche",
+  "en": "Rock"
+ },
+ "bug": {
+  "fr": "Insecte",
+  "en": "Bug"
+ },
+ "ghost": {
+  "fr": "Spectre",
+  "en": "Ghost"
+ },
+ "steel": {
+  "fr": "Acier",
+  "en": "Steel"
+ },
+ "fire": {
+  "fr": "Feu",
+  "en": "Fire"
+ },
+ "water": {
+  "fr": "Eau",
+  "en": "Water"
+ },
+ "grass": {
+  "fr": "Plante",
+  "en": "Grass"
+ },
+ "electric": {
+  "fr": "Électrik",
+  "en": "Electric"
+ },
+ "psychic": {
+  "fr": "Psy",
+  "en": "Psychic"
+ },
+ "ice": {
+  "fr": "Glace",
+  "en": "Ice"
+ },
+ "dragon": {
+  "fr": "Dragon",
+  "en": "Dragon"
+ },
+ "dark": {
+  "fr": "Ténèbres",
+  "en": "Dark"
+ }
+}

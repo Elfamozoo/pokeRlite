@@ -1,0 +1,66 @@
+{
+ "rouge": [
+  {
+   "n": 63,
+   "jetons": 180,
+   "niveau": 9
+  },
+  {
+   "n": 35,
+   "jetons": 500,
+   "niveau": 8
+  },
+  {
+   "n": 30,
+   "jetons": 1200,
+   "niveau": 17
+  },
+  {
+   "n": 147,
+   "jetons": 2800,
+   "niveau": 18
+  },
+  {
+   "n": 123,
+   "jetons": 5500,
+   "niveau": 25
+  },
+  {
+   "n": 137,
+   "jetons": 9999,
+   "niveau": 26
+  }
+ ],
+ "bleu": [
+  {
+   "n": 63,
+   "jetons": 120,
+   "niveau": 6
+  },
+  {
+   "n": 35,
+   "jetons": 750,
+   "niveau": 12
+  },
+  {
+   "n": 33,
+   "jetons": 1200,
+   "niveau": 17
+  },
+  {
+   "n": 127,
+   "jetons": 2500,
+   "niveau": 20
+  },
+  {
+   "n": 147,
+   "jetons": 4600,
+   "niveau": 24
+  },
+  {
+   "n": 137,
+   "jetons": 6500,
+   "niveau": 18
+  }
+ ]
+}

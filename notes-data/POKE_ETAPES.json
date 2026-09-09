@@ -1,0 +1,506 @@
+[
+ {
+  "id": "bourg-palette",
+  "lieu": "pallet-town",
+  "categorie": "ville",
+  "depart": true
+ },
+ {
+  "id": "route-1",
+  "lieu": "kanto-route-1",
+  "categorie": "route",
+  "tables": [
+   "Route1"
+  ]
+ },
+ {
+  "id": "jadielle",
+  "lieu": "viridian-city",
+  "categorie": "ville",
+  "boutique": 1
+ },
+ {
+  "id": "route-22",
+  "lieu": "kanto-route-22",
+  "categorie": "route",
+  "tables": [
+   "Route22"
+  ]
+ },
+ {
+  "id": "route-2",
+  "lieu": "kanto-route-2",
+  "categorie": "route",
+  "tables": [
+   "Route2"
+  ],
+  "donne": [
+   "flash"
+  ]
+ },
+ {
+  "id": "foret-de-jade",
+  "lieu": "viridian-forest",
+  "categorie": "donjon",
+  "tables": [
+   "ViridianForest"
+  ]
+ },
+ {
+  "id": "argenta",
+  "lieu": "pewter-city",
+  "categorie": "ville",
+  "arene": 1,
+  "boutique": 1
+ },
+ {
+  "id": "route-3",
+  "lieu": "kanto-route-3",
+  "categorie": "route",
+  "tables": [
+   "Route3"
+  ]
+ },
+ {
+  "id": "mont-selenite",
+  "lieu": "mt-moon",
+  "categorie": "donjon",
+  "tables": [
+   "MtMoon1F",
+   "MtMoonB1F",
+   "MtMoonB2F"
+  ],
+  "fossile": true,
+  "rocket": 1
+ },
+ {
+  "id": "route-4",
+  "lieu": "kanto-route-4",
+  "categorie": "route",
+  "tables": [
+   "Route4"
+  ]
+ },
+ {
+  "id": "azuria",
+  "lieu": "cerulean-city",
+  "categorie": "ville",
+  "arene": 2,
+  "boutique": 2
+ },
+ {
+  "id": "route-24",
+  "lieu": "kanto-route-24",
+  "categorie": "route",
+  "tables": [
+   "Route24"
+  ]
+ },
+ {
+  "id": "route-25",
+  "lieu": "kanto-route-25",
+  "categorie": "route",
+  "tables": [
+   "Route25"
+  ],
+  "donne": [
+   "ticket"
+  ]
+ },
+ {
+  "id": "route-5",
+  "lieu": "kanto-route-5",
+  "categorie": "route",
+  "tables": [
+   "Route5"
+  ],
+  "pension": true
+ },
+ {
+  "id": "route-6",
+  "lieu": "kanto-route-6",
+  "categorie": "route",
+  "tables": [
+   "Route6"
+  ]
+ },
+ {
+  "id": "carmin",
+  "lieu": "vermilion-city",
+  "categorie": "ville",
+  "arene": 3,
+  "boutique": 2,
+  "donne": [
+   "velo"
+  ]
+ },
+ {
+  "id": "paquebot",
+  "lieu": "ss-anne",
+  "categorie": "scene",
+  "exige": [
+   "ticket"
+  ],
+  "donne": [
+   "coupe"
+  ],
+  "unique": true,
+  "camion": true
+ },
+ {
+  "id": "route-11",
+  "lieu": "kanto-route-11",
+  "categorie": "route",
+  "tables": [
+   "Route11"
+  ]
+ },
+ {
+  "id": "grotte-taupiqueur",
+  "lieu": "digletts-cave",
+  "categorie": "donjon",
+  "tables": [
+   "DiglettsCave"
+  ]
+ },
+ {
+  "id": "route-9",
+  "lieu": "kanto-route-9",
+  "categorie": "route",
+  "tables": [
+   "Route9"
+  ],
+  "exige": [
+   "coupe"
+  ]
+ },
+ {
+  "id": "route-10",
+  "lieu": "kanto-route-10",
+  "categorie": "route",
+  "tables": [
+   "Route10"
+  ]
+ },
+ {
+  "id": "tunnel-roche",
+  "lieu": "rock-tunnel",
+  "categorie": "donjon",
+  "tables": [
+   "RockTunnel1F",
+   "RockTunnelB1F"
+  ],
+  "exige": [
+   "flash"
+  ]
+ },
+ {
+  "id": "lavanville",
+  "lieu": "lavender-town",
+  "categorie": "ville",
+  "boutique": 2
+ },
+ {
+  "id": "route-8",
+  "lieu": "kanto-route-8",
+  "categorie": "route",
+  "tables": [
+   "Route8"
+  ]
+ },
+ {
+  "id": "route-7",
+  "lieu": "kanto-route-7",
+  "categorie": "route",
+  "tables": [
+   "Route7"
+  ]
+ },
+ {
+  "id": "celadopole",
+  "lieu": "celadon-city",
+  "categorie": "ville",
+  "arene": 4,
+  "boutique": 3,
+  "casino": true,
+  "donne": [
+   "boisson"
+  ]
+ },
+ {
+  "id": "repaire-rocket",
+  "lieu": "celadon-city",
+  "categorie": "scene",
+  "rocket": 2,
+  "donne": [
+   "scope",
+   "carte"
+  ]
+ },
+ {
+  "id": "tour-pokemon",
+  "lieu": "pokemon-tower",
+  "categorie": "donjon",
+  "tables": [
+   "PokemonTower3F",
+   "PokemonTower4F",
+   "PokemonTower5F",
+   "PokemonTower6F",
+   "PokemonTower7F"
+  ],
+  "exige": [
+   "scope"
+  ],
+  "donne": [
+   "flute"
+  ]
+ },
+ {
+  "id": "route-16",
+  "lieu": "kanto-route-16",
+  "categorie": "route",
+  "tables": [
+   "Route16"
+  ],
+  "donne": [
+   "vol"
+  ],
+  "ronflex": true,
+  "exige": [
+   "flute"
+  ]
+ },
+ {
+  "id": "route-17",
+  "lieu": "kanto-route-17",
+  "categorie": "route",
+  "tables": [
+   "Route17"
+  ]
+ },
+ {
+  "id": "route-18",
+  "lieu": "kanto-route-18",
+  "categorie": "route",
+  "tables": [
+   "Route18"
+  ]
+ },
+ {
+  "id": "parmanie",
+  "lieu": "fuchsia-city",
+  "categorie": "ville",
+  "arene": 5,
+  "boutique": 3
+ },
+ {
+  "id": "zone-safari",
+  "lieu": "kanto-safari-zone",
+  "categorie": "safari",
+  "tables": [
+   "SafariZoneCenter",
+   "SafariZoneEast",
+   "SafariZoneNorth",
+   "SafariZoneWest"
+  ],
+  "donne": [
+   "surf",
+   "force",
+   "dentOr"
+  ]
+ },
+ {
+  "id": "route-12",
+  "lieu": "kanto-route-12",
+  "categorie": "route",
+  "tables": [
+   "Route12"
+  ],
+  "ronflex": true,
+  "exige": [
+   "flute"
+  ]
+ },
+ {
+  "id": "route-13",
+  "lieu": "kanto-route-13",
+  "categorie": "route",
+  "tables": [
+   "Route13"
+  ]
+ },
+ {
+  "id": "route-14",
+  "lieu": "kanto-route-14",
+  "categorie": "route",
+  "tables": [
+   "Route14"
+  ]
+ },
+ {
+  "id": "route-15",
+  "lieu": "kanto-route-15",
+  "categorie": "route",
+  "tables": [
+   "Route15"
+  ]
+ },
+ {
+  "id": "safrania",
+  "lieu": "saffron-city",
+  "categorie": "ville",
+  "boutique": 3,
+  "exige": [
+   "boisson"
+  ]
+ },
+ {
+  "id": "tour-silph",
+  "lieu": "saffron-city",
+  "categorie": "scene",
+  "rocket": 3,
+  "donne": [
+   "master"
+  ]
+ },
+ {
+  "id": "safrania-arene",
+  "lieu": "saffron-city",
+  "categorie": "ville",
+  "arene": 6,
+  "exige": [
+   "master"
+  ]
+ },
+ {
+  "id": "route-19",
+  "lieu": "kanto-sea-route-19",
+  "categorie": "eau",
+  "tables": [
+   "SeaRoutes"
+  ],
+  "exige": [
+   "surf"
+  ]
+ },
+ {
+  "id": "iles-ecume",
+  "lieu": "seafoam-islands",
+  "categorie": "donjon",
+  "tables": [
+   "SeafoamIslands1F",
+   "SeafoamIslandsB1F",
+   "SeafoamIslandsB2F",
+   "SeafoamIslandsB3F",
+   "SeafoamIslandsB4F"
+  ],
+  "exige": [
+   "surf",
+   "force"
+  ],
+  "legendaire": 144
+ },
+ {
+  "id": "route-21",
+  "lieu": "kanto-sea-route-21",
+  "categorie": "eau",
+  "tables": [
+   "Route21"
+  ],
+  "exige": [
+   "surf"
+  ]
+ },
+ {
+  "id": "cramois-ile",
+  "lieu": "cinnabar-island",
+  "categorie": "ville",
+  "arene": 7,
+  "boutique": 3,
+  "fossileRanime": true,
+  "exige": [
+   "cleSecrete"
+  ]
+ },
+ {
+  "id": "manoir",
+  "lieu": "pokemon-mansion",
+  "categorie": "donjon",
+  "tables": [
+   "PokemonMansion1F",
+   "PokemonMansion2F",
+   "PokemonMansion3F",
+   "PokemonMansionB1F"
+  ],
+  "journalMewtwo": true,
+  "donne": [
+   "cleSecrete"
+  ]
+ },
+ {
+  "id": "centrale",
+  "lieu": "kanto-power-plant",
+  "categorie": "donjon",
+  "tables": [
+   "PowerPlant"
+  ],
+  "exige": [
+   "surf"
+  ],
+  "legendaire": 145
+ },
+ {
+  "id": "jadielle-arene",
+  "lieu": "viridian-city",
+  "categorie": "ville",
+  "arene": 8,
+  "exigeBadges": 7
+ },
+ {
+  "id": "route-23",
+  "lieu": "kanto-route-23",
+  "categorie": "route",
+  "tables": [
+   "Route23"
+  ],
+  "exige": [
+   "surf"
+  ],
+  "exigeBadges": 8
+ },
+ {
+  "id": "route-victoire",
+  "lieu": "kanto-victory-road-1",
+  "categorie": "donjon",
+  "tables": [
+   "VictoryRoad1F",
+   "VictoryRoad2F",
+   "VictoryRoad3F"
+  ],
+  "exige": [
+   "force"
+  ],
+  "legendaire": 146
+ },
+ {
+  "id": "plateau-indigo",
+  "lieu": "indigo-plateau",
+  "categorie": "ligue",
+  "ligue": true
+ },
+ {
+  "id": "grotte-inconnue",
+  "lieu": "cerulean-cave",
+  "categorie": "donjon",
+  "tables": [
+   "CeruleanCave1F",
+   "CeruleanCave2F",
+   "CeruleanCaveB1F"
+  ],
+  "exige": [
+   "surf"
+  ],
+  "apresLigue": true,
+  "legendaire": 150
+ }
+]

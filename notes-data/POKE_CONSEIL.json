@@ -1,0 +1,110 @@
+[
+ {
+  "ordre": 1,
+  "nom": "Olga",
+  "nomEn": "Lorelei",
+  "equipe": [
+   {
+    "n": 87,
+    "niveau": 54
+   },
+   {
+    "n": 91,
+    "niveau": 53
+   },
+   {
+    "n": 80,
+    "niveau": 54
+   },
+   {
+    "n": 124,
+    "niveau": 56
+   },
+   {
+    "n": 131,
+    "niveau": 56
+   }
+  ]
+ },
+ {
+  "ordre": 2,
+  "nom": "Aldo",
+  "nomEn": "Bruno",
+  "equipe": [
+   {
+    "n": 95,
+    "niveau": 53
+   },
+   {
+    "n": 107,
+    "niveau": 55
+   },
+   {
+    "n": 106,
+    "niveau": 55
+   },
+   {
+    "n": 95,
+    "niveau": 56
+   },
+   {
+    "n": 68,
+    "niveau": 58
+   }
+  ]
+ },
+ {
+  "ordre": 3,
+  "nom": "Agatha",
+  "nomEn": "Agatha",
+  "equipe": [
+   {
+    "n": 94,
+    "niveau": 56
+   },
+   {
+    "n": 42,
+    "niveau": 56
+   },
+   {
+    "n": 93,
+    "niveau": 55
+   },
+   {
+    "n": 24,
+    "niveau": 58
+   },
+   {
+    "n": 94,
+    "niveau": 60
+   }
+  ]
+ },
+ {
+  "ordre": 4,
+  "nom": "Peter",
+  "nomEn": "Lance",
+  "equipe": [
+   {
+    "n": 130,
+    "niveau": 58
+   },
+   {
+    "n": 148,
+    "niveau": 56
+   },
+   {
+    "n": 148,
+    "niveau": 56
+   },
+   {
+    "n": 142,
+    "niveau": 60
+   },
+   {
+    "n": 149,
+    "niveau": 62
+   }
+  ]
+ }
+]

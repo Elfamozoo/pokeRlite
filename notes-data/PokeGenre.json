@@ -1,0 +1,62 @@
+{
+ "JETONS": {
+  "fr": {
+   "h": {
+    "e": "",
+    "ne": "",
+    "il": "il",
+    "Il": "Il",
+    "le": "le",
+    "un": "un",
+    "ce": "ce",
+    "joueur": "dresseur",
+    "Joueur": "Dresseur"
+   },
+   "f": {
+    "e": "e",
+    "ne": "ne",
+    "il": "elle",
+    "Il": "Elle",
+    "le": "la",
+    "un": "une",
+    "ce": "cette",
+    "joueur": "dresseuse",
+    "Joueur": "Dresseuse"
+   }
+  },
+  "en": {
+   "h": {
+    "e": "",
+    "ne": "",
+    "il": "he",
+    "Il": "He",
+    "le": "the",
+    "un": "a",
+    "ce": "this",
+    "joueur": "trainer",
+    "Joueur": "Trainer"
+   },
+   "f": {
+    "e": "",
+    "ne": "",
+    "il": "she",
+    "Il": "She",
+    "le": "the",
+    "un": "a",
+    "ce": "this",
+    "joueur": "trainer",
+    "Joueur": "Trainer"
+   }
+  }
+ },
+ "NON_RESOLUS": {},
+ "resoudre": "[fonction resoudre]",
+ "texte": "[fonction texte]",
+ "pour": "[fonction pour]",
+ "decimal": "[fonction decimal]",
+ "niveau": "[fonction niveau]",
+ "nomChampion": "[fonction nomChampion]",
+ "nomDresseur": "[fonction nomDresseur]",
+ "nomBadge": "[fonction nomBadge]",
+ "version": "[fonction version]"
+}

@@ -1,0 +1,48 @@
+{
+ "chromatique": "[fonction chromatique]",
+ "grade": "[fonction grade]",
+ "somme": "[fonction somme]",
+ "lire": "[fonction lire]",
+ "GRADES": [
+  {
+   "cle": "parfait",
+   "min": 60,
+   "nom": {
+    "fr": "PARFAIT",
+    "en": "PERFECT"
+   }
+  },
+  {
+   "cle": "exceptionnel",
+   "min": 52,
+   "nom": {
+    "fr": "EXCEPTIONNEL",
+    "en": "OUTSTANDING"
+   }
+  },
+  {
+   "cle": "solide",
+   "min": 43,
+   "nom": {
+    "fr": "SOLIDE",
+    "en": "STRONG"
+   }
+  },
+  {
+   "cle": "correct",
+   "min": 30,
+   "nom": {
+    "fr": "CORRECT",
+    "en": "DECENT"
+   }
+  },
+  {
+   "cle": "ordinaire",
+   "min": 0,
+   "nom": {
+    "fr": "ORDINAIRE",
+    "en": "PLAIN"
+   }
+  }
+ ]
+}

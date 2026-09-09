@@ -1,0 +1,66 @@
+{
+ "nom": "Peter",
+ "nomEn": "Lance",
+ "equipe": [
+  {
+   "n": 130,
+   "niveau": 44,
+   "attaques": [
+    "FLAIL",
+    "RAIN_DANCE",
+    "SURF",
+    "HYPER_BEAM"
+   ]
+  },
+  {
+   "n": 149,
+   "niveau": 47,
+   "attaques": [
+    "THUNDER_WAVE",
+    "TWISTER",
+    "THUNDER",
+    "HYPER_BEAM"
+   ]
+  },
+  {
+   "n": 149,
+   "niveau": 47,
+   "attaques": [
+    "THUNDER_WAVE",
+    "TWISTER",
+    "BLIZZARD",
+    "HYPER_BEAM"
+   ]
+  },
+  {
+   "n": 142,
+   "niveau": 46,
+   "attaques": [
+    "WING_ATTACK",
+    "ANCIENTPOWER",
+    "ROCK_SLIDE",
+    "HYPER_BEAM"
+   ]
+  },
+  {
+   "n": 6,
+   "niveau": 46,
+   "attaques": [
+    "FLAMETHROWER",
+    "WING_ATTACK",
+    "SLASH",
+    "HYPER_BEAM"
+   ]
+  },
+  {
+   "n": 149,
+   "niveau": 50,
+   "attaques": [
+    "FIRE_BLAST",
+    "SAFEGUARD",
+    "OUTRAGE",
+    "HYPER_BEAM"
+   ]
+  }
+ ]
+}

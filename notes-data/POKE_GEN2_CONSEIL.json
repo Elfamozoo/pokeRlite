@@ -1,0 +1,230 @@
+[
+ {
+  "ordre": 1,
+  "nom": "Marion",
+  "nomEn": "Will",
+  "equipe": [
+   {
+    "n": 178,
+    "niveau": 40,
+    "attaques": [
+     "QUICK_ATTACK",
+     "FUTURE_SIGHT",
+     "CONFUSE_RAY",
+     "PSYCHIC_M"
+    ]
+   },
+   {
+    "n": 124,
+    "niveau": 41,
+    "attaques": [
+     "DOUBLESLAP",
+     "LOVELY_KISS",
+     "ICE_PUNCH",
+     "PSYCHIC_M"
+    ]
+   },
+   {
+    "n": 103,
+    "niveau": 41,
+    "attaques": [
+     "REFLECT",
+     "LEECH_SEED",
+     "EGG_BOMB",
+     "PSYCHIC_M"
+    ]
+   },
+   {
+    "n": 80,
+    "niveau": 41,
+    "attaques": [
+     "CURSE",
+     "AMNESIA",
+     "BODY_SLAM",
+     "PSYCHIC_M"
+    ]
+   },
+   {
+    "n": 178,
+    "niveau": 42,
+    "attaques": [
+     "QUICK_ATTACK",
+     "FUTURE_SIGHT",
+     "CONFUSE_RAY",
+     "PSYCHIC_M"
+    ]
+   }
+  ]
+ },
+ {
+  "ordre": 2,
+  "nom": "Koga",
+  "nomEn": "Koga",
+  "equipe": [
+   {
+    "n": 168,
+    "niveau": 40,
+    "attaques": [
+     "DOUBLE_TEAM",
+     "SPIDER_WEB",
+     "BATON_PASS",
+     "GIGA_DRAIN"
+    ]
+   },
+   {
+    "n": 49,
+    "niveau": 41,
+    "attaques": [
+     "SUPERSONIC",
+     "GUST",
+     "PSYCHIC_M",
+     "TOXIC"
+    ]
+   },
+   {
+    "n": 205,
+    "niveau": 43,
+    "attaques": [
+     "PROTECT",
+     "SWIFT",
+     "EXPLOSION",
+     "SPIKES"
+    ]
+   },
+   {
+    "n": 89,
+    "niveau": 42,
+    "attaques": [
+     "MINIMIZE",
+     "ACID_ARMOR",
+     "SLUDGE_BOMB",
+     "TOXIC"
+    ]
+   },
+   {
+    "n": 169,
+    "niveau": 44,
+    "attaques": [
+     "DOUBLE_TEAM",
+     "QUICK_ATTACK",
+     "WING_ATTACK",
+     "TOXIC"
+    ]
+   }
+  ]
+ },
+ {
+  "ordre": 3,
+  "nom": "Aldo",
+  "nomEn": "Bruno",
+  "equipe": [
+   {
+    "n": 237,
+    "niveau": 42,
+    "attaques": [
+     "PURSUIT",
+     "QUICK_ATTACK",
+     "DIG",
+     "DETECT"
+    ]
+   },
+   {
+    "n": 106,
+    "niveau": 42,
+    "attaques": [
+     "SWAGGER",
+     "DOUBLE_KICK",
+     "HI_JUMP_KICK",
+     "FORESIGHT"
+    ]
+   },
+   {
+    "n": 107,
+    "niveau": 42,
+    "attaques": [
+     "THUNDERPUNCH",
+     "ICE_PUNCH",
+     "FIRE_PUNCH",
+     "MACH_PUNCH"
+    ]
+   },
+   {
+    "n": 95,
+    "niveau": 43,
+    "attaques": [
+     "BIND",
+     "EARTHQUAKE",
+     "SANDSTORM",
+     "ROCK_SLIDE"
+    ]
+   },
+   {
+    "n": 68,
+    "niveau": 46,
+    "attaques": [
+     "ROCK_SLIDE",
+     "FORESIGHT",
+     "VITAL_THROW",
+     "CROSS_CHOP"
+    ]
+   }
+  ]
+ },
+ {
+  "ordre": 4,
+  "nom": "Marina",
+  "nomEn": "Karen",
+  "equipe": [
+   {
+    "n": 197,
+    "niveau": 42,
+    "attaques": [
+     "SAND_ATTACK",
+     "CONFUSE_RAY",
+     "FAINT_ATTACK",
+     "MEAN_LOOK"
+    ]
+   },
+   {
+    "n": 45,
+    "niveau": 42,
+    "attaques": [
+     "STUN_SPORE",
+     "ACID",
+     "MOONLIGHT",
+     "PETAL_DANCE"
+    ]
+   },
+   {
+    "n": 94,
+    "niveau": 45,
+    "attaques": [
+     "LICK",
+     "SPITE",
+     "CURSE",
+     "DESTINY_BOND"
+    ]
+   },
+   {
+    "n": 198,
+    "niveau": 44,
+    "attaques": [
+     "QUICK_ATTACK",
+     "WHIRLWIND",
+     "PURSUIT",
+     "FAINT_ATTACK"
+    ]
+   },
+   {
+    "n": 229,
+    "niveau": 47,
+    "attaques": [
+     "ROAR",
+     "PURSUIT",
+     "FLAMETHROWER",
+     "CRUNCH"
+    ]
+   }
+  ]
+ }
+]

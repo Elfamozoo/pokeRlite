@@ -1,0 +1,20 @@
+{
+ "POIDS": {
+  "herbes": 30,
+  "dresseur": 26,
+  "objet": 12,
+  "centre": 10,
+  "boutique": 8,
+  "eau": 8,
+  "peche": 14,
+  "arbre": 14
+ },
+ "tableArbre": "[fonction tableArbre]",
+ "onSecoueIci": "[fonction onSecoueIci]",
+ "generer": "[fonction generer]",
+ "scenesDe": "[fonction scenesDe]",
+ "annoncerRencontres": "[fonction annoncerRencontres]",
+ "zonePour": "[fonction zonePour]",
+ "tablePeche": "[fonction tablePeche]",
+ "onPecheIci": "[fonction onPecheIci]"
+}

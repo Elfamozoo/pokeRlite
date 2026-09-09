@@ -1,0 +1,100 @@
+{
+ "coupe": {
+  "source": "paquebot",
+  "nom": {
+   "fr": "CS01 Coupe",
+   "en": "HM01 Cut"
+  }
+ },
+ "vol": {
+  "source": "route-16",
+  "nom": {
+   "fr": "CS02 Vol",
+   "en": "HM02 Fly"
+  }
+ },
+ "surf": {
+  "source": "zone-safari",
+  "nom": {
+   "fr": "CS03 Surf",
+   "en": "HM03 Surf"
+  }
+ },
+ "force": {
+  "source": "zone-safari",
+  "nom": {
+   "fr": "CS04 Force",
+   "en": "HM04 Strength"
+  }
+ },
+ "flash": {
+  "source": "route-2",
+  "nom": {
+   "fr": "CS05 Flash",
+   "en": "HM05 Flash"
+  }
+ },
+ "ticket": {
+  "source": "route-25",
+  "nom": {
+   "fr": "Ticket Bateau",
+   "en": "S.S. Ticket"
+  }
+ },
+ "scope": {
+  "source": "repaire-rocket",
+  "nom": {
+   "fr": "Scope Sylphe",
+   "en": "Silph Scope"
+  }
+ },
+ "flute": {
+  "source": "tour-pokemon",
+  "nom": {
+   "fr": "Poké Flûte",
+   "en": "Poké Flute"
+  }
+ },
+ "carte": {
+  "source": "repaire-rocket",
+  "nom": {
+   "fr": "Carte Magnétique",
+   "en": "Lift Key"
+  }
+ },
+ "dentOr": {
+  "source": "zone-safari",
+  "nom": {
+   "fr": "Dent d'Or",
+   "en": "Gold Teeth"
+  }
+ },
+ "velo": {
+  "source": "carmin",
+  "nom": {
+   "fr": "Bicyclette",
+   "en": "Bicycle"
+  }
+ },
+ "master": {
+  "source": "tour-silph",
+  "nom": {
+   "fr": "Master Ball",
+   "en": "Master Ball"
+  }
+ },
+ "boisson": {
+  "source": "celadopole",
+  "nom": {
+   "fr": "Limonade",
+   "en": "Fresh Water"
+  }
+ },
+ "cleSecrete": {
+  "source": "manoir",
+  "nom": {
+   "fr": "Clé Secrète",
+   "en": "Secret Key"
+  }
+ }
+}

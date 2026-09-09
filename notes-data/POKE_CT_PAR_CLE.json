@@ -1,0 +1,302 @@
+{
+ "MEGA_PUNCH": {
+  "n": 1,
+  "cle": "MEGA_PUNCH",
+  "prix": 3000,
+  "type": "normal"
+ },
+ "RAZOR_WIND": {
+  "n": 2,
+  "cle": "RAZOR_WIND",
+  "prix": 2000,
+  "type": "normal"
+ },
+ "SWORDS_DANCE": {
+  "n": 3,
+  "cle": "SWORDS_DANCE",
+  "prix": 2000,
+  "type": "normal"
+ },
+ "WHIRLWIND": {
+  "n": 4,
+  "cle": "WHIRLWIND",
+  "prix": 1000,
+  "type": "normal"
+ },
+ "MEGA_KICK": {
+  "n": 5,
+  "cle": "MEGA_KICK",
+  "prix": 3000,
+  "type": "normal"
+ },
+ "TOXIC": {
+  "n": 6,
+  "cle": "TOXIC",
+  "prix": 4000,
+  "type": "poison"
+ },
+ "HORN_DRILL": {
+  "n": 7,
+  "cle": "HORN_DRILL",
+  "prix": 2000,
+  "type": "normal"
+ },
+ "BODY_SLAM": {
+  "n": 8,
+  "cle": "BODY_SLAM",
+  "prix": 4000,
+  "type": "normal"
+ },
+ "TAKE_DOWN": {
+  "n": 9,
+  "cle": "TAKE_DOWN",
+  "prix": 3000,
+  "type": "normal"
+ },
+ "DOUBLE_EDGE": {
+  "n": 10,
+  "cle": "DOUBLE_EDGE",
+  "prix": 4000,
+  "type": "normal"
+ },
+ "BUBBLEBEAM": {
+  "n": 11,
+  "cle": "BUBBLEBEAM",
+  "prix": 2000,
+  "type": "water"
+ },
+ "WATER_GUN": {
+  "n": 12,
+  "cle": "WATER_GUN",
+  "prix": 1000,
+  "type": "water"
+ },
+ "ICE_BEAM": {
+  "n": 13,
+  "cle": "ICE_BEAM",
+  "prix": 4000,
+  "type": "ice"
+ },
+ "BLIZZARD": {
+  "n": 14,
+  "cle": "BLIZZARD",
+  "prix": 5000,
+  "type": "ice"
+ },
+ "HYPER_BEAM": {
+  "n": 15,
+  "cle": "HYPER_BEAM",
+  "prix": 5000,
+  "type": "normal"
+ },
+ "PAY_DAY": {
+  "n": 16,
+  "cle": "PAY_DAY",
+  "prix": 5000,
+  "type": "normal"
+ },
+ "SUBMISSION": {
+  "n": 17,
+  "cle": "SUBMISSION",
+  "prix": 3000,
+  "type": "fighting"
+ },
+ "COUNTER": {
+  "n": 18,
+  "cle": "COUNTER",
+  "prix": 2000,
+  "type": "fighting"
+ },
+ "SEISMIC_TOSS": {
+  "n": 19,
+  "cle": "SEISMIC_TOSS",
+  "prix": 3000,
+  "type": "fighting"
+ },
+ "RAGE": {
+  "n": 20,
+  "cle": "RAGE",
+  "prix": 2000,
+  "type": "normal"
+ },
+ "MEGA_DRAIN": {
+  "n": 21,
+  "cle": "MEGA_DRAIN",
+  "prix": 5000,
+  "type": "grass"
+ },
+ "SOLARBEAM": {
+  "n": 22,
+  "cle": "SOLARBEAM",
+  "prix": 5000,
+  "type": "grass"
+ },
+ "DRAGON_RAGE": {
+  "n": 23,
+  "cle": "DRAGON_RAGE",
+  "prix": 5000,
+  "type": "dragon"
+ },
+ "THUNDERBOLT": {
+  "n": 24,
+  "cle": "THUNDERBOLT",
+  "prix": 2000,
+  "type": "electric"
+ },
+ "THUNDER": {
+  "n": 25,
+  "cle": "THUNDER",
+  "prix": 5000,
+  "type": "electric"
+ },
+ "EARTHQUAKE": {
+  "n": 26,
+  "cle": "EARTHQUAKE",
+  "prix": 4000,
+  "type": "ground"
+ },
+ "FISSURE": {
+  "n": 27,
+  "cle": "FISSURE",
+  "prix": 5000,
+  "type": "ground"
+ },
+ "DIG": {
+  "n": 28,
+  "cle": "DIG",
+  "prix": 2000,
+  "type": "ground"
+ },
+ "PSYCHIC_M": {
+  "n": 29,
+  "cle": "PSYCHIC_M",
+  "prix": 4000,
+  "type": "psychic"
+ },
+ "TELEPORT": {
+  "n": 30,
+  "cle": "TELEPORT",
+  "prix": 1000,
+  "type": "psychic"
+ },
+ "MIMIC": {
+  "n": 31,
+  "cle": "MIMIC",
+  "prix": 2000,
+  "type": "normal"
+ },
+ "DOUBLE_TEAM": {
+  "n": 32,
+  "cle": "DOUBLE_TEAM",
+  "prix": 1000,
+  "type": "normal"
+ },
+ "REFLECT": {
+  "n": 33,
+  "cle": "REFLECT",
+  "prix": 1000,
+  "type": "psychic"
+ },
+ "BIDE": {
+  "n": 34,
+  "cle": "BIDE",
+  "prix": 2000,
+  "type": "normal"
+ },
+ "METRONOME": {
+  "n": 35,
+  "cle": "METRONOME",
+  "prix": 4000,
+  "type": "normal"
+ },
+ "SELFDESTRUCT": {
+  "n": 36,
+  "cle": "SELFDESTRUCT",
+  "prix": 2000,
+  "type": "normal"
+ },
+ "EGG_BOMB": {
+  "n": 37,
+  "cle": "EGG_BOMB",
+  "prix": 2000,
+  "type": "normal"
+ },
+ "FIRE_BLAST": {
+  "n": 38,
+  "cle": "FIRE_BLAST",
+  "prix": 5000,
+  "type": "fire"
+ },
+ "SWIFT": {
+  "n": 39,
+  "cle": "SWIFT",
+  "prix": 2000,
+  "type": "normal"
+ },
+ "SKULL_BASH": {
+  "n": 40,
+  "cle": "SKULL_BASH",
+  "prix": 4000,
+  "type": "normal"
+ },
+ "SOFTBOILED": {
+  "n": 41,
+  "cle": "SOFTBOILED",
+  "prix": 2000,
+  "type": "normal"
+ },
+ "DREAM_EATER": {
+  "n": 42,
+  "cle": "DREAM_EATER",
+  "prix": 2000,
+  "type": "psychic"
+ },
+ "SKY_ATTACK": {
+  "n": 43,
+  "cle": "SKY_ATTACK",
+  "prix": 5000,
+  "type": "flying"
+ },
+ "REST": {
+  "n": 44,
+  "cle": "REST",
+  "prix": 2000,
+  "type": "psychic"
+ },
+ "THUNDER_WAVE": {
+  "n": 45,
+  "cle": "THUNDER_WAVE",
+  "prix": 2000,
+  "type": "electric"
+ },
+ "PSYWAVE": {
+  "n": 46,
+  "cle": "PSYWAVE",
+  "prix": 4000,
+  "type": "psychic"
+ },
+ "EXPLOSION": {
+  "n": 47,
+  "cle": "EXPLOSION",
+  "prix": 3000,
+  "type": "normal"
+ },
+ "ROCK_SLIDE": {
+  "n": 48,
+  "cle": "ROCK_SLIDE",
+  "prix": 4000,
+  "type": "rock"
+ },
+ "TRI_ATTACK": {
+  "n": 49,
+  "cle": "TRI_ATTACK",
+  "prix": 4000,
+  "type": "normal"
+ },
+ "SUBSTITUTE": {
+  "n": 50,
+  "cle": "SUBSTITUTE",
+  "prix": 2000,
+  "type": "normal"
+ }
+}

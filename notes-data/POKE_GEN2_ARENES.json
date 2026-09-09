@@ -1,0 +1,346 @@
+[
+ {
+  "ordre": 1,
+  "nom": {
+   "fr": "Arène de Mauville",
+   "en": "Violet Gym"
+  },
+  "champion": "Albert",
+  "championEn": "Falkner",
+  "badge": "Zéphyr",
+  "badgeEn": null,
+  "type": "Vol",
+  "ct": "TM_MUD_SLAP",
+  "equipe": [
+   {
+    "n": 16,
+    "niveau": 7,
+    "attaques": [
+     "TACKLE",
+     "MUD_SLAP"
+    ]
+   },
+   {
+    "n": 17,
+    "niveau": 9,
+    "attaques": [
+     "TACKLE",
+     "MUD_SLAP",
+     "GUST"
+    ]
+   }
+  ]
+ },
+ {
+  "ordre": 2,
+  "nom": {
+   "fr": "Arène d'Écorcia",
+   "en": "Azalea Gym"
+  },
+  "champion": "Hector",
+  "championEn": "Bugsy",
+  "badge": "Essaim",
+  "badgeEn": null,
+  "type": "Insecte",
+  "ct": "TM_FURY_CUTTER",
+  "equipe": [
+   {
+    "n": 11,
+    "niveau": 14,
+    "attaques": [
+     "TACKLE",
+     "STRING_SHOT",
+     "HARDEN"
+    ]
+   },
+   {
+    "n": 14,
+    "niveau": 14,
+    "attaques": [
+     "POISON_STING",
+     "STRING_SHOT",
+     "HARDEN"
+    ]
+   },
+   {
+    "n": 123,
+    "niveau": 16,
+    "attaques": [
+     "QUICK_ATTACK",
+     "LEER",
+     "FURY_CUTTER"
+    ]
+   }
+  ]
+ },
+ {
+  "ordre": 3,
+  "nom": {
+   "fr": "Arène de Doublonville",
+   "en": "Goldenrod Gym"
+  },
+  "champion": "Blanche",
+  "championEn": "Whitney",
+  "badge": "Plaine",
+  "badgeEn": null,
+  "type": "Normal",
+  "ct": "TM_ATTRACT",
+  "equipe": [
+   {
+    "n": 35,
+    "niveau": 18,
+    "attaques": [
+     "DOUBLESLAP",
+     "MIMIC",
+     "ENCORE",
+     "METRONOME"
+    ]
+   },
+   {
+    "n": 241,
+    "niveau": 20,
+    "attaques": [
+     "ROLLOUT",
+     "ATTRACT",
+     "STOMP",
+     "MILK_DRINK"
+    ]
+   }
+  ]
+ },
+ {
+  "ordre": 4,
+  "nom": {
+   "fr": "Arène de Rosalia",
+   "en": "Ecruteak Gym"
+  },
+  "champion": "Mortimer",
+  "championEn": "Morty",
+  "badge": "Brume",
+  "badgeEn": null,
+  "type": "Spectre",
+  "ct": "TM_SHADOW_BALL",
+  "equipe": [
+   {
+    "n": 92,
+    "niveau": 21,
+    "attaques": [
+     "LICK",
+     "SPITE",
+     "MEAN_LOOK",
+     "CURSE"
+    ]
+   },
+   {
+    "n": 93,
+    "niveau": 21,
+    "attaques": [
+     "HYPNOSIS",
+     "MIMIC",
+     "CURSE",
+     "NIGHT_SHADE"
+    ]
+   },
+   {
+    "n": 94,
+    "niveau": 25,
+    "attaques": [
+     "HYPNOSIS",
+     "SHADOW_BALL",
+     "MEAN_LOOK",
+     "DREAM_EATER"
+    ]
+   },
+   {
+    "n": 93,
+    "niveau": 23,
+    "attaques": [
+     "SPITE",
+     "MEAN_LOOK",
+     "MIMIC",
+     "NIGHT_SHADE"
+    ]
+   }
+  ]
+ },
+ {
+  "ordre": 5,
+  "nom": {
+   "fr": "Arène d'Irisia",
+   "en": "Cianwood Gym"
+  },
+  "champion": "Chuck",
+  "championEn": "Chuck",
+  "badge": "Choc",
+  "badgeEn": null,
+  "type": "Combat",
+  "ct": "TM_DYNAMICPUNCH",
+  "equipe": [
+   {
+    "n": 57,
+    "niveau": 27,
+    "attaques": [
+     "LEER",
+     "RAGE",
+     "KARATE_CHOP",
+     "FURY_SWIPES"
+    ]
+   },
+   {
+    "n": 62,
+    "niveau": 30,
+    "attaques": [
+     "HYPNOSIS",
+     "MIND_READER",
+     "SURF",
+     "DYNAMICPUNCH"
+    ]
+   }
+  ]
+ },
+ {
+  "ordre": 6,
+  "nom": {
+   "fr": "Arène d'Oliville",
+   "en": "Olivine Gym"
+  },
+  "champion": "Jasmine",
+  "championEn": "Jasmine",
+  "badge": "Minéral",
+  "badgeEn": null,
+  "type": "Acier",
+  "ct": "TM_IRON_TAIL",
+  "equipe": [
+   {
+    "n": 81,
+    "niveau": 30,
+    "attaques": [
+     "THUNDERBOLT",
+     "SUPERSONIC",
+     "SONICBOOM",
+     "THUNDER_WAVE"
+    ]
+   },
+   {
+    "n": 81,
+    "niveau": 30,
+    "attaques": [
+     "THUNDERBOLT",
+     "SUPERSONIC",
+     "SONICBOOM",
+     "THUNDER_WAVE"
+    ]
+   },
+   {
+    "n": 208,
+    "niveau": 35,
+    "attaques": [
+     "SCREECH",
+     "SUNNY_DAY",
+     "ROCK_THROW",
+     "IRON_TAIL"
+    ]
+   }
+  ]
+ },
+ {
+  "ordre": 7,
+  "nom": {
+   "fr": "Arène d'Acajou",
+   "en": "Mahogany Gym"
+  },
+  "champion": "Frédo",
+  "championEn": "Pryce",
+  "badge": "Glacier",
+  "badgeEn": null,
+  "type": "Glace",
+  "ct": "TM_ICY_WIND",
+  "equipe": [
+   {
+    "n": 86,
+    "niveau": 27,
+    "attaques": [
+     "HEADBUTT",
+     "ICY_WIND",
+     "AURORA_BEAM",
+     "REST"
+    ]
+   },
+   {
+    "n": 87,
+    "niveau": 29,
+    "attaques": [
+     "HEADBUTT",
+     "ICY_WIND",
+     "AURORA_BEAM",
+     "REST"
+    ]
+   },
+   {
+    "n": 221,
+    "niveau": 31,
+    "attaques": [
+     "ICY_WIND",
+     "FURY_ATTACK",
+     "MIST",
+     "BLIZZARD"
+    ]
+   }
+  ]
+ },
+ {
+  "ordre": 8,
+  "nom": {
+   "fr": "Arène d'Ébènelle",
+   "en": "Blackthorn Gym"
+  },
+  "champion": "Sandra",
+  "championEn": "Clair",
+  "badge": "Lever",
+  "badgeEn": null,
+  "type": "Dragon",
+  "ct": "TM_DRAGONBREATH",
+  "equipe": [
+   {
+    "n": 148,
+    "niveau": 37,
+    "attaques": [
+     "THUNDER_WAVE",
+     "SURF",
+     "SLAM",
+     "DRAGONBREATH"
+    ]
+   },
+   {
+    "n": 148,
+    "niveau": 37,
+    "attaques": [
+     "THUNDER_WAVE",
+     "THUNDERBOLT",
+     "SLAM",
+     "DRAGONBREATH"
+    ]
+   },
+   {
+    "n": 148,
+    "niveau": 37,
+    "attaques": [
+     "THUNDER_WAVE",
+     "ICE_BEAM",
+     "SLAM",
+     "DRAGONBREATH"
+    ]
+   },
+   {
+    "n": 230,
+    "niveau": 40,
+    "attaques": [
+     "SMOKESCREEN",
+     "SURF",
+     "HYPER_BEAM",
+     "DRAGONBREATH"
+    ]
+   }
+  ]
+ }
+]

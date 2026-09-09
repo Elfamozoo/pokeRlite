@@ -1,0 +1,20 @@
+[
+ {
+  "de": "poison",
+  "vers": "bug",
+  "gen1": 2,
+  "gen2": 1
+ },
+ {
+  "de": "bug",
+  "vers": "poison",
+  "gen1": 2,
+  "gen2": 0.5
+ },
+ {
+  "de": "ice",
+  "vers": "fire",
+  "gen1": 1,
+  "gen2": 0.5
+ }
+]

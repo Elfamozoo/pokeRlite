@@ -1,0 +1,265 @@
+{
+ "avecJet": {
+  "EFFECT_PROTECT": {
+   "quoi": "abri",
+   "compteur": "gardeSuite",
+   "sur": 256,
+   "depart": 255,
+   "jets": 1
+  },
+  "EFFECT_ENDURE": {
+   "quoi": "tenacite",
+   "compteur": "gardeSuite",
+   "sur": 256,
+   "depart": 255,
+   "jets": 1
+  },
+  "EFFECT_SPITE": {
+   "quoi": "depit",
+   "ppMin": 2,
+   "ppMax": 5,
+   "jets": 1
+  },
+  "EFFECT_ENCORE": {
+   "quoi": "bis",
+   "toursMin": 3,
+   "toursMax": 6,
+   "jets": 1,
+   "refuse": [
+    "ENCORE",
+    "MIMIC",
+    "MIRROR_MOVE",
+    "METRONOME",
+    "SKETCH",
+    "STRUGGLE",
+    "TRANSFORM"
+   ]
+  },
+  "EFFECT_MIRROR_COAT": {
+   "quoi": "voileMiroir",
+   "facteur": 2,
+   "jets": 0
+  },
+  "EFFECT_SKETCH": {
+   "quoi": "gribouille",
+   "jets": 0,
+   "refuse": [
+    "SKETCH",
+    "STRUGGLE",
+    "METRONOME",
+    "MIMIC",
+    "MIRROR_MOVE",
+    "TRANSFORM"
+   ]
+  },
+  "EFFECT_SWAGGER": {
+   "quoi": "vantardise",
+   "crans": 2,
+   "jets": 1
+  },
+  "EFFECT_FUTURE_SIGHT": {
+   "quoi": "prescience",
+   "tours": 3,
+   "jets": 1
+  },
+  "EFFECT_SLEEP_TALK": {
+   "quoi": "blablaDodo",
+   "jets": 1,
+   "refuse": [
+    "SLEEP_TALK",
+    "BIDE",
+    "MIRROR_MOVE",
+    "METRONOME",
+    "SKY_ATTACK",
+    "SKULL_BASH",
+    "SOLARBEAM",
+    "RAZOR_WIND",
+    "DIG",
+    "FLY"
+   ]
+  }
+ },
+ "priorites": {
+  "EFFECT_PROTECT": 2,
+  "EFFECT_ENDURE": 2,
+  "EFFECT_PRIORITY_HIT": 1,
+  "EFFECT_COUNTER": -1,
+  "EFFECT_MIRROR_COAT": -1,
+  "EFFECT_FORCE_SWITCH": -1
+ },
+ "sansJet": {
+  "EFFECT_CURSE": {
+   "quoi": "malediction",
+   "typeQuiPose": "ghost",
+   "coutPart": 2,
+   "rongePart": 4,
+   "paliers": [
+    [
+     "atk",
+     1
+    ],
+    [
+     "def",
+     1
+    ],
+    [
+     "vit",
+     -1
+    ]
+   ]
+  },
+  "EFFECT_HEAL_BELL": {
+   "quoi": "glasDeSoin"
+  },
+  "EFFECT_BELLY_DRUM": {
+   "quoi": "bideEnVrac",
+   "coutPart": 2,
+   "crans": 6
+  },
+  "EFFECT_PAIN_SPLIT": {
+   "quoi": "partage"
+  },
+  "EFFECT_SPIKES": {
+   "quoi": "poserPiege",
+   "piege": "picots"
+  },
+  "EFFECT_ATTRACT": {
+   "quoi": "attraction",
+   "surDeux": 2
+  },
+  "EFFECT_NIGHTMARE": {
+   "quoi": "cauchemar",
+   "rongePart": 4
+  },
+  "EFFECT_PSYCH_UP": {
+   "quoi": "copiePaliers"
+  },
+  "EFFECT_CONVERSION2": {
+   "quoi": "conversionDeux"
+  }
+ },
+ "paliers": {
+  "EFFECT_ATTACK_DOWN_2": [
+   "atk",
+   -2,
+   100
+  ],
+  "EFFECT_SPEED_DOWN_2": [
+   "vit",
+   -2,
+   100
+  ],
+  "EFFECT_EVASION_DOWN": [
+   "esquive",
+   -1,
+   100
+  ],
+  "EFFECT_ATTACK_UP_HIT": [
+   "atk",
+   1,
+   10
+  ],
+  "EFFECT_DEFENSE_UP_HIT": [
+   "def",
+   1,
+   10
+  ],
+  "EFFECT_ALL_UP_HIT": [
+   [
+    "atk",
+    "def",
+    "vit",
+    "sat",
+    "sdf"
+   ],
+   1,
+   10
+  ]
+ },
+ "pieges": [
+  {
+   "cle": "picots",
+   "part": 8,
+   "epargneTypes": [
+    "flying"
+   ]
+  }
+ ],
+ "enDormant": [
+  "SLEEP_TALK",
+  "SNORE"
+ ],
+ "meteo": {
+  "EFFECT_RAIN_DANCE": {
+   "cle": "pluie",
+   "tours": 5
+  },
+  "EFFECT_SUNNY_DAY": {
+   "cle": "zenith",
+   "tours": 5
+  },
+  "EFFECT_SANDSTORM": {
+   "cle": "sable",
+   "tours": 5
+  }
+ },
+ "meteoDegats": {
+  "pluie": {
+   "water": 1.5,
+   "fire": 0.5
+  },
+  "zenith": {
+   "fire": 1.5,
+   "water": 0.5
+  },
+  "sable": {}
+ },
+ "meteoUsure": {
+  "sable": {
+   "part": 16,
+   "epargne": [
+    "rock",
+    "ground",
+    "steel"
+   ]
+  }
+ },
+ "durees": {
+  "EFFECT_SAFEGUARD": {
+   "cle": "rune",
+   "tours": 5,
+   "camp": true
+  },
+  "EFFECT_MEAN_LOOK": {
+   "cle": "regard",
+   "tours": 0,
+   "cible": true
+  },
+  "EFFECT_PERISH_SONG": {
+   "cle": "requiem",
+   "tours": 4,
+   "deuxCamps": true
+  },
+  "EFFECT_BATON_PASS": {
+   "cle": "relais",
+   "tours": 1,
+   "soi": true
+  },
+  "EFFECT_LOCK_ON": {
+   "cle": "verrou",
+   "tours": 2,
+   "soi": true
+  },
+  "EFFECT_FORESIGHT": {
+   "cle": "clairvoyance",
+   "tours": 0,
+   "cible": true
+  },
+  "EFFECT_DESTINY_BOND": {
+   "cle": "lienDestin",
+   "tours": 1,
+   "soi": true
+  }
+ },
+ "batonPass": "EFFECT_BATON_PASS"
+}

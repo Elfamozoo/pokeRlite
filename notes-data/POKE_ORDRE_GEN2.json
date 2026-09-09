@@ -1,0 +1,19 @@
+[
+ "js/poke/gen2/types.js",
+ "js/poke/gen2/effets.js",
+ "js/poke/gen2/effets-neufs.js",
+ "js/poke/gen2/objets-tenus.js",
+ "js/poke/gen2/obtentions.js",
+ "js/poke/gen2/attaques.js",
+ "js/poke/gen2/especes.js",
+ "js/poke/gen2/dresseurs.js",
+ "js/poke/gen2/rival.js",
+ "js/poke/gen2/equipes.js",
+ "js/poke/gen2/classes.js",
+ "js/poke/gen2/monde.js",
+ "js/poke/gen2/voyage.js",
+ "js/poke/gen2/scenes.js",
+ "js/poke/gen2/concours.js",
+ "js/poke/gen2/sons.js",
+ "js/poke/gen2/sons-attaques.js"
+]

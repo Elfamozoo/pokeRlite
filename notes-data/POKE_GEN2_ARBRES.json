@@ -1,0 +1,450 @@
+{
+ "jeux": {
+  "canyon": {
+   "commun": [
+    {
+     "poids": 50,
+     "n": 21,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 21,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 21,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 190,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 190,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 190,
+     "niveau": 10
+    }
+   ],
+   "rare": [
+    {
+     "poids": 50,
+     "n": 21,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 214,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 214,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 190,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 190,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 190,
+     "niveau": 10
+    }
+   ]
+  },
+  "town": {
+   "commun": [
+    {
+     "poids": 50,
+     "n": 21,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 23,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 21,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 190,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 190,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 190,
+     "niveau": 10
+    }
+   ],
+   "rare": [
+    {
+     "poids": 50,
+     "n": 21,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 214,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 214,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 190,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 190,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 190,
+     "niveau": 10
+    }
+   ]
+  },
+  "route": {
+   "commun": [
+    {
+     "poids": 50,
+     "n": 163,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 167,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 165,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    }
+   ],
+   "rare": [
+    {
+     "poids": 50,
+     "n": 163,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 204,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 204,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    }
+   ]
+  },
+  "kanto": {
+   "commun": [
+    {
+     "poids": 50,
+     "n": 163,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 23,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 163,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    }
+   ],
+   "rare": [
+    {
+     "poids": 50,
+     "n": 163,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 204,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 204,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    }
+   ]
+  },
+  "lake": {
+   "commun": [
+    {
+     "poids": 50,
+     "n": 163,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 48,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 163,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    }
+   ],
+   "rare": [
+    {
+     "poids": 50,
+     "n": 163,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 204,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 204,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 102,
+     "niveau": 10
+    }
+   ]
+  },
+  "forest": {
+   "commun": [
+    {
+     "poids": 50,
+     "n": 163,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 204,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 204,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 164,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 12,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 15,
+     "niveau": 10
+    }
+   ],
+   "rare": [
+    {
+     "poids": 50,
+     "n": 163,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 10,
+     "niveau": 10
+    },
+    {
+     "poids": 15,
+     "n": 13,
+     "niveau": 10
+    },
+    {
+     "poids": 10,
+     "n": 163,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 11,
+     "niveau": 10
+    },
+    {
+     "poids": 5,
+     "n": 14,
+     "niveau": 10
+    }
+   ]
+  },
+  "rock": {
+   "commun": [
+    {
+     "poids": 90,
+     "n": 98,
+     "niveau": 15
+    },
+    {
+     "poids": 10,
+     "n": 213,
+     "niveau": 15
+    }
+   ],
+   "rare": [
+    {
+     "poids": 90,
+     "n": 98,
+     "niveau": 15
+    },
+    {
+     "poids": 10,
+     "n": 213,
+     "niveau": 15
+    }
+   ]
+  }
+ },
+ "etapes": {
+  "route-29": "route",
+  "route-30": "route",
+  "route-31": "route",
+  "route-32": "kanto",
+  "route-33": "town",
+  "route-34": "route",
+  "route-35": "route",
+  "route-36": "route",
+  "route-37": "route",
+  "route-38": "route",
+  "route-39": "route",
+  "route-42": "town",
+  "route-43": "lake",
+  "route-44": "canyon",
+  "route-45": "canyon",
+  "route-46": "canyon",
+  "bois-aux-chenes": "forest"
+ },
+ "rochers": {
+  "chenal-40": "rock",
+  "grotte-obscure": "rock",
+  "puits-ramoloss": "rock"
+ }
+}

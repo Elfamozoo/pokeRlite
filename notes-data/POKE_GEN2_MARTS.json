@@ -1,0 +1,301 @@
+{
+ "MartCherrygrove": [
+  "POTION",
+  "ANTIDOTE",
+  "PARLYZ_HEAL",
+  "AWAKENING"
+ ],
+ "MartCherrygroveDex": [
+  "POKE_BALL",
+  "POTION",
+  "ANTIDOTE",
+  "PARLYZ_HEAL",
+  "AWAKENING"
+ ],
+ "MartViolet": [
+  "POKE_BALL",
+  "POTION",
+  "ESCAPE_ROPE",
+  "ANTIDOTE",
+  "PARLYZ_HEAL",
+  "AWAKENING",
+  "X_DEFEND",
+  "X_ATTACK",
+  "X_SPEED",
+  "FLOWER_MAIL"
+ ],
+ "MartAzalea": [
+  "CHARCOAL",
+  "POKE_BALL",
+  "POTION",
+  "SUPER_POTION",
+  "ESCAPE_ROPE",
+  "REPEL",
+  "ANTIDOTE",
+  "PARLYZ_HEAL",
+  "FLOWER_MAIL"
+ ],
+ "MartCianwood": [
+  "POTION",
+  "SUPER_POTION",
+  "HYPER_POTION",
+  "FULL_HEAL",
+  "REVIVE"
+ ],
+ "MartGoldenrod2F1": [
+  "POTION",
+  "SUPER_POTION",
+  "ANTIDOTE",
+  "PARLYZ_HEAL",
+  "AWAKENING",
+  "BURN_HEAL",
+  "ICE_HEAL"
+ ],
+ "MartGoldenrod2F2": [
+  "POKE_BALL",
+  "GREAT_BALL",
+  "ESCAPE_ROPE",
+  "REPEL",
+  "REVIVE",
+  "FULL_HEAL",
+  "POKE_DOLL",
+  "FLOWER_MAIL"
+ ],
+ "MartGoldenrod3F": [
+  "X_SPEED",
+  "X_SPECIAL",
+  "X_DEFEND",
+  "X_ATTACK",
+  "DIRE_HIT",
+  "GUARD_SPEC",
+  "X_ACCURACY"
+ ],
+ "MartGoldenrod4F": [
+  "PROTEIN",
+  "IRON",
+  "CARBOS",
+  "CALCIUM",
+  "HP_UP"
+ ],
+ "MartGoldenrod5F1": [
+  "TM_THUNDERPUNCH",
+  "TM_FIRE_PUNCH",
+  "TM_ICE_PUNCH"
+ ],
+ "MartGoldenrod5F2": [
+  "TM_THUNDERPUNCH",
+  "TM_FIRE_PUNCH",
+  "TM_ICE_PUNCH",
+  "TM_HEADBUTT"
+ ],
+ "MartGoldenrod5F3": [
+  "TM_THUNDERPUNCH",
+  "TM_FIRE_PUNCH",
+  "TM_ICE_PUNCH",
+  "TM_ROCK_SMASH"
+ ],
+ "MartGoldenrod5F4": [
+  "TM_THUNDERPUNCH",
+  "TM_FIRE_PUNCH",
+  "TM_ICE_PUNCH",
+  "TM_HEADBUTT",
+  "TM_ROCK_SMASH"
+ ],
+ "MartOlivine": [
+  "GREAT_BALL",
+  "SUPER_POTION",
+  "HYPER_POTION",
+  "ANTIDOTE",
+  "PARLYZ_HEAL",
+  "AWAKENING",
+  "ICE_HEAL",
+  "SUPER_REPEL",
+  "SURF_MAIL"
+ ],
+ "MartEcruteak": [
+  "POKE_BALL",
+  "GREAT_BALL",
+  "POTION",
+  "SUPER_POTION",
+  "ANTIDOTE",
+  "PARLYZ_HEAL",
+  "AWAKENING",
+  "BURN_HEAL",
+  "ICE_HEAL",
+  "REVIVE"
+ ],
+ "MartMahogany1": [
+  "TINYMUSHROOM",
+  "SLOWPOKETAIL",
+  "POKE_BALL",
+  "POTION"
+ ],
+ "MartMahogany2": [
+  "RAGECANDYBAR",
+  "GREAT_BALL",
+  "SUPER_POTION",
+  "HYPER_POTION",
+  "ANTIDOTE",
+  "PARLYZ_HEAL",
+  "SUPER_REPEL",
+  "REVIVE",
+  "FLOWER_MAIL"
+ ],
+ "MartBlackthorn": [
+  "GREAT_BALL",
+  "ULTRA_BALL",
+  "HYPER_POTION",
+  "MAX_POTION",
+  "FULL_HEAL",
+  "REVIVE",
+  "MAX_REPEL",
+  "X_DEFEND",
+  "X_ATTACK"
+ ],
+ "MartViridian": [
+  "ULTRA_BALL",
+  "HYPER_POTION",
+  "FULL_HEAL",
+  "REVIVE",
+  "ANTIDOTE",
+  "PARLYZ_HEAL",
+  "AWAKENING",
+  "BURN_HEAL",
+  "FLOWER_MAIL"
+ ],
+ "MartPewter": [
+  "GREAT_BALL",
+  "SUPER_POTION",
+  "SUPER_REPEL",
+  "ANTIDOTE",
+  "PARLYZ_HEAL",
+  "AWAKENING",
+  "BURN_HEAL"
+ ],
+ "MartCerulean": [
+  "GREAT_BALL",
+  "ULTRA_BALL",
+  "SUPER_POTION",
+  "SUPER_REPEL",
+  "FULL_HEAL",
+  "X_DEFEND",
+  "X_ATTACK",
+  "DIRE_HIT",
+  "SURF_MAIL"
+ ],
+ "MartLavender": [
+  "GREAT_BALL",
+  "POTION",
+  "SUPER_POTION",
+  "MAX_REPEL",
+  "ANTIDOTE",
+  "PARLYZ_HEAL",
+  "AWAKENING",
+  "BURN_HEAL"
+ ],
+ "MartVermilion": [
+  "ULTRA_BALL",
+  "SUPER_POTION",
+  "HYPER_POTION",
+  "REVIVE",
+  "PARLYZ_HEAL",
+  "AWAKENING",
+  "BURN_HEAL",
+  "LITEBLUEMAIL"
+ ],
+ "MartCeladon2F1": [
+  "POTION",
+  "SUPER_POTION",
+  "HYPER_POTION",
+  "MAX_POTION",
+  "REVIVE",
+  "SUPER_REPEL",
+  "MAX_REPEL"
+ ],
+ "MartCeladon2F2": [
+  "POKE_BALL",
+  "GREAT_BALL",
+  "ULTRA_BALL",
+  "ESCAPE_ROPE",
+  "FULL_HEAL",
+  "ANTIDOTE",
+  "BURN_HEAL",
+  "ICE_HEAL",
+  "AWAKENING",
+  "PARLYZ_HEAL"
+ ],
+ "MartCeladon3F": [
+  "TM_HIDDEN_POWER",
+  "TM_SUNNY_DAY",
+  "TM_PROTECT",
+  "TM_RAIN_DANCE",
+  "TM_SANDSTORM"
+ ],
+ "MartCeladon4F": [
+  "POKE_DOLL",
+  "LOVELY_MAIL",
+  "SURF_MAIL"
+ ],
+ "MartCeladon5F1": [
+  "HP_UP",
+  "PROTEIN",
+  "IRON",
+  "CARBOS",
+  "CALCIUM"
+ ],
+ "MartCeladon5F2": [
+  "X_ACCURACY",
+  "GUARD_SPEC",
+  "DIRE_HIT",
+  "X_ATTACK",
+  "X_DEFEND",
+  "X_SPEED",
+  "X_SPECIAL"
+ ],
+ "MartFuchsia": [
+  "GREAT_BALL",
+  "ULTRA_BALL",
+  "SUPER_POTION",
+  "HYPER_POTION",
+  "FULL_HEAL",
+  "MAX_REPEL",
+  "FLOWER_MAIL"
+ ],
+ "MartSaffron": [
+  "GREAT_BALL",
+  "ULTRA_BALL",
+  "HYPER_POTION",
+  "MAX_POTION",
+  "FULL_HEAL",
+  "X_ATTACK",
+  "X_DEFEND",
+  "FLOWER_MAIL"
+ ],
+ "MartMtMoon": [
+  "POKE_DOLL",
+  "FRESH_WATER",
+  "SODA_POP",
+  "LEMONADE",
+  "REPEL",
+  "PORTRAITMAIL"
+ ],
+ "MartIndigoPlateau": [
+  "ULTRA_BALL",
+  "MAX_REPEL",
+  "HYPER_POTION",
+  "MAX_POTION",
+  "FULL_RESTORE",
+  "REVIVE",
+  "FULL_HEAL"
+ ],
+ "MartUnderground": [
+  "ENERGYPOWDER",
+  "ENERGY_ROOT",
+  "HEAL_POWDER",
+  "REVIVAL_HERB"
+ ],
+ "DefaultMart": [
+  "POKE_BALL",
+  "POTION"
+ ]
+}

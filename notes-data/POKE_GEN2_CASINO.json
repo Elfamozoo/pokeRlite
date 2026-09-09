@@ -1,0 +1,19 @@
+{
+ "cristal": [
+  {
+   "n": 63,
+   "jetons": 100,
+   "niveau": 5
+  },
+  {
+   "n": 104,
+   "jetons": 800,
+   "niveau": 15
+  },
+  {
+   "n": 202,
+   "jetons": 1500,
+   "niveau": 15
+  }
+ ]
+}

@@ -1,0 +1,85 @@
+{
+ "boost": {
+  "HELD_NORMAL_BOOST": "normal",
+  "HELD_FIGHTING_BOOST": "fighting",
+  "HELD_FLYING_BOOST": "flying",
+  "HELD_POISON_BOOST": "poison",
+  "HELD_GROUND_BOOST": "ground",
+  "HELD_ROCK_BOOST": "rock",
+  "HELD_BUG_BOOST": "bug",
+  "HELD_GHOST_BOOST": "ghost",
+  "HELD_STEEL_BOOST": "steel",
+  "HELD_FIRE_BOOST": "fire",
+  "HELD_WATER_BOOST": "water",
+  "HELD_GRASS_BOOST": "grass",
+  "HELD_ELECTRIC_BOOST": "electric",
+  "HELD_PSYCHIC_BOOST": "psychic",
+  "HELD_ICE_BOOST": "ice",
+  "HELD_DRAGON_BOOST": "dragon",
+  "HELD_DARK_BOOST": "dark"
+ },
+ "boostFacteur": 1.1,
+ "leftovers": {
+  "effet": "HELD_LEFTOVERS",
+  "part": 16
+ },
+ "brightpowder": {
+  "effet": "HELD_BRIGHTPOWDER",
+  "precision": 0.9
+ },
+ "critique": {
+  "effet": "HELD_CRITICAL_UP",
+  "facteur": 2
+ },
+ "metalPowder": {
+  "effet": "HELD_METAL_POWDER",
+  "espece": 132,
+  "facteur": 1.5
+ },
+ "baies": {
+  "HELD_BERRY": {
+   "soigne": 10,
+   "seuil": 0.5
+  }
+ },
+ "viveGriffe": {
+  "effet": "HELD_QUICK_CLAW",
+  "sur": 256,
+  "seuil": 60
+ },
+ "flinch": {
+  "effet": "HELD_FLINCH",
+  "sur": 256,
+  "seuil": 30
+ },
+ "rendPP": {
+  "effet": "HELD_RESTORE_PP",
+  "pp": 5
+ },
+ "soins": {
+  "HELD_HEAL_POISON": [
+   "poison",
+   "poisonGrave"
+  ],
+  "HELD_HEAL_PARALYZE": [
+   "para"
+  ],
+  "HELD_HEAL_FREEZE": [
+   "gel"
+  ],
+  "HELD_HEAL_BURN": [
+   "brulure"
+  ],
+  "HELD_HEAL_SLEEP": [
+   "sommeil"
+  ],
+  "HELD_HEAL_STATUS": [
+   "poison",
+   "poisonGrave",
+   "para",
+   "gel",
+   "brulure",
+   "sommeil"
+  ]
+ }
+}

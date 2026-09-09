@@ -1,0 +1,494 @@
+[
+ {
+  "id": "bourg-geon",
+  "lieu": "new-bark-town",
+  "categorie": "ville",
+  "depart": true
+ },
+ {
+  "id": "route-29",
+  "lieu": "johto-route-29",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_29"
+  ]
+ },
+ {
+  "id": "ville-griotte",
+  "lieu": "cherrygrove-city",
+  "categorie": "ville",
+  "boutique": 1
+ },
+ {
+  "id": "route-30",
+  "lieu": "johto-route-30",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_30"
+  ]
+ },
+ {
+  "id": "route-31",
+  "lieu": "johto-route-31",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_31"
+  ]
+ },
+ {
+  "id": "tour-chetiflor",
+  "lieu": "sprout-tower",
+  "categorie": "donjon",
+  "tables": [
+   "SPROUT_TOWER_2F",
+   "SPROUT_TOWER_3F"
+  ],
+  "donne": null
+ },
+ {
+  "id": "mauville",
+  "lieu": "violet-city",
+  "categorie": "ville",
+  "arene": 1,
+  "boutique": 1
+ },
+ {
+  "id": "route-32",
+  "lieu": "johto-route-32",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_32"
+  ]
+ },
+ {
+  "id": "caves-jumelles",
+  "lieu": "union-cave",
+  "categorie": "donjon",
+  "tables": [
+   "UNION_CAVE_1F",
+   "UNION_CAVE_B1F",
+   "UNION_CAVE_B2F"
+  ],
+  "donne": [
+   "flash"
+  ]
+ },
+ {
+  "id": "grotte-obscure",
+  "lieu": "dark-cave",
+  "categorie": "donjon",
+  "tables": [
+   "DARK_CAVE_VIOLET_ENTRANCE",
+   "DARK_CAVE_BLACKTHORN_ENTRANCE"
+  ],
+  "exige": [
+   "flash"
+  ]
+ },
+ {
+  "id": "route-33",
+  "lieu": "johto-route-33",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_33"
+  ]
+ },
+ {
+  "id": "puits-ramoloss",
+  "lieu": "slowpoke-well",
+  "categorie": "donjon",
+  "tables": [
+   "SLOWPOKE_WELL_B1F",
+   "SLOWPOKE_WELL_B2F"
+  ],
+  "rocket": 1
+ },
+ {
+  "id": "ecorcia",
+  "lieu": "azalea-town",
+  "categorie": "ville",
+  "arene": 2,
+  "boutique": 2
+ },
+ {
+  "id": "bois-aux-chenes",
+  "lieu": "ilex-forest",
+  "categorie": "donjon",
+  "tables": [
+   "ILEX_FOREST"
+  ],
+  "donne": [
+   "coupe"
+  ]
+ },
+ {
+  "id": "route-34",
+  "lieu": "johto-route-34",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_34"
+  ],
+  "exige": [
+   "coupe"
+  ]
+ },
+ {
+  "id": "doublonville",
+  "lieu": "goldenrod-city",
+  "categorie": "ville",
+  "arene": 3,
+  "boutique": 3,
+  "pension": true,
+  "casino": true
+ },
+ {
+  "id": "route-35",
+  "lieu": "johto-route-35",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_35"
+  ]
+ },
+ {
+  "id": "parc-national",
+  "lieu": "national-park",
+  "categorie": "donjon",
+  "tables": [
+   "NATIONAL_PARK"
+  ]
+ },
+ {
+  "id": "route-36",
+  "lieu": "johto-route-36",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_36"
+  ]
+ },
+ {
+  "id": "ruines-alpha",
+  "lieu": "ruins-of-alph",
+  "categorie": "donjon",
+  "tables": [
+   "RUINS_OF_ALPH_OUTSIDE",
+   "RUINS_OF_ALPH_INNER_CHAMBER"
+  ],
+  "unique": true
+ },
+ {
+  "id": "route-37",
+  "lieu": "johto-route-37",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_37"
+  ]
+ },
+ {
+  "id": "tour-calcinee",
+  "lieu": "burned-tower",
+  "categorie": "donjon",
+  "tables": [
+   "BURNED_TOWER_1F",
+   "BURNED_TOWER_B1F"
+  ],
+  "libereErrants": true
+ },
+ {
+  "id": "rosalia",
+  "lieu": "ecruteak-city",
+  "categorie": "ville",
+  "arene": 4,
+  "boutique": 3,
+  "donne": [
+   "surf"
+  ]
+ },
+ {
+  "id": "route-38",
+  "lieu": "johto-route-38",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_38"
+  ]
+ },
+ {
+  "id": "route-39",
+  "lieu": "johto-route-39",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_39"
+  ]
+ },
+ {
+  "id": "oliville-port",
+  "lieu": "olivine-city",
+  "categorie": "ville",
+  "boutique": 3
+ },
+ {
+  "id": "chenal-40",
+  "lieu": "johto-sea-route-40",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_40"
+  ],
+  "exige": [
+   "surf"
+  ]
+ },
+ {
+  "id": "chenal-41",
+  "lieu": "johto-sea-route-41",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_41"
+  ],
+  "exige": [
+   "surf"
+  ]
+ },
+ {
+  "id": "irisia",
+  "lieu": "cianwood-city",
+  "categorie": "ville",
+  "arene": 5,
+  "boutique": 3,
+  "donne": [
+   "remede"
+  ]
+ },
+ {
+  "id": "tourbiles",
+  "lieu": "whirl-islands",
+  "categorie": "donjon",
+  "tables": [
+   "WHIRL_ISLAND_NW",
+   "WHIRL_ISLAND_NE",
+   "WHIRL_ISLAND_SW",
+   "WHIRL_ISLAND_SE",
+   "WHIRL_ISLAND_B1F",
+   "WHIRL_ISLAND_B2F",
+   "WHIRL_ISLAND_CAVE"
+  ],
+  "exige": [
+   "surf"
+  ],
+  "donne": [
+   "ailArgent"
+  ]
+ },
+ {
+  "id": "phare-oliville",
+  "lieu": "olivine-city",
+  "categorie": "scene",
+  "exige": [
+   "remede"
+  ]
+ },
+ {
+  "id": "oliville",
+  "lieu": "olivine-city",
+  "categorie": "ville",
+  "arene": 6,
+  "boutique": 3,
+  "donne": [
+   "force"
+  ],
+  "exige": [
+   "remede"
+  ]
+ },
+ {
+  "id": "route-42",
+  "lieu": "johto-route-42",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_42"
+  ]
+ },
+ {
+  "id": "mont-creuset",
+  "lieu": "mt-mortar",
+  "categorie": "donjon",
+  "tables": [
+   "MOUNT_MORTAR_1F_OUTSIDE",
+   "MOUNT_MORTAR_1F_INSIDE",
+   "MOUNT_MORTAR_2F_INSIDE",
+   "MOUNT_MORTAR_B1F"
+  ],
+  "exige": [
+   "force"
+  ]
+ },
+ {
+  "id": "acajou-bourg",
+  "lieu": "mahogany-town",
+  "categorie": "ville",
+  "boutique": 3
+ },
+ {
+  "id": "route-43",
+  "lieu": "johto-route-43",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_43"
+  ]
+ },
+ {
+  "id": "lac-colere",
+  "lieu": "lake-of-rage",
+  "categorie": "scene",
+  "exige": [
+   "surf"
+  ],
+  "unique": true,
+  "donne": [
+   "mdpRocket"
+  ],
+  "tables": [
+   "LAKE_OF_RAGE"
+  ]
+ },
+ {
+  "id": "repaire-rocket",
+  "lieu": "mahogany-town",
+  "categorie": "donjon",
+  "exige": [
+   "mdpRocket"
+  ],
+  "rocket": 2,
+  "donne": [
+   "ailArcEnCiel",
+   "master"
+  ]
+ },
+ {
+  "id": "acajou",
+  "lieu": "mahogany-town",
+  "categorie": "ville",
+  "arene": 7,
+  "boutique": 3,
+  "exige": [
+   "mdpRocket"
+  ]
+ },
+ {
+  "id": "route-44",
+  "lieu": "johto-route-44",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_44"
+  ]
+ },
+ {
+  "id": "route-de-glace",
+  "lieu": "ice-path",
+  "categorie": "donjon",
+  "tables": [
+   "ICE_PATH_1F",
+   "ICE_PATH_B1F",
+   "ICE_PATH_B2F_MAHOGANY_SIDE",
+   "ICE_PATH_B2F_BLACKTHORN_SIDE",
+   "ICE_PATH_B3F"
+  ],
+  "exige": [
+   "force"
+  ]
+ },
+ {
+  "id": "ebenelle",
+  "lieu": "blackthorn-city",
+  "categorie": "ville",
+  "arene": 8,
+  "boutique": 3,
+  "donne": [
+   "chute"
+  ]
+ },
+ {
+  "id": "antre-dragon",
+  "lieu": "dragons-den",
+  "categorie": "donjon",
+  "exigeBadges": 8,
+  "unique": true,
+  "tables": [
+   "DRAGONS_DEN_B1F"
+  ]
+ },
+ {
+  "id": "route-45",
+  "lieu": "johto-route-45",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_45"
+  ]
+ },
+ {
+  "id": "route-46",
+  "lieu": "johto-route-46",
+  "categorie": "route",
+  "tables": [
+   "ROUTE_46"
+  ]
+ },
+ {
+  "id": "plateau-indigo",
+  "lieu": "indigo-plateau",
+  "categorie": "ligue",
+  "exigeBadges": 8,
+  "ligue": true
+ },
+ {
+  "id": "caverne-lugia",
+  "lieu": "whirl-islands",
+  "categorie": "donjon",
+  "tables": [
+   "WHIRL_ISLAND_LUGIA_CHAMBER"
+  ],
+  "exige": [
+   "surf",
+   "chute",
+   "ailArgent"
+  ],
+  "apresLigue": true,
+  "legendaire": 249
+ },
+ {
+  "id": "tour-carillon",
+  "lieu": "bell-tower",
+  "categorie": "donjon",
+  "tables": [
+   "TIN_TOWER_2F",
+   "TIN_TOWER_3F",
+   "TIN_TOWER_4F",
+   "TIN_TOWER_5F",
+   "TIN_TOWER_6F",
+   "TIN_TOWER_7F",
+   "TIN_TOWER_8F",
+   "TIN_TOWER_9F"
+  ],
+  "exige": [
+   "ailArcEnCiel"
+  ],
+  "apresLigue": true,
+  "legendaire": 250
+ },
+ {
+  "id": "mont-argente",
+  "lieu": "mt-silver",
+  "categorie": "donjon",
+  "tables": [
+   "SILVER_CAVE_OUTSIDE",
+   "SILVER_CAVE_ROOM_1",
+   "SILVER_CAVE_ROOM_2",
+   "SILVER_CAVE_ROOM_3",
+   "SILVER_CAVE_ITEM_ROOMS"
+  ],
+  "exige": [
+   "force",
+   "chute"
+  ],
+  "apresLigue": true,
+  "dresseurFinal": "Red"
+ }
+]

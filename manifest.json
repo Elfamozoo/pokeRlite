@@ -1,0 +1,63 @@
+{
+  "name": "Road to Legends",
+  "short_name": "Road to Legends",
+  "description": "De Genin à Kage, écris la voie d'un ninja, année après année. Chaque choix compte.",
+  "lang": "fr",
+  "id": "/",
+  "start_url": "/?src=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1420",
+  "theme_color": "#0d1420",
+  "categories": [
+    "games",
+    "entertainment"
+  ],
+  "icons": [
+    {
+      "src": "/assets/img/logo-192.png?i=5",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/img/logo-512.png?i=5",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/img/logo-maskable-512.png?i=5",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Défi du jour",
+      "short_name": "Défi du jour",
+      "description": "Le même destin pour tout le monde, un seul essai.",
+      "url": "/?src=pwa&go=daily",
+      "icons": [
+        {
+          "src": "/assets/img/logo-192.png?i=5",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Nouvelle voie",
+      "short_name": "Nouvelle voie",
+      "description": "Commencer une nouvelle carrière de ninja.",
+      "url": "/?src=pwa&go=new",
+      "icons": [
+        {
+          "src": "/assets/img/logo-192.png?i=5",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

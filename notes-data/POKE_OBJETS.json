@@ -1,0 +1,674 @@
+{
+ "MASTER_BALL": {
+  "nom": {
+   "fr": "Master Ball",
+   "en": "MASTER BALL"
+  },
+  "prix": 0
+ },
+ "ULTRA_BALL": {
+  "nom": {
+   "fr": "Hyper Ball",
+   "en": "ULTRA BALL"
+  },
+  "prix": 1200
+ },
+ "GREAT_BALL": {
+  "nom": {
+   "fr": "Super Ball",
+   "en": "GREAT BALL"
+  },
+  "prix": 600
+ },
+ "POKE_BALL": {
+  "nom": {
+   "fr": "Poké Ball",
+   "en": "Poké BALL"
+  },
+  "prix": 200
+ },
+ "TOWN_MAP": {
+  "nom": {
+   "fr": "Carte",
+   "en": "TOWN MAP"
+  },
+  "prix": 0
+ },
+ "BICYCLE": {
+  "nom": {
+   "fr": "Bicyclette",
+   "en": "BICYCLE"
+  },
+  "prix": 0
+ },
+ "SURFBOARD": {
+  "nom": {
+   "fr": "?????",
+   "en": "?????"
+  },
+  "prix": 0
+ },
+ "SAFARI_BALL": {
+  "nom": {
+   "fr": "Safari Ball",
+   "en": "SAFARI BALL"
+  },
+  "prix": 1000
+ },
+ "POKEDEX": {
+  "nom": {
+   "fr": "PokéDEX",
+   "en": "PokéDEX"
+  },
+  "prix": 0
+ },
+ "MOON_STONE": {
+  "nom": {
+   "fr": "Pierre Lune",
+   "en": "MOON STONE"
+  },
+  "prix": 0
+ },
+ "ANTIDOTE": {
+  "nom": {
+   "fr": "Antidote",
+   "en": "ANTIDOTE"
+  },
+  "prix": 100
+ },
+ "BURN_HEAL": {
+  "nom": {
+   "fr": "Anti-Brûle",
+   "en": "BURN HEAL"
+  },
+  "prix": 250
+ },
+ "ICE_HEAL": {
+  "nom": {
+   "fr": "Antigel",
+   "en": "ICE HEAL"
+  },
+  "prix": 250
+ },
+ "AWAKENING": {
+  "nom": {
+   "fr": "Réveil",
+   "en": "AWAKENING"
+  },
+  "prix": 200
+ },
+ "PARLYZ_HEAL": {
+  "nom": {
+   "fr": "Anti-Para",
+   "en": "PARLYZ HEAL"
+  },
+  "prix": 200
+ },
+ "FULL_RESTORE": {
+  "nom": {
+   "fr": "Guérison",
+   "en": "FULL RESTORE"
+  },
+  "prix": 3000
+ },
+ "MAX_POTION": {
+  "nom": {
+   "fr": "Potion Max",
+   "en": "MAX POTION"
+  },
+  "prix": 2500
+ },
+ "HYPER_POTION": {
+  "nom": {
+   "fr": "Hyper Potion",
+   "en": "HYPER POTION"
+  },
+  "prix": 1500
+ },
+ "SUPER_POTION": {
+  "nom": {
+   "fr": "Super Potion",
+   "en": "SUPER POTION"
+  },
+  "prix": 700
+ },
+ "POTION": {
+  "nom": {
+   "fr": "Potion",
+   "en": "POTION"
+  },
+  "prix": 300
+ },
+ "BOULDERBADGE": {
+  "nom": {
+   "fr": "BOULDERBADGE",
+   "en": "BOULDERBADGE"
+  },
+  "prix": 0
+ },
+ "CASCADEBADGE": {
+  "nom": {
+   "fr": "CASCADEBADGE",
+   "en": "CASCADEBADGE"
+  },
+  "prix": 0
+ },
+ "THUNDERBADGE": {
+  "nom": {
+   "fr": "THUNDERBADGE",
+   "en": "THUNDERBADGE"
+  },
+  "prix": 0
+ },
+ "RAINBOWBADGE": {
+  "nom": {
+   "fr": "RAINBOWBADGE",
+   "en": "RAINBOWBADGE"
+  },
+  "prix": 0
+ },
+ "SOULBADGE": {
+  "nom": {
+   "fr": "SOULBADGE",
+   "en": "SOULBADGE"
+  },
+  "prix": 0
+ },
+ "MARSHBADGE": {
+  "nom": {
+   "fr": "MARSHBADGE",
+   "en": "MARSHBADGE"
+  },
+  "prix": 0
+ },
+ "VOLCANOBADGE": {
+  "nom": {
+   "fr": "VOLCANOBADGE",
+   "en": "VOLCANOBADGE"
+  },
+  "prix": 0
+ },
+ "EARTHBADGE": {
+  "nom": {
+   "fr": "EARTHBADGE",
+   "en": "EARTHBADGE"
+  },
+  "prix": 0
+ },
+ "ESCAPE_ROPE": {
+  "nom": {
+   "fr": "Corde Sortie",
+   "en": "ESCAPE ROPE"
+  },
+  "prix": 550
+ },
+ "REPEL": {
+  "nom": {
+   "fr": "Repousse",
+   "en": "REPEL"
+  },
+  "prix": 350
+ },
+ "OLD_AMBER": {
+  "nom": {
+   "fr": "Vieil Ambre",
+   "en": "OLD AMBER"
+  },
+  "prix": 0
+ },
+ "FIRE_STONE": {
+  "nom": {
+   "fr": "Pierre Feu",
+   "en": "FIRE STONE"
+  },
+  "prix": 2100
+ },
+ "THUNDER_STONE": {
+  "nom": {
+   "fr": "Pierre Foudre",
+   "en": "THUNDERSTONE"
+  },
+  "prix": 2100
+ },
+ "WATER_STONE": {
+  "nom": {
+   "fr": "Pierre Eau",
+   "en": "WATER STONE"
+  },
+  "prix": 2100
+ },
+ "HP_UP": {
+  "nom": {
+   "fr": "PV Plus",
+   "en": "HP UP"
+  },
+  "prix": 9800
+ },
+ "PROTEIN": {
+  "nom": {
+   "fr": "Protéine",
+   "en": "PROTEIN"
+  },
+  "prix": 9800
+ },
+ "IRON": {
+  "nom": {
+   "fr": "Fer",
+   "en": "IRON"
+  },
+  "prix": 9800
+ },
+ "CARBOS": {
+  "nom": {
+   "fr": "Carbone",
+   "en": "CARBOS"
+  },
+  "prix": 9800
+ },
+ "CALCIUM": {
+  "nom": {
+   "fr": "Calcium",
+   "en": "CALCIUM"
+  },
+  "prix": 9800
+ },
+ "RARE_CANDY": {
+  "nom": {
+   "fr": "Super Bonbon",
+   "en": "RARE CANDY"
+  },
+  "prix": 4800
+ },
+ "DOME_FOSSIL": {
+  "nom": {
+   "fr": "Fossile Dôme",
+   "en": "DOME FOSSIL"
+  },
+  "prix": 0
+ },
+ "HELIX_FOSSIL": {
+  "nom": {
+   "fr": "Nautile",
+   "en": "HELIX FOSSIL"
+  },
+  "prix": 0
+ },
+ "SECRET_KEY": {
+  "nom": {
+   "fr": "Clé Secrète",
+   "en": "SECRET KEY"
+  },
+  "prix": 0
+ },
+ "ITEM_2C": {
+  "nom": {
+   "fr": "?????",
+   "en": "?????"
+  },
+  "prix": 0
+ },
+ "BIKE_VOUCHER": {
+  "nom": {
+   "fr": "Bon Commande",
+   "en": "BIKE VOUCHER"
+  },
+  "prix": 0
+ },
+ "X_ACCURACY": {
+  "nom": {
+   "fr": "Précision +",
+   "en": "X ACCURACY"
+  },
+  "prix": 950
+ },
+ "LEAF_STONE": {
+  "nom": {
+   "fr": "Pierre Plante",
+   "en": "LEAF STONE"
+  },
+  "prix": 2100
+ },
+ "CARD_KEY": {
+  "nom": {
+   "fr": "Carte Magnétique",
+   "en": "CARD KEY"
+  },
+  "prix": 0
+ },
+ "NUGGET": {
+  "nom": {
+   "fr": "Pépite",
+   "en": "NUGGET"
+  },
+  "prix": 10000
+ },
+ "POKE_DOLL": {
+  "nom": {
+   "fr": "Poké Poupée",
+   "en": "Poké DOLL"
+  },
+  "prix": 1000
+ },
+ "FULL_HEAL": {
+  "nom": {
+   "fr": "Total Soin",
+   "en": "FULL HEAL"
+  },
+  "prix": 600
+ },
+ "REVIVE": {
+  "nom": {
+   "fr": "Rappel",
+   "en": "REVIVE"
+  },
+  "prix": 1500
+ },
+ "MAX_REVIVE": {
+  "nom": {
+   "fr": "Rappel Max",
+   "en": "MAX REVIVE"
+  },
+  "prix": 4000
+ },
+ "GUARD_SPEC": {
+  "nom": {
+   "fr": "Garde-Stats",
+   "en": "GUARD SPEC."
+  },
+  "prix": 700
+ },
+ "SUPER_REPEL": {
+  "nom": {
+   "fr": "Super Repousse",
+   "en": "SUPER REPEL"
+  },
+  "prix": 500
+ },
+ "MAX_REPEL": {
+  "nom": {
+   "fr": "Repousse Max",
+   "en": "MAX REPEL"
+  },
+  "prix": 700
+ },
+ "DIRE_HIT": {
+  "nom": {
+   "fr": "Muscle +",
+   "en": "DIRE HIT"
+  },
+  "prix": 650
+ },
+ "COIN": {
+  "nom": {
+   "fr": "COIN",
+   "en": "COIN"
+  },
+  "prix": 10
+ },
+ "FRESH_WATER": {
+  "nom": {
+   "fr": "Eau Fraîche",
+   "en": "FRESH WATER"
+  },
+  "prix": 200
+ },
+ "SODA_POP": {
+  "nom": {
+   "fr": "Soda Cool",
+   "en": "SODA POP"
+  },
+  "prix": 300
+ },
+ "LEMONADE": {
+  "nom": {
+   "fr": "Limonade",
+   "en": "LEMONADE"
+  },
+  "prix": 350
+ },
+ "S_S_TICKET": {
+  "nom": {
+   "fr": "Passe Bateau",
+   "en": "S.S.TICKET"
+  },
+  "prix": 0
+ },
+ "GOLD_TEETH": {
+  "nom": {
+   "fr": "Dentier en Or",
+   "en": "GOLD TEETH"
+  },
+  "prix": 0
+ },
+ "X_ATTACK": {
+  "nom": {
+   "fr": "Attaque +",
+   "en": "X ATTACK"
+  },
+  "prix": 500
+ },
+ "X_DEFEND": {
+  "nom": {
+   "fr": "Défense +",
+   "en": "X DEFEND"
+  },
+  "prix": 550
+ },
+ "X_SPEED": {
+  "nom": {
+   "fr": "Vitesse +",
+   "en": "X SPEED"
+  },
+  "prix": 350
+ },
+ "X_SPECIAL": {
+  "nom": {
+   "fr": "Atq. Spé. +",
+   "en": "X SPECIAL"
+  },
+  "prix": 350
+ },
+ "COIN_CASE": {
+  "nom": {
+   "fr": "Boîte Jetons",
+   "en": "COIN CASE"
+  },
+  "prix": 0
+ },
+ "OAKS_PARCEL": {
+  "nom": {
+   "fr": "Colis Chen",
+   "en": "OAK's PARCEL"
+  },
+  "prix": 0
+ },
+ "ITEMFINDER": {
+  "nom": {
+   "fr": "ITEMFINDER",
+   "en": "ITEMFINDER"
+  },
+  "prix": 0
+ },
+ "SILPH_SCOPE": {
+  "nom": {
+   "fr": "Scope Sylphe",
+   "en": "SILPH SCOPE"
+  },
+  "prix": 0
+ },
+ "POKE_FLUTE": {
+  "nom": {
+   "fr": "Poké Flûte",
+   "en": "Poké FLUTE"
+  },
+  "prix": 0
+ },
+ "LIFT_KEY": {
+  "nom": {
+   "fr": "Clé Ascenseur",
+   "en": "LIFT KEY"
+  },
+  "prix": 0
+ },
+ "EXP_ALL": {
+  "nom": {
+   "fr": "Multi Exp",
+   "en": "EXP.ALL"
+  },
+  "prix": 0
+ },
+ "OLD_ROD": {
+  "nom": {
+   "fr": "Canne",
+   "en": "OLD ROD"
+  },
+  "prix": 0
+ },
+ "GOOD_ROD": {
+  "nom": {
+   "fr": "Super Canne",
+   "en": "GOOD ROD"
+  },
+  "prix": 0
+ },
+ "SUPER_ROD": {
+  "nom": {
+   "fr": "Méga Canne",
+   "en": "SUPER ROD"
+  },
+  "prix": 0
+ },
+ "PP_UP": {
+  "nom": {
+   "fr": "PP Plus",
+   "en": "PP UP"
+  },
+  "prix": 0
+ },
+ "ETHER": {
+  "nom": {
+   "fr": "Huile",
+   "en": "ETHER"
+  },
+  "prix": 0
+ },
+ "MAX_ETHER": {
+  "nom": {
+   "fr": "Huile Max",
+   "en": "MAX ETHER"
+  },
+  "prix": 0
+ },
+ "ELIXER": {
+  "nom": {
+   "fr": "Élixir",
+   "en": "ELIXER"
+  },
+  "prix": 0
+ },
+ "MAX_ELIXER": {
+  "nom": {
+   "fr": "Élixir Max",
+   "en": "MAX ELIXER"
+  },
+  "prix": 0
+ },
+ "FLOOR_B2F": {
+  "nom": {
+   "fr": "B2F",
+   "en": "B2F"
+  },
+  "prix": 0
+ },
+ "FLOOR_B1F": {
+  "nom": {
+   "fr": "B1F",
+   "en": "B1F"
+  },
+  "prix": 0
+ },
+ "FLOOR_1F": {
+  "nom": {
+   "fr": "1F",
+   "en": "1F"
+  },
+  "prix": 0
+ },
+ "FLOOR_2F": {
+  "nom": {
+   "fr": "2F",
+   "en": "2F"
+  },
+  "prix": 0
+ },
+ "FLOOR_3F": {
+  "nom": {
+   "fr": "3F",
+   "en": "3F"
+  },
+  "prix": 0
+ },
+ "FLOOR_4F": {
+  "nom": {
+   "fr": "4F",
+   "en": "4F"
+  },
+  "prix": 0
+ },
+ "FLOOR_5F": {
+  "nom": {
+   "fr": "5F",
+   "en": "5F"
+  },
+  "prix": 0
+ },
+ "FLOOR_6F": {
+  "nom": {
+   "fr": "6F",
+   "en": "6F"
+  },
+  "prix": 0
+ },
+ "FLOOR_7F": {
+  "nom": {
+   "fr": "7F",
+   "en": "7F"
+  },
+  "prix": 0
+ },
+ "FLOOR_8F": {
+  "nom": {
+   "fr": "8F",
+   "en": "8F"
+  },
+  "prix": 0
+ },
+ "FLOOR_9F": {
+  "nom": {
+   "fr": "9F",
+   "en": "9F"
+  },
+  "prix": 0
+ },
+ "FLOOR_10F": {
+  "nom": {
+   "fr": "10F",
+   "en": "10F"
+  },
+  "prix": 0
+ },
+ "FLOOR_11F": {
+  "nom": {
+   "fr": "11F",
+   "en": "11F"
+  },
+  "prix": 0
+ },
+ "FLOOR_B4F": {
+  "nom": {
+   "fr": "B4F",
+   "en": "B4F"
+  },
+  "prix": 0
+ }
+}

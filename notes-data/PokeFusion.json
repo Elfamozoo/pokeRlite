@@ -1,0 +1,33 @@
+{
+ "POLITIQUE": {
+  "v": "max",
+  "vus": "union",
+  "pris": "unionTot",
+  "boite": "parCle",
+  "pc": "parCle",
+  "voyages": "max",
+  "ligues": "max",
+  "badgesMax": "max",
+  "meilleurScore": "max",
+  "chromatiques": "unionTot",
+  "diplomes": "unionTot",
+  "meilleurDV": "maxPar",
+  "regles": "union",
+  "gardes": "local",
+  "compagnon": "siVide",
+  "duel": "duel",
+  "rivaux": "parCle",
+  "defis": "maxVD",
+  "genre": "siVide",
+  "defiJour": "jour",
+  "defiHisto": "histo",
+  "chasses": "unionTot",
+  "sceauMax": "max",
+  "sceauNeuf": "local"
+ },
+ "fusionner": "[fonction fusionner]",
+ "assainir": "[fonction assainir]",
+ "dexCompte": "[fonction ESPECES]",
+ "PC_MAX": 120,
+ "HISTO_MAX": 30
+}

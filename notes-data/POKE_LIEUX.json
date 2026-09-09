@@ -1,0 +1,198 @@
+{
+ "cerulean-cave": {
+  "fr": "Caverne Azurée",
+  "en": "Cerulean Cave"
+ },
+ "digletts-cave": {
+  "fr": "Cave Taupiqueur",
+  "en": "Diglett's Cave"
+ },
+ "mt-moon": {
+  "fr": "Mont Sélénite",
+  "en": "Mt. Moon"
+ },
+ "pokemon-mansion": {
+  "fr": "Manoir Pokémon",
+  "en": "Pokémon Mansion"
+ },
+ "pokemon-tower": {
+  "fr": "Tour Pokémon",
+  "en": "Pokémon Tower"
+ },
+ "kanto-power-plant": {
+  "fr": "Centrale",
+  "en": "Kanto Power Plant"
+ },
+ "rock-tunnel": {
+  "fr": "Grotte",
+  "en": "Rock Tunnel"
+ },
+ "kanto-route-1": {
+  "fr": "Route 1",
+  "en": "Route 1"
+ },
+ "kanto-route-10": {
+  "fr": "Route 10",
+  "en": "Route 10"
+ },
+ "kanto-route-11": {
+  "fr": "Route 11",
+  "en": "Route 11"
+ },
+ "kanto-route-12": {
+  "fr": "Route 12",
+  "en": "Route 12"
+ },
+ "kanto-route-13": {
+  "fr": "Route 13",
+  "en": "Route 13"
+ },
+ "kanto-route-14": {
+  "fr": "Route 14",
+  "en": "Route 14"
+ },
+ "kanto-route-15": {
+  "fr": "Route 15",
+  "en": "Route 15"
+ },
+ "kanto-route-16": {
+  "fr": "Route 16",
+  "en": "Route 16"
+ },
+ "kanto-route-17": {
+  "fr": "Route 17",
+  "en": "Route 17"
+ },
+ "kanto-route-18": {
+  "fr": "Route 18",
+  "en": "Route 18"
+ },
+ "kanto-route-2": {
+  "fr": "Route 2",
+  "en": "Route 2"
+ },
+ "kanto-sea-route-21": {
+  "fr": "Chenal 21",
+  "en": "Sea Route 21"
+ },
+ "kanto-route-22": {
+  "fr": "Route 22",
+  "en": "Route 22"
+ },
+ "kanto-route-23": {
+  "fr": "Route 23",
+  "en": "Route 23"
+ },
+ "kanto-route-24": {
+  "fr": "Route 24",
+  "en": "Route 24"
+ },
+ "kanto-route-25": {
+  "fr": "Route 25",
+  "en": "Route 25"
+ },
+ "kanto-route-3": {
+  "fr": "Route 3",
+  "en": "Route 3"
+ },
+ "kanto-route-4": {
+  "fr": "Route 4",
+  "en": "Route 4"
+ },
+ "kanto-route-5": {
+  "fr": "Route 5",
+  "en": "Route 5"
+ },
+ "kanto-route-6": {
+  "fr": "Route 6",
+  "en": "Route 6"
+ },
+ "kanto-route-7": {
+  "fr": "Route 7",
+  "en": "Route 7"
+ },
+ "kanto-route-8": {
+  "fr": "Route 8",
+  "en": "Route 8"
+ },
+ "kanto-route-9": {
+  "fr": "Route 9",
+  "en": "Route 9"
+ },
+ "kanto-safari-zone": {
+  "fr": "Parc Safari",
+  "en": "Safari Zone"
+ },
+ "kanto-sea-route-19": {
+  "fr": "Chenal 19",
+  "en": "Sea Route 19"
+ },
+ "seafoam-islands": {
+  "fr": "Îles Écume",
+  "en": "Seafoam Islands"
+ },
+ "kanto-victory-road-1": {
+  "fr": "Route Victoire",
+  "en": "Victory Road"
+ },
+ "kanto-victory-road-2": {
+  "fr": "Route Victoire",
+  "en": "Victory Road"
+ },
+ "viridian-forest": {
+  "fr": "Forêt de Jade",
+  "en": "Viridian Forest"
+ },
+ "pallet-town": {
+  "fr": "Bourg Palette",
+  "en": "Pallet Town"
+ },
+ "viridian-city": {
+  "fr": "Jadielle",
+  "en": "Viridian City"
+ },
+ "pewter-city": {
+  "fr": "Argenta",
+  "en": "Pewter City"
+ },
+ "cerulean-city": {
+  "fr": "Azuria",
+  "en": "Cerulean City"
+ },
+ "vermilion-city": {
+  "fr": "Carmin sur Mer",
+  "en": "Vermilion City"
+ },
+ "lavender-town": {
+  "fr": "Lavanville",
+  "en": "Lavender Town"
+ },
+ "celadon-city": {
+  "fr": "Céladopole",
+  "en": "Celadon City"
+ },
+ "fuchsia-city": {
+  "fr": "Parmanie",
+  "en": "Fuchsia City"
+ },
+ "saffron-city": {
+  "fr": "Safrania",
+  "en": "Saffron City"
+ },
+ "cinnabar-island": {
+  "fr": "Cramois'Île",
+  "en": "Cinnabar Island"
+ },
+ "indigo-plateau": {
+  "fr": "Plateau Indigo",
+  "en": "Indigo Plateau"
+ },
+ "ss-anne": {
+  "fr": "L'Océane",
+  "en": "S.S. Anne"
+ },
+ "kanto-sea-route-20": {
+  "fr": "Chenal 20",
+  "en": "Sea Route 20"
+ }
+}

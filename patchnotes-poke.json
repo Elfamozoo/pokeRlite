@@ -1,0 +1,1161 @@
+[
+ {
+  "v": "25/08",
+  "t": {
+   "fr": "Célébi, et les chromatiques quatre fois plus fréquents",
+   "en": "Celebi, and shinies four times more common"
+  },
+  "items": [
+   {
+    "fr": "Célébi entre dans le jeu. Il attend au sanctuaire du Bois aux Chênes. Niveau 30, comme dans la Version Cristal.",
+    "en": "Celebi joins the game. It waits at the Ilex Forest shrine. Level 30, as in Crystal."
+   },
+   {
+    "fr": "Il s'ouvre comme Mew : quand le Pokédex de Johto est fini. Des traces le précèdent. Un seul essai.",
+    "en": "It opens like Mew: once the Johto Pokédex is done. Traces come first. One single attempt."
+   },
+   {
+    "fr": "Les chromatiques passent d'une chance sur 8192 à une sur 2048. Personne n'en avait jamais trouvé, et le calcul le confirmait : il fallait trente-cinq voyages pour une chance sur deux.",
+    "en": "Shinies go from one in 8192 to one in 2048. Nobody had ever found one, and the maths agreed: thirty-five journeys for a coin flip."
+   },
+   {
+    "fr": "Le nouveau taux donne une chance sur deux en vingt voyages. Ceux d'avant gardent les leurs.",
+    "en": "The new rate gives a coin flip in twenty journeys. Earlier ones are kept."
+   },
+   {
+    "fr": "Le diplôme de Chen a maintenant le sien à Johto. Il compte les espèces de cette région, pas celles de Kanto.",
+    "en": "Professor Oak's diploma now has its Johto twin. It counts this region's species, not Kanto's."
+   },
+   {
+    "fr": "Raikou, Capumain, Scarhino : leur fiche disait « il ne vit nulle part ». C'était faux. Elle annonce les arbres à secouer, les bêtes errantes et le Concours de capture.",
+    "en": "Raikou, Aipom, Heracross: their entry said \"it lives nowhere\". That was wrong. It now names headbutt trees, roaming beasts and the Bug-Catching Contest."
+   }
+  ]
+ },
+ {
+  "v": "24/08",
+  "t": {
+   "fr": "Le Pokédex dit enfin ce qu'il ne peut pas donner",
+   "en": "The Pokédex now says what it cannot give"
+  },
+  "items": [
+   {
+    "fr": "Merci Nad. Il a relevé à la main les Pokémon introuvables à Johto. Neuf de ses lignes étaient justes.",
+    "en": "Thanks Nad. He listed by hand the Pokémon nobody could catch in Johto. Nine of his lines were right."
+   },
+   {
+    "fr": "Sous « OÙ LE TROUVER », la fiche n'affichait rien. Une fiche muette se lit « cherche encore ». Elle dit maintenant qu'il ne vit nulle part ici.",
+    "en": "Under \"WHERE TO FIND IT\", the entry showed nothing. A silent entry reads as \"keep looking\". It now says it lives nowhere here."
+   },
+   {
+    "fr": "Wattouat, Cornèbre, Girafarig, Limagma et Malosse ne vivent pas à Johto. La Version Cristal les garde ailleurs, et le voyage suit la cartouche. Célébi demandait un événement.",
+    "en": "Mareep, Murkrow, Girafarig, Slugma and Houndour do not live in Johto. Crystal keeps them elsewhere, and the journey follows the cartridge. Celebi needed an event."
+   },
+   {
+    "fr": "Feuforêve était bien absente, et elle ne l'est plus : elle vit au Mont Argenté. Sa salle existait sans que rien n'y mène.",
+    "en": "Misdreavus was indeed missing, and no longer is: it lives on Mt. Silver. Its room existed with nothing leading there."
+   },
+   {
+    "fr": "Loupio, Qwilfish et Rémoraid se prennent à la ligne. Embrylex vit au Mont Argenté, après la Ligue. Leurs fiches le disent.",
+    "en": "Chinchou, Qwilfish and Remoraid are caught by fishing. Larvitar lives on Mt. Silver, past the League. Their entries say so."
+   }
+  ]
+ },
+ {
+  "v": "24/08",
+  "t": {
+   "fr": "Les hautes herbes de Johto, et quatre autres",
+   "en": "Johto's tall grass, and four more"
+  },
+  "items": [
+   {
+    "fr": "Merci c-derrick. À Johto, aucune haute herbe n'apparaissait : des dresseurs, des objets, et rien à capturer. Ça arrivait après un voyage à Kanto dans le même onglet. Les deux régions se mélangeaient, et les rencontres tombaient dans le vide.",
+    "en": "Thanks c-derrick. In Johto no tall grass showed up: trainers, items, nothing to catch. It happened after a Kanto journey in the same tab. The two regions got mixed, and encounters fell through."
+   },
+   {
+    "fr": "Merci lo1845. Débugant restait Débugant au niveau 20. Attaque la plus forte, il devient Kicklee. Défense la plus forte, Tygnon. À égalité, Kapoera.",
+    "en": "Thanks lo1845. Tyrogue stayed Tyrogue at level 20. Higher Attack, it becomes Hitmonlee. Higher Defense, Hitmonchan. A tie, Hitmontop."
+   },
+   {
+    "fr": "Merci lo1845 et Altaroxx. Raikou et Entei réapparaissaient après leur capture, parfois deux fois. Une bête attrapée ne revient plus.",
+    "en": "Thanks lo1845 and Altaroxx. Raikou and Entei came back after being caught, sometimes twice. A caught beast is gone for good."
+   },
+   {
+    "fr": "Merci Syrean. La trace de Mew s'ouvrait avant les 150 de Kanto : les prises de Johto entraient dans le compte. Le diplôme ne regarde plus que Kanto.",
+    "en": "Thanks Syrean. Mew's trail opened before Kanto's 150: Johto catches counted in. The diploma now looks at Kanto only."
+   },
+   {
+    "fr": "Minidraco vit à l'Antre du Dragon, Léviator au Lac Colère. Les deux endroits existaient sans jamais rien donner.",
+    "en": "Dratini lives in the Dragon's Den, Gyarados in the Lake of Rage. Both places existed and gave nothing."
+   },
+   {
+    "fr": "Merci Totor et Chris. Wattouat, Malosse et Limagma manquent, et c'est la Version Cristal qui veut ça : ils ne vivent pas à Johto. Le voyage suit la cartouche, sans rien ajouter.",
+    "en": "Thanks Totor and Chris. Mareep, Houndour and Slugma are missing, and Crystal wants it that way: they do not live in Johto. The journey follows the cartridge, adding nothing."
+   }
+  ]
+ },
+ {
+  "v": "22/08",
+  "t": {
+   "fr": "L'évolution par le bonheur",
+   "en": "Friendship evolutions"
+  },
+  "items": [
+   {
+    "fr": "Merci lo1845, Chris, Rayhane et NaGaNn. L'évolution par le bonheur ne se déclenchait jamais. Sept lignées de Johto en dépendent : Togepi, Nosferapti, Pichu, Mélo, Toudoudou, Leveinard et Évoli.",
+    "en": "Thanks lo1845, Chris, Rayhane and NaGaNn. Friendship evolutions never triggered. Seven Johto lines depend on them: Togepi, Zubat, Pichu, Cleffa, Igglybuff, Chansey and Eevee."
+   },
+   {
+    "fr": "Évoli a deux chemins par le bonheur : Mentali le jour, Noctali la nuit. Le voyage n'a pas d'horloge, donc le choix te revient, et l'autre est perdue.",
+    "en": "Eevee has two friendship paths: Espeon by day, Umbreon at night. The journey has no clock, so the choice is yours, and the other is lost."
+   },
+   {
+    "fr": "Merci Rayhane. Plus un seul PP, et la dernière attaque bloquée par Entrave. Le combat n'offrait plus rien à faire. Lutte arrive dès qu'aucun coup n'est jouable.",
+    "en": "Thanks Rayhane. Out of PP with the last move sealed by Disable, the battle offered no action at all. Struggle now comes as soon as no move can be used."
+   },
+   {
+    "fr": "Merci Rayhane. L'écran d'Évoli ne citait que les trois pierres. Il annonce les cinq évolutions, et ce qu'il faut pour chacune.",
+    "en": "Thanks Rayhane. Eevee's screen only listed the three stones. It now announces all five evolutions, and what each one takes."
+   },
+   {
+    "fr": "Merci Rayhane. Une carte de butin dit ce que le sac porte déjà.",
+    "en": "Thanks Rayhane. A loot card now says what the bag already holds."
+   }
+  ]
+ },
+ {
+  "v": "21/08",
+  "t": {
+   "fr": "Le Concours de capture d'insectes ouvre au Parc National",
+   "en": "The Bug-Catching Contest opens at the National Park"
+  },
+  "items": [
+   {
+    "fr": "Vingt Poké Balls, et une seule prise à présenter au juge.",
+    "en": "Twenty Poké Balls, and a single catch to show the judge."
+   },
+   {
+    "fr": "Insécateur et Scarabrute ne s'attrapaient nulle part à Johto. C'est là qu'ils sont.",
+    "en": "Scyther and Pinsir were nowhere to be caught in Johto. This is where they are."
+   },
+   {
+    "fr": "Le juge note ta bête. Premier prix : une Pierre Soleil.",
+    "en": "The judge scores your bug. First prize: a Sun Stone."
+   },
+   {
+    "fr": "La Pierre Foudre achetée à Johto n'arrivait jamais dans ton sac.",
+    "en": "The Thunder Stone bought in Johto never reached your bag."
+   },
+   {
+    "fr": "Pikachu peut de nouveau évoluer avec.",
+    "en": "Pikachu can evolve with it again."
+   },
+   {
+    "fr": "Sur la carte, une rencontre posée annonçait « Ronflex » même quand c'était Simularbre. Elle dit maintenant qui est là.",
+    "en": "On the map, a fixed encounter announced « Snorlax » even when it was Sudowoodo. It now names who is there."
+   },
+   {
+    "fr": "Ton équipe peut tenir un objet. Le sac te le rend maintenant, dans « EN MAIN ».",
+    "en": "Your team can hold an item. The bag now hands it back, under « HELD »."
+   },
+   {
+    "fr": "La Pierre Lune n'existait nulle part à Johto. Mélo en tient une, et elle fait évoluer Nidorina, Nidorino, Mélofée et Rondoudou.",
+    "en": "The Moon Stone existed nowhere in Johto. Cleffa holds one, and it evolves Nidorina, Nidorino, Clefairy and Jigglypuff."
+   }
+  ]
+ },
+ {
+  "v": "21/08",
+  "t": {
+   "fr": "Les actes de Johto étaient trop courts",
+   "en": "Johto's chapters were too short"
+  },
+  "items": [
+   {
+    "fr": "Devant Albert, tu arrivais avec deux Pokémon, au niveau du Champion.",
+    "en": "You reached Falkner with two Pokémon, at the Leader's own level."
+   },
+   {
+    "fr": "Deux voyages sur trois s'arrêtaient au premier acte.",
+    "en": "Two runs out of three ended in the first chapter."
+   },
+   {
+    "fr": "Les actes sont plus longs : plus de routes à traverser, plus de dresseurs.",
+    "en": "Chapters are longer now: more routes to cross, more trainers."
+   },
+   {
+    "fr": "Tu attrapes 7 Pokémon par voyage au lieu de 2.",
+    "en": "You catch 7 Pokémon per run instead of 2."
+   },
+   {
+    "fr": "Kanto ne change pas : ses actes dépassaient déjà cette longueur.",
+    "en": "Kanto is untouched: its chapters were already longer than this."
+   }
+  ]
+ },
+ {
+  "v": "21/08",
+  "t": {
+   "fr": "Johto donne 42 Pokémon de plus",
+   "en": "Johto now gives 42 more Pokémon"
+  },
+  "items": [
+   {
+    "fr": "Les arbres se secouent, les rochers se brisent. Capumain, Scarhino, Pomdepik et Caratroc ne sortent de nulle part ailleurs.",
+    "en": "Trees can be shaken, rocks smashed. Aipom, Heracross, Pineco and Shuckle come from nowhere else."
+   },
+   {
+    "fr": "Le Casino de Doublonville ouvre : Abra à 100 jetons, Osselait à 800, Qulbutoké à 1500.",
+    "en": "The Goldenrod Game Corner opens: Abra for 100 coins, Cubone for 800, Wobbuffet for 1500."
+   },
+   {
+    "fr": "Quatre échanges à Doublonville, Mauville, Oliville et Ébènelle. Les Pokémon reçus gardent leur surnom d'origine.",
+    "en": "Four in-game trades in Goldenrod, Violet, Olivine and Blackthorn. Traded Pokémon keep their original nicknames."
+   },
+   {
+    "fr": "Évoli attend à Doublonville. Minidraco est au fond de l'Antre du Dragon.",
+    "en": "Eevee waits in Goldenrod. Dratini is deep in the Dragon's Den."
+   },
+   {
+    "fr": "Debugant se donne au Mont Creuset. Un Piafabec attend au poste de la route 35.",
+    "en": "Tyrogue is given in Mt. Mortar. A Spearow waits at the Route 35 gate."
+   },
+   {
+    "fr": "Deux œufs à couver. Pichu, Mélo, Toudoudou, Lippouti, Magby et Élekid n'ont pas d'autre porte.",
+    "en": "Two Eggs to hatch. Pichu, Cleffa, Igglybuff, Smoochum, Magby and Elekid have no other way in."
+   },
+   {
+    "fr": "Simularbre barre la route 36. Un Lokhlass dort dans les Caves Jumelles.",
+    "en": "Sudowoodo blocks Route 36. A Lapras sleeps in Union Cave."
+   },
+   {
+    "fr": "Le Léviator rouge du Lac Colère et les Voltorbe du repaire se combattent.",
+    "en": "The red Gyarados at the Lake of Rage and the hideout's Voltorb can be fought."
+   },
+   {
+    "fr": "La pêche rendait six espèces de moins que la cartouche. Corayon, Stari, Kokiyas, Poissirène, Ptitard et Minidraco mordent enfin.",
+    "en": "Fishing was missing six species from the cartridge. Corsola, Staryu, Shellder, Goldeen, Poliwag and Dratini now bite."
+   },
+   {
+    "fr": "Le compteur du Pokédex passe de 160 à 192 espèces par voyage.",
+    "en": "The Pokédex counter goes from 160 to 192 species per run."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Un combat ne se gagne plus avec une équipe à terre",
+   "en": "No more winning with a fainted team"
+  },
+  "items": [
+   {
+    "fr": "Merci Mr0megaa. Ton dernier Pokémon et le sien tombaient de la brûlure ensemble.",
+    "en": "Thanks Mr0megaa. Your last Pokémon and theirs fell to burn together."
+   },
+   {
+    "fr": "Le jeu annonçait une victoire, puis te demandait qui entre au combat.",
+    "en": "The game called it a win, then asked who enters the next battle."
+   },
+   {
+    "fr": "Quand les deux camps tombent en même temps, tu perds. Comme sur la cartouche.",
+    "en": "When both sides fall at once, you lose. Just like on the cartridge."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Les dresseurs de Johto sont enfin de Johto",
+   "en": "Johto's trainers are finally Johto's"
+  },
+  "items": [
+   {
+    "fr": "Merci Poltron. Sur les routes, tu ne croisais que des Pokémon de Kanto.",
+    "en": "Thanks Poltron. On the routes you only met Kanto Pokémon."
+   },
+   {
+    "fr": "Les 40 classes de Cristal arrivent : Gamin, Campeur, Sage, Kimono, Jumelles, Skieuse.",
+    "en": "Crystal's 40 classes arrive: Youngster, Camper, Sage, Kimono Girl, Twins, Skier."
+   },
+   {
+    "fr": "Ils frappent plus fort que ceux de Kanto. Les routes te laissent monter avant.",
+    "en": "They hit harder than Kanto's. The routes now let you level up first."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Marteler SUITE ne prend plus un objet",
+   "en": "Spamming NEXT no longer grabs an item"
+  },
+  "items": [
+   {
+    "fr": "Merci Kickincreep60. Le second clic tombait sur la carte de butin.",
+    "en": "Thanks Kickincreep60. The second click landed on a loot card."
+   },
+   {
+    "fr": "Un doigt qui n'a pas bougé ne choisit plus rien, même après l'écran.",
+    "en": "A finger that has not moved no longer picks anything, even after the redraw."
+   },
+   {
+    "fr": "Si tu vises une autre carte, elle se prend du premier coup.",
+    "en": "If you aim at another card, it is taken on the first tap."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Les objets de Johto ont retrouvé leur nom",
+   "en": "Johto's items got their names back"
+  },
+  "items": [
+   {
+    "fr": "Merci Rayhane. La Pierre Foudre s'affichait « THUNDERSTONE ».",
+    "en": "Thanks Rayhane. The Thunderstone showed up as a raw label."
+   },
+   {
+    "fr": "Ce n'était pas qu'elle : deux objets sur trois sortaient en anglais.",
+    "en": "It was not just that one: two items in three came out in English."
+   },
+   {
+    "fr": "Restes, Roche Royale, Lait Meumeu, les baies, les noigrumes : tous nommés.",
+    "en": "Leftovers, King's Rock, MooMoo Milk, the berries, the apricorns: all named."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "La barre du bas s'efface quand tu lis",
+   "en": "The bottom bar gets out of the way"
+  },
+  "items": [
+   {
+    "fr": "Merci JawaxxB. Elle prenait un sixième de l'écran sur un petit téléphone.",
+    "en": "Thanks JawaxxB. It took a sixth of the screen on a small phone."
+   },
+   {
+    "fr": "Elle part quand tu descends la carte, et revient dès que tu remontes.",
+    "en": "It slides away as you scroll down the map, and returns as you scroll up."
+   },
+   {
+    "fr": "Elle est toujours là en haut et en bas de la carte.",
+    "en": "It is always there at the top and bottom of the map."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Quatre choses signalées sur Johto",
+   "en": "Four things you reported about Johto"
+  },
+  "items": [
+   {
+    "fr": "Merci NaGaNn. Le rival de Johto est enfin le bon.",
+    "en": "Thanks NaGaNn. Johto's rival is finally the right one."
+   },
+   {
+    "fr": "Il prend le starter qui bat le tien. Son équipe est celle de Cristal.",
+    "en": "He takes the starter that beats yours. His team is Crystal's."
+   },
+   {
+    "fr": "Sept rencontres avec lui, pas huit : à Johto il ne garde pas la Ligue.",
+    "en": "Seven meetings with him, not eight: in Johto he does not guard the League."
+   },
+   {
+    "fr": "La dernière porte de la Ligue est gardée par Peter.",
+    "en": "The last door of the League is guarded by Lance."
+   },
+   {
+    "fr": "Le Conseil 4 annonce Marion, Koga, Aldo et Marina. Plus ceux de Kanto.",
+    "en": "The Elite Four announces Will, Koga, Bruno and Karen. No longer Kanto's."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Tes légendaires repartent avec toi",
+   "en": "Your legendaries come along"
+  },
+  "items": [
+   {
+    "fr": "Merci Archii. Un légendaire attrapé ne servait nulle part : le voyage se fermait derrière lui, et il était refusé au départ du suivant.",
+    "en": "Thanks Archii. A caught legendary served nowhere: the journey closed behind it, and the next one refused it."
+   },
+   {
+    "fr": "Il t’accompagne au voyage suivant, au niveau de ton starter, comme un compagnon.",
+    "en": "It comes along on your next journey, at your starter’s level, like a companion."
+   },
+   {
+    "fr": "Il sort aussi du PC de Léo en cours de route. Il faut l’avoir attrapé : rien n’est donné.",
+    "en": "It also comes out of Bill’s PC along the way. You must have caught it: nothing is given."
+   },
+   {
+    "fr": "Le Défi du jour n’y touche pas : tout le monde y part avec les trois du canon.",
+    "en": "The Daily Challenge is untouched: everyone starts with the canon three."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Ce que le jeu ne disait pas",
+   "en": "What the game was not saying"
+  },
+  "items": [
+   {
+    "fr": "Merci Quirrel. L’Insecte bat le Poison ici : c’est la table de 1996, pas un bug. La bulle d’un type le dit maintenant.",
+    "en": "Thanks Quirrel. Bug beats Poison here: that is the 1996 chart, not a bug. A type’s tooltip now says so."
+   },
+   {
+    "fr": "Merci Angel. Ton voyage reste sur l’appareil où tu le joues. Ton Pokédex, lui, suit ton compte. C’est écrit sous le bouton.",
+    "en": "Thanks Angel. Your journey stays on the device you play it on. Your Pokédex follows your account. It is written under the button."
+   },
+   {
+    "fr": "La grotte annonce ce qu’elle rapporte : le duel, le Pokédex du compte, et une chasse.",
+    "en": "The cave now says what it pays: the duel, the account Pokédex, and a hunt."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Johto ouvre",
+   "en": "Johto opens"
+  },
+  "items": [
+   {
+    "fr": "Au départ, on choisit son monde. Kanto ou Johto.",
+    "en": "At the start you pick your world. Kanto or Johto."
+   },
+   {
+    "fr": "Cent Pokémon de plus, huit nouveaux Champions, le Conseil 4.",
+    "en": "A hundred more Pokémon, eight new Gym Leaders, the Elite Four."
+   },
+   {
+    "fr": "Au bout, Red t'attend au Mont Argenté.",
+    "en": "At the end, Red waits for you on Mt. Silver."
+   },
+   {
+    "fr": "Deux nouveaux types, les objets tenus, et les Pokémon peuvent être mâle ou femelle.",
+    "en": "Two new types, held items, and Pokémon can be male or female."
+   },
+   {
+    "fr": "Ton Pokédex est le même dans les deux mondes. Il compte 251.",
+    "en": "Your Pokédex is the same in both worlds. It counts 251."
+   },
+   {
+    "fr": "Le Défi du jour reste à Kanto : tout le monde y joue la même partie.",
+    "en": "The Daily Challenge stays in Kanto: everyone plays the same run there."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "On peut revenir en arrière",
+   "en": "You can go back now"
+  },
+  "items": [
+   {
+    "fr": "Le choix du monde et celui du starter ont un bouton RETOUR.",
+    "en": "The world choice and the starter choice now have a BACK button."
+   },
+   {
+    "fr": "Avant, une fois COMMENCER touché, il fallait recharger la page.",
+    "en": "Before, once you tapped START, you had to reload the page."
+   },
+   {
+    "fr": "Un voyage laissé en route n'est pas touché par ce détour.",
+    "en": "A journey left in progress is untouched by that detour."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Ce qu'il apprendra ensuite",
+   "en": "What it learns next"
+  },
+  "items": [
+   {
+    "fr": "Sous ses attaques, chaque Pokémon annonce la prochaine et son niveau.",
+    "en": "Under its moves, each Pokémon now shows the next one and its level."
+   },
+   {
+    "fr": "Héricendre n'apprend Flammèche qu'au niveau 12. Personne ne le savait.",
+    "en": "Cyndaquil only learns Ember at level 12. Nobody could know."
+   },
+   {
+    "fr": "Celui qui n'a plus rien à apprendre le dit aussi.",
+    "en": "One with nothing left to learn says so too."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Une passe de finition, surtout au téléphone",
+   "en": "A polish pass, mostly on phones"
+  },
+  "items": [
+   {
+    "fr": "Sur la carte, la barre du bas ne prend plus un tiers de l'écran : quatre portes sur une ligne. Le rythme et l'arrêt montent au-dessus.",
+    "en": "On the map, the bottom bar no longer takes a third of the screen: four doors on one line. Speed and quitting move above it."
+   },
+   {
+    "fr": "En combat, les quatre commandes sont en carré, comme sur la cartouche.",
+    "en": "In battle, the four commands sit in a square, like on the cartridge."
+   },
+   {
+    "fr": "La montée de niveau se voit : la créature, l'ancien niveau barré, le nouveau en grand.",
+    "en": "Levelling up shows: the creature, the old level struck through, the new one big."
+   },
+   {
+    "fr": "Les trois starters tiennent sur une ligne. La date du défi se lit en lettres.",
+    "en": "The three starters fit on one line. The challenge date reads in words."
+   },
+   {
+    "fr": "« Son équipe craint » : le type et son compte restent ensemble.",
+    "en": "“Its team is weak to”: a type and its count stay together."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Le cercle de dresseurs",
+   "en": "The trainer circle"
+  },
+  "items": [
+   {
+    "fr": "Merci Poltron. Le clan des autres univers arrive ici : ça s'appelle un cercle. Sur l'accueil, « MON CERCLE ».",
+    "en": "Thanks Poltron. The clan of the other universes lands here: it is called a circle. On the home screen, “MY CIRCLE”."
+   },
+   {
+    "fr": "Crée le tien, donne son code à tes amis, ou entre dans le leur. Il faut un compte.",
+    "en": "Create yours, give its code to your friends, or join theirs. You need an account."
+   },
+   {
+    "fr": "Chaque semaine, le classement entre vous : la somme de vos meilleurs Défis du jour.",
+    "en": "Each week, the ranking among you: the sum of your best Daily Challenges."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Trois choses que vous avez demandées",
+   "en": "Three things you asked for"
+  },
+  "items": [
+   {
+    "fr": "Merci Martial84. Les vitamines s'enchaînent comme les potions : tu restes sur la liste tant qu'il t'en reste.",
+    "en": "Thanks Martial84. Vitamins chain like potions: you stay on the list while you have some left."
+   },
+   {
+    "fr": "Merci Zodialol. Le Potentiel montre aussi ta réserve, sous ton équipe. Plus besoin d'échanger pour lire les jauges.",
+    "en": "Thanks Zodialol. Potential now shows your storage too, under your team. No swap needed to read the bars."
+   },
+   {
+    "fr": "Merci Syrean. Sur le Potentiel, touche une attaque puis sa nouvelle place : elles s'échangent. L'ordre du menu de combat est à toi.",
+    "en": "Thanks Syrean. On Potential, tap a move then its new slot: they swap. The fight menu order is yours."
+   }
+  ]
+ },
+ {
+  "v": "20/08",
+  "t": {
+   "fr": "Deux choses que vous avez signalées",
+   "en": "Two things you reported"
+  },
+  "items": [
+   {
+    "fr": "Merci Totor. « Aucun tombé » ne se validait jamais. Il fallait un voyage entier sans une seule perte, Ligue comprise.",
+    "en": "Thanks Totor. “None fallen” never validated. It took a whole run without one loss, League included."
+   },
+   {
+    "fr": "Il compte maintenant les badges gagnés avant ta première perte. Trois, et il est à toi.",
+    "en": "It now counts the badges won before your first loss. Three, and it is yours."
+   },
+   {
+    "fr": "Merci Zerfall. Quand ton équipe tombe, « ARRÊTER LE VOYAGE » partait au premier clic. Il demande confirmation, comme celui de la carte.",
+    "en": "Thanks Zerfall. When your team falls, “END THE JOURNEY” fired on the first click. It asks first now, like the map one."
+   },
+   {
+    "fr": "Les voyages arrêtés avant aujourd’hui ne reviennent pas. La sauvegarde s’efface quand le voyage se ferme.",
+    "en": "Runs ended before today do not come back. The save is wiped when a run closes."
+   }
+  ]
+ },
+ {
+  "v": "19/08",
+  "t": {
+   "fr": "Le défi du jour survit à un onglet fermé",
+   "en": "The daily challenge survives a closed tab"
+  },
+  "items": [
+   {
+    "fr": "Merci Chris et Z3no_. Fermer le navigateur en plein combat brûlait la journée.",
+    "en": "Thanks Chris and Z3no_. Closing the browser mid-battle burned your day."
+   },
+   {
+    "fr": "Ton essai se garde maintenant, et tu le reprends là où tu l’as laissé.",
+    "en": "Your attempt is now saved, and you resume it where you left it."
+   },
+   {
+    "fr": "Le combat que tu avais engagé reste perdu : on ne rejoue pas un combat quitté.",
+    "en": "The battle you had engaged stays lost: you do not replay a battle you left."
+   },
+   {
+    "fr": "Ta carrière libre et ton essai du jour vivent chacun de leur côté. Finir l’un n’efface plus l’autre.",
+    "en": "Your free run and your daily attempt each live on their own. Finishing one no longer erases the other."
+   }
+  ]
+ },
+ {
+  "v": "19/08",
+  "t": {
+   "fr": "Le compteur de l’accueil se lit enfin",
+   "en": "The home counter finally reads right"
+  },
+  "items": [
+   {
+    "fr": "La ligne sous le bouton affichait « {n|joueur a|joueurs ont} » en toutes lettres.",
+    "en": "The line under the button spelled out “{n|player has|players have}”."
+   },
+   {
+    "fr": "Le jeu accorde ses phrases au nombre. Il ne reconnaissait pas un nombre écrit avec une espace.",
+    "en": "The game agrees its sentences with the count. It did not recognise a number written with a space."
+   },
+   {
+    "fr": "L’accueil ne saute plus quand tu changes de langue : le réglage reste sous ton doigt.",
+    "en": "The home no longer jumps when you switch language: the setting stays under your finger."
+   },
+   {
+    "fr": "Merci Sussucre pour la capture.",
+    "en": "Thanks Sussucre for the screenshot."
+   }
+  ]
+ },
+ {
+  "v": "19/08",
+  "t": {
+   "fr": "Le jeu passe en anglais",
+   "en": "The game switches to English"
+  },
+  "items": [
+   {
+    "fr": "Chaque phrase du jeu était écrite en anglais depuis le premier jour.",
+    "en": "Every sentence in the game has been written in English since day one."
+   },
+   {
+    "fr": "Aucun bouton n'y menait. La langue était fixée en dur, sans porte.",
+    "en": "No button led there. The language was hardcoded, with no door."
+   },
+   {
+    "fr": "Le réglage vit sur l'accueil, sous la vitesse des combats.",
+    "en": "The setting lives on the home screen, under battle speed."
+   },
+   {
+    "fr": "Ton choix suit d'un univers à l'autre. Au départ, le jeu suit ton navigateur.",
+    "en": "Your choice follows across universes. At first, the game follows your browser."
+   }
+  ]
+ },
+ {
+  "v": "19/08",
+  "t": {
+   "fr": "Le jeu change de tête",
+   "en": "The game changes its face"
+  },
+  "items": [
+   {
+    "fr": "Merci Syrean. Enchaîner les Super Bonbons demandait de repasser par le sac à chaque fois.",
+    "en": "Thanks Syrean. Chaining Rare Candies meant going back through the bag every time."
+   },
+   {
+    "fr": "Tant qu'il t'en reste, tu restes sur ton équipe. Comme les potions.",
+    "en": "While you still have some, you stay on your team. Like potions."
+   },
+   {
+    "fr": "Les quatre attaques étaient quatre cases pâles qui se ressemblaient. Ce sont des lignes.",
+    "en": "The four moves were four pale look-alike cards. They are lines now."
+   },
+   {
+    "fr": "Le type garde sa couleur. Il reste la seule couleur de l'écran.",
+    "en": "The type keeps its colour. It stays the only colour on screen."
+   },
+   {
+    "fr": "Plus de coins arrondis ni d'ombres, nulle part.",
+    "en": "No more rounded corners or shadows, anywhere."
+   },
+   {
+    "fr": "CONNEXION ouvrait le registre du ninja. Elle n'ouvre plus que ton compte.",
+    "en": "LOG IN opened the ninja registry. It now opens only your account."
+   }
+  ]
+ },
+ {
+  "v": "18/08",
+  "t": {
+   "fr": "Le Sceau de la Foudre parle de niveaux",
+   "en": "The Thunder Seal talks about levels"
+  },
+  "items": [
+   {
+    "fr": "Merci NaGaNn. Tu as ouvert un rapport de bug pour une phrase, pas pour le jeu.",
+    "en": "Thanks NaGaNn. You filed a bug report about a sentence, not about the game."
+   },
+   {
+    "fr": "Elle disait « tu ne montes plus au-dessus du Champion ». On comprenait que le voyage s'arrêtait là.",
+    "en": "It said \"you no longer rise above the Gym Leader\". It read like the run ended there."
+   },
+   {
+    "fr": "Elle dit maintenant : tes Pokémon ne dépassent plus le niveau du Champion de l'acte.",
+    "en": "It now says: your Pokémon no longer exceed the act's Gym Leader in level."
+   },
+   {
+    "fr": "Rien ne change dans le jeu. Le voyage va toujours jusqu'à la Ligue.",
+    "en": "Nothing changes in the game. The run still goes all the way to the League."
+   }
+  ]
+ },
+ {
+  "v": "18/08",
+  "t": {
+   "fr": "Une porte pour ton compte, depuis Kanto",
+   "en": "A door to your account, from Kanto"
+  },
+  "items": [
+   {
+    "fr": "Merci Lubin Leforestier. Tu avais créé un compte et plus rien ne te proposait de t'y connecter.",
+    "en": "Thanks Lubin Leforestier. You had created an account and nothing offered to log you in."
+   },
+   {
+    "fr": "Cette page n'avait aucune porte : la proposition passait deux fois au départ, puis plus jamais.",
+    "en": "This page had no door: the offer came twice at the start, then never again."
+   },
+   {
+    "fr": "L'accueil porte maintenant CONNEXION, ou MON COMPTE quand tu es déjà entré.",
+    "en": "The title screen now carries LOG IN, or MY ACCOUNT once you are in."
+   },
+   {
+    "fr": "Ton Pokédex de compte se remplit sur des dizaines de voyages. Il mérite un filet.",
+    "en": "Your account Pokédex fills over dozens of journeys. It deserves a safety net."
+   }
+  ]
+ },
+ {
+  "v": "18/08",
+  "t": {
+   "fr": "Les machines les plus fortes arrivent plus tard",
+   "en": "The strongest machines arrive later"
+  },
+  "items": [
+   {
+    "fr": "Les capsules les plus lourdes — Déflagration, Blizzard, Fatal-Foudre, Ultralaser — s'ouvrent à l'acte 6.",
+    "en": "The heaviest machines — Fire Blast, Blizzard, Thunder, Hyper Beam — open at act 6."
+   },
+   {
+    "fr": "Avant, 91 coups de 100 de puissance tombaient sur un Pokémon de niveau 30. Il en reste 4.",
+    "en": "Before, 91 moves of 100 power landed on a Pokémon of level 30. Four remain."
+   },
+   {
+    "fr": "Tonnerre et Laser Glace restent là dès le premier acte. La couverture de type ne bouge pas.",
+    "en": "Thunderbolt and Ice Beam stay from act one. Type coverage does not move."
+   },
+   {
+    "fr": "Le comptoir de Céladopole garde ses neuf machines : leur prix est déjà leur verrou.",
+    "en": "The Celadon counter keeps its nine machines: their price is already their lock."
+   }
+  ]
+ },
+ {
+  "v": "18/08",
+  "t": {
+   "fr": "Mewtwo repart avec toi",
+   "en": "Mewtwo comes home with you"
+  },
+  "items": [
+   {
+    "fr": "Merci Poltron_sofa. Tu avais gardé ta Master Ball tout le voyage pour lui, et il n'entrait pas dans ton équipe.",
+    "en": "Thanks Poltron_sofa. You saved your Master Ball all run for him, and he never joined your team."
+   },
+   {
+    "fr": "La grotte s'ouvre après la Ligue, quand le voyage est déjà clos : ta réserve n'avait plus de porte.",
+    "en": "The cave opens past the League, once the run is closed: your storage had no door left."
+   },
+   {
+    "fr": "Un dernier écran s'ouvre. Tu désignes qui il remplace, et tu rentres avec lui.",
+    "en": "One last screen opens. You pick who he replaces, and you head home with him."
+   },
+   {
+    "fr": "Le carnet du Manoir dit enfin où ils sont : Mewtwo après la Ligue, Mew sous un camion.",
+    "en": "The Mansion log finally says where they are: Mewtwo past the League, Mew under a truck."
+   }
+  ]
+ },
+ {
+  "v": "18/08",
+  "t": {
+   "fr": "La Ligue se garde entre chaque combat",
+   "en": "The League saves between each battle"
+  },
+  "items": [
+   {
+    "fr": "Merci @Z3no_. Tu étais à la Ligue, et revenir t'a demandé de repartir de zéro.",
+    "en": "Thanks @Z3no_. You were at the League, and coming back asked you to start over."
+   },
+   {
+    "fr": "Les cinq combats s'enchaînaient sans un seul point de garde. Ton voyage se garde entre chacun.",
+    "en": "The five battles ran on without a single save point. Your run is kept between each one."
+   },
+   {
+    "fr": "Le Défi du jour, lui, ne se reprend pas : l'écran le dit maintenant avant que tu partes.",
+    "en": "The daily challenge cannot be resumed: the screen says so now, before you go."
+   }
+  ]
+ },
+ {
+  "v": "18/08",
+  "t": {
+   "fr": "Le combat raconte dans l'ordre",
+   "en": "The battle tells it in order"
+  },
+  "items": [
+   {
+    "fr": "Merci Poltron_sofa. Ton remplaçant entrait déjà entamé, puis perdait le même coup une seconde fois.",
+    "en": "Thanks Poltron_sofa. Your replacement came in already hurt, then lost the same hit a second time."
+   },
+   {
+    "fr": "Le moteur avait raison : un coup, un dégât. C'est la barre qui racontait la fin avant le début.",
+    "en": "The engine was right: one hit, one wound. The bar was telling the end before the start."
+   },
+   {
+    "fr": "Elle suit maintenant ce qui est dit, coup par coup, quand tu changes de Pokémon.",
+    "en": "It now follows what is said, hit by hit, when you switch Pokémon."
+   },
+   {
+    "fr": "Cinq autres façons de perdre des PV étaient muettes : confusion, chute, contrecoup, Riposte, Patience.",
+    "en": "Five other ways to lose HP were silent: confusion, crash, recoil, Counter and Bide."
+   }
+  ]
+ },
+ {
+  "v": "17/08",
+  "t": {
+   "fr": "Un serment donne autant qu'il prend",
+   "en": "An oath gives as much as it takes"
+  },
+  "items": [
+   {
+    "fr": "Merci Tadomikari. Tu demandais à sauter les serments : l'écran te les vendait comme un péage.",
+    "en": "Thanks Tadomikari. You asked to skip oaths: the screen was selling them as a toll."
+   },
+   {
+    "fr": "On a comparé chaque serment à un voyage qui n'en jure aucun. Quinze sur dix-sept font mieux.",
+    "en": "We compared each oath against a run that swears none. Fifteen out of seventeen do better."
+   },
+   {
+    "fr": "Solitude, plafond et troupe sont les plus forts. Endurance et meute, les seuls perdants.",
+    "en": "Solitude, ceiling and troop are the strongest. Endurance and pack are the only losers."
+   },
+   {
+    "fr": "L'écran le dit maintenant, et rien d'autre ne change : c'était le cadre qui était faux.",
+    "en": "The screen says so now, and nothing else changes: the framing was the wrong part."
+   }
+  ]
+ },
+ {
+  "v": "17/08",
+  "t": {
+   "fr": "« Les deux autres sont perdus » devant six cartes",
+   "en": "\"The other two are lost\" in front of six cards"
+  },
+  "items": [
+   {
+    "fr": "Merci Tadomikari. L'écran de butin annonçait deux cartes perdues, quel que soit le nombre servi.",
+    "en": "Thanks Tadomikari. The loot screen announced two lost cards, whatever number it dealt."
+   },
+   {
+    "fr": "Il compte maintenant : « Prends-en un sur 6 ». Les serments qui posent des cartes en plus se voient dans le titre.",
+    "en": "It counts now: \"Take one of 6\". Oaths that add cards show up in the title."
+   },
+   {
+    "fr": "Même correction sur les acquis et les capsules techniques, qui en servent parfois moins de trois.",
+    "en": "Same fix on gains and technical machines, which sometimes deal fewer than three."
+   },
+   {
+    "fr": "Et l'écran des serments dit ce qu'il taisait : celui que tu jures compte tout de suite, sur la récompense qui suit.",
+    "en": "And the oath screen says what it hid: the one you swear counts right away, on the reward that follows."
+   }
+  ]
+ },
+ {
+  "v": "17/08",
+  "t": {
+   "fr": "Olga t'attend au niveau 70",
+   "en": "Lorelei is waiting at level 70"
+  },
+  "items": [
+   {
+    "fr": "Aujourd'hui, tous ceux qui arrivaient au sommet le gagnaient. Tous. Vingt-neuf sur vingt-neuf.",
+    "en": "Today, everyone who reached the summit won it. Everyone. Twenty-nine out of twenty-nine."
+   },
+   {
+    "fr": "Giovanni fermait les arènes au niveau 70 et Olga ouvrait la Ligue au niveau 56 : on descendait de quatorze niveaux en franchissant la dernière porte.",
+    "en": "Giovanni closed the gyms at level 70 and Olga opened the League at 56: you dropped fourteen levels walking through the last door."
+   },
+   {
+    "fr": "Le Conseil 4 reprend donc la montée là où Giovanni la laisse. Olga 70, Aldo 72, Agatha 74, Peter 76, ton rival 79.",
+    "en": "So the Elite Four picks the climb back up where Giovanni left it. Olga 70, Bruno 72, Agatha 74, Lance 76, your rival 79."
+   },
+   {
+    "fr": "Ton propre plafond monte d'autant : le couloir est plus dur, il n'est pas fermé.",
+    "en": "Your own ceiling rises just as much: the hallway is harder, it is not shut."
+   }
+  ]
+ },
+ {
+  "v": "17/08",
+  "t": {
+   "fr": "Un dresseur de route garde une potion",
+   "en": "A road trainer keeps a potion"
+  },
+  "items": [
+   {
+    "fr": "Merci IHSÂN. « J'ai quasi tout OS avec mon Dracaufeu et je me suis pas servi du reste. »",
+    "en": "Thanks IHSÂN. \"I one-shot almost everything with my Charizard and never used the rest.\""
+   },
+   {
+    "fr": "Un dresseur croisé en fin de partie alignait encore des Pokémon de première forme. Ils sortent maintenant évolués, comme les tiens.",
+    "en": "A trainer met late in the run still fielded first-form Pokémon. They now come out evolved, like yours."
+   },
+   {
+    "fr": "À partir de la troisième arène, il garde aussi une potion et s'en sert quand il tombe bas.",
+    "en": "From the third gym on, he also keeps a potion and uses it when he drops low."
+   },
+   {
+    "fr": "Rien avant : le début du voyage est déjà le passage le plus meurtrier.",
+    "en": "Nothing before that: the start of the journey is already the deadliest stretch."
+   }
+  ]
+ },
+ {
+  "v": "17/08",
+  "t": {
+   "fr": "Un écran neuf refuse les choix pendant un instant",
+   "en": "A fresh screen refuses choices for a moment"
+  },
+  "items": [
+   {
+    "fr": "Merci Kickincreep60. Ton clic de trop tombait sur la carte de butin.",
+    "en": "Thanks Kickincreep60. Your extra click landed on a loot card."
+   },
+   {
+    "fr": "La carte apparaissait sous ta souris immobile, à la place du bouton.",
+    "en": "The card appeared under your still mouse, where the button was."
+   },
+   {
+    "fr": "Un écran neuf refuse les choix pendant un instant. Tu ne t'engages plus par accident.",
+    "en": "A fresh screen refuses choices for a moment. You no longer commit by accident."
+   },
+   {
+    "fr": "« SUITE » et « CONTINUER », eux, restent martelables.",
+    "en": "NEXT and CONTINUE stay hammerable."
+   }
+  ]
+ },
+ {
+  "v": "17/08",
+  "t": {
+   "fr": "Ton Pokédex suit ton compte, pas ton navigateur",
+   "en": "Your Pokédex follows your account, not your browser"
+  },
+  "items": [
+   {
+    "fr": "Merci Darkjuampi. Ta collection se retrouvait bloquée sur un seul appareil.",
+    "en": "Thanks Darkjuampi. Your collection used to be stuck on one device."
+   },
+   {
+    "fr": "Avec un compte, elle monte au nuage et redescend sur l'autre écran.",
+    "en": "With an account, it goes up to the cloud and back down on the other screen."
+   },
+   {
+    "fr": "Les deux côtés s'additionnent : un appareil en retard n'efface rien.",
+    "en": "Both sides add up: a device that is behind erases nothing."
+   },
+   {
+    "fr": "Le PC de Léo, les records et les chasses voyagent avec.",
+    "en": "Your PC boxes, records and hunts travel along."
+   },
+   {
+    "fr": "Le voyage en cours reste là où tu l'as commencé.",
+    "en": "The run in progress stays where you started it."
+   }
+  ]
+ },
+ {
+  "v": "17/08",
+  "t": {
+   "fr": "Le classement te suit d'un appareil à l'autre",
+   "en": "The ranking follows you across devices"
+  },
+  "items": [
+   {
+    "fr": "🏆 Merci Poltron_sofa. Commencé sur téléphone, fini sur PC : tu étais refusé.",
+    "en": "🏆 Thanks Poltron_sofa. Started on phone, finished on PC: you were refused."
+   },
+   {
+    "fr": "🏆 Avec un compte, ton défi du jour te suit maintenant partout.",
+    "en": "🏆 With an account, your daily challenge now follows you everywhere."
+   },
+   {
+    "fr": "📈 Quand le plafond de niveau bloque une montée, le jeu te le dit.",
+    "en": "📈 When the level cap holds a level-up back, the game tells you."
+   },
+   {
+    "fr": "🎰 Merci LoicPerezzz. Les jetons du Casino coûtent dix fois moins cher.",
+    "en": "🎰 Thanks LoicPerezzz. Casino coins now cost ten times less."
+   },
+   {
+    "fr": "🎰 Porygon devient atteignable : un voyage entier consacré à lui.",
+    "en": "🎰 Porygon becomes reachable: one whole run devoted to it."
+   }
+  ]
+ },
+ {
+  "v": "17/08",
+  "t": {
+   "fr": "Pris au piège, ta Ball reste dans le sac",
+   "en": "Trapped, your Ball stays in the bag"
+  },
+  "items": [
+   {
+    "fr": "Merci .nevix. Pris au piège, ta Ball sortait du sac sans partir.",
+    "en": "Thanks .nevix. While trapped, your Ball left the bag without being thrown."
+   },
+   {
+    "fr": "Elle reste dans le sac. Le bouton s'éteint et dit pourquoi.",
+    "en": "It stays in the bag. The button greys out and says why."
+   },
+   {
+    "fr": "Une prise garde ton Pokémon : seul un changement le libère.",
+    "en": "A grip holds your Pokémon: only a switch frees it."
+   },
+   {
+    "fr": "Pareil pour les soins, la fuite, et les coups à charge.",
+    "en": "Same for healing, fleeing, and charging moves."
+   },
+   {
+    "fr": "Et on peut toujours abandonner un combat, même pris au piège.",
+    "en": "And you can always forfeit a battle, even while trapped."
+   }
+  ]
+ },
+ {
+  "v": "17/08",
+  "t": {
+   "fr": "Mon PC, toutes parties confondues",
+   "en": "My PC, across all runs"
+  },
+  "items": [
+   {
+    "fr": "Tout ce que tu as élevé se range dans ton PC, voyage après voyage.",
+    "en": "Everything you raise lands in your PC, run after run."
+   },
+   {
+    "fr": "Tu y composes ton équipe de duel toi-même. Les doublons sont acceptés.",
+    "en": "You compose your duel team there yourself. Duplicates are allowed."
+   },
+   {
+    "fr": "L'ordre que tu choisis est l'ordre de l'équipe. Le premier ouvre le duel.",
+    "en": "The order you pick is the team order. The first one opens the duel."
+   },
+   {
+    "fr": "Ton choix tient. Un nouveau voyage ne l'écrase plus.",
+    "en": "Your choice holds. A new run no longer overwrites it."
+   },
+   {
+    "fr": "Ça se trouve sur l'écran de duel, bouton MON PC. Merci Poltron_sofa.",
+    "en": "Find it on the duel screen, MY PC button. Thanks Poltron_sofa."
+   }
+  ]
+ },
+ {
+  "v": "17/08",
+  "t": {
+   "fr": "La Ligue se mérite",
+   "en": "The League has to be earned"
+  },
+  "items": [
+   {
+    "fr": "Les cinq combats de la Ligue s'enchaînent. Plus de retour à la carte entre eux.",
+    "en": "The five League fights now run back to back. No return to the map between them."
+   },
+   {
+    "fr": "Ton équipe entre soignée, et c'est la dernière fois. La règle était annoncée, elle s'applique.",
+    "en": "Your team enters healed, and that is the last time. The rule was announced, now it holds."
+   },
+   {
+    "fr": "Le Pokédex ne s'ouvre plus pendant un combat ou un événement. Il te le faisait perdre.",
+    "en": "The Pokédex no longer opens during a fight or an event. It used to make you lose it."
+   },
+   {
+    "fr": "Merci à SonDay12 et aux testeurs de cette nuit.",
+    "en": "Thanks to SonDay12 and to tonight's testers."
+   }
+  ]
+ },
+ {
+  "v": "16/08",
+  "t": {
+   "fr": "Chaque acte a son plafond de niveau",
+   "en": "Every act has its own level ceiling"
+  },
+  "items": [
+   {
+    "fr": "Ton équipe montait jusqu'au niveau 100 avant la Ligue. Elle s'arrête beaucoup plus tôt.",
+    "en": "Your team used to climb to level 100 before the League. It now stops far earlier."
+   },
+   {
+    "fr": "Le Conseil 4 ne se balaie plus en un coup.",
+    "en": "The Elite Four can no longer be swept aside."
+   },
+   {
+    "fr": "Auguste sort un cinquième Pokémon et garde une potion de plus.",
+    "en": "Blaine brings a fifth Pokémon and carries one more potion."
+   },
+   {
+    "fr": "Auguste et Giovanni t'attendent au niveau où tu arrives.",
+    "en": "Blaine and Giovanni now wait for you at your own level."
+   },
+   {
+    "fr": "L'expérience monte moins vite après le niveau 42. Le début du voyage ne change pas.",
+    "en": "Experience rises more slowly past level 42. The start of the run is unchanged."
+   },
+   {
+    "fr": "Les trois derniers actes ont plus d'étapes à traverser.",
+    "en": "The last three acts have more steps to cross."
+   },
+   {
+    "fr": "Le Super Bonbon faisait sauter la limite et montait droit au niveau 100. Il rend un niveau.",
+    "en": "The Rare Candy used to break the cap and jump straight to level 100. It gives one level."
+   },
+   {
+    "fr": "La Pension avait le même défaut. Merci Oxnozz_ pour le signalement.",
+    "en": "The Day Care had the same flaw. Thanks to Oxnozz_ for reporting it."
+   },
+   {
+    "fr": "Un même voyage ne peut plus être envoyé douze fois au classement du jour.",
+    "en": "The same run can no longer be sent twelve times to the daily ladder."
+   }
+  ]
+ }
+]

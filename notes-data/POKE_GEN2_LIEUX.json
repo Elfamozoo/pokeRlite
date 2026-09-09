@@ -1,0 +1,182 @@
+{
+ "sprout-tower": {
+  "fr": "Tour Chétiflor",
+  "en": "Sprout Tower"
+ },
+ "bell-tower": {
+  "fr": "Tour Carillon",
+  "en": "Bell Tower"
+ },
+ "burned-tower": {
+  "fr": "Tour Cendrée",
+  "en": "Burned Tower"
+ },
+ "national-park": {
+  "fr": "Parc Naturel",
+  "en": "National Park"
+ },
+ "ruins-of-alph": {
+  "fr": "Ruines d'Alpha",
+  "en": "Ruins of Alph"
+ },
+ "union-cave": {
+  "fr": "Caves Jumelles",
+  "en": "Union Cave"
+ },
+ "slowpoke-well": {
+  "fr": "Puits Ramoloss",
+  "en": "Slowpoke Well"
+ },
+ "ilex-forest": {
+  "fr": "Bois aux Chênes",
+  "en": "Ilex Forest"
+ },
+ "mt-mortar": {
+  "fr": "Mont Creuset",
+  "en": "Mt. Mortar"
+ },
+ "ice-path": {
+  "fr": "Route de Glace",
+  "en": "Ice Path"
+ },
+ "whirl-islands": {
+  "fr": "Tourb'Îles",
+  "en": "Whirl Islands"
+ },
+ "mt-silver-cave": {
+  "fr": "Grotte Argentée",
+  "en": "Mt. Silver Cave"
+ },
+ "dark-cave": {
+  "fr": "Antre Noir",
+  "en": "Dark Cave"
+ },
+ "johto-route-29": {
+  "fr": "Route 29",
+  "en": "Route 29"
+ },
+ "johto-route-30": {
+  "fr": "Route 30",
+  "en": "Route 30"
+ },
+ "johto-route-31": {
+  "fr": "Route 31",
+  "en": "Route 31"
+ },
+ "johto-route-32": {
+  "fr": "Route 32",
+  "en": "Route 32"
+ },
+ "johto-route-33": {
+  "fr": "Route 33",
+  "en": "Route 33"
+ },
+ "johto-route-34": {
+  "fr": "Route 34",
+  "en": "Route 34"
+ },
+ "johto-route-35": {
+  "fr": "Route 35",
+  "en": "Route 35"
+ },
+ "johto-route-36": {
+  "fr": "Route 36",
+  "en": "Route 36"
+ },
+ "johto-route-37": {
+  "fr": "Route 37",
+  "en": "Route 37"
+ },
+ "johto-route-38": {
+  "fr": "Route 38",
+  "en": "Route 38"
+ },
+ "johto-route-39": {
+  "fr": "Route 39",
+  "en": "Route 39"
+ },
+ "johto-route-42": {
+  "fr": "Route 42",
+  "en": "Route 42"
+ },
+ "johto-route-43": {
+  "fr": "Route 43",
+  "en": "Route 43"
+ },
+ "johto-route-44": {
+  "fr": "Route 44",
+  "en": "Route 44"
+ },
+ "johto-route-45": {
+  "fr": "Route 45",
+  "en": "Route 45"
+ },
+ "johto-route-46": {
+  "fr": "Route 46",
+  "en": "Route 46"
+ },
+ "dragons-den": {
+  "fr": "Antre du Dragon",
+  "en": "Dragon's Den"
+ },
+ "olivine-city": {
+  "fr": "Oliville",
+  "en": "Olivine City"
+ },
+ "johto-sea-route-40": {
+  "fr": "Chenal 40",
+  "en": "Sea Route 40"
+ },
+ "johto-sea-route-41": {
+  "fr": "Chenal 41",
+  "en": "Sea Route 41"
+ },
+ "new-bark-town": {
+  "fr": "Bourg Geon",
+  "en": "New Bark Town"
+ },
+ "cherrygrove-city": {
+  "fr": "Ville Griotte",
+  "en": "Cherrygrove City"
+ },
+ "violet-city": {
+  "fr": "Mauville",
+  "en": "Violet City"
+ },
+ "cianwood-city": {
+  "fr": "Irisia",
+  "en": "Cianwood City"
+ },
+ "ecruteak-city": {
+  "fr": "Rosalia",
+  "en": "Ecruteak City"
+ },
+ "lake-of-rage": {
+  "fr": "Lac Colère",
+  "en": "Lake of Rage"
+ },
+ "blackthorn-city": {
+  "fr": "Ébènelle",
+  "en": "Blackthorn City"
+ },
+ "azalea-town": {
+  "fr": "Écorcia",
+  "en": "Azalea Town"
+ },
+ "goldenrod-city": {
+  "fr": "Doublonville",
+  "en": "Goldenrod City"
+ },
+ "mahogany-town": {
+  "fr": "Acajou",
+  "en": "Mahogany Town"
+ },
+ "indigo-plateau": {
+  "fr": "Plateau Indigo",
+  "en": "Indigo Plateau"
+ },
+ "mt-silver": {
+  "fr": "Mont Argenté",
+  "en": "Mt. Silver"
+ }
+}

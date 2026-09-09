@@ -1,0 +1,19 @@
+{
+ "depuis": "tour-calcinee",
+ "chance": 0.06,
+ "tours": 3,
+ "liste": [
+  {
+   "n": 243,
+   "niveau": 40
+  },
+  {
+   "n": 244,
+   "niveau": 40
+  },
+  {
+   "n": 245,
+   "niveau": 40
+  }
+ ]
+}

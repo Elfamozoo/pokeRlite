@@ -1,0 +1,20 @@
+[
+ "js/poke/tempo.js",
+ "js/poke/icones.js",
+ "js/poke/sons.js",
+ "js/poke/audio.js",
+ "js/poke/animations.js",
+ "js/poke/anim-attaque.js",
+ "js/poke/gen2/animations.js",
+ "js/poke/gen2/anim-attaque.js",
+ "js/poke/progression.js",
+ "js/poke/dits-objets.js",
+ "js/poke/mesure-arene.js",
+ "js/poke/ui-combat.js",
+ "js/poke/pokedex-ui.js",
+ "js/poke/infobulles.js",
+ "js/poke/carte-partage.js",
+ "js/poke/classement.js",
+ "js/poke/fin.js",
+ "js/poke/ui.js"
+]

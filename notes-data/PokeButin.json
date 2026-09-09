@@ -1,0 +1,119 @@
+{
+ "COMMUN": "commun",
+ "RARE": "rare",
+ "LEGENDAIRE": "legendaire",
+ "FAMILLES": {
+  "argent": {
+   "rarete": "commun",
+   "poids": 14,
+   "tirer": "[fonction tirer]",
+   "poser": "[fonction poser]"
+  },
+  "balls": {
+   "rarete": "commun",
+   "poids": 16,
+   "tirer": "[fonction tirer]",
+   "poser": "[fonction poser]"
+  },
+  "soins": {
+   "rarete": "commun",
+   "poids": 13,
+   "tirer": "[fonction tirer]",
+   "poser": "[fonction poser]"
+  },
+  "remede": {
+   "rarete": "commun",
+   "poids": 10,
+   "utile": "[fonction utile]",
+   "tirer": "[fonction tirer]",
+   "poser": "[fonction poser]"
+  },
+  "rappel": {
+   "rarete": "rare",
+   "poids": 7,
+   "tirer": "[fonction tirer]",
+   "poser": "[fonction poser]"
+  },
+  "vitamine": {
+   "rarete": "rare",
+   "poids": 9,
+   "tirer": "[fonction tirer]",
+   "utile": "[fonction utile]",
+   "poser": "[fonction poser]"
+  },
+  "expAll": {
+   "rarete": "rare",
+   "poids": 14,
+   "tirer": "[fonction tirer]",
+   "utile": "[fonction utile]",
+   "poser": "[fonction poser]"
+  },
+  "canne": {
+   "rarete": "rare",
+   "poids": 8,
+   "tirer": "[fonction tirer]",
+   "utile": "[fonction utile]",
+   "poser": "[fonction poser]"
+  },
+  "bonbon": {
+   "rarete": "rare",
+   "poids": 6,
+   "tirer": "[fonction tirer]",
+   "utile": "[fonction utile]",
+   "poser": "[fonction poser]"
+  },
+  "ct": {
+   "rarete": "rare",
+   "poids": 15,
+   "utile": "[fonction utile]",
+   "tirer": "[fonction tirer]",
+   "poser": "[fonction poser]"
+  },
+  "acquis": {
+   "rarete": "legendaire",
+   "poids": 5,
+   "utile": "[fonction utile]",
+   "tirer": "[fonction tirer]",
+   "poser": "[fonction poser]"
+  },
+  "pierre": {
+   "rarete": "legendaire",
+   "poids": 5,
+   "utile": "[fonction utile]",
+   "tirer": "[fonction tirer]",
+   "poser": "[fonction poser]"
+  }
+ },
+ "tirer": "[fonction tirer]",
+ "prendre": "[fonction prendre]",
+ "apprenables": "[fonction apprenables]",
+ "plafondCT": "[fonction plafondCT]",
+ "PLAFOND_CT": [
+  95,
+  95,
+  100,
+  100,
+  100,
+  0,
+  0,
+  0,
+  0
+ ],
+ "machinesDe": "[fonction machinesDe]",
+ "pierresUtiles": "[fonction pierresUtiles]",
+ "CANNES": [
+  {
+   "objet": "OLD_ROD",
+   "acte": 2
+  },
+  {
+   "objet": "GOOD_ROD",
+   "acte": 4
+  },
+  {
+   "objet": "SUPER_ROD",
+   "acte": 6
+  }
+ ],
+ "canneDe": "[fonction canneDe]"
+}

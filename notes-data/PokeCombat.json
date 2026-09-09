@@ -1,0 +1,171 @@
+{
+ "DEGEL_NATUREL": 10,
+ "EFFETS_TRAITES": [
+  "NO_ADDITIONAL_EFFECT",
+  "PARALYZE_SIDE_EFFECT1",
+  "PARALYZE_SIDE_EFFECT2",
+  "PARALYZE_EFFECT",
+  "BURN_SIDE_EFFECT1",
+  "BURN_SIDE_EFFECT2",
+  "FREEZE_SIDE_EFFECT1",
+  "POISON_SIDE_EFFECT1",
+  "POISON_SIDE_EFFECT2",
+  "POISON_EFFECT",
+  "SLEEP_EFFECT",
+  "ATTACK_DOWN1_EFFECT",
+  "DEFENSE_DOWN1_EFFECT",
+  "SPEED_DOWN1_EFFECT",
+  "ATTACK_DOWN_SIDE_EFFECT",
+  "DEFENSE_DOWN_SIDE_EFFECT",
+  "SPEED_DOWN_SIDE_EFFECT",
+  "SPECIAL_DOWN_SIDE_EFFECT",
+  "ATTACK_UP1_EFFECT",
+  "DEFENSE_UP1_EFFECT",
+  "SPECIAL_UP1_EFFECT",
+  "ATTACK_UP2_EFFECT",
+  "DEFENSE_UP2_EFFECT",
+  "SPEED_UP2_EFFECT",
+  "SPECIAL_UP2_EFFECT",
+  "ACCURACY_DOWN1_EFFECT",
+  "DEFENSE_DOWN2_EFFECT",
+  "EVASION_UP1_EFFECT",
+  "FLINCH_SIDE_EFFECT1",
+  "FLINCH_SIDE_EFFECT2",
+  "CONFUSION_EFFECT",
+  "CONFUSION_SIDE_EFFECT",
+  "SPECIAL_DAMAGE_EFFECT",
+  "SWITCH_AND_TELEPORT_EFFECT",
+  "HEAL_EFFECT",
+  "SPLASH_EFFECT",
+  "HAZE_EFFECT",
+  "MIST_EFFECT",
+  "LIGHT_SCREEN_EFFECT",
+  "REFLECT_EFFECT",
+  "FOCUS_ENERGY_EFFECT",
+  "LEECH_SEED_EFFECT",
+  "SUBSTITUTE_EFFECT",
+  "DISABLE_EFFECT",
+  "MIMIC_EFFECT",
+  "MIRROR_MOVE_EFFECT",
+  "METRONOME_EFFECT",
+  "CONVERSION_EFFECT",
+  "TRANSFORM_EFFECT",
+  "BIDE_EFFECT",
+  "OHKO_EFFECT",
+  "SUPER_FANG_EFFECT",
+  "DREAM_EATER_EFFECT",
+  "PAY_DAY_EFFECT",
+  "TWO_TO_FIVE_ATTACKS_EFFECT",
+  "ATTACK_TWICE_EFFECT",
+  "TWINEEDLE_EFFECT",
+  "CHARGE_EFFECT",
+  "FLY_EFFECT",
+  "HYPER_BEAM_EFFECT",
+  "RAGE_EFFECT",
+  "THRASH_PETAL_DANCE_EFFECT",
+  "TRAPPING_EFFECT",
+  "JUMP_KICK_EFFECT",
+  "RECOIL_EFFECT",
+  "EXPLODE_EFFECT",
+  "DRAIN_HP_EFFECT",
+  "SWIFT_EFFECT"
+ ],
+ "entrerEnJeu": "[fonction entrerEnJeu]",
+ "paliersNeufs": "[fonction paliersNeufs]",
+ "coupUtile": "[fonction coupUtile]",
+ "combienOntCombattu": "[fonction combienOntCombattu]",
+ "EFFETS_NON_TRAITES": {},
+ "jouerTour": "[fonction jouerTour]",
+ "tourForce": "[fonction tourForce]",
+ "OBJETS_SOIN": {
+  "POTION": {
+   "soin": 20
+  },
+  "SUPER_POTION": {
+   "soin": 50
+  },
+  "HYPER_POTION": {
+   "soin": 200
+  },
+  "MAX_POTION": {
+   "soin": -1
+  },
+  "FULL_RESTORE": {
+   "soin": -1,
+   "etat": "tous"
+  },
+  "FRESH_WATER": {
+   "soin": 50
+  },
+  "SODA_POP": {
+   "soin": 60
+  },
+  "LEMONADE": {
+   "soin": 80
+  },
+  "ANTIDOTE": {
+   "etat": "poison"
+  },
+  "BURN_HEAL": {
+   "etat": "brulure"
+  },
+  "ICE_HEAL": {
+   "etat": "gel"
+  },
+  "AWAKENING": {
+   "etat": "sommeil"
+  },
+  "PARLYZ_HEAL": {
+   "etat": "para"
+  },
+  "FULL_HEAL": {
+   "etat": "tous"
+  },
+  "REVIVE": {
+   "ranime": 0.5
+  },
+  "MAX_REVIVE": {
+   "ranime": 1
+  }
+ },
+ "OBJETS_STAT": {
+  "X_ATTACK": {
+   "stat": "atk"
+  },
+  "X_DEFEND": {
+   "stat": "def"
+  },
+  "X_SPEED": {
+   "stat": "vit"
+  },
+  "X_SPECIAL": {
+   "stat": "spe"
+  },
+  "X_ACCURACY": {
+   "stat": "precision"
+  },
+  "DIRE_HIT": {
+   "volatil": "puissance"
+  },
+  "GUARD_SPEC": {
+   "volatil": "brume"
+  }
+ },
+ "appliquerObjet": "[fonction appliquerObjet]",
+ "appliquerStat": "[fonction appliquerStat]",
+ "choixAdverse": "[fonction choixAdverse]",
+ "bonusBadges": "[fonction bonusBadges]",
+ "efficacite": "[fonction efficacite]",
+ "estSpecial": "[fonction estSpecial]",
+ "chanceCritique": "[fonction chanceCritique]",
+ "facteurPalier": "[fonction facteurPalier]",
+ "degats": "[fonction degats]",
+ "demarrer": "[fonction demarrer]",
+ "actif": "[fonction actif]",
+ "vivant": "[fonction vivant]",
+ "resteUn": "[fonction resteUn]",
+ "vitesseEffective": "[fonction vitesseEffective]",
+ "joueurEnPremier": "[fonction joueurEnPremier]",
+ "peutAgir": "[fonction peutAgir]",
+ "usureFinDeTour": "[fonction usureFinDeTour]"
+}

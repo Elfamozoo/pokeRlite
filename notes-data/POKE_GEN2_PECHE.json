@@ -1,0 +1,208 @@
+{
+ "canne": [
+  {
+   "n": 129,
+   "niveau": 10
+  },
+  {
+   "n": 98,
+   "niveau": 10
+  }
+ ],
+ "bonne": [
+  {
+   "n": 129,
+   "niveau": 20
+  },
+  {
+   "n": 98,
+   "niveau": 20
+  },
+  {
+   "n": 222,
+   "niveau": 20
+  },
+  {
+   "n": 120,
+   "niveau": 20
+  }
+ ],
+ "mega": {
+  "groupes": {
+   "Shore": [
+    {
+     "n": 98,
+     "niveau": 40
+    },
+    {
+     "n": 222,
+     "niveau": 40
+    },
+    {
+     "n": 120,
+     "niveau": 40
+    },
+    {
+     "n": 99,
+     "niveau": 40
+    }
+   ],
+   "Ocean": [
+    {
+     "n": 170,
+     "niveau": 40
+    },
+    {
+     "n": 90,
+     "niveau": 40
+    },
+    {
+     "n": 73,
+     "niveau": 40
+    },
+    {
+     "n": 171,
+     "niveau": 40
+    }
+   ],
+   "Lake": [
+    {
+     "n": 118,
+     "niveau": 40
+    },
+    {
+     "n": 129,
+     "niveau": 40
+    },
+    {
+     "n": 119,
+     "niveau": 40
+    }
+   ],
+   "Pond": [
+    {
+     "n": 60,
+     "niveau": 40
+    },
+    {
+     "n": 129,
+     "niveau": 40
+    }
+   ],
+   "Dratini": [
+    {
+     "n": 129,
+     "niveau": 40
+    },
+    {
+     "n": 147,
+     "niveau": 40
+    },
+    {
+     "n": 148,
+     "niveau": 40
+    }
+   ],
+   "Dratini_2": [
+    {
+     "n": 129,
+     "niveau": 10
+    },
+    {
+     "n": 147,
+     "niveau": 10
+    },
+    {
+     "n": 148,
+     "niveau": 10
+    }
+   ],
+   "Gyarados": [
+    {
+     "n": 129,
+     "niveau": 40
+    },
+    {
+     "n": 130,
+     "niveau": 40
+    }
+   ],
+   "WhirlIslands": [
+    {
+     "n": 98,
+     "niveau": 40
+    },
+    {
+     "n": 116,
+     "niveau": 40
+    },
+    {
+     "n": 99,
+     "niveau": 40
+    },
+    {
+     "n": 117,
+     "niveau": 40
+    }
+   ],
+   "Qwilfish": [
+    {
+     "n": 72,
+     "niveau": 40
+    },
+    {
+     "n": 129,
+     "niveau": 40
+    },
+    {
+     "n": 211,
+     "niveau": 40
+    }
+   ],
+   "Remoraid": [
+    {
+     "n": 60,
+     "niveau": 40
+    },
+    {
+     "n": 129,
+     "niveau": 40
+    },
+    {
+     "n": 223,
+     "niveau": 40
+    }
+   ]
+  },
+  "parCarte": {
+   "RUINS_OF_ALPH": "Pond",
+   "UNION_CAVE": "Lake",
+   "SLOWPOKE_WELL": "Lake",
+   "ILEX_FOREST": "Pond",
+   "MT_MORTAR": "Lake",
+   "WHIRL_ISLANDS": "WhirlIslands",
+   "MT_SILVER_CAVE": "Lake",
+   "DARK_CAVE": "Lake",
+   "JOHTO_ROUTE_30": "Pond",
+   "JOHTO_ROUTE_31": "Pond",
+   "JOHTO_ROUTE_32": "Qwilfish",
+   "JOHTO_ROUTE_34": "Shore",
+   "JOHTO_ROUTE_35": "Pond",
+   "JOHTO_ROUTE_42": "Lake",
+   "JOHTO_ROUTE_43": "Pond",
+   "JOHTO_ROUTE_44": "Pond",
+   "JOHTO_ROUTE_45": "Dratini_2",
+   "DRAGONS_DEN": "Dratini",
+   "OLIVINE_CITY": "Shore",
+   "JOHTO_SEA_ROUTE_40": "Shore",
+   "JOHTO_SEA_ROUTE_41": "Ocean",
+   "NEW_BARK_TOWN": "Ocean",
+   "CHERRYGROVE_CITY": "Shore",
+   "VIOLET_CITY": "Pond",
+   "CIANWOOD_CITY": "Shore",
+   "ECRUTEAK_CITY": "Pond",
+   "LAKE_OF_RAGE": "Gyarados",
+   "BLACKTHORN_CITY": "Pond"
+  }
+ }
+}

@@ -1,0 +1,72 @@
+{
+ "coupe": {
+  "source": "bois-aux-chenes",
+  "nom": {
+   "fr": "CS01 Coupe",
+   "en": "HM01 Cut"
+  }
+ },
+ "surf": {
+  "source": "rosalia",
+  "nom": {
+   "fr": "CS03 Surf",
+   "en": "HM03 Surf"
+  }
+ },
+ "force": {
+  "source": "oliville",
+  "nom": {
+   "fr": "CS04 Force",
+   "en": "HM04 Strength"
+  }
+ },
+ "flash": {
+  "source": "caves-jumelles",
+  "nom": {
+   "fr": "CS05 Flash",
+   "en": "HM05 Flash"
+  }
+ },
+ "chute": {
+  "source": "ebenelle",
+  "nom": {
+   "fr": "CS07 Cascade",
+   "en": "HM07 Waterfall"
+  }
+ },
+ "remede": {
+  "source": "irisia",
+  "nom": {
+   "fr": "Remède du phare",
+   "en": "Lighthouse cure"
+  }
+ },
+ "mdpRocket": {
+  "source": "lac-colere",
+  "nom": {
+   "fr": "Mot de passe Rocket",
+   "en": "Rocket password"
+  }
+ },
+ "ailArgent": {
+  "source": "tourbiles",
+  "nom": {
+   "fr": "Aile Argentée",
+   "en": "Silver Wing"
+  }
+ },
+ "ailArcEnCiel": {
+  "source": "tour-carillon",
+  "nom": {
+   "fr": "Aile Arc-en-ciel",
+   "en": "Rainbow Wing"
+  }
+ },
+ "master": {
+  "source": "repaire-rocket",
+  "nom": {
+   "fr": "Master Ball",
+   "en": "Master Ball"
+  }
+ }
+}

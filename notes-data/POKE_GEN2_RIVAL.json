@@ -1,0 +1,912 @@
+{
+ "ordre": [
+  152,
+  155,
+  158
+ ],
+ "rencontres": 7,
+ "debut": [
+  [
+   {
+    "n": 152,
+    "niveau": 5
+   }
+  ],
+  [
+   {
+    "n": 155,
+    "niveau": 5
+   }
+  ],
+  [
+   {
+    "n": 158,
+    "niveau": 5
+   }
+  ],
+  [
+   {
+    "n": 92,
+    "niveau": 12
+   },
+   {
+    "n": 41,
+    "niveau": 14
+   },
+   {
+    "n": 153,
+    "niveau": 16
+   }
+  ],
+  [
+   {
+    "n": 92,
+    "niveau": 12
+   },
+   {
+    "n": 41,
+    "niveau": 14
+   },
+   {
+    "n": 156,
+    "niveau": 16
+   }
+  ],
+  [
+   {
+    "n": 92,
+    "niveau": 12
+   },
+   {
+    "n": 41,
+    "niveau": 14
+   },
+   {
+    "n": 159,
+    "niveau": 16
+   }
+  ],
+  [
+   {
+    "n": 93,
+    "niveau": 20,
+    "attaques": [
+     "LICK",
+     "SPITE",
+     "MEAN_LOOK",
+     "CURSE"
+    ]
+   },
+   {
+    "n": 81,
+    "niveau": 18,
+    "attaques": [
+     "TACKLE",
+     "THUNDERSHOCK",
+     "SUPERSONIC",
+     "SONICBOOM"
+    ]
+   },
+   {
+    "n": 41,
+    "niveau": 20,
+    "attaques": [
+     "LEECH_LIFE",
+     "SUPERSONIC",
+     "BITE",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 153,
+    "niveau": 22,
+    "attaques": [
+     "GROWL",
+     "REFLECT",
+     "RAZOR_LEAF",
+     "POISONPOWDER"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 93,
+    "niveau": 20,
+    "attaques": [
+     "LICK",
+     "SPITE",
+     "MEAN_LOOK",
+     "CURSE"
+    ]
+   },
+   {
+    "n": 81,
+    "niveau": 18,
+    "attaques": [
+     "TACKLE",
+     "THUNDERSHOCK",
+     "SUPERSONIC",
+     "SONICBOOM"
+    ]
+   },
+   {
+    "n": 41,
+    "niveau": 20,
+    "attaques": [
+     "LEECH_LIFE",
+     "SUPERSONIC",
+     "BITE",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 156,
+    "niveau": 22,
+    "attaques": [
+     "LEER",
+     "SMOKESCREEN",
+     "EMBER",
+     "QUICK_ATTACK"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 93,
+    "niveau": 20,
+    "attaques": [
+     "LICK",
+     "SPITE",
+     "MEAN_LOOK",
+     "CURSE"
+    ]
+   },
+   {
+    "n": 81,
+    "niveau": 18,
+    "attaques": [
+     "TACKLE",
+     "THUNDERSHOCK",
+     "SUPERSONIC",
+     "SONICBOOM"
+    ]
+   },
+   {
+    "n": 41,
+    "niveau": 20,
+    "attaques": [
+     "LEECH_LIFE",
+     "SUPERSONIC",
+     "BITE",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 159,
+    "niveau": 22,
+    "attaques": [
+     "LEER",
+     "RAGE",
+     "WATER_GUN",
+     "BITE"
+    ]
+   }
+  ]
+ ],
+ "milieu": [
+  [
+   {
+    "n": 42,
+    "niveau": 30,
+    "attaques": [
+     "LEECH_LIFE",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 81,
+    "niveau": 28,
+    "attaques": [
+     "TACKLE",
+     "THUNDERSHOCK",
+     "SONICBOOM",
+     "THUNDER_WAVE"
+    ]
+   },
+   {
+    "n": 93,
+    "niveau": 30,
+    "attaques": [
+     "LICK",
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL"
+    ]
+   },
+   {
+    "n": 215,
+    "niveau": 32,
+    "attaques": [
+     "LEER",
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK"
+    ]
+   },
+   {
+    "n": 154,
+    "niveau": 32,
+    "attaques": [
+     "REFLECT",
+     "RAZOR_LEAF",
+     "POISONPOWDER",
+     "BODY_SLAM"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 42,
+    "niveau": 30,
+    "attaques": [
+     "LEECH_LIFE",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 81,
+    "niveau": 28,
+    "attaques": [
+     "TACKLE",
+     "THUNDERSHOCK",
+     "SONICBOOM",
+     "THUNDER_WAVE"
+    ]
+   },
+   {
+    "n": 93,
+    "niveau": 30,
+    "attaques": [
+     "LICK",
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL"
+    ]
+   },
+   {
+    "n": 215,
+    "niveau": 32,
+    "attaques": [
+     "LEER",
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK"
+    ]
+   },
+   {
+    "n": 156,
+    "niveau": 32,
+    "attaques": [
+     "SMOKESCREEN",
+     "EMBER",
+     "QUICK_ATTACK",
+     "FLAME_WHEEL"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 42,
+    "niveau": 30,
+    "attaques": [
+     "LEECH_LIFE",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 81,
+    "niveau": 28,
+    "attaques": [
+     "TACKLE",
+     "THUNDERSHOCK",
+     "SONICBOOM",
+     "THUNDER_WAVE"
+    ]
+   },
+   {
+    "n": 93,
+    "niveau": 30,
+    "attaques": [
+     "LICK",
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL"
+    ]
+   },
+   {
+    "n": 215,
+    "niveau": 32,
+    "attaques": [
+     "LEER",
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK"
+    ]
+   },
+   {
+    "n": 160,
+    "niveau": 32,
+    "attaques": [
+     "RAGE",
+     "WATER_GUN",
+     "BITE",
+     "SCARY_FACE"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 215,
+    "niveau": 34,
+    "attaques": [
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK",
+     "FURY_CUTTER"
+    ]
+   },
+   {
+    "n": 42,
+    "niveau": 36,
+    "attaques": [
+     "LEECH_LIFE",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 82,
+    "niveau": 35,
+    "attaques": [
+     "THUNDERSHOCK",
+     "SONICBOOM",
+     "THUNDER_WAVE",
+     "SWIFT"
+    ]
+   },
+   {
+    "n": 93,
+    "niveau": 35,
+    "attaques": [
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 64,
+    "niveau": 35,
+    "attaques": [
+     "DISABLE",
+     "PSYBEAM",
+     "RECOVER",
+     "FUTURE_SIGHT"
+    ]
+   },
+   {
+    "n": 154,
+    "niveau": 38,
+    "attaques": [
+     "REFLECT",
+     "RAZOR_LEAF",
+     "POISONPOWDER",
+     "BODY_SLAM"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 215,
+    "niveau": 34,
+    "attaques": [
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK",
+     "FURY_CUTTER"
+    ]
+   },
+   {
+    "n": 42,
+    "niveau": 36,
+    "attaques": [
+     "LEECH_LIFE",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 82,
+    "niveau": 35,
+    "attaques": [
+     "THUNDERSHOCK",
+     "SONICBOOM",
+     "THUNDER_WAVE",
+     "SWIFT"
+    ]
+   },
+   {
+    "n": 93,
+    "niveau": 35,
+    "attaques": [
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 64,
+    "niveau": 35,
+    "attaques": [
+     "DISABLE",
+     "PSYBEAM",
+     "RECOVER",
+     "FUTURE_SIGHT"
+    ]
+   },
+   {
+    "n": 157,
+    "niveau": 38,
+    "attaques": [
+     "SMOKESCREEN",
+     "EMBER",
+     "QUICK_ATTACK",
+     "FLAME_WHEEL"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 215,
+    "niveau": 34,
+    "attaques": [
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK",
+     "FURY_CUTTER"
+    ]
+   },
+   {
+    "n": 42,
+    "niveau": 36,
+    "attaques": [
+     "LEECH_LIFE",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 82,
+    "niveau": 34,
+    "attaques": [
+     "THUNDERSHOCK",
+     "SONICBOOM",
+     "THUNDER_WAVE",
+     "SWIFT"
+    ]
+   },
+   {
+    "n": 93,
+    "niveau": 35,
+    "attaques": [
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 64,
+    "niveau": 35,
+    "attaques": [
+     "DISABLE",
+     "PSYBEAM",
+     "RECOVER",
+     "FUTURE_SIGHT"
+    ]
+   },
+   {
+    "n": 160,
+    "niveau": 38,
+    "attaques": [
+     "RAGE",
+     "WATER_GUN",
+     "SCARY_FACE",
+     "SLASH"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 215,
+    "niveau": 41,
+    "attaques": [
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK",
+     "FURY_CUTTER"
+    ]
+   },
+   {
+    "n": 42,
+    "niveau": 42,
+    "attaques": [
+     "LEECH_LIFE",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 82,
+    "niveau": 41,
+    "attaques": [
+     "THUNDERSHOCK",
+     "SONICBOOM",
+     "THUNDER_WAVE",
+     "SWIFT"
+    ]
+   },
+   {
+    "n": 94,
+    "niveau": 43,
+    "attaques": [
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 65,
+    "niveau": 43,
+    "attaques": [
+     "DISABLE",
+     "RECOVER",
+     "FUTURE_SIGHT",
+     "PSYCHIC_M"
+    ]
+   },
+   {
+    "n": 154,
+    "niveau": 45,
+    "attaques": [
+     "RAZOR_LEAF",
+     "POISONPOWDER",
+     "BODY_SLAM",
+     "LIGHT_SCREEN"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 215,
+    "niveau": 41,
+    "attaques": [
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK",
+     "FURY_CUTTER"
+    ]
+   },
+   {
+    "n": 42,
+    "niveau": 42,
+    "attaques": [
+     "LEECH_LIFE",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 82,
+    "niveau": 41,
+    "attaques": [
+     "THUNDERSHOCK",
+     "SONICBOOM",
+     "THUNDER_WAVE",
+     "SWIFT"
+    ]
+   },
+   {
+    "n": 94,
+    "niveau": 43,
+    "attaques": [
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 65,
+    "niveau": 43,
+    "attaques": [
+     "DISABLE",
+     "RECOVER",
+     "FUTURE_SIGHT",
+     "PSYCHIC_M"
+    ]
+   },
+   {
+    "n": 157,
+    "niveau": 45,
+    "attaques": [
+     "SMOKESCREEN",
+     "QUICK_ATTACK",
+     "FLAME_WHEEL",
+     "SWIFT"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 215,
+    "niveau": 41,
+    "attaques": [
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK",
+     "FURY_CUTTER"
+    ]
+   },
+   {
+    "n": 42,
+    "niveau": 42,
+    "attaques": [
+     "LEECH_LIFE",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 82,
+    "niveau": 41,
+    "attaques": [
+     "THUNDERSHOCK",
+     "SONICBOOM",
+     "THUNDER_WAVE",
+     "SWIFT"
+    ]
+   },
+   {
+    "n": 94,
+    "niveau": 43,
+    "attaques": [
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 65,
+    "niveau": 43,
+    "attaques": [
+     "DISABLE",
+     "RECOVER",
+     "FUTURE_SIGHT",
+     "PSYCHIC_M"
+    ]
+   },
+   {
+    "n": 160,
+    "niveau": 45,
+    "attaques": [
+     "RAGE",
+     "WATER_GUN",
+     "SCARY_FACE",
+     "SLASH"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 215,
+    "niveau": 45,
+    "attaques": [
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK",
+     "FURY_CUTTER"
+    ]
+   },
+   {
+    "n": 169,
+    "niveau": 48,
+    "attaques": [
+     "TOXIC",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 82,
+    "niveau": 45,
+    "attaques": [
+     "THUNDER",
+     "SONICBOOM",
+     "THUNDER_WAVE",
+     "SWIFT"
+    ]
+   },
+   {
+    "n": 94,
+    "niveau": 46,
+    "attaques": [
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 65,
+    "niveau": 46,
+    "attaques": [
+     "RECOVER",
+     "FUTURE_SIGHT",
+     "PSYCHIC_M",
+     "REFLECT"
+    ]
+   },
+   {
+    "n": 154,
+    "niveau": 50,
+    "attaques": [
+     "GIGA_DRAIN",
+     "BODY_SLAM",
+     "LIGHT_SCREEN",
+     "SAFEGUARD"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 215,
+    "niveau": 45,
+    "attaques": [
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK",
+     "FURY_CUTTER"
+    ]
+   },
+   {
+    "n": 169,
+    "niveau": 48,
+    "attaques": [
+     "TOXIC",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 82,
+    "niveau": 45,
+    "attaques": [
+     "THUNDER",
+     "SONICBOOM",
+     "THUNDER_WAVE",
+     "SWIFT"
+    ]
+   },
+   {
+    "n": 94,
+    "niveau": 46,
+    "attaques": [
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 65,
+    "niveau": 46,
+    "attaques": [
+     "RECOVER",
+     "FUTURE_SIGHT",
+     "PSYCHIC_M",
+     "REFLECT"
+    ]
+   },
+   {
+    "n": 157,
+    "niveau": 50,
+    "attaques": [
+     "SMOKESCREEN",
+     "QUICK_ATTACK",
+     "FIRE_BLAST",
+     "SWIFT"
+    ]
+   }
+  ],
+  [
+   {
+    "n": 215,
+    "niveau": 45,
+    "attaques": [
+     "QUICK_ATTACK",
+     "SCREECH",
+     "FAINT_ATTACK",
+     "FURY_CUTTER"
+    ]
+   },
+   {
+    "n": 169,
+    "niveau": 48,
+    "attaques": [
+     "TOXIC",
+     "BITE",
+     "CONFUSE_RAY",
+     "WING_ATTACK"
+    ]
+   },
+   {
+    "n": 82,
+    "niveau": 45,
+    "attaques": [
+     "THUNDER",
+     "SONICBOOM",
+     "THUNDER_WAVE",
+     "SWIFT"
+    ]
+   },
+   {
+    "n": 94,
+    "niveau": 46,
+    "attaques": [
+     "MEAN_LOOK",
+     "CURSE",
+     "SHADOW_BALL",
+     "CONFUSE_RAY"
+    ]
+   },
+   {
+    "n": 65,
+    "niveau": 46,
+    "attaques": [
+     "RECOVER",
+     "FUTURE_SIGHT",
+     "PSYCHIC_M",
+     "REFLECT"
+    ]
+   },
+   {
+    "n": 160,
+    "niveau": 50,
+    "attaques": [
+     "SURF",
+     "RAIN_DANCE",
+     "SLASH",
+     "SCREECH"
+    ]
+   }
+  ]
+ ]
+}
