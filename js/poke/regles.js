@@ -499,6 +499,8 @@
       classesDresseur: function () { return W.POKE_GEN3_CLASSES || null; },
       rival: function () { return W.POKE_GEN3_RIVAL || null; },
       dresseurFinal: function () { return W.POKE_GEN3_STEVEN || null; },
+      talentsActifs: function () { return true; },
+      tenus: function () { return W.POKE_GEN3_TENUS || W.POKE_GEN2_TENUS; },
       objetsTable: function () { return W.POKE_GEN3_OBJETS || null; },
       errants: function () { return W.POKE_GEN3_ERRANTS || null; },
       mythique: function () { return { n: 385, niveau: 30, lieu: "mossdeep-space-center" }; },
@@ -767,6 +769,7 @@
     rival: function () { return jeu().rival ? jeu().rival() : null; },
     dresseurFinal: function () { return jeu().dresseurFinal ? jeu().dresseurFinal() : null; },
     tenus: function () { return jeu().tenus ? jeu().tenus() : null; },
+    talentsActifs: function () { return jeu().talentsActifs ? jeu().talentsActifs() : false; },
     objetsTable: function () { return jeu().objetsTable ? jeu().objetsTable() : null; },
     // ═══════════════════════════════════════════════════════════════════════
     //  UN OBJET SE NOMME PAR LA PORTE   [20/08/2026]

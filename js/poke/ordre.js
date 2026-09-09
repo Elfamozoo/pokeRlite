@@ -206,6 +206,7 @@
     "js/poke/gen3/especes.js",
     "js/poke/gen3/natures.js",
     "js/poke/gen3/talents.js",
+    "js/poke/gen3/objets-tenus.js",
     "js/poke/gen3/dresseurs.js",
     "js/poke/gen3/classes.js",
     "js/poke/gen3/equipes.js",
