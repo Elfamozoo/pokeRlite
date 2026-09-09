@@ -981,7 +981,10 @@
     return null;
   }
 
-  function effacer() { try { W.localStorage.removeItem(CLE); } catch (e) {} }
+  function effacer() {
+    try { W.localStorage.removeItem(CLE); } catch (e) {}
+    try { W.localStorage.removeItem(CLE_USINE); } catch (e) {}
+  }
 
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1217,6 +1220,109 @@
     return true;
   }
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  USINE DE COMBAT (BATTLE FACTORY — HOENN ÉMERAUDE)  [09/09/2026]
+  // ═══════════════════════════════════════════════════════════════════════════
+  var CLE_USINE = "poke_usine";
+
+  function usineVide() {
+    return {
+      pco: 0,
+      record: 0,
+      symboles: { argent: false, or: false },
+      session: null,
+    };
+  }
+
+  function usineLire() {
+    try {
+      var brut = W.localStorage.getItem(CLE_USINE);
+      if (!brut) return usineVide();
+      var u = JSON.parse(brut);
+      if (!u || typeof u !== "object") return usineVide();
+      var def = usineVide(), k;
+      for (k in def) {
+        if (!(k in u)) u[k] = def[k];
+      }
+      if (!u.symboles) u.symboles = { argent: false, or: false };
+      return u;
+    } catch (e) {
+      return usineVide();
+    }
+  }
+
+  function usineEcrire(data) {
+    try {
+      if (!data || typeof data !== "object") return false;
+      W.localStorage.setItem(CLE_USINE, JSON.stringify(data));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function usineEffacer() {
+    try { W.localStorage.removeItem(CLE_USINE); } catch (e) {}
+  }
+
+  function ajouterPCo(n) {
+    var u = usineLire();
+    var ajout = typeof n === "number" ? Math.max(0, Math.floor(n)) : 0;
+    u.pco = (u.pco || 0) + ajout;
+    usineEcrire(u);
+    return u.pco;
+  }
+
+  function depenserPCo(n) {
+    var u = usineLire();
+    var cout = typeof n === "number" ? Math.max(0, Math.floor(n)) : 0;
+    if ((u.pco || 0) < cout) return false;
+    u.pco -= cout;
+    usineEcrire(u);
+    return true;
+  }
+
+  function enregistrerRecordUsine(victoires) {
+    var u = usineLire();
+    var v = typeof victoires === "number" ? victoires : 0;
+    if (v > (u.record || 0)) {
+      u.record = v;
+      usineEcrire(u);
+    }
+    return u.record;
+  }
+
+  function debloquerSymboleUsine(type) {
+    if (type !== "argent" && type !== "or") return false;
+    var u = usineLire();
+    if (!u.symboles) u.symboles = { argent: false, or: false };
+    u.symboles[type] = true;
+    usineEcrire(u);
+    return true;
+  }
+
+  function sac() {
+    var p = lire();
+    return p.sac || {};
+  }
+
+  function ajouterObjet(cleObjet, n) {
+    if (!cleObjet) return 0;
+    var qte = typeof n === "number" && n > 0 ? Math.floor(n) : 1;
+    var p = lire();
+    p.sac = p.sac || {};
+    p.sac[cleObjet] = (p.sac[cleObjet] || 0) + qte;
+    ecrire(p);
+
+    var v = voyageLire();
+    if (v && v.partie) {
+      v.partie.sac = v.partie.sac || {};
+      v.partie.sac[cleObjet] = (v.partie.sac[cleObjet] || 0) + qte;
+      voyageEcrire(v.partie, { source: v.graine, etat: v.etat, tirages: v.tirages }, v.journal);
+    }
+    return p.sac[cleObjet];
+  }
+
   W.PokeProgression = {
     CLE: CLE,
     GARDES_MAX: GARDES_MAX,
@@ -1258,5 +1364,15 @@
     calendrierDefis: calendrierDefis,
     meilleurJour: meilleurJour,
     effacer: effacer,
+    CLE_USINE: CLE_USINE,
+    usineLire: usineLire,
+    usineEcrire: usineEcrire,
+    usineEffacer: usineEffacer,
+    ajouterPCo: ajouterPCo,
+    depenserPCo: depenserPCo,
+    enregistrerRecordUsine: enregistrerRecordUsine,
+    debloquerSymboleUsine: debloquerSymboleUsine,
+    sac: sac,
+    ajouterObjet: ajouterObjet,
   };
 })(typeof window !== "undefined" ? window : globalThis);

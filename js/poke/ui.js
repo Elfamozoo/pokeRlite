@@ -233,6 +233,12 @@
     //  endroit où le leur dire — le signalement partait dans le vide.
     neuf: { fr: "NOUVEAUTÉS", en: "WHAT'S NEW" },
     cercle: { fr: "MON CERCLE", en: "MY CIRCLE" },
+    usineTitre: { fr: "Zone de Combat", en: "Battle Frontier" },
+    usineHall: { fr: "Usine de Combat", en: "Battle Factory" },
+    usinePrets: { fr: "Sélectionnez 3 Pokémon de prêt", en: "Select 3 Rental Pokémon" },
+    usineEchange: { fr: "Échange de Pokémon", en: "Swap Pokémon" },
+    usineBoutique: { fr: "Boutique PCo", en: "Battle Shop" },
+    usinePco: { fr: "PCo", en: "BP" },
     // 💬 L'invitation Discord du soir (20→27/08) — voir `ANNONCE_DISCORD`.
     annonceTitre: { fr: "Un bug ? Une idée ? Viens le dire.", en: "A bug? An idea? Come and say it." },
     annonceDit: {
@@ -3736,6 +3742,7 @@
           (voyageEnAttente ? '<span class="pkdx-touche-note">' + esc(T("reprendreNeuf")) + "</span>" : "") +
           "</button>" +
         '<button type="button" class="pkdx-touche" id="pk-defi">' + T("defi") + "</button>" +
+        '<button type="button" class="pkdx-touche" id="pk-usine">' + T("usineTitre") + "</button>" +
         // ═══════════════════════════════════════════════════════════════════
         //  🔴 [20/08, Angel sur Discord] « LES RUNS NE SONT PAS SAUVEGARDÉES
         //     ENTRE LES APPAREILS ? J'EN AVAIS COMMENCÉ UNE HIER, LÀ JE DOIS
@@ -3977,6 +3984,15 @@
       son("PRESS_AB");
       ecranDefi();
     });
+    var boutonUsine = racine.querySelector("#pk-usine");
+    if (boutonUsine) {
+      boutonUsine.addEventListener("click", function () {
+        son("PRESS_AB");
+        if (W.PokeUIUsine && W.PokeUIUsine.ouvrirHall) {
+          W.PokeUIUsine.ouvrirHall({ retour: accueil });
+        }
+      });
+    }
     racine.querySelector("#pk-compte").addEventListener("click", function () {
       son("PRESS_AB");
       W.location.href = "index.html?go=compte&retour=poke";

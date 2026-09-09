@@ -204,6 +204,11 @@
     "js/poke/gen3/obtentions.js",
     "js/poke/gen3/attaques.js",
     "js/poke/gen3/especes.js",
+    "js/poke/gen3/natures.js",
+    "js/poke/gen3/talents.js",
+    "js/poke/gen3/objets-tenus.js",
+    "js/poke/gen3/sets-usine.js",
+    "js/poke/gen3/usine.js",
     "js/poke/gen3/dresseurs.js",
     "js/poke/gen3/classes.js",
     "js/poke/gen3/equipes.js",
@@ -215,6 +220,7 @@
 
   var GEN3_ECRANS = [
     "js/poke/gen3/sons.js",
+    "js/poke/ui-usine.js",
   ];
 
   function surLeBanc() {

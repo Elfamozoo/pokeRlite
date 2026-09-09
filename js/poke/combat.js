@@ -85,9 +85,191 @@
   function effetTenu(p) {
     var t = TENUS();
     if (!t || !p || !p.objet) return null;
-    var O = (W.PokeRegles && W.PokeRegles.objetsTable && W.PokeRegles.objetsTable()) || null;
+    if (typeof p.objet === "string" && p.objet.indexOf("HELD_") === 0) return p.objet;
+    var O = (W.PokeRegles && W.PokeRegles.objetsTable && W.PokeRegles.objetsTable()) || W.POKE_GEN3_OBJETS || W.POKE_GEN2_OBJETS || null;
     var o = O && O[p.objet];
-    return o ? o.tenu : null;
+    if (o && o.tenu) return o.tenu;
+    if (t.leftovers && p.objet === "LEFTOVERS") return t.leftovers.effet;
+    if (t.choiceBand && p.objet === "CHOICE_BAND") return t.choiceBand.effet;
+    if (t.whiteHerb && p.objet === "WHITE_HERB") return t.whiteHerb.effet;
+    if (p.objet === "LUM_BERRY") return "HELD_LUM_BERRY";
+    return null;
+  }
+
+  function talentsSontActifs(e) {
+    if (e && e.talentsActifs !== undefined) return e.talentsActifs;
+    return W.PokeRegles && W.PokeRegles.talentsActifs ? W.PokeRegles.talentsActifs() : false;
+  }
+
+  function talentDe(p, e) {
+    if (!p || !talentsSontActifs(e)) return null;
+    if (p.talent !== undefined) return p.talent;
+    if (W.PokeTalents && W.PokeTalents.de) return W.PokeTalents.de(p);
+    var esp = ESP();
+    return (esp && esp[p.n] && esp[p.n].talent) || null;
+  }
+
+  function airLockActif(e) {
+    if (!talentsSontActifs(e) || !e) return false;
+    var pJ = e.joueur && actif(e.joueur), pA = e.adverse && actif(e.adverse);
+    var tJ = vivant(pJ) && talentDe(pJ, e);
+    var tA = vivant(pA) && talentDe(pA, e);
+    return tJ === "AIR_LOCK" || tJ === "CLOUD_NINE" || tA === "AIR_LOCK" || tA === "CLOUD_NINE";
+  }
+
+  function verifierHerbeBlanche(p, cote, ev, quiCote) {
+    var t = TENUS();
+    if (!t || !vivant(p) || !p.objet || !cote || !cote.paliers) return false;
+    var eT = effetTenu(p);
+    if (eT === "HELD_WHITE_HERB" || (t.whiteHerb && eT === t.whiteHerb.effet)) {
+      var aNeg = false;
+      for (var k in cote.paliers) {
+        if (cote.paliers[k] < 0) {
+          cote.paliers[k] = 0;
+          aNeg = true;
+        }
+      }
+      if (aNeg) {
+        if (ev) ev.push({ t: "tenuHerbeBlanche", cote: quiCote, objet: p.objet, consomme: true });
+        p.objet = null;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function verifierBaieStatut(p, cote, ev, quiCote) {
+    var t = TENUS();
+    if (!t || !vivant(p) || !p.objet) return false;
+    var eT = effetTenu(p);
+    var estLum = eT === "HELD_LUM_BERRY" || eT === "HELD_HEAL_STATUS" || p.objet === "LUM_BERRY" || p.objet === "BAIE_PRUNUS";
+    if (estLum) {
+      var soinLum = false;
+      if (p.statut) {
+        p.statut = null;
+        p.statutTours = 0;
+        soinLum = true;
+      }
+      if (cote && cote.volatils && cote.volatils.confusion > 0) {
+        cote.volatils.confusion = 0;
+        soinLum = true;
+      }
+      if (soinLum) {
+        if (ev) ev.push({ t: "tenuBaiePrunus", cote: quiCote, objet: p.objet, consomme: true });
+        p.objet = null;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function entreeEnCombat(e, cote, p, ev) {
+    if (!talentsSontActifs(e) || !vivant(p) || !e) return;
+    var autreCote = cote === "joueur" ? "adverse" : "joueur";
+    var t = talentDe(p, e);
+    if (!t) return;
+
+    if (t === "TRACE") {
+      var autreMon = e[autreCote] && actif(e[autreCote]);
+      var tAutre = autreMon && vivant(autreMon) ? talentDe(autreMon, e) : null;
+      if (tAutre) {
+        p.talent = tAutre;
+        if (ev) ev.push({ t: "talentTrace", qui: cote, talent: tAutre });
+        t = tAutre;
+      }
+    }
+
+    if (t === "INTIMIDATE") {
+      var cibleMon = e[autreCote] && actif(e[autreCote]);
+      if (cibleMon && vivant(cibleMon)) {
+        var tCible = talentDe(cibleMon, e);
+        if (tCible === "CLEAR_BODY" || tCible === "WHITE_SMOKE" || tCible === "HYPER_CUTTER") {
+          if (ev) ev.push({ t: "talentBloqueBaisse", qui: cote, cible: autreCote, talent: tCible, stat: "atk" });
+        } else {
+          e[autreCote].paliers.atk = Math.max(-6, e[autreCote].paliers.atk - 1);
+          if (ev) ev.push({ t: "talentIntimidation", qui: cote, cible: autreCote });
+          verifierHerbeBlanche(cibleMon, e[autreCote], ev, autreCote);
+        }
+      }
+    } else if (t === "DRIZZLE") {
+      if (!e.meteo || e.meteo.cle !== "pluie") {
+        e.meteo = { cle: "pluie", reste: 5 };
+        if (ev) ev.push({ t: "meteo", cle: "pluie", talent: "DRIZZLE" });
+      }
+    } else if (t === "DROUGHT") {
+      if (!e.meteo || e.meteo.cle !== "zenith") {
+        e.meteo = { cle: "zenith", reste: 5 };
+        if (ev) ev.push({ t: "meteo", cle: "zenith", talent: "DROUGHT" });
+      }
+    } else if (t === "SAND_STREAM") {
+      if (!e.meteo || e.meteo.cle !== "sable") {
+        e.meteo = { cle: "sable", reste: 5 };
+        if (ev) ev.push({ t: "meteo", cle: "sable", talent: "SAND_STREAM" });
+      }
+    }
+  }
+
+  var ATTAQUES_SONORES = { ROAR: true, SUPERSONIC: true, SCREECH: true, HYPER_VOICE: true, SNORE: true };
+
+  function verifierImmuniteTalent(att, def, a, e, ev) {
+    if (!talentsSontActifs(e) || !def || !a) return false;
+    var tDef = talentDe(def, e);
+    if (!tDef) return false;
+
+    if (tDef === "LEVITATE" && a.type === "ground") {
+      if (ev) ev.push({ t: "talentImmunite", talent: "LEVITATE", type: "ground" });
+      return true;
+    }
+    if (tDef === "WONDER_GUARD" && a.puissance > 0) {
+      var eff = efficacite(a.type, typesDe(def));
+      if (eff <= 1) {
+        if (ev) ev.push({ t: "talentGardeMystik", talent: "WONDER_GUARD" });
+        return true;
+      }
+    }
+    if (tDef === "VOLT_ABSORB" && a.type === "electric") {
+      var soinVA = Math.floor(def.stats.pv / 4);
+      var avantVA = def.pv;
+      MOT().poserPv(def, def.pv + soinVA, "absorbVolt");
+      if (ev) ev.push({ t: "talentAbsorbe", talent: "VOLT_ABSORB", soin: def.pv - avantVA });
+      return true;
+    }
+    if (tDef === "WATER_ABSORB" && a.type === "water") {
+      var soinWA = Math.floor(def.stats.pv / 4);
+      var avantWA = def.pv;
+      MOT().poserPv(def, def.pv + soinWA, "absorbEau");
+      if (ev) ev.push({ t: "talentAbsorbe", talent: "WATER_ABSORB", soin: def.pv - avantWA });
+      return true;
+    }
+    if (tDef === "FLASH_FIRE" && a.type === "fire") {
+      def.volatils = def.volatils || {};
+      def.volatils.flashFire = true;
+      if (e) {
+        var cDef = (e.joueur && def === actif(e.joueur)) ? e.joueur : e.adverse;
+        if (cDef && cDef.volatils) cDef.volatils.flashFire = true;
+      }
+      if (ev) ev.push({ t: "talentTorche", talent: "FLASH_FIRE" });
+      return true;
+    }
+    if (tDef === "SOUNDPROOF" && ATTAQUES_SONORES[a.cle]) {
+      if (ev) ev.push({ t: "talentAntiBruit", talent: "SOUNDPROOF", attaque: a.cle });
+      return true;
+    }
+    return false;
+  }
+
+  var NON_CONTACT = {
+    EARTHQUAKE: true, MAGNITUDE: true, ROCK_SLIDE: true, ROCK_TOMB: true,
+    ROCK_BLAST: true, SAND_TOMB: true, MUD_SHOT: true, BARRAGE: true,
+    BONEMERANG: true, BONE_CLUB: true, BONE_RUSH: true, EGG_BOMB: true,
+    EXPLOSION: true, SELFDESTRUCT: true
+  };
+
+  function estContact(a) {
+    if (!a || !a.puissance) return false;
+    if (a.contact !== undefined) return !!a.contact;
+    if (NON_CONTACT[a.cle]) return false;
+    return !estSpecial(a.type);
   }
 
   var SPE_ATK = function () { return W.PokeRegles ? W.PokeRegles.speAtk() : "spe"; };
@@ -230,6 +412,14 @@
     //    type n'appartient à personne.
     var eff = ctx.sansType ? 1 : efficacite(a.type, typesDef);
     if (eff === 0) return { degats: 0, efficacite: 0, critique: false };
+    if (talentsSontActifs(ctx)) {
+      var tDefImm = talentDe(def, ctx);
+      if (tDefImm === "LEVITATE" && a.type === "ground") return { degats: 0, efficacite: 0, critique: false };
+      if (tDefImm === "WONDER_GUARD" && eff <= 1) return { degats: 0, efficacite: eff, critique: false };
+      if (tDefImm === "VOLT_ABSORB" && a.type === "electric") return { degats: 0, efficacite: 0, critique: false };
+      if (tDefImm === "WATER_ABSORB" && a.type === "water") return { degats: 0, efficacite: 0, critique: false };
+      if (tDefImm === "FLASH_FIRE" && a.type === "fire") return { degats: 0, efficacite: 0, critique: false };
+    }
 
     // ⚠️ PUISSANCE DIVISE LE TAUX DE CRITIQUE AU LIEU DE LE MULTIPLIER. C'est
     //    le bug le plus célèbre de la première génération, et on le garde :
@@ -248,7 +438,11 @@
     //    CRITIQUE POSSIBLE. Le consommer pour rien décalerait la graine d'un
     //    cran à chaque Prescience — un coup différé coûte UN tirage, celui de
     //    l'aléa des dégâts, et c'est ce que sa table déclare.
-    var critique = ctx.sansCritique ? false : h.brut() < tauxCrit;
+    var critique = ctx.sansCritique ? false : (h && h.brut ? h.brut() < tauxCrit : false);
+    if (talentsSontActifs(ctx)) {
+      var tDefC = talentDe(def, ctx);
+      if (tDefC === "BATTLE_ARMOR" || tDefC === "SHELL_ARMOR") critique = false;
+    }
     var spec = estSpecial(a.type);
 
     // Un coup critique ignore les changements de statistiques, des deux côtés.
@@ -261,8 +455,28 @@
     var A = att.stats[cleA];
     var D = def.stats[cleD];
     if (!critique) {
-      A = Math.floor(A * facteurPalier(ctx.attPaliers[cleA]));
-      D = Math.floor(D * facteurPalier(ctx.defPaliers[cleD]));
+      A = Math.floor(A * facteurPalier(ctx.attPaliers && ctx.attPaliers[cleA] !== undefined ? ctx.attPaliers[cleA] : 0));
+      D = Math.floor(D * facteurPalier(ctx.defPaliers && ctx.defPaliers[cleD] !== undefined ? ctx.defPaliers[cleD] : 0));
+    }
+    if (talentsSontActifs(ctx)) {
+      var tAtt = talentDe(att, ctx);
+      var tDefS = talentDe(def, ctx);
+      if (!spec && (tAtt === "HUGE_POWER" || tAtt === "PURE_POWER")) {
+        A = A * 2;
+      }
+      if (tAtt === "GUTS" && att.statut) {
+        A = Math.floor(A * 1.5);
+      }
+      var PINCH = { OVERGROW: "grass", BLAZE: "fire", TORRENT: "water", SWARM: "bug" };
+      if (PINCH[tAtt] && PINCH[tAtt] === a.type && att.pv <= Math.floor(att.stats.pv / 3)) {
+        A = Math.floor(A * 1.5);
+      }
+      if (att.volatils && att.volatils.flashFire && a.type === "fire") {
+        A = Math.floor(A * 1.5);
+      }
+      if (tDefS === "THICK_FAT" && (a.type === "fire" || a.type === "ice")) {
+        A = Math.max(1, Math.floor(A / 2));
+      }
     }
     // 🔴 LE RENFORT DE TYPE. ×1,1 quand l'objet tenu correspond au type du
     //    coup — c'est la valeur du ROM, et elle s'applique à l'ATTAQUE, pas au
@@ -270,18 +484,21 @@
     var _tn = TENUS();
     if (_tn) {
       var _e = effetTenu(att);
-      if (_e && _tn.boost[_e] === a.type) A = Math.floor(A * _tn.boostFacteur);
+      if (_e && _tn.boost && _tn.boost[_e] === a.type) A = Math.floor(A * _tn.boostFacteur);
+      if (!spec && (_e === "HELD_CHOICE_BAND" || (_tn.choiceBand && _e === _tn.choiceBand.effet))) {
+        A = Math.floor(A * 1.5);
+      }
     }
     // 🔴 LA MÉTÉO PÈSE SUR LE COUP, pas sur la créature : la pluie double
     //    presque l'Eau et étouffe le Feu, le zénith fait l'inverse. C'est un
     //    multiplicateur fixe, sans un jet.
     var _nm = NEUFS();
-    if (_nm && ctx.meteo) {
+    if (_nm && ctx.meteo && !ctx.airLock && !(talentsSontActifs(ctx) && airLockActif(ctx.e || ctx))) {
       var _md = _nm.meteoDegats[ctx.meteo];
       if (_md && _md[a.type]) A = Math.floor(A * _md[a.type]);
     }
     // La brûlure coupe l'Attaque de moitié — physique uniquement.
-    if (!spec && att.statut === "brulure") A = Math.floor(A / 2);
+    if (!spec && att.statut === "brulure" && (!talentsSontActifs(ctx) || talentDe(att, ctx) !== "GUTS")) A = Math.floor(A / 2);
     // 🔴 LES DEUX MURS DOUBLENT LA DÉFENSE VISÉE, chacun sur sa moitié du jeu :
     //    Protection contre le physique, Mur Lumière contre le spécial. Ils
     //    s'annonçaient sans rien changer — deux tours donnés pour rien.
@@ -315,7 +532,7 @@
     // L'aléa d'origine : entre 217 et 255 deux cent cinquante-cinquièmes. Un
     // même coup fait donc entre 85 % et 100 % de sa valeur, et ça suffit à
     // rendre un combat incertain sans le rendre injuste.
-    if (d > 1) d = Math.floor((d * h.entre(217, 255)) / 255);
+    if (d > 1) d = Math.floor((d * (h && h.entre ? h.entre(217, 255) : 236)) / 255);
     // ═══════════════════════════════════════════════════════════════════════
     // 🔴 LES SERMENTS S'APPLIQUENT APRÈS L'ALÉA, ET C'EST VOULU. Posés avant,
     //    ils passeraient dans deux arrondis vers le bas au lieu d'un, et un
@@ -399,7 +616,11 @@
     c.volatils = {};
     if (o.annonce) (ev || []).push(o.annonce);
     piegesALEntree(e, quiCote, ev || []);
-    return c.equipe[index];
+    var p = c.equipe[index];
+    if (talentsSontActifs(e)) {
+      entreeEnCombat(e, quiCote, p, ev || []);
+    }
+    return p;
   }
 
   //  Ce que le terrain fait payer à celui qui entre. En 1996 : rien.
@@ -485,6 +706,11 @@
       journal: [],
     };
     e.joueur.participants[e.joueur.actif] = true;
+    if (talentsSontActifs(e)) {
+      var evInit = o.ev || e.journal;
+      entreeEnCombat(e, "joueur", actif(e.joueur), evInit);
+      entreeEnCombat(e, "adverse", actif(e.adverse), evInit);
+    }
     return e;
   }
 
@@ -645,19 +871,31 @@
   //  ⚠️ ZÉRO TIRAGE : les Restes sont une fraction, la baie est un SEUIL sur
   //     les points de vie. Rien ici ne se joue aux dés.
   // ═══════════════════════════════════════════════════════════════════════════
-  function objetFinDeTour(p, ev, quiCote) {
+  function objetFinDeTour(p, ev, quiCote, cote) {
     var t = TENUS();
     if (!t || !vivant(p) || !p.objet) return;
     var e = effetTenu(p);
     if (!e) return;
-    if (e === t.leftovers.effet && p.pv < p.stats.pv) {
-      var soin = Math.max(1, Math.floor(p.stats.pv / t.leftovers.part));
+    if ((e === "HELD_LEFTOVERS" || (t.leftovers && e === t.leftovers.effet)) && p.pv < p.stats.pv) {
+      var soin = Math.max(1, Math.floor(p.stats.pv / (t.leftovers ? t.leftovers.part : 16)));
       var avant = p.pv;
       MOT().poserPv(p, p.pv + soin, "restes");
       ev.push({ t: "tenuSoigne", cote: quiCote, objet: p.objet, soin: p.pv - avant, pv: p.pv });
       return;
     }
-    var baie = t.baies[e];
+    if (verifierHerbeBlanche(p, cote, ev, quiCote)) return;
+    if (verifierBaieStatut(p, cote, ev, quiCote)) return;
+    if (e === "HELD_SITRUS_BERRY" || (t.baies && t.baies.HELD_SITRUS_BERRY && e === "HELD_SITRUS_BERRY")) {
+      var sitrus = (t.baies && t.baies.HELD_SITRUS_BERRY) || { soigne: 30, seuil: 0.5 };
+      if (p.pv <= Math.floor(p.stats.pv * sitrus.seuil) && p.pv < p.stats.pv) {
+        var aSit = p.pv;
+        MOT().poserPv(p, p.pv + sitrus.soigne, "baie");
+        ev.push({ t: "tenuSoigne", cote: quiCote, objet: p.objet, soin: p.pv - aSit, pv: p.pv, consomme: true });
+        p.objet = null;
+        return;
+      }
+    }
+    var baie = t.baies && t.baies[e];
     if (baie && p.pv <= Math.floor(p.stats.pv * baie.seuil)) {
       var a2 = p.pv;
       MOT().poserPv(p, p.pv + baie.soigne, "baie");
@@ -684,7 +922,7 @@
         }
       }
     }
-    var cure = t.soins[e];
+    var cure = t.soins && t.soins[e];
     if (cure && p.statut && cure.indexOf(p.statut) >= 0) {
       var quoi = p.statut;
       p.statut = null;
@@ -706,9 +944,13 @@
   //     tempête ne subit pas ensuite son poison, comme dans le jeu d'origine.
   // ═══════════════════════════════════════════════════════════════════════════
   function usureMeteo(e, p, ev, quiCote) {
+    if (airLockActif(e)) return;
+    if (!e || !e.meteo || !vivant(p)) return;
     var n = NEUFS();
-    if (!n || !e.meteo || !vivant(p)) return;
-    var u = n.meteoUsure[e.meteo.cle];
+    var u = (n && n.meteoUsure && n.meteoUsure[e.meteo.cle]);
+    if (!u && e.meteo.cle === "grele") {
+      u = { epargne: ["ice"], part: 16 };
+    }
     if (!u) return;
     var t = typesDe(p);
     for (var i = 0; i < t.length; i++) if (u.epargne.indexOf(t[i]) >= 0) return;
@@ -729,8 +971,8 @@
 
   function usureFinDeTour(p, ev, quiCote, cote, autre) {
     if (!vivant(p)) return;
-    objetFinDeTour(p, ev, quiCote);
-    if (cote && cote.volatils.graine) {
+    objetFinDeTour(p, ev, quiCote, cote);
+    if (cote && cote.volatils && cote.volatils.graine) {
       var drain = Math.max(1, Math.floor(p.stats.pv / 16));
       MOT().poserPv(p, p.pv - drain, "vampigraine");
       ev.push({ t: "graineDraine", cote: quiCote, degats: drain });
@@ -1707,6 +1949,8 @@
       return;
     }
 
+    if (!viseSoi && verifierImmuniteTalent(pA, pD, a, e, ev)) return;
+
     if (effetSpecial(e, source, cible, pA, pD, quiA, quiD, faux, a, ev, h)) return;
     // 🔴 LA MÊME QUEUE QUE `assaut`, ET C'EST TOUT L'OBJET DE L'EXTRACTION :
     //    statuts, paliers, peur, confusion, coups multiples, vol de vie,
@@ -1786,22 +2030,60 @@
     ev.push({ t: "ko", cote: quiCote });
   }
 
-  function poserStatut(cible, statut, ev, quiCote, h, coteCible) {
+  function poserStatut(cible, statut, ev, quiCote, h, coteCible, source, e) {
+    if (talentsSontActifs(e)) {
+      var tCible = talentDe(cible, e);
+      if (tCible === "IMMUNITY" && (statut === "poison" || statut === "poisonGrave")) {
+        if (ev) ev.push({ t: "talentImmuniteStatut", qui: quiCote, talent: "IMMUNITY", statut: statut });
+        return;
+      }
+      if (tCible === "LIMBER" && statut === "para") {
+        if (ev) ev.push({ t: "talentImmuniteStatut", qui: quiCote, talent: "LIMBER", statut: statut });
+        return;
+      }
+      if (tCible === "WATER_VEIL" && statut === "brulure") {
+        if (ev) ev.push({ t: "talentImmuniteStatut", qui: quiCote, talent: "WATER_VEIL", statut: statut });
+        return;
+      }
+      if ((tCible === "INSOMNIA" || tCible === "VITAL_SPIRIT") && statut === "sommeil") {
+        if (ev) ev.push({ t: "talentImmuniteStatut", qui: quiCote, talent: tCible, statut: statut });
+        return;
+      }
+      if (tCible === "MAGMA_ARMOR" && statut === "gel") {
+        if (ev) ev.push({ t: "talentImmuniteStatut", qui: quiCote, talent: "MAGMA_ARMOR", statut: statut });
+        return;
+      }
+    }
     // 🔴 RUNE PROTECT REFUSE LE STATUT, ET ELLE LE DIT. Sans cette ligne, la
     //    protection s'annonçait au tour où on la pose et ne protégeait de rien
     //    — un coup annoncé qui ne fait rien, exactement ce que ce dossier
     //    traque partout ailleurs.
     var _n = NEUFS();
-    if (_n && coteCible && coteCible.volatils.rune > 0) {
-      ev.push({ t: "runeProtege", cote: quiCote, statut: statut });
+    if (_n && coteCible && coteCible.volatils && coteCible.volatils.rune > 0) {
+      if (ev) ev.push({ t: "runeProtege", cote: quiCote, statut: statut });
       return;
     }
     // 🔴 Un Pokémon n'a qu'un statut à la fois — poser le second effacerait le
     //    premier sans le dire, et le joueur lirait deux annonces pour un effet.
-    if (cible.statut) { ev.push({ t: "statutRefuse", cote: quiCote, deja: cible.statut }); return; }
+    if (cible.statut) {
+      if (ev) ev.push({ t: "statutRefuse", cote: quiCote, deja: cible.statut });
+      return;
+    }
     cible.statut = statut;
-    cible.statutTours = statut === "sommeil" ? h.entre(1, 7) : statut === "poisonGrave" ? 0 : 0;
-    ev.push({ t: "statut", cote: quiCote, statut: statut });
+    cible.statutTours = statut === "sommeil" ? (h && h.entre ? h.entre(1, 7) : 3) : 0;
+    if (ev) ev.push({ t: "statut", cote: quiCote, statut: statut });
+    verifierBaieStatut(cible, coteCible, ev, quiCote);
+
+    // Synchronize
+    if (talentsSontActifs(e) && source && vivant(source) && !source.statut) {
+      var tSyn = talentDe(cible, e);
+      if (tSyn === "SYNCHRONIZE" && (statut === "para" || statut === "poison" || statut === "poisonGrave" || statut === "brulure")) {
+        var quiSource = quiCote === "joueur" ? "adverse" : "joueur";
+        var coteSource = e ? e[quiSource] : null;
+        if (ev) ev.push({ t: "talentSynchro", talent: "SYNCHRONIZE", statut: statut, cible: quiSource });
+        poserStatut(source, statut, ev, quiSource, h, coteSource, null, e);
+      }
+    }
   }
 
   function bougerPalier(c, stat, delta, ev, quiCote) {
@@ -2178,6 +2460,11 @@
       return ev;
     }
 
+    if (!viseSoi && verifierImmuniteTalent(pA, pD, a, e, ev)) {
+      seSacrifier(a, pA, ev, quiA);
+      return ev;
+    }
+
     // 🔴 LES EFFETS QUI REMPLACENT L'ATTAQUE PASSENT AVANT LES DÉGÂTS. Vingt et
     //    une attaques tombaient jusqu'ici dans le vide : voir `effetSpecial`.
     if (effetSpecial(e, source, cible, pA, pD, quiA, quiD, mv, a, ev, h)) return ev;
@@ -2364,16 +2651,18 @@
         if (pA.pv !== avant) ev.push({ t: "vol", cote: quiA, soin: pA.pv - avant });
       }
       if (a.effet === "RECOIL_EFFECT") {
-        // 🔴 LUTTE EST À PART, ET LE ROM LE DIT : un quart pour Bélier,
-        //    Damoclès et Sacrifice, LA MOITIÉ pour Lutte. Les données ne
-        //    distinguent pas les deux — elles portent la même clé —, donc on
-        //    nomme l'attaque ici, une seule fois, plutôt que d'inventer une
-        //    clé qui n'existe pas dans le ROM.
-        var part = mv.cle === "STRUGGLE" ? 2 : 4;
-        var recul = Math.max(1, Math.floor(r.degats / part));
-        MOT().poserPv(pA, pA.pv - recul, "contrecoup");
-        ev.push({ t: "contrecoup", cote: quiA, degats: recul });
-        if (!vivant(pA)) ev.push({ t: "ko", cote: quiA });
+        if (!talentsSontActifs(e) || talentDe(pA, e) !== "ROCK_HEAD" || mv.cle === "STRUGGLE") {
+          // 🔴 LUTTE EST À PART, ET LE ROM LE DIT : un quart pour Bélier,
+          //    Damoclès et Sacrifice, LA MOITIÉ pour Lutte. Les données ne
+          //    distinguent pas les deux — elles portent la même clé —, donc on
+          //    nomme l'attaque ici, une seule fois, plutôt que d'inventer une
+          //    clé qui n'existe pas dans le ROM.
+          var part = mv.cle === "STRUGGLE" ? 2 : 4;
+          var recul = Math.max(1, Math.floor(r.degats / part));
+          MOT().poserPv(pA, pA.pv - recul, "contrecoup");
+          ev.push({ t: "contrecoup", cote: quiA, degats: recul });
+          if (!vivant(pA)) ev.push({ t: "ko", cote: quiA });
+        }
       }
       // La recharge se pose ICI, après les dégâts : si la cible est tombée,
       // la ligne juste en dessous sort avant et l'Ultralaser ne coûte rien.
@@ -2452,7 +2741,7 @@
         immun = true;
       }
       if (immun) ev.push({ t: "statutImmune", cote: quiD, statut: st[0] });
-      else poserStatut(pD, st[0], ev, quiD, h, cible);
+      else poserStatut(pD, st[0], ev, quiD, h, cible, pA, e);
     }
     var pal = palierDe(a.effet);
     if (pal && h.chance(pal[2])) {
@@ -2510,7 +2799,33 @@
     if (a.effet === "CONFUSION_EFFECT" ||
         (a.effet === "CONFUSION_SIDE_EFFECT" && h.chance(10))) {
       if (abrite) ev.push({ t: "cloneTient", cote: quiD });
-      else if (!cible.volatils.confusion) { cible.volatils.confusion = h.entre(2, 5); ev.push({ t: "confusion", cote: quiD }); }
+      else if (!cible.volatils.confusion) {
+        if (talentsSontActifs(e) && talentDe(pD, e) === "OWN_TEMPO") {
+          ev.push({ t: "talentBloqueConfusion", qui: quiD, talent: "OWN_TEMPO" });
+        } else {
+          cible.volatils.confusion = h.entre(2, 5);
+          ev.push({ t: "confusion", cote: quiD });
+          verifierBaieStatut(pD, cible, ev, quiD);
+        }
+      }
+    }
+    if (talentsSontActifs(e) && a.puissance > 0 && estContact(a) && !abrite && vivant(pD) && vivant(pA)) {
+      var tDefCont = talentDe(pD, e);
+      if (tDefCont === "ROUGH_SKIN") {
+        var dmgRS = Math.max(1, Math.floor(pA.stats.pv / 16));
+        MOT().poserPv(pA, pA.pv - dmgRS, "peauDure");
+        ev.push({ t: "talentPeauDure", qui: quiD, cible: quiA, degats: dmgRS });
+        if (!vivant(pA)) ev.push({ t: "ko", cote: quiA });
+      }
+      if (vivant(pA) && !pA.statut) {
+        if (tDefCont === "STATIC" && h.entier(100) < 30) {
+          poserStatut(pA, "para", ev, quiA, h, source, pD, e);
+        } else if (tDefCont === "POISON_POINT" && h.entier(100) < 30 && typesDe(pA).indexOf("poison") < 0) {
+          poserStatut(pA, "poison", ev, quiA, h, source, pD, e);
+        } else if (tDefCont === "FLAME_BODY" && h.entier(100) < 30 && typesDe(pA).indexOf("fire") < 0) {
+          poserStatut(pA, "brulure", ev, quiA, h, source, pD, e);
+        }
+      }
     }
     // 🔴 Le relevé des effets non traités ne doit accuser QUE ce qui ne fait
     //    rien. Un effet traité plus haut dans cette fonction doit être déclaré
@@ -3265,6 +3580,37 @@
     if (ent.tours <= 0) { cote.volatils.entrave = null; ev.push({ t: "finEntrave", cote: qui }); }
   }
 
+  function talentsFinDeTour(e, quiCote, cote, ev, h) {
+    if (!cote || !vivant(actif(cote))) return;
+    var p = actif(cote);
+    var t = talentDe(p, e);
+    if (!t) return;
+
+    if (t === "SPEED_BOOST") {
+      if (cote.paliers.vit < 6) {
+        cote.paliers.vit = Math.min(6, cote.paliers.vit + 1);
+        if (ev) ev.push({ t: "talentTurbo", qui: quiCote, talent: "SPEED_BOOST", vit: cote.paliers.vit });
+      }
+    } else if (t === "RAIN_DISH") {
+      if (e.meteo && e.meteo.cle === "pluie" && !airLockActif(e) && p.pv < p.stats.pv) {
+        var soinRD = Math.max(1, Math.floor(p.stats.pv / 16));
+        var avantRD = p.pv;
+        MOT().poserPv(p, p.pv + soinRD, "cuvette");
+        if (ev) ev.push({ t: "talentCuvette", qui: quiCote, talent: "RAIN_DISH", soin: p.pv - avantRD });
+      }
+    } else if (t === "SHED_SKIN") {
+      if (p.statut) {
+        var rollSS = h && h.entier ? h.entier(3) : 0;
+        if (rollSS === 0) {
+          var statutGueri = p.statut;
+          p.statut = null;
+          p.statutTours = 0;
+          if (ev) ev.push({ t: "talentMue", qui: quiCote, talent: "SHED_SKIN", statut: statutGueri });
+        }
+      }
+    }
+  }
+
   function finDeTour(e, ev, h) {
     decompterEtreinte(e.joueur, "adverse", ev);
     decompterEtreinte(e.adverse, "joueur", ev);
@@ -3281,6 +3627,10 @@
     if (vivant(actif(e.adverse))) usureMeteo(e, actif(e.adverse), ev, "adverse");
     if (vivant(actif(e.joueur))) usureFinDeTour(actif(e.joueur), ev, "joueur", e.joueur, e.adverse);
     if (vivant(actif(e.adverse))) usureFinDeTour(actif(e.adverse), ev, "adverse", e.adverse, e.joueur);
+    if (talentsSontActifs(e)) {
+      talentsFinDeTour(e, "joueur", e.joueur, ev, h);
+      talentsFinDeTour(e, "adverse", e.adverse, ev, h);
+    }
     meteoFinDeTour(e, ev);
     // ═══════════════════════════════════════════════════════════════════════
     //  🔴 LE REQUIEM EMPORTE LES DEUX, ET C'EST CE QUI EN FAIT UN PARI. Trois
@@ -3574,5 +3924,12 @@
     joueurEnPremier: joueurEnPremier,
     peutAgir: peutAgir,
     usureFinDeTour: usureFinDeTour,
+    usureMeteo: usureMeteo,
+    talentsSontActifs: talentsSontActifs,
+    talentDe: talentDe,
+    airLockActif: airLockActif,
+    entreeEnCombat: entreeEnCombat,
+    verifierImmuniteTalent: verifierImmuniteTalent,
+    poserStatut: poserStatut,
   };
 })(typeof window !== "undefined" ? window : globalThis);

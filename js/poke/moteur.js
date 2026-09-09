@@ -88,6 +88,11 @@
     var expSd = (e && e.sdf !== undefined) ? e.sdf : ((e && e[sd] !== undefined) ? e[sd] : (e ? e.spe : 0));
     s[sa] = Math.floor((terme(b[sa], d.spe, expSa) * L) / 100) + 5;
     s[sd] = Math.floor((terme(b[sd], d.spe, expSd) * L) / 100) + 5;
+    if (p.nature && W.POKE_GEN3_NATURES && W.POKE_GEN3_NATURES[p.nature]) {
+      var nMod = W.POKE_GEN3_NATURES[p.nature];
+      if (nMod.plus && s[nMod.plus]) s[nMod.plus] = Math.floor(s[nMod.plus] * 1.1);
+      if (nMod.moins && s[nMod.moins]) s[nMod.moins] = Math.floor(s[nMod.moins] * 0.9);
+    }
     return s;
   }
 
@@ -195,6 +200,8 @@
       //     même nombre de fois, et il est écrit ici pour qu'on le sache.
       // ═══════════════════════════════════════════════════════════════════════
       objet: o.objet !== undefined ? o.objet : objetTenu(e, h, o.objetForce),
+      nature: o.nature !== undefined ? o.nature : (o.genererNature && h && W.PokeNatures ? W.PokeNatures.tirer(h) : undefined),
+      talent: o.talent !== undefined ? o.talent : (e.talent || (e.talents && e.talents[0]) || null),
     };
     p.stats = calculerStats(p);
     p.pv = p.stats.pv;
