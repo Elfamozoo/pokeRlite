@@ -12,6 +12,8 @@
  *  7. Manifest and PWA theme color configuration.
  *  8. UI combat capture timeout tracking and lifecycle cleanup.
  *  9. Gen 3 (Hoenn) species completeness, 9-act roguelite structure, boss reachability, and legendary mapping.
+ * 10. Gen 3 loot, marts & rewards invariants.
+ * 11. Battle Factory, Natures, Talents & Tactical Engine Invariants.
  */
 
 import fs from "node:fs";
@@ -253,6 +255,13 @@ test("All expected NOYAU APIs, registries, and Gen 3 globals are fully exported"
   assert.ok(noyauContext.POKE_GEN3_CS, "POKE_GEN3_CS must be exported");
   assert.ok(noyauContext.POKE_GEN3_CT_PAR_CLE, "POKE_GEN3_CT_PAR_CLE must be exported");
   assert.ok(noyauContext.POKE_GEN3_MARTS, "POKE_GEN3_MARTS must be exported");
+  assert.ok(noyauContext.POKE_GEN3_NATURES, "POKE_GEN3_NATURES must be exported");
+  assert.ok(noyauContext.PokeNatures, "PokeNatures must be exported");
+  assert.ok(noyauContext.POKE_GEN3_TALENTS, "POKE_GEN3_TALENTS must be exported");
+  assert.ok(noyauContext.PokeTalents, "PokeTalents must be exported");
+  assert.ok(noyauContext.POKE_GEN3_TENUS, "POKE_GEN3_TENUS must be exported");
+  assert.ok(noyauContext.POKE_GEN3_SETS_USINE, "POKE_GEN3_SETS_USINE must be exported");
+  assert.ok(noyauContext.PokeUsine, "PokeUsine must be exported");
 
   // PokeRegles Gen 3 Profile
   assert.strictEqual(noyauContext.PokeRegles.existe("gen3"), true, "PokeRegles must recognize 'gen3'");
@@ -1314,6 +1323,540 @@ test("PokeDits.objet formats Gen 3 vitamins, stones, and balls correctly", () =>
   }
 
   noyauContext.PokeRegles.poser("gen1");
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Suite 11: Battle Factory, Natures, Talents & Tactical Engine Invariants
+// ─────────────────────────────────────────────────────────────────────────────
+suite("11. Battle Factory, Natures, Talents & Tactical Engine Invariants");
+
+test("Natures invariants, helper PokeNatures, +/-10% stat factors, neutral natures, Gen 1/2 non-regression", () => {
+  const PN = noyauContext.PokeNatures;
+  const natures = noyauContext.POKE_GEN3_NATURES;
+  const Moteur = noyauContext.PokeMoteur;
+  const Regles = noyauContext.PokeRegles;
+  const Hasard = noyauContext.PokeHasard;
+
+  // 1. POKE_GEN3_NATURES has 25 entries
+  assert.ok(natures && typeof natures === "object", "POKE_GEN3_NATURES must be defined");
+  const keys = Object.keys(natures);
+  assert.strictEqual(keys.length, 25, "POKE_GEN3_NATURES must have exactly 25 entries");
+
+  // 2. PokeNatures helper functions
+  assert.ok(PN, "PokeNatures must be defined");
+  assert.strictEqual(typeof PN.nom, "function");
+  assert.strictEqual(typeof PN.de, "function");
+  assert.strictEqual(typeof PN.tirer, "function");
+  assert.strictEqual(typeof PN.liste, "function");
+  assert.strictEqual(PN.liste().length, 25);
+  assert.strictEqual(PN.nom("rigide", "fr"), "Rigide");
+  assert.strictEqual(PN.nom("rigide", "en"), "Adamant");
+  assert.strictEqual(PN.nom("unknown"), "unknown");
+  assert.strictEqual(PN.de({ nature: "rigide" }), "rigide");
+  assert.strictEqual(PN.de({}), null);
+  assert.strictEqual(PN.de(null), null);
+
+  const mockH = { choisir: (arr) => arr[0] };
+  assert.strictEqual(PN.tirer(mockH), "hardi");
+
+  // 3. 5 neutral natures do not modify any stats, +/-10% factors with Math.floor, never alter PV
+  const neutralNatures = ["hardi", "docile", "pudique", "bizarre", "serieux"];
+  for (const n of neutralNatures) {
+    assert.strictEqual(natures[n].plus, null, `${n} must have plus: null`);
+    assert.strictEqual(natures[n].moins, null, `${n} must have moins: null`);
+  }
+
+  Regles.poser("gen3");
+  const fixedDV = { pv: 15, atk: 15, def: 15, vit: 15, spe: 15 };
+  const fixedExp = { pv: 0, atk: 0, def: 0, vit: 0, spe: 0 };
+
+  const baseStats = Moteur.calculerStats({ n: 252, niveau: 50, dv: fixedDV, statExp: fixedExp });
+  for (const n of neutralNatures) {
+    const neutralStats = Moteur.calculerStats({ n: 252, niveau: 50, dv: fixedDV, statExp: fixedExp, nature: n });
+    assert.deepStrictEqual(neutralStats, baseStats, `Neutral nature ${n} must not modify any stats`);
+  }
+
+  // Rigide: atk +10%, sat -10%
+  const rigideStats = Moteur.calculerStats({ n: 252, niveau: 50, dv: fixedDV, statExp: fixedExp, nature: "rigide" });
+  assert.strictEqual(rigideStats.pv, baseStats.pv, "PV must NEVER be altered by nature");
+  assert.strictEqual(rigideStats.atk, Math.floor(baseStats.atk * 1.1), "Rigide must grant floor(atk * 1.1)");
+  assert.strictEqual(rigideStats.sat, Math.floor(baseStats.sat * 0.9), "Rigide must apply floor(sat * 0.9)");
+  assert.strictEqual(rigideStats.def, baseStats.def);
+  assert.strictEqual(rigideStats.vit, baseStats.vit);
+  assert.strictEqual(rigideStats.sdf, baseStats.sdf);
+
+  // Timide: vit +10%, atk -10%
+  const timideStats = Moteur.calculerStats({ n: 252, niveau: 50, dv: fixedDV, statExp: fixedExp, nature: "timide" });
+  assert.strictEqual(timideStats.pv, baseStats.pv, "PV must NEVER be altered by nature");
+  assert.strictEqual(timideStats.vit, Math.floor(baseStats.vit * 1.1), "Timide must grant floor(vit * 1.1)");
+  assert.strictEqual(timideStats.atk, Math.floor(baseStats.atk * 0.9), "Timide must apply floor(atk * 0.9)");
+
+  // 4. Gen 1 and Gen 2 creatures created without genererNature do NOT have a nature assigned, zero PRNG consumption
+  Regles.poser("gen1");
+  const hG1 = new Hasard("NATURE-G1-SEED");
+  const monG1 = Moteur.creer(25, 20, hG1);
+  assert.strictEqual(monG1.nature, undefined, "Gen 1 creature must not have nature");
+
+  Regles.poser("gen2");
+  const hG2 = new Hasard("NATURE-G2-SEED");
+  const monG2 = Moteur.creer(152, 20, hG2);
+  assert.strictEqual(monG2.nature, undefined, "Gen 2 creature must not have nature");
+
+  Regles.poser("gen1");
+});
+
+test("Canonical abilities database (76 talents in POKE_GEN3_TALENTS), 100% species mapping (1-386), PokeTalents helpers, deterministic PokeMoteur.creer without PRNG draws", () => {
+  const talents = noyauContext.POKE_GEN3_TALENTS;
+  const PT = noyauContext.PokeTalents;
+  const Regles = noyauContext.PokeRegles;
+  const Moteur = noyauContext.PokeMoteur;
+  const Hasard = noyauContext.PokeHasard;
+
+  // 1. POKE_GEN3_TALENTS has 76 abilities with nom.fr, nom.en, desc.fr, desc.en
+  assert.ok(talents, "POKE_GEN3_TALENTS must be defined");
+  const keys = Object.keys(talents);
+  assert.strictEqual(keys.length, 76, "POKE_GEN3_TALENTS must contain exactly 76 abilities");
+  for (const k of keys) {
+    const t = talents[k];
+    assert.ok(t.nom && typeof t.nom.fr === "string" && t.nom.fr.length > 0, `${k} missing nom.fr`);
+    assert.ok(t.nom && typeof t.nom.en === "string" && t.nom.en.length > 0, `${k} missing nom.en`);
+    assert.ok(t.desc && typeof t.desc.fr === "string" && t.desc.fr.length > 0, `${k} missing desc.fr`);
+    assert.ok(t.desc && typeof t.desc.en === "string" && t.desc.en.length > 0, `${k} missing desc.en`);
+  }
+
+  // 2. PokeTalents helpers (table, cles, nom, desc, de)
+  assert.ok(PT, "PokeTalents must be defined");
+  assert.strictEqual(PT.table(), talents);
+  assert.strictEqual(PT.cles().length, 76);
+  assert.strictEqual(PT.nom("INTIMIDATE", "fr"), "Intimidation");
+  assert.strictEqual(PT.nom("INTIMIDATE", "en"), "Intimidate");
+  assert.ok(PT.desc("DRIZZLE", "fr").length > 0);
+  assert.ok(PT.desc("DRIZZLE", "en").length > 0);
+  assert.strictEqual(PT.de({ talent: "LEVITATE" }), "LEVITATE");
+  assert.strictEqual(PT.de({}), null);
+  assert.strictEqual(PT.de(null), null);
+
+  // 3. 100% species mapping (1-386)
+  Regles.poser("gen3");
+  const esp = Regles.especes();
+  for (let n = 1; n <= 386; n++) {
+    const e = esp[n];
+    assert.ok(e, `Species ${n} must exist in Gen 3`);
+    assert.ok(e.talent, `Species ${n} must have talent property`);
+    assert.ok(talents[e.talent], `Species ${n} talent '${e.talent}' must exist in POKE_GEN3_TALENTS`);
+  }
+
+  // Starters and canonical signatures
+  assert.strictEqual(esp[1].talent, "OVERGROW");
+  assert.strictEqual(esp[4].talent, "BLAZE");
+  assert.strictEqual(esp[7].talent, "TORRENT");
+  assert.strictEqual(esp[252].talent, "OVERGROW");
+  assert.strictEqual(esp[255].talent, "BLAZE");
+  assert.strictEqual(esp[258].talent, "TORRENT");
+  assert.strictEqual(esp[292].talent, "WONDER_GUARD");
+  assert.strictEqual(esp[382].talent, "DRIZZLE");
+  assert.strictEqual(esp[383].talent, "DROUGHT");
+  assert.strictEqual(esp[384].talent, "AIR_LOCK");
+
+  // 4. Deterministic PokeMoteur.creer without PRNG draws
+  const h1 = new Hasard("TALENT-PRNG-TEST");
+  const pTreecko = Moteur.creer(252, 5, h1);
+  assert.strictEqual(pTreecko.talent, "OVERGROW");
+  const draws = h1.tirages;
+
+  const h2 = new Hasard("TALENT-PRNG-TEST");
+  const pCustom = Moteur.creer(252, 5, h2, { talent: "SPEED_BOOST" });
+  assert.strictEqual(pCustom.talent, "SPEED_BOOST");
+  assert.strictEqual(h2.tirages, draws, "Talent initialization must consume zero PRNG draws");
+
+  Regles.poser("gen1");
+});
+
+test("Combat engine ability hooks and held items (Intimidate, Levitate, Wonder Guard, Overgrow, Speed Boost, Choice Band, Leftovers, Lum Berry, Air Lock, Hail) and Gen 1/2 invariance", () => {
+  const Regles = noyauContext.PokeRegles;
+  const Combat = noyauContext.PokeCombat;
+  const Moteur = noyauContext.PokeMoteur;
+  const Hasard = noyauContext.PokeHasard;
+
+  // 1. PokeRegles.talentsActifs()
+  Regles.poser("gen1");
+  assert.strictEqual(Regles.talentsActifs(), false, "talentsActifs() must be false in Gen 1");
+  Regles.poser("gen2");
+  assert.strictEqual(Regles.talentsActifs(), false, "talentsActifs() must be false in Gen 2");
+  Regles.poser("gen3");
+  assert.strictEqual(Regles.talentsActifs(), true, "talentsActifs() must be true in Gen 3");
+
+  const makeMon = (id, lvl = 50, seed = "COMBAT-MON") => Moteur.creer(id, lvl, new Hasard(seed));
+
+  // 2. Entrance hooks: INTIMIDATE drops opponent attack stage by 1
+  const ray = makeMon(384, 50, "P1");
+  const gyar = makeMon(130, 50, "P2");
+  gyar.talent = "INTIMIDATE";
+  const cIntim = Combat.demarrer([ray], [gyar], { graine: "TEST-INTIM" });
+  assert.strictEqual(cIntim.joueur.paliers.atk, -1, "Intimidate must lower attack stage by 1");
+
+  // Blocked by CLEAR_BODY, WHITE_SMOKE, HYPER_CUTTER
+  const meta = makeMon(376, 50, "P_CLEAR");
+  meta.talent = "CLEAR_BODY";
+  const cClear = Combat.demarrer([meta], [gyar], { graine: "TEST-CLEAR" });
+  assert.strictEqual(cClear.joueur.paliers.atk, 0, "CLEAR_BODY blocks Intimidate");
+
+  const tork = makeMon(324, 50, "P_SMOKE");
+  tork.talent = "WHITE_SMOKE";
+  const cSmoke = Combat.demarrer([tork], [gyar], { graine: "TEST-SMOKE" });
+  assert.strictEqual(cSmoke.joueur.paliers.atk, 0, "WHITE_SMOKE blocks Intimidate");
+
+  const corp = makeMon(341, 50, "P_HYPER");
+  corp.talent = "HYPER_CUTTER";
+  const cHyper = Combat.demarrer([corp], [gyar], { graine: "TEST-HYPER" });
+  assert.strictEqual(cHyper.joueur.paliers.atk, 0, "HYPER_CUTTER blocks Intimidate");
+
+  // 3. Weather abilities: DRIZZLE, DROUGHT, SAND_STREAM
+  const target = makeMon(25, 50, "TARGET");
+  const kyo = makeMon(382, 50, "KYO");
+  kyo.talent = "DRIZZLE";
+  assert.strictEqual(Combat.demarrer([kyo], [target], { graine: "W-RAIN" }).meteo.cle, "pluie");
+
+  const grou = makeMon(383, 50, "GROU");
+  grou.talent = "DROUGHT";
+  assert.strictEqual(Combat.demarrer([grou], [target], { graine: "W-SUN" }).meteo.cle, "zenith");
+
+  const tyra = makeMon(248, 50, "TYRA");
+  tyra.talent = "SAND_STREAM";
+  assert.strictEqual(Combat.demarrer([tyra], [target], { graine: "W-SAND" }).meteo.cle, "sable");
+
+  // 4. Immunities: LEVITATE, WONDER_GUARD, VOLT_ABSORB, WATER_ABSORB, FLASH_FIRE
+  const latias = makeMon(380, 50, "LAT");
+  latias.talent = "LEVITATE";
+  const groundAtk = makeMon(383, 50, "G-ATK");
+  groundAtk.attaques = [{ cle: "EARTHQUAKE", pp: 10, ppMax: 10 }];
+  const cLev = Combat.demarrer([groundAtk], [latias], { graine: "TEST-LEV" });
+  const maxLatiasPv = latias.pv;
+  const evLev = Combat.jouerTour(cLev, { type: "attaque", index: 0 }, new Hasard("LEV-H"), { type: "attaque", index: 0 });
+  assert.strictEqual(latias.pv, maxLatiasPv, "LEVITATE must take zero damage from Ground");
+  assert.ok(evLev.some(e => e.t === "talentImmunite" && e.talent === "LEVITATE"));
+
+  const shed = makeMon(292, 20, "SHED");
+  shed.talent = "WONDER_GUARD";
+  shed.pv = 1;
+  shed.attaques = [{ cle: "HARDEN", pp: 30, ppMax: 30 }];
+  const watAtk = makeMon(7, 20, "WAT");
+  watAtk.attaques = [{ cle: "WATER_GUN", pp: 20, ppMax: 20 }];
+  const cWG = Combat.demarrer([watAtk], [shed], { graine: "TEST-WG" });
+  Combat.jouerTour(cWG, { type: "attaque", index: 0 }, new Hasard("WG-H"), { type: "attaque", index: 0 });
+  assert.strictEqual(shed.pv, 1, "WONDER_GUARD ignores non-super-effective damage");
+
+  // VOLT_ABSORB
+  const lanturn = makeMon(171, 50, "LAN");
+  lanturn.talent = "VOLT_ABSORB";
+  lanturn.pv = 80;
+  const eleAtk = makeMon(25, 50, "ELE");
+  eleAtk.attaques = [{ cle: "THUNDERBOLT", pp: 15, ppMax: 15 }];
+  const cVA = Combat.demarrer([eleAtk], [lanturn], { graine: "TEST-VA" });
+  Combat.jouerTour(cVA, { type: "attaque", index: 0 }, new Hasard("VA-H"), { type: "attaque", index: 0 });
+  assert.ok(lanturn.pv > 80, "VOLT_ABSORB heals on Electric damage");
+
+  // FLASH_FIRE
+  const ninetales = makeMon(38, 50, "NIN");
+  ninetales.talent = "FLASH_FIRE";
+  const fAtk = makeMon(4, 50, "FIR");
+  fAtk.attaques = [{ cle: "FLAMETHROWER", pp: 15, ppMax: 15 }];
+  const cFF = Combat.demarrer([fAtk], [ninetales], { graine: "TEST-FF" });
+  const startNinPv = ninetales.pv;
+  Combat.jouerTour(cFF, { type: "attaque", index: 0 }, new Hasard("FF-H"), { type: "attaque", index: 0 });
+  assert.strictEqual(ninetales.pv, startNinPv, "FLASH_FIRE takes zero damage from Fire");
+  assert.ok(cFF.adverse.volatils.flashFire, "FLASH_FIRE activates flashFire flag");
+
+  // 5. Damage buffs: OVERGROW, HUGE_POWER, THICK_FAT
+  const scep = makeMon(254, 50, "SCEP");
+  scep.talent = "OVERGROW";
+  scep.pv = scep.stats.pv;
+  const dmgNorm = Combat.degats(scep, target, "MEGA_DRAIN", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
+  scep.pv = Math.floor(scep.stats.pv / 3);
+  const dmgCrisis = Combat.degats(scep, target, "MEGA_DRAIN", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
+  assert.ok(dmgCrisis > dmgNorm, "OVERGROW at <= 1/3 HP boosts Grass moves");
+  assert.ok(dmgCrisis / dmgNorm >= 1.4 && dmgCrisis / dmgNorm <= 1.6);
+
+  const azu = makeMon(184, 50, "AZU");
+  azu.talent = "HUGE_POWER";
+  const azuPlain = makeMon(184, 50, "AZU");
+  azuPlain.talent = null;
+  const dmgPlain = Combat.degats(azuPlain, target, "TAKE_DOWN", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
+  const dmgHuge = Combat.degats(azu, target, "TAKE_DOWN", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
+  assert.ok(dmgHuge >= dmgPlain * 1.8, "HUGE_POWER doubles physical attack");
+
+  const snor = makeMon(143, 50, "SNOR");
+  snor.talent = "THICK_FAT";
+  const snorPlain = makeMon(143, 50, "SNOR");
+  snorPlain.talent = null;
+  const dmgTF = Combat.degats(fAtk, snor, "FLAMETHROWER", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
+  const dmgNoTF = Combat.degats(fAtk, snorPlain, "FLAMETHROWER", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
+  assert.ok(dmgTF < dmgNoTF, "THICK_FAT halves Fire damage");
+
+  // 6. Held items: CHOICE_BAND, LEFTOVERS, WHITE_HERB, LUM_BERRY
+  const cbAttacker = makeMon(25, 50, "CB");
+  cbAttacker.objet = null;
+  const dmgUnboosted = Combat.degats(cbAttacker, target, "BODY_SLAM", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
+  cbAttacker.objet = "CHOICE_BAND";
+  const dmgCB = Combat.degats(cbAttacker, target, "BODY_SLAM", { attPaliers: {}, defPaliers: {} }, { brut: () => 0.5, entre: () => 236 }).degats;
+  assert.ok(dmgCB > dmgUnboosted && dmgCB / dmgUnboosted >= 1.4 && dmgCB / dmgUnboosted <= 1.6, "CHOICE_BAND boosts physical damage ~1.5x");
+
+  const leftMon = makeMon(25, 50, "LEFT");
+  leftMon.objet = "LEFTOVERS";
+  leftMon.pv = 50;
+  Combat.usureFinDeTour(leftMon, [], "joueur", {}, {});
+  assert.ok(leftMon.pv > 50, "LEFTOVERS heals HP at end of turn");
+  assert.strictEqual(leftMon.objet, "LEFTOVERS");
+
+  const herbMon = makeMon(25, 50, "HERB");
+  herbMon.objet = "WHITE_HERB";
+  const coteHerb = { paliers: { atk: -2, vit: -1 } };
+  Combat.usureFinDeTour(herbMon, [], "joueur", coteHerb, {});
+  assert.strictEqual(coteHerb.paliers.atk, 0, "WHITE_HERB clears negative atk");
+  assert.strictEqual(coteHerb.paliers.vit, 0, "WHITE_HERB clears negative vit");
+  assert.strictEqual(herbMon.objet, null, "WHITE_HERB consumed");
+
+  const lumMon = makeMon(25, 50, "LUM");
+  lumMon.objet = "LUM_BERRY";
+  lumMon.statut = "brulure";
+  const coteLum = { volatils: { confusion: 2 } };
+  Combat.usureFinDeTour(lumMon, [], "joueur", coteLum, {});
+  assert.strictEqual(lumMon.statut, null, "LUM_BERRY cures burn");
+  assert.strictEqual(coteLum.volatils.confusion, 0, "LUM_BERRY cures confusion");
+  assert.strictEqual(lumMon.objet, null, "LUM_BERRY consumed");
+
+  // Speed boost
+  const ninjask = makeMon(291, 50, "NINJASK");
+  ninjask.talent = "SPEED_BOOST";
+  const dummyAtk = makeMon(25, 50, "DUMMY");
+  dummyAtk.attaques = [{ cle: "TAIL_WHIP", pp: 30, ppMax: 30 }];
+  const cSpeed = Combat.demarrer([ninjask], [dummyAtk], { graine: "TEST-SPEED" });
+  Combat.jouerTour(cSpeed, { type: "attaque", index: 0 }, new Hasard("SPEED-H"), { type: "attaque", index: 0 });
+  assert.strictEqual(cSpeed.joueur.paliers.vit, 1, "SPEED_BOOST boosts speed stage by 1");
+
+  // 7. Weather: HAIL chips non-ice, AIR_LOCK negates weather damage
+  const iceM = makeMon(361, 50, "ICE");
+  const nonIceM = makeMon(25, 50, "NONICE");
+  const startNonIce = nonIceM.pv;
+  const startIce = iceM.pv;
+  const cHail = Combat.demarrer([iceM], [nonIceM], { graine: "TEST-HAIL" });
+  cHail.meteo = { cle: "grele", reste: 5 };
+  Combat.usureMeteo(cHail, nonIceM, [], "adverse");
+  Combat.usureMeteo(cHail, iceM, [], "joueur");
+  assert.ok(nonIceM.pv < startNonIce, "HAIL chips non-ice");
+  assert.strictEqual(iceM.pv, startIce, "HAIL spares ice types");
+
+  const rayLock = makeMon(384, 50, "RAY");
+  rayLock.talent = "AIR_LOCK";
+  const cLock = Combat.demarrer([rayLock], [nonIceM], { graine: "TEST-AIRLOCK" });
+  cLock.meteo = { cle: "grele", reste: 5 };
+  const preLockPv = nonIceM.pv;
+  Combat.usureMeteo(cLock, nonIceM, [], "adverse");
+  assert.strictEqual(nonIceM.pv, preLockPv, "AIR_LOCK negates weather damage");
+
+  // 8. Cross-generational invariance: Gen 1/Gen 2 combat ignores abilities
+  Regles.poser("gen1");
+  const g1P1 = makeMon(130, 50, "G1-P1");
+  g1P1.talent = "INTIMIDATE";
+  const g1P2 = makeMon(25, 50, "G1-P2");
+  const cG1 = Combat.demarrer([g1P1], [g1P2], { graine: "G1-INTIM" });
+  assert.strictEqual(cG1.adverse.paliers.atk, 0, "Gen 1 combat ignores talents");
+
+  Regles.poser("gen2");
+  const cG2 = Combat.demarrer([g1P1], [g1P2], { graine: "G2-INTIM" });
+  assert.strictEqual(cG2.adverse.paliers.atk, 0, "Gen 2 combat ignores talents");
+
+  Regles.poser("gen1");
+});
+
+test("Battle Factory catalog (POKE_GEN3_SETS_USINE) 4 tiers and palierPourCombat", () => {
+  const sets = noyauContext.POKE_GEN3_SETS_USINE;
+  const U = noyauContext.PokeUsine;
+  const Regles = noyauContext.PokeRegles;
+
+  // 1. POKE_GEN3_SETS_USINE exports 4 tiers
+  assert.ok(sets && typeof sets === "object", "POKE_GEN3_SETS_USINE must be exported");
+  assert.ok(Array.isArray(sets.tier1) && sets.tier1.length >= 30, `tier1 length >= 30 (got ${sets.tier1.length})`);
+  assert.ok(Array.isArray(sets.tier2) && sets.tier2.length >= 35, `tier2 length >= 35 (got ${sets.tier2.length})`);
+  assert.ok(Array.isArray(sets.tier3) && sets.tier3.length >= 40, `tier3 length >= 40 (got ${sets.tier3.length})`);
+  assert.ok(Array.isArray(sets.tier4) && sets.tier4.length >= 50, `tier4 length >= 50 (got ${sets.tier4.length})`);
+
+  // 2. Every set in every tier specifies valid espece (1-386), valid nature, valid objet, and 4 moves
+  Regles.poser("gen3");
+  const g3 = Regles.pour("gen3");
+  const allMoves = g3.attaques();
+  const allNatures = noyauContext.POKE_GEN3_NATURES;
+  const allObjets = noyauContext.POKE_GEN3_OBJETS;
+  const validRepartitions = new Set(["atk_vit", "sat_vit", "pv_def", "pv_sat", "equilibre", "atk_pv"]);
+
+  for (const t of ["tier1", "tier2", "tier3", "tier4"]) {
+    for (let i = 0; i < sets[t].length; i++) {
+      const s = sets[t][i];
+      assert.ok(typeof s.espece === "number" && s.espece >= 1 && s.espece <= 386, `${t}[${i}] invalid species ${s.espece}`);
+      assert.ok(allNatures[s.nature], `${t}[${i}] invalid nature '${s.nature}'`);
+      assert.ok(allObjets[s.objet], `${t}[${i}] invalid held item '${s.objet}'`);
+      assert.ok(Array.isArray(s.attaques) && s.attaques.length === 4, `${t}[${i}] must have 4 attacks`);
+      for (const atk of s.attaques) {
+        assert.ok(allMoves[atk], `${t}[${i}] unknown move '${atk}'`);
+      }
+      assert.ok(validRepartitions.has(s.repartition), `${t}[${i}] invalid repartition '${s.repartition}'`);
+    }
+  }
+
+  // 3. PokeUsine.palierPourCombat returns palier 1 for combats 1-7, palier 2 for 8-14, palier 3 for 15-21, palier 4 for 22+
+  assert.strictEqual(U.palierPourCombat(1, 1, 0), "tier1", "Combats 1-7 (series 1) must be tier1");
+  assert.strictEqual(U.palierPourCombat(2, 7, 13), "tier1", "Combats 8-14 (series 2) must be tier1");
+  assert.strictEqual(U.palierPourCombat(3, 1, 14), "tier2", "Combats 15-21 (series 3) must be tier2");
+  assert.strictEqual(U.palierPourCombat(4, 7, 27), "tier2", "Combats 22-28 (series 4) must be tier2");
+  assert.strictEqual(U.palierPourCombat(5, 1, 28), "tier3", "Combats 29-35 (series 5) must be tier3");
+  assert.strictEqual(U.palierPourCombat(6, 1, 35), "tier4", "Combats 36+ (series 6+) must be tier4");
+  assert.strictEqual(U.palierPourCombat(7, 1, 42), "tier4", "Combat 42 must be tier4");
+
+  Regles.poser("gen1");
+});
+
+test("PokeUsine session state transitions, rentals generation, streak advancement, boss Samson / Noland at 21 and 42, and PCo calculation", () => {
+  const U = noyauContext.PokeUsine;
+  const Regles = noyauContext.PokeRegles;
+  const Hasard = noyauContext.PokeHasard;
+
+  Regles.poser("gen3");
+  const h = new Hasard("USINE-TEST-SEED");
+
+  // 1. PokeUsine.creerSession generates 6 unique rental Pokemon at level 50 with distinct species and held items
+  const session = U.creerSession("USINE-TEST-SEED", h);
+  assert.strictEqual(session.prets.length, 6, "Must generate exactly 6 rentals");
+  assert.strictEqual(session.statut, "choix_initial");
+
+  const species = new Set();
+  const items = new Set();
+  for (const p of session.prets) {
+    assert.strictEqual(p.niveau, 50, "Rental must be level 50");
+    assert.ok(p.stats && p.pv === p.stats.pv, "Rental must have full HP");
+    assert.ok(!species.has(p.n), `Duplicate rental species #${p.n}`);
+    assert.ok(!items.has(p.objet), `Duplicate rental held item '${p.objet}'`);
+    species.add(p.n);
+    items.add(p.objet);
+  }
+
+  // 2. PokeUsine.choisirEquipeInitiale transitions state to combat 1
+  U.choisirEquipeInitiale(session, [0, 2, 4], h);
+  assert.strictEqual(session.equipe.length, 3);
+  assert.strictEqual(session.statut, "combat");
+  assert.strictEqual(session.combat, 1);
+  assert.ok(session.adversaire, "Opponent must be generated");
+
+  // 3. PokeUsine.continuerSerie and PokeUsine.soignerEquipe maintain streak and fully restore HP
+  session.equipe[0].pv = 1;
+  session.equipe[0].statut = "poison";
+  U.soignerEquipe(session.equipe);
+  assert.strictEqual(session.equipe[0].pv, session.equipe[0].stats.pv, "soignerEquipe must restore full HP");
+  assert.strictEqual(session.equipe[0].statut, null, "soignerEquipe must cure status");
+
+  // 4. Combat 21 triggers Noland (tier 3, symbol: "argent") and combat 42 triggers Noland (tier 4, symbol: "or")
+  session.serie = 3;
+  session.combat = 7;
+  session.combatGlobal = 21;
+  session.victoires = 20;
+  session.adversaire = U.tirerAdversaire(session, h);
+  assert.ok(session.adversaire.estBoss, "Combat 21 must be boss battle");
+  assert.strictEqual(session.adversaire.id, "noland_argent");
+  assert.strictEqual(session.adversaire.nom, "Meneur Samson");
+  assert.strictEqual(session.adversaire.symbole, "argent");
+
+  // Win combat 21
+  U.enregistrerResultatCombat(session, true, h);
+  assert.strictEqual(session.symboles.argent, true, "Must award silver symbol");
+  assert.strictEqual(session.statut, "serie_gagnee");
+
+  // Advance streak
+  U.continuerSerie(session, h);
+  assert.strictEqual(session.serie, 4);
+  assert.strictEqual(session.combat, 1);
+  assert.strictEqual(session.combatGlobal, 22);
+
+  // Fast forward to combat 42
+  session.serie = 6;
+  session.combat = 7;
+  session.combatGlobal = 42;
+  session.victoires = 41;
+  session.adversaire = U.tirerAdversaire(session, h);
+  assert.ok(session.adversaire.estBoss, "Combat 42 must be boss battle");
+  assert.strictEqual(session.adversaire.id, "noland_or");
+  assert.strictEqual(session.adversaire.nom, "Meneur Samson");
+  assert.strictEqual(session.adversaire.symbole, "or");
+
+  // Win combat 42
+  U.enregistrerResultatCombat(session, true, h);
+  assert.strictEqual(session.symboles.or, true, "Must award gold symbol");
+
+  // 5. PokeUsine.calculerGainPCo calculates correct rewards
+  assert.strictEqual(U.calculerGainPCo(1, false), 3, "Series 1-2 base reward: 3 PCo");
+  assert.strictEqual(U.calculerGainPCo(2, false), 3, "Series 2 base reward: 3 PCo");
+  assert.strictEqual(U.calculerGainPCo(3, false), 5, "Series 3-4 base reward: 5 PCo");
+  assert.strictEqual(U.calculerGainPCo(4, false), 5, "Series 4 base reward: 5 PCo");
+  assert.strictEqual(U.calculerGainPCo(5, false), 7, "Series 5-6 base reward: 7 PCo");
+  assert.strictEqual(U.calculerGainPCo(6, false), 7, "Series 6 base reward: 7 PCo");
+  assert.strictEqual(U.calculerGainPCo(7, false), 10, "Series 7+ base reward: 10 PCo");
+  assert.strictEqual(U.calculerGainPCo(3, true), 20, "Series 3 Boss silver symbol victory awards 20 PCo");
+  assert.strictEqual(U.calculerGainPCo(6, true), 37, "Series 6 Boss gold symbol victory awards 37 PCo");
+
+  Regles.poser("gen1");
+});
+
+test("Cross-generational bit-level PRNG determinism & replay parity across Gen 1, Gen 2, and Gen 3", () => {
+  const Hasard = noyauContext.PokeHasard;
+  const Regles = noyauContext.PokeRegles;
+
+  const seeds = ["CROSS-GEN-42", "PRNG-REPLAY-999", "MULBERRY32-DETERMINISM"];
+  for (const seed of seeds) {
+    // 100 PRNG draws across Gen 1, Gen 2, Gen 3 sessions with identical Mulberry32 seeds
+    Regles.poser("gen1");
+    const h1 = new Hasard(seed);
+    const seq1 = [];
+    for (let i = 0; i < 100; i++) seq1.push(h1.brut());
+
+    Regles.poser("gen2");
+    const h2 = new Hasard(seed);
+    const seq2 = [];
+    for (let i = 0; i < 100; i++) seq2.push(h2.brut());
+
+    Regles.poser("gen3");
+    const h3 = new Hasard(seed);
+    const seq3 = [];
+    for (let i = 0; i < 100; i++) seq3.push(h3.brut());
+
+    assert.deepStrictEqual(seq1, seq2, `Gen 1 and Gen 2 draws must be bit-identical for ${seed}`);
+    assert.deepStrictEqual(seq2, seq3, `Gen 2 and Gen 3 draws must be bit-identical for ${seed}`);
+    assert.strictEqual(h1.tirages, 100);
+    assert.strictEqual(h2.tirages, 100);
+    assert.strictEqual(h3.tirages, 100);
+  }
+
+  // Combat replay determinism in Gen 3
+  Regles.poser("gen3");
+  const Combat = noyauContext.PokeCombat;
+  const Moteur = noyauContext.PokeMoteur;
+
+  const simCombat = () => {
+    const h = new Hasard("REPLAY-COMBAT-SEED");
+    const p1 = Moteur.creer(254, 50, h);
+    const p2 = Moteur.creer(260, 50, h);
+    const c = Combat.demarrer([p1], [p2], { graine: "BATTLE-42" });
+    const events = [];
+    for (let t = 0; t < 5; t++) {
+      const ev = Combat.jouerTour(c, { type: "attaque", index: 0 }, h, { type: "attaque", index: 0 });
+      events.push(...ev.map(e => ({ t: e.t, degats: e.degats, pv: e.pv })));
+      if (p1.pv <= 0 || p2.pv <= 0) break;
+    }
+    return events;
+  };
+
+  const runA = simCombat();
+  const runB = simCombat();
+  assert.deepStrictEqual(runA, runB, "Gen 3 turn-by-turn combat simulation must be 100% deterministic and replayable");
+
+  Regles.poser("gen1");
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
