@@ -569,7 +569,7 @@ body.mode-poke {
   border-bottom: 3px solid var(--hud-signature);
   border-radius: var(--r3);
   box-shadow: var(--ombre-2);
-  color: var(--sur-fond);
+  color: var(--texte-principal);
 }
 
 /* ── LE BANDEAU SUR UN TÉLÉPHONE ─────────────────────────────────────────────
@@ -2312,7 +2312,7 @@ img[data-chromatique] {
   letter-spacing: 0.09em;
   text-transform: uppercase;
   background: var(--teinte, var(--encre-pale));
-  color: var(--sur-teinte, var(--sur-fond));
+  color: var(--sur-teinte, #fff);
 }
 /* ═══ LA PASTILLE QUI S'OUVRE SE VISE AU POUCE ═══════════════════════════════
    🔴 24 PX DE HAUT POUR UNE CIBLE, ET C'EST LA TABLE DES TYPES QU'ELLE OUVRE
@@ -2513,7 +2513,7 @@ img[data-chromatique] {
    inventée. Blanc sur `--sceau` : 5,9:1, mesuré de longue date sur la pastille. */
 .pkdx-rangee[data-etat="courante"]::after {
   background: var(--sceau);
-  color: var(--sur-fond);
+  color: var(--texte-principal);
   padding: 3px 12px;
 }
 .pkdx-rangee.est-depart::after { top: calc(var(--pas) * 1.25); }
@@ -2950,7 +2950,7 @@ img[data-chromatique] {
 .pkdx-noeud-perdu {
   position: absolute; top: -11px; right: calc(var(--pas) * 1.5);
   padding: 2px 10px; border-radius: var(--rond);
-  background: var(--sceau); color: var(--sur-fond);
+  background: var(--sceau); color: var(--texte-principal);
   font-family: var(--titre); font-size: var(--t1); font-weight: 700;
   letter-spacing: 0.1em; text-transform: uppercase;
 }
@@ -3062,7 +3062,7 @@ img[data-chromatique] {
 
 /* L'action définitive : lancer, défier, relâcher. 🔴 Une seule par écran. */
 .pkdx-touche.est-definitive {
-  background: var(--coque); color: var(--sur-fond); border-color: var(--coque-ombre);
+  background: var(--coque); color: var(--texte-principal); border-color: var(--coque-ombre);
   box-shadow: var(--ombre-2);
 }
 .pkdx-touche.est-definitive:hover { background: var(--coque-lumiere); border-color: var(--coque-ombre); }
@@ -5092,7 +5092,7 @@ button.pkdx-case:focus-visible { outline: 3px solid var(--lentille); outline-off
   color: var(--encre-douce);
 }
 .pkdx-statut[data-statut="gel"], .pkdx-statut[data-statut="sommeil"] {
-  background: var(--sceau); color: var(--sur-fond);
+  background: var(--sceau); color: var(--texte-principal);
 }
 
 /* ── La Ball qui tremble ──────────────────────────────────────────────────
@@ -6307,7 +6307,7 @@ button.pkdx-case:focus-visible { outline: 3px solid var(--lentille); outline-off
       **2,11:1** sur la coque rouge. C'est la note du bouton REPRENDRE, sur
       l'accueil, c'est-à-dire le premier texte que lit un joueur qui revient.
       Elle suit donc l'encre de son bouton, comme le libellé au-dessus. */
-.pkdx-touche.est-definitive .pkdx-touche-note { color: var(--sur-fond); }
+.pkdx-touche.est-definitive .pkdx-touche-note { color: var(--texte-principal); }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    L'ÉTAT ÉTEINT — EN DERNIER, ET C'EST LE MÉCANISME
@@ -6774,7 +6774,7 @@ body.encre .pkdx-touche:hover {
    et la loi 04 lui réserve exactement une place. Il perd son relief. */
 body.encre .pkdx-touche.est-definitive {
   background: var(--coque);
-  color: var(--sur-fond);
+  color: var(--texte-principal);
   border-color: var(--coque);
   box-shadow: none;
 }
@@ -7121,7 +7121,7 @@ body.encre .pkdx {
   border-bottom: 3px solid var(--hud-signature);
 }
 .pk-maj-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
-.pk-maj-txt strong { font-size: 0.95rem; line-height: 1.25; color: var(--titre); }
+.pk-maj-txt strong { font-size: 0.95rem; line-height: 1.25; color: var(--texte-principal); }
 .pk-maj-txt span { font-size: 0.8rem; line-height: 1.25; color: var(--encre-douce); }
 .pk-maj-go, .pk-maj-x {
   flex: 0 0 auto;
@@ -7130,7 +7130,7 @@ body.encre .pkdx {
   border-radius: 9px;
   border: 1px solid var(--trait-fort);
   background: transparent;
-  color: var(--texte);
+  color: var(--texte-principal);
   font: inherit;
   font-size: 0.78rem;
   letter-spacing: 0.04em;
@@ -7143,7 +7143,7 @@ body.encre .pkdx {
   font-weight: 700;
 }
 .pk-maj-x { color: var(--encre-douce); }
-.pk-maj-go:focus-visible, .pk-maj-x:focus-visible { outline: 2px solid var(--titre); outline-offset: 2px; }
+.pk-maj-go:focus-visible, .pk-maj-x:focus-visible { outline: 2px solid var(--bordure-focus); outline-offset: 2px; }
 @media (max-width: 380px) {
   .pk-maj { gap: 6px; padding: 8px 10px; }
   .pk-maj-go, .pk-maj-x { padding: 0 9px; font-size: 0.72rem; }
@@ -7156,7 +7156,7 @@ body.encre .pkdx {
   max-width: 960px;
   margin: 0 auto;
   padding: 16px;
-  color: var(--texte);
+  color: var(--texte-principal);
 }
 
 .pk-usine-banniere {
@@ -7173,7 +7173,7 @@ body.encre .pkdx {
 .pk-usine-titre {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--titre);
+  color: var(--texte-principal);
   margin: 0 0 6px 0;
   letter-spacing: 0.02em;
 }
@@ -7202,7 +7202,7 @@ body.encre .pkdx {
 .pk-stat-valeur {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--titre);
+  color: var(--texte-principal);
   margin-bottom: 4px;
 }
 
@@ -7231,12 +7231,12 @@ body.encre .pkdx {
   margin-bottom: 20px;
   font-size: 0.88rem;
   line-height: 1.5;
-  color: var(--texte);
+  color: var(--texte-principal);
 }
 
 .pk-regles-rappel h3 {
   font-size: 0.95rem;
-  color: var(--titre);
+  color: var(--texte-principal);
   margin-top: 0;
   margin-bottom: 8px;
 }
@@ -7272,7 +7272,7 @@ body.encre .pkdx {
 .pk-draft-instruction {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--titre);
+  color: var(--texte-principal);
 }
 
 .pk-draft-compteur {
@@ -7282,7 +7282,7 @@ body.encre .pkdx {
   border-radius: 20px;
   background: var(--sur-fond);
   border: 1px solid var(--trait-fort);
-  color: var(--titre);
+  color: var(--texte-principal);
 }
 
 .pk-draft-grille {
@@ -7344,7 +7344,7 @@ body.encre .pkdx {
 .pk-carte-nom {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--titre);
+  color: var(--texte-principal);
   margin-bottom: 4px;
 }
 
@@ -7401,7 +7401,7 @@ body.encre .pkdx {
 }
 
 .pk-carte-ligne {
-  color: var(--texte);
+  color: var(--texte-principal);
 }
 
 .pk-talent-desc {
@@ -7435,7 +7435,7 @@ body.encre .pkdx {
 
 .pk-mon-att-nom {
   font-weight: 600;
-  color: var(--titre);
+  color: var(--texte-principal);
 }
 
 .pk-mon-att-meta {
@@ -7465,7 +7465,7 @@ body.encre .pkdx {
 
 .pk-usine-match-info {
   font-weight: 700;
-  color: var(--titre);
+  color: var(--texte-principal);
 }
 
 .pk-adversaire-titre {
@@ -7501,7 +7501,7 @@ body.encre .pkdx {
 .pk-boss-nom {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--titre);
+  color: var(--texte-principal);
   margin-bottom: 6px;
 }
 
@@ -7535,7 +7535,7 @@ body.encre .pkdx {
 .pk-swap-col-titre {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--titre);
+  color: var(--texte-principal);
   text-align: center;
   padding: 8px;
   background: var(--sur-fond);
@@ -7595,7 +7595,7 @@ body.encre .pkdx {
 
 .pk-dialogue-noland {
   font-style: italic;
-  color: var(--texte);
+  color: var(--texte-principal);
   max-width: 600px;
   margin: 0 auto;
 }
@@ -7639,7 +7639,7 @@ body.encre .pkdx {
   border-radius: 8px;
   border: 1px solid var(--trait-fort);
   background: var(--sur-fond);
-  color: var(--texte);
+  color: var(--texte-principal);
   font: inherit;
   font-size: 0.82rem;
   cursor: pointer;
@@ -7675,7 +7675,7 @@ body.encre .pkdx {
 .pk-boutique-item-nom {
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--titre);
+  color: var(--texte-principal);
 }
 
 .pk-boutique-prix {

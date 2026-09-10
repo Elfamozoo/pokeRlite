@@ -56,6 +56,8 @@ runTest("Defines high contrast typography tokens", () => {
   assert.match(cssContent, /--texte-principal:\s*#f8fafc/, "--texte-principal must be #f8fafc");
   assert.match(cssContent, /--texte-secondaire:\s*#94a3b8/, "--texte-secondaire must be #94a3b8");
   assert.match(cssContent, /--texte-discret:\s*#64748b/, "--texte-discret must be #64748b");
+  assert.doesNotMatch(cssContent, /color:\s*var\(--texte\)/, "Must not use font-family stack --texte as a color value");
+  assert.doesNotMatch(cssContent, /color:\s*var\(--sur-fond\)/, "Must not use dark surface token --sur-fond as text color");
 });
 
 // 4. Showdown 18 Canonical Type Tokens
