@@ -52,6 +52,10 @@
     }
   }
 
+  function graineAlea() {
+    return "USINE-" + Date.now().toString(36) + "-" + Math.floor(Math.random() * 1e9).toString(36);
+  }
+
   function nomEspece(num) {
     if (W.PokeRegles && typeof W.PokeRegles.nomEspece === "function") {
       var n = W.PokeRegles.nomEspece(num);
@@ -364,7 +368,7 @@
         btnNouveau.addEventListener("click", function () {
           son("PRESS_AB");
           if (!W.PokeUsine) return;
-          var nouvelleSession = W.PokeUsine.creerSession();
+          var nouvelleSession = W.PokeUsine.creerSession({ graine: graineAlea() });
           if (P && typeof P.usineEcrire === "function") {
             var st = P.usineLire();
             st.session = nouvelleSession;
@@ -424,7 +428,7 @@
   function ouvrirDraft(session, options) {
     options = options || {};
     if (!session && W.PokeUsine) {
-      session = W.PokeUsine.creerSession();
+      session = W.PokeUsine.creerSession({ graine: graineAlea() });
     }
     if (!session || !session.prets) return "";
 
@@ -522,12 +526,16 @@
     options = options || {};
     if (!session) return "";
 
+    if (W.PokeRegles && typeof W.PokeRegles.poser === "function") {
+      W.PokeRegles.poser("gen3");
+    }
+
     if (!session.adversaire && W.PokeUsine) {
       session.adversaire = W.PokeUsine.tirerAdversaire(session);
     }
 
     var adv = session.adversaire || { nom: "Dresseur", titre: "Topdresseur", equipe: [] };
-    var estBoss = !!(adv.boss || session.combatGlobal === 21 || session.combatGlobal === 42);
+    var estBoss = !!(adv.estBoss || adv.boss || session.combatGlobal === 21 || session.combatGlobal === 42);
 
     var bossBanniereHTML = estBoss ? (
       '<div class="pk-boss-intro-banniere">' +
@@ -550,11 +558,6 @@
       '</div>' +
       bossBanniereHTML +
       '<div id="pk-usine-combat-hote" class="pk-combat-hote-zone"></div>' +
-      '<div class="pkdx-actions pk-combat-test-actions">' +
-        '<button type="button" class="pkdx-touche" id="pk-combat-simuler-victoire">Résoudre Combat (Victoire)</button>' +
-        '<button type="button" class="pkdx-touche" id="pk-combat-simuler-defaite">Résoudre Combat (Défaite)</button>' +
-        '<button type="button" class="pkdx-touche" id="pk-combat-abandonner">Abandonner la série</button>' +
-      '</div>' +
     '</div>';
 
     var cible = obtenirCible(options);
@@ -583,41 +586,19 @@
 
       var hoteCombat = cible.querySelector("#pk-usine-combat-hote");
       if (hoteCombat && W.PokeCombat && W.PokeUICombat && typeof W.PokeUICombat.Ecran === "function") {
-        try {
-          var etatCombat = W.PokeCombat.demarrer(session.equipe, adv.equipe, { dresseur: true });
-          new W.PokeUICombat.Ecran(hoteCombat, etatCombat, {
-            dresseur: true,
-            qui: adv.titre ? adv.titre + " " + adv.nom : adv.nom,
-            surFin: function (issue) {
-              terminer(issue === "victoire");
-            }
-          });
-        } catch (err) {
-          // Si le moteur d'animation ou le DOM est indisponible, les boutons de résolution sont actifs
-        }
-      }
-
-      var btnVictoire = cible.querySelector("#pk-combat-simuler-victoire");
-      if (btnVictoire) {
-        btnVictoire.addEventListener("click", function () {
-          son("VICTOIRE");
-          terminer(true);
-        });
-      }
-
-      var btnDefaite = cible.querySelector("#pk-combat-simuler-defaite");
-      if (btnDefaite) {
-        btnDefaite.addEventListener("click", function () {
-          son("DEFAITE");
-          terminer(false);
-        });
-      }
-
-      var btnAbandon = cible.querySelector("#pk-combat-abandonner");
-      if (btnAbandon) {
-        btnAbandon.addEventListener("click", function () {
-          son("PRESS_AB");
-          terminer(false);
+        var hCombat = W.PokeHasard
+          ? new W.PokeHasard(session.graine + "-combat-" + session.combatGlobal)
+          : null;
+        var etatCombat = W.PokeCombat.demarrer(session.equipe, adv.equipe, { dresseur: true }, hCombat);
+        new W.PokeUICombat.Ecran(hoteCombat, etatCombat, {
+          rythme: W.POKE_RYTHME || 3,
+          hasard: hCombat,
+          dresseur: true,
+          usine: true,
+          qui: adv.titre ? adv.titre + " " + adv.nom : adv.nom,
+          surFin: function (issue) {
+            terminer(issue === "victoire");
+          }
         });
       }
     }

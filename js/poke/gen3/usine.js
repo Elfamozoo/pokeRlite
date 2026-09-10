@@ -208,7 +208,10 @@
   function tirerAdversaire(session, h) {
     var rng = h;
     if (!rng && W.PokeHasard) {
-      rng = new W.PokeHasard(session && session.graine ? session.graine : 123456);
+      var sourceGraine = (session && session.graine)
+        ? (session.graine + "-adv-" + (session.combatGlobal || 1))
+        : 123456;
+      rng = new W.PokeHasard(sourceGraine);
     }
 
     var combatGlobal = session.combatGlobal;

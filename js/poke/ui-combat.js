@@ -2185,7 +2185,7 @@
     //     c'est le contre-jeu tranché le 13/08, et l'éteindre le supprimerait.
     // ═══════════════════════════════════════════════════════════════════════
     var pris = W.PokeCombat.tourForce ? W.PokeCombat.tourForce(this.etat) : null;
-    if (!this.opt.duel) {
+    if (!this.opt.duel && !this.opt.usine) {
       var bSac = this.bouton(T("aSac"), function () { self.menuSac(); },
         { desactive: !!pris, note: pris ? raisonDite(pris.raison) : null });
       if (pris) {

@@ -58,16 +58,21 @@ function createMockElement(tag = "div") {
   const classes = new Set();
   const children = [];
   const listeners = new Map();
+  const cachedQueries = new Map();
 
   const el = {
     tagName: tag.toUpperCase(),
     className: "",
-    innerHTML: "",
+    _innerHTML: "",
     textContent: "",
     disabled: false,
     dataset: {},
     parentNode: null,
     children: children,
+    style: {
+      setProperty: () => {},
+      getPropertyValue: () => "",
+    },
     getAttribute: (name) => attrs.get(name) || null,
     setAttribute: (name, val) => attrs.set(name, String(val)),
     removeAttribute: (name) => attrs.delete(name),
@@ -98,20 +103,58 @@ function createMockElement(tag = "div") {
       for (const fn of list) fn(ev);
     },
     querySelector: (sel) => {
+      if (cachedQueries.has(sel)) {
+        return cachedQueries.get(sel);
+      }
       if (el.innerHTML && typeof el.innerHTML === "string") {
         if (sel.startsWith("#")) {
           const id = sel.slice(1);
           if (el.innerHTML.includes(`id="${id}"`) || el.innerHTML.includes(`id='${id}'`)) {
             const found = createMockElement("div");
             found.id = id;
+            found.setAttribute("id", id);
+            cachedQueries.set(sel, found);
             return found;
           }
         }
       }
-      return createMockElement(sel && sel.includes("img") ? "img" : "div");
+      for (const child of children) {
+        if (sel.startsWith("#") && child.getAttribute("id") === sel.slice(1)) {
+          return child;
+        }
+        if (sel.startsWith(".") && child.classList.contains(sel.slice(1))) {
+          return child;
+        }
+      }
+      const dummy = createMockElement(sel && sel.includes("img") ? "img" : "div");
+      cachedQueries.set(sel, dummy);
+      return dummy;
     },
     querySelectorAll: (sel) => [],
   };
+
+  Object.defineProperty(el, "innerHTML", {
+    get: () => el._innerHTML || "",
+    set: (val) => {
+      el._innerHTML = String(val);
+      cachedQueries.clear();
+      if (val === "") {
+        children.length = 0;
+      }
+    },
+  });
+
+  Object.defineProperty(el, "firstChild", {
+    get: () => {
+      if (children.length === 0) {
+        const dummy = createMockElement("div");
+        children.push(dummy);
+        return dummy;
+      }
+      return children[0];
+    },
+  });
+
   return el;
 }
 
@@ -391,6 +434,102 @@ test("ouvrirDraft allows selecting exactly 3 cards and confirming team", () => {
   assert.strictEqual(session.equipe.length, 3, "Team must have 3 Pokémon after selection");
   assert.strictEqual(session.statut, "combat", "Status must switch to combat");
   assert.ok(session.adversaire, "Opponent must be drawn");
+});
+
+test("ouvrirHall and graineAlea create genuinely random sessions without repeats", () => {
+  initFullContext();
+  const U = fullCtx.PokeUIUsine;
+  const cible1 = createMockElement("div");
+  U.ouvrirHall({ cible: cible1 });
+  const btn1 = cible1.querySelector("#pk-usine-nouveau");
+  btn1.click();
+  const etat1 = fullCtx.PokeProgression.usineLire();
+  assert.ok(etat1.session, "Session must be created");
+  assert.ok(etat1.session.graine.startsWith("USINE-"), "Graine must start with USINE-");
+
+  const cible2 = createMockElement("div");
+  U.ouvrirHall({ cible: cible2 });
+  const btn2 = cible2.querySelector("#pk-usine-nouveau");
+  btn2.click();
+  const etat2 = fullCtx.PokeProgression.usineLire();
+  assert.notStrictEqual(etat1.session.graine, etat2.session.graine, "Seeds must differ across runs");
+});
+
+test("tirerAdversaire generates varied opponents across matches within the same run", () => {
+  initFullContext();
+  const session = fullCtx.PokeUsine.creerSession({ graine: "TEST-VARIED-RUN" });
+  session.combatGlobal = 1;
+  const adv1 = fullCtx.PokeUsine.tirerAdversaire(session);
+
+  session.combatGlobal = 2;
+  const adv2 = fullCtx.PokeUsine.tirerAdversaire(session);
+
+  assert.notStrictEqual(
+    adv1.nom + adv1.equipe.map(p => p.n).join(","),
+    adv2.nom + adv2.equipe.map(p => p.n).join(","),
+    "Opponent trainer and Pokémon must vary between matches"
+  );
+});
+
+test("lancerCombat mounts real PokeUICombat.Ecran and has zero fake simulation buttons", () => {
+  initFullContext();
+  const U = fullCtx.PokeUIUsine;
+  const session = fullCtx.PokeUsine.creerSession({ graine: "TEST-COMBAT-REAL" });
+  fullCtx.PokeUsine.choisirEquipeInitiale(session, [0, 1, 2]);
+
+  let ecranOptionsRecues = null;
+  let ecranMonte = false;
+  const EcranOriginal = fullCtx.PokeUICombat.Ecran;
+  fullCtx.PokeUICombat.Ecran = function (hote, etat, options) {
+    ecranMonte = true;
+    ecranOptionsRecues = options;
+    return new EcranOriginal(hote, etat, options);
+  };
+
+  const cible = createMockElement("div");
+  const html = U.lancerCombat(session, { cible });
+  const content = html || cible.innerHTML;
+
+  assert.ok(ecranMonte, "PokeUICombat.Ecran must be instantiated on lancerCombat");
+  assert.ok(ecranOptionsRecues, "Ecran must receive options");
+  assert.strictEqual(ecranOptionsRecues.usine, true, "Ecran options must specify usine: true");
+  assert.strictEqual(ecranOptionsRecues.dresseur, true, "Ecran options must specify dresseur: true");
+  assert.ok(ecranOptionsRecues.hasard, "Ecran options must supply valid hasard instance");
+  assert.strictEqual(typeof ecranOptionsRecues.hasard.dans, "function", "hasard must have .dans method");
+  assert.strictEqual(typeof ecranOptionsRecues.surFin, "function", "Ecran options must supply surFin callback");
+
+  // Verify fake simulation buttons are completely gone
+  assert.ok(!content.includes("pk-combat-simuler-victoire"), "Must NOT contain fake simulation victory button");
+  assert.ok(!content.includes("pk-combat-simuler-defaite"), "Must NOT contain fake simulation defeat button");
+  assert.ok(!content.includes("Résoudre Combat"), "Must NOT contain fake simulation resolution labels");
+
+  // Restore Ecran
+  fullCtx.PokeUICombat.Ecran = EcranOriginal;
+});
+
+test("PokeUICombat.Ecran suppresses bag button when usine: true", () => {
+  initFullContext();
+  const session = fullCtx.PokeUsine.creerSession({ graine: "TEST-SAC-SUPPRESSION" });
+  fullCtx.PokeUsine.choisirEquipeInitiale(session, [0, 1, 2]);
+
+  const h = new fullCtx.PokeHasard("TEST-SAC-SUPPRESSION-COMBAT");
+  const adv = fullCtx.PokeUsine.tirerAdversaire(session, h);
+  const etatCombat = fullCtx.PokeCombat.demarrer(session.equipe, adv.equipe, { dresseur: true }, h);
+
+  const hote = createMockElement("div");
+  const ecran = new fullCtx.PokeUICombat.Ecran(hote, etatCombat, {
+    hasard: h,
+    dresseur: true,
+    usine: true,
+  });
+
+  const actionsEl = ecran.elActions;
+  const boutons = actionsEl.children || [];
+  const libelles = boutons.map(b => b.textContent);
+  assert.ok(!libelles.some(l => l.includes("Sac") || l.includes("SAC")), "SAC button must NOT appear in actions when usine: true");
+  assert.ok(libelles.some(l => l.includes("Attaque") || l.includes("ATTAQUE") || l.includes("ATTAQUER")), "Attack button must appear");
+  assert.ok(libelles.some(l => l.includes("Équipe") || l.includes("ÉQUIPE")), "Team switch button must appear");
+  assert.ok(libelles.some(l => l.includes("Abandonner") || l.includes("ABANDONNER")), "Abandon button must appear for trainer battle");
 });
 
 test("ouvrirEchange presents both teams side by side for post-match swap", () => {

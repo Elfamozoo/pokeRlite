@@ -1,4 +1,4 @@
-﻿/* ═══════════════════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════════════════
    MODE POKÉMON — FEUILLE AUTONOME
 
    🔴 Elle n'importe RIEN. Ni style.css, ni dbz.css. Tous les jetons du mode
@@ -7153,3 +7153,564 @@ body.encre .pkdx {
   .pk-maj { gap: 6px; padding: 8px 10px; }
   .pk-maj-go, .pk-maj-x { padding: 0 9px; font-size: 0.72rem; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ZONE DE COMBAT — USINE DE COMBAT (BATTLE FACTORY)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.pk-usine-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+  color: var(--texte);
+}
+
+.pk-usine-banniere {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: var(--sur-fond);
+  border: 1px solid var(--trait);
+  border-radius: 12px;
+  border-bottom: 3px solid var(--hud-signature);
+  box-shadow: var(--ombre-2);
+}
+
+.pk-usine-titre {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--titre);
+  margin: 0 0 6px 0;
+  letter-spacing: 0.02em;
+}
+
+.pk-usine-sous-titre {
+  font-size: 0.95rem;
+  color: var(--encre-douce);
+}
+
+.pk-usine-stats-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.pk-stat-boite {
+  background: var(--sur-fond);
+  border: 1px solid var(--trait);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+  box-shadow: var(--ombre-1);
+}
+
+.pk-stat-valeur {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--titre);
+  margin-bottom: 4px;
+}
+
+.pk-stat-libelle {
+  font-size: 0.8rem;
+  color: var(--encre-douce);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pk-stat-symbole.a-symbole {
+  color: #f1c40f;
+  font-weight: 700;
+}
+
+.pk-stat-symbole.pas-symbole {
+  color: var(--encre-douce);
+  opacity: 0.5;
+}
+
+.pk-regles-rappel {
+  background: var(--sur-fond);
+  border: 1px solid var(--trait);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--texte);
+}
+
+.pk-regles-rappel h3 {
+  font-size: 0.95rem;
+  color: var(--titre);
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.pk-regles-rappel ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.pk-usine-actions,
+.pk-draft-actions,
+.pk-swap-actions,
+.pk-victoire-actions,
+.pk-defaite-actions,
+.pk-boutique-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* ── Écran de Draft ───────────────────────────────────────────────────────── */
+.pk-draft-en-tete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pk-draft-instruction {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--titre);
+}
+
+.pk-draft-compteur {
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--sur-fond);
+  border: 1px solid var(--trait-fort);
+  color: var(--titre);
+}
+
+.pk-draft-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.pk-draft-carte-wrapper {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.pk-draft-carte-wrapper:hover {
+  transform: translateY(-2px);
+}
+
+/* ── Carte de Pokémon Riche ──────────────────────────────────────────────── */
+.pk-carte-mon {
+  background: var(--sur-fond);
+  border: 2px solid var(--trait);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: var(--ombre-1);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.pk-carte-mon.est-selectionne {
+  border-color: var(--hud-signature);
+  box-shadow: 0 0 0 2px var(--hud-signature), var(--ombre-3);
+  background: rgba(180, 39, 29, 0.06);
+}
+
+.pk-carte-en-tete {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--trait);
+}
+
+.pk-carte-sprite {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.pk-carte-identite {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pk-carte-nom {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--titre);
+  margin-bottom: 4px;
+}
+
+.pk-carte-niveau {
+  font-size: 0.78rem;
+  color: var(--encre-douce);
+  font-weight: normal;
+  margin-left: 4px;
+}
+
+.pk-carte-types {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.pk-badge-type {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--trait-fort);
+  color: var(--papier);
+}
+
+.pk-badge-type.pk-type-normal   { background: #a8a878; color: #222; }
+.pk-badge-type.pk-type-feu      { background: #f08030; color: #fff; }
+.pk-badge-type.pk-type-eau      { background: #6890f0; color: #fff; }
+.pk-badge-type.pk-type-plante   { background: #78c850; color: #fff; }
+.pk-badge-type.pk-type-electrik { background: #f8d030; color: #222; }
+.pk-badge-type.pk-type-glace    { background: #98d8d8; color: #222; }
+.pk-badge-type.pk-type-combat   { background: #c03028; color: #fff; }
+.pk-badge-type.pk-type-poison   { background: #a040a0; color: #fff; }
+.pk-badge-type.pk-type-sol      { background: #e0c068; color: #222; }
+.pk-badge-type.pk-type-vol      { background: #a890f0; color: #fff; }
+.pk-badge-type.pk-type-psy      { background: #f85888; color: #fff; }
+.pk-badge-type.pk-type-insecte  { background: #a8b820; color: #fff; }
+.pk-badge-type.pk-type-roche    { background: #b8a038; color: #fff; }
+.pk-badge-type.pk-type-spectre  { background: #705898; color: #fff; }
+.pk-badge-type.pk-type-dragon   { background: #7038f8; color: #fff; }
+.pk-badge-type.pk-type-acier    { background: #b8b8d0; color: #222; }
+.pk-badge-type.pk-type-tenebres { background: #705848; color: #fff; }
+
+.pk-carte-corps {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pk-carte-ligne {
+  color: var(--texte);
+}
+
+.pk-talent-desc {
+  color: var(--encre-douce);
+  font-style: italic;
+}
+
+.pk-carte-attaques-bloc {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--trait);
+}
+
+.pk-attaques-titre {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--encre-douce);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  letter-spacing: 0.04em;
+}
+
+.pk-mon-attaque-ligne {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.8rem;
+  padding: 2px 0;
+  border-bottom: 1px dashed rgba(255,255,255,0.06);
+}
+
+.pk-mon-att-nom {
+  font-weight: 600;
+  color: var(--titre);
+}
+
+.pk-mon-att-meta {
+  font-size: 0.72rem;
+  color: var(--encre-douce);
+}
+
+/* ── Écran de Combat ─────────────────────────────────────────────────────── */
+.pk-usine-combat {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pk-usine-combat-en-tete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--sur-fond);
+  border: 1px solid var(--trait);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pk-usine-match-info {
+  font-weight: 700;
+  color: var(--titre);
+}
+
+.pk-adversaire-titre {
+  font-weight: 600;
+  color: var(--encre-douce);
+}
+
+.pk-combat-hote-zone {
+  position: relative;
+  min-height: 480px;
+  width: 100%;
+}
+
+.pk-boss-intro-banniere {
+  background: linear-gradient(135deg, rgba(180, 39, 29, 0.25) 0%, rgba(241, 196, 15, 0.2) 100%);
+  border: 2px solid #f1c40f;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 12px;
+  box-shadow: 0 0 16px rgba(241, 196, 15, 0.2);
+}
+
+.pk-boss-titre {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #f1c40f;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.pk-boss-nom {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--titre);
+  margin-bottom: 6px;
+}
+
+.pk-boss-dialogue {
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--encre-douce);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ── Échange d'Après-Match (ouvrirEchange) ────────────────────────────────── */
+.pk-swap-en-tete {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.pk-swap-colonnes-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.pk-swap-colonne {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pk-swap-col-titre {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--titre);
+  text-align: center;
+  padding: 8px;
+  background: var(--sur-fond);
+  border: 1px solid var(--trait);
+  border-radius: 8px;
+}
+
+.pk-swap-carte-wrap {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.pk-swap-carte-wrap:hover {
+  transform: scale(1.01);
+}
+
+/* ── Victoire Série & Défaite ────────────────────────────────────────────── */
+.pk-victoire-recap,
+.pk-defaite-recap {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.pk-victoire-stat,
+.pk-defaite-stat {
+  font-size: 1.05rem;
+  padding: 12px 20px;
+  background: var(--sur-fond);
+  border: 1px solid var(--trait);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.pk-symbole-debloque {
+  text-align: center;
+  padding: 20px;
+  background: rgba(241, 196, 15, 0.1);
+  border: 2px solid #f1c40f;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.pk-symbole-embleme {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+.pk-symbole-titre {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #f1c40f;
+  margin-bottom: 8px;
+}
+
+.pk-dialogue-noland {
+  font-style: italic;
+  color: var(--texte);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.pk-defaite-conseil {
+  font-style: italic;
+  color: var(--encre-douce);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* ── Boutique PCo (Battle Shop) ──────────────────────────────────────────── */
+.pk-boutique-en-tete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pk-boutique-solde {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f1c40f;
+  padding: 8px 16px;
+  background: var(--sur-fond);
+  border: 1px solid #f1c40f;
+  border-radius: 20px;
+}
+
+.pk-boutique-filtres {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.pk-filtre-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--trait-fort);
+  background: var(--sur-fond);
+  color: var(--texte);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pk-filtre-btn.est-actif {
+  background: var(--hud-signature);
+  color: var(--papier);
+  border-color: transparent;
+  font-weight: 700;
+}
+
+.pk-boutique-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.pk-boutique-carte {
+  background: var(--sur-fond);
+  border: 1px solid var(--trait);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  box-shadow: var(--ombre-1);
+}
+
+.pk-boutique-item-nom {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--titre);
+}
+
+.pk-boutique-prix {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f1c40f;
+}
+
+.pk-boutique-desc {
+  font-size: 0.78rem;
+  color: var(--encre-douce);
+  line-height: 1.35;
+  flex: 1 1 auto;
+}
+
+.pk-boutique-reserve {
+  display: inline-block;
+  font-size: 0.72rem;
+  color: #6890f0;
+  background: rgba(104, 144, 240, 0.12);
+  border: 1px solid rgba(104, 144, 240, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .pk-swap-colonnes-wrap {
+    grid-template-columns: 1fr;
+  }
+  .pk-draft-grille {
+    grid-template-columns: 1fr;
+  }
+}
+
