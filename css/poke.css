@@ -45,11 +45,19 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── L'ardoise ────────────────────────────────────────────────────────────
-     On ne « tient » plus un appareil qui mangeait l'écran : on regarde une
-     carte. Le fond est une nuit bleue profonde, pour que la feuille de contenu
-     et les artworks s'en détachent franchement. */
-  --fond: #0d1420;
+  /* ── L'ardoise & Surfaces Showdown (Dark Slate) ─────────────────────────── */
+  --fond: #080c14;
+  --surface-base: #0f172a;
+  --surface-carte: #1e293b;
+  --surface-survol: #334155;
+  --bordure-nette: #334155;
+  --bordure-focus: #38bdf8;
+  --bordure-douce: rgba(255, 255, 255, 0.08);
+
+  /* ── Typographie Showdown Haute Lisibilité ──────────────────────────────── */
+  --texte-principal: #f8fafc;
+  --texte-secondaire: #94a3b8;
+  --texte-discret: #64748b;
 
   /* ── La coque, réduite à son en-tête ──────────────────────────────────────
      Le Pokédex ne CONTIENT plus le jeu — il en reste l'emblème, compressé dans
@@ -224,7 +232,7 @@
         de l'effacer. Pikachu de dos sortait dans une plaque plus claire que
         la scène. La couleur exacte n'est donc pas un goût, c'est une
         contrainte : la profondeur vient du cadre et des deux plateformes. */
-  --arene-ecran: #ffffff;
+  --arene-ecran: #0f172a;
   --arene-cadre: #3f4f6c;
 
   /* Le rouge du définitif. Pokémon perdu, légendaire enfui, branche laissée.
@@ -247,54 +255,53 @@
      dans le même bandeau, écrits trois fois. */
   --vitre: rgba(255, 255, 255, 0.45);
 
-  --sur-fond: #ffffff;
-  /* 🔴 `--relief` ÉTAIT EMPLOYÉ TROIS FOIS ET DÉCLARÉ NULLE PART. Il vit dans
-     `css/style.css`, que `pokemon.html` ne charge pas — la page n'a QU'UNE
-     feuille. Sans repli, `var(--relief)` invalide la déclaration au calcul :
-     la Poké Ball de capture sortait donc SANS REMPLISSAGE (un cercle vide et
-     sa bordure) sur l'écran le plus tendu du mode, et le balayage de
-     l'évolution ne se jouait pas du tout. Trouvé par audit, jamais signalé —
-     un fond absent ne casse rien, il manque, et ça ne se voit qu'en sachant.
-     C'est la moitié CLAIRE d'un objet : la coque de la Ball, la lueur du
-     balayage. */
+  --sur-fond: #1e293b;
   --relief: var(--sur-fond);
 
-  /* Les deux couleurs de la barre de points de vie. 🔴 Ce sont des ÉTATS, pas
-     de la décoration — c'est l'alarme du jeu d'origine, et elle porte
-     l'information la plus urgente de l'écran. Le 3e palier réemploie --sceau. */
-  --pv-haut: #48a83c;
-  --pv-moyen: #d9a638;
+  /* Les jauges dynamiques Showdown et couleurs de santé. */
+  --pv-haut: #22c55e;
+  --pv-moyen: #eab308;
+  --hp-haut: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+  --hp-moyen: linear-gradient(180deg, #eab308 0%, #ca8a04 100%);
+  --hp-critique: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
 
-  /* ── Les quinze types ─────────────────────────────────────────────────────
-     LA CHROMATIQUE DU JEU. Ces valeurs ne sont lues que par les quinze règles
-     `[data-type=…]` plus bas, qui ne font que poser `--teinte`. */
-  --type-normal: #a8a878;
-  --type-fighting: #c03028;
-  --type-flying: #a890f0;
-  --type-poison: #a040a0;
-  --type-ground: #e0c068;
-  --type-rock: #b8a038;
-  --type-bug: #a8b820;
-  --type-ghost: #705898;
-  --type-fire: #f08030;
-  --type-water: #6890f0;
-  --type-grass: #78c850;
-  --type-electric: #f8d030;
-  --type-psychic: #f85888;
-  --type-ice: #98d8d8;
-  --type-dragon: #7038f8;
-  /* 🔴 LES DEUX TYPES DE LA SECONDE GÉNÉRATION. Les valeurs sont celles du
-     canon ; ce qui a été DÉCIDÉ ici, c'est l'encre posée dessus, et elle a été
-     mesurée au lieu d'être devinée :
-       Ténèbres #705848 — encre claire 6,61:1 (Spectre, la plus proche, est à
-                          5,94:1 avec le même choix) ;
-       Acier    #b8b8d0 — encre sombre 9,14:1 (Glace, la plus proche, 11,13:1).
-     ⚠️ Ces deux règles ne servent à personne tant que la gen 2 est fermée. Ce
-        n'est pas du style mort : une couleur de type absente le jour de
-        l'ouverture donnerait deux types sans teinte, donc gris, sur tous les
-        écrans à la fois. On la pose avec la donnée, pas après. */
-  --type-dark: #705848;
-  --type-steel: #b8b8d0;
+  /* ── Les dix-huit types Showdown ───────────────────────────────────────────
+     Palette officielle vibrante Pokémon Showdown. */
+  --type-normal: #9099a1;
+  --type-feu: #ff9c54;
+  --type-eau: #4f90d5;
+  --type-plante: #63bb5b;
+  --type-electrik: #f3d23b;
+  --type-glace: #74cec0;
+  --type-combat: #ce4069;
+  --type-poison: #ab6ac8;
+  --type-sol: #d97746;
+  --type-vol: #8fa8dd;
+  --type-psy: #f97176;
+  --type-insecte: #90c12c;
+  --type-roche: #c7b78b;
+  --type-spectre: #5269ac;
+  --type-dragon: #096dc4;
+  --type-acier: #5a8fa3;
+  --type-tenebres: #5a5366;
+  --type-fee: #ec8fe6;
+
+  /* Alias anglophones pour compatibilité de code */
+  --type-fire: var(--type-feu);
+  --type-water: var(--type-eau);
+  --type-grass: var(--type-plante);
+  --type-electric: var(--type-electrik);
+  --type-ice: var(--type-glace);
+  --type-fighting: var(--type-combat);
+  --type-ground: var(--type-sol);
+  --type-flying: var(--type-vol);
+  --type-psychic: var(--type-psy);
+  --type-bug: var(--type-insecte);
+  --type-rock: var(--type-roche);
+  --type-ghost: var(--type-spectre);
+  --type-steel: var(--type-acier);
+  --type-dark: var(--type-tenebres);
+  --type-fairy: var(--type-fee);
 
   /* ── L'échelle ────────────────────────────────────────────────────────────
      🔴 L'ancienne échelle plafonnait à 15 px : elle venait du pastiche « écran
@@ -346,36 +353,24 @@
       reste consomme `--teinte`. Donc aucune couleur de type ne peut atteindre
       l'écran sans que le DOM ait nommé le type — c'est la loi du mode, et elle
       tient en quinze lignes au lieu d'une promesse. */
-[data-type="normal"] { --teinte: var(--type-normal); --sur-teinte: var(--feuille-encre); }
-[data-type="fighting"] { --teinte: var(--type-fighting); --sur-teinte: var(--sur-fond); }
-[data-type="flying"] { --teinte: var(--type-flying); --sur-teinte: var(--feuille-encre); }
-[data-type="poison"] { --teinte: var(--type-poison); --sur-teinte: var(--sur-fond); }
-[data-type="ground"] { --teinte: var(--type-ground); --sur-teinte: var(--feuille-encre); }
-/* 🔴 ROCHE ET EAU ÉTAIENT SOUS LE SEUIL, ET SEULS LES DEUX. Mesuré sur les
-   quinze pastilles : blanc sur Roche donne 2,59:1, sur Eau 3,07:1 — il en faut
-   4,5 pour 11 px. Les treize autres passent largement.
-   L'encre sombre les porte à 6,87 et 5,78 sans toucher d'un point à la TEINTE :
-   la loi du mode réserve la couleur aux types, et elle est respectée — c'est
-   le libellé qui change d'encre, pas le type qui change de couleur.
-
-   ⚠️ `--feuille-encre`, PAS `--encre`. Sur le plateau sombre, `--encre` vaut
-      #eef3fb : c'est l'encre de la SURFACE, et elle bascule avec le thème.
-      Les couleurs de type, elles, ne basculent pas — un fond bleu Eau reste
-      bleu Eau. Le libellé posé dessus a donc besoin d'une encre FIXE, sinon
-      le correctif ne s'applique que dans la moitié claire du mode. Premier
-      jet mesuré à 2,76:1 : rien n'avait changé. */
-[data-type="rock"] { --teinte: var(--type-rock); --sur-teinte: var(--feuille-encre); }
-[data-type="bug"] { --teinte: var(--type-bug); --sur-teinte: var(--feuille-encre); }
-[data-type="ghost"] { --teinte: var(--type-ghost); --sur-teinte: var(--sur-fond); }
-[data-type="fire"] { --teinte: var(--type-fire); --sur-teinte: var(--feuille-encre); }
-[data-type="water"] { --teinte: var(--type-water); --sur-teinte: var(--feuille-encre); }
-[data-type="grass"] { --teinte: var(--type-grass); --sur-teinte: var(--feuille-encre); }
-[data-type="electric"] { --teinte: var(--type-electric); --sur-teinte: var(--feuille-encre); }
-[data-type="psychic"] { --teinte: var(--type-psychic); --sur-teinte: var(--feuille-encre); }
-[data-type="ice"] { --teinte: var(--type-ice); --sur-teinte: var(--feuille-encre); }
-[data-type="dragon"] { --teinte: var(--type-dragon); --sur-teinte: var(--sur-fond); }
-[data-type="dark"] { --teinte: var(--type-dark); --sur-teinte: var(--sur-fond); }
-[data-type="steel"] { --teinte: var(--type-steel); --sur-teinte: var(--feuille-encre); }
+[data-type="normal"] { --teinte: var(--type-normal); --sur-teinte: #222; }
+[data-type="fighting"], [data-type="combat"] { --teinte: var(--type-combat); --sur-teinte: #fff; }
+[data-type="flying"], [data-type="vol"] { --teinte: var(--type-vol); --sur-teinte: #fff; }
+[data-type="poison"] { --teinte: var(--type-poison); --sur-teinte: #fff; }
+[data-type="ground"], [data-type="sol"] { --teinte: var(--type-sol); --sur-teinte: #fff; }
+[data-type="rock"], [data-type="roche"] { --teinte: var(--type-roche); --sur-teinte: #222; }
+[data-type="bug"], [data-type="insecte"] { --teinte: var(--type-insecte); --sur-teinte: #222; }
+[data-type="ghost"], [data-type="spectre"] { --teinte: var(--type-spectre); --sur-teinte: #fff; }
+[data-type="fire"], [data-type="feu"] { --teinte: var(--type-feu); --sur-teinte: #fff; }
+[data-type="water"], [data-type="eau"] { --teinte: var(--type-eau); --sur-teinte: #fff; }
+[data-type="grass"], [data-type="plante"] { --teinte: var(--type-plante); --sur-teinte: #fff; }
+[data-type="electric"], [data-type="electrik"] { --teinte: var(--type-electrik); --sur-teinte: #222; }
+[data-type="psychic"], [data-type="psy"] { --teinte: var(--type-psy); --sur-teinte: #fff; }
+[data-type="ice"], [data-type="glace"] { --teinte: var(--type-glace); --sur-teinte: #222; }
+[data-type="dragon"] { --teinte: var(--type-dragon); --sur-teinte: #fff; }
+[data-type="dark"], [data-type="tenebres"] { --teinte: var(--type-tenebres); --sur-teinte: #fff; }
+[data-type="steel"], [data-type="acier"] { --teinte: var(--type-acier); --sur-teinte: #fff; }
+[data-type="fairy"], [data-type="fee"] { --teinte: var(--type-fee); --sur-teinte: #fff; }
 
 /* ═══ LE CORPS ═════════════════════════════════════════════════════════════ */
 body.mode-poke {
@@ -7378,23 +7373,24 @@ body.encre .pkdx {
   color: var(--papier);
 }
 
-.pk-badge-type.pk-type-normal   { background: #a8a878; color: #222; }
-.pk-badge-type.pk-type-feu      { background: #f08030; color: #fff; }
-.pk-badge-type.pk-type-eau      { background: #6890f0; color: #fff; }
-.pk-badge-type.pk-type-plante   { background: #78c850; color: #fff; }
-.pk-badge-type.pk-type-electrik { background: #f8d030; color: #222; }
-.pk-badge-type.pk-type-glace    { background: #98d8d8; color: #222; }
-.pk-badge-type.pk-type-combat   { background: #c03028; color: #fff; }
-.pk-badge-type.pk-type-poison   { background: #a040a0; color: #fff; }
-.pk-badge-type.pk-type-sol      { background: #e0c068; color: #222; }
-.pk-badge-type.pk-type-vol      { background: #a890f0; color: #fff; }
-.pk-badge-type.pk-type-psy      { background: #f85888; color: #fff; }
-.pk-badge-type.pk-type-insecte  { background: #a8b820; color: #fff; }
-.pk-badge-type.pk-type-roche    { background: #b8a038; color: #fff; }
-.pk-badge-type.pk-type-spectre  { background: #705898; color: #fff; }
-.pk-badge-type.pk-type-dragon   { background: #7038f8; color: #fff; }
-.pk-badge-type.pk-type-acier    { background: #b8b8d0; color: #222; }
-.pk-badge-type.pk-type-tenebres { background: #705848; color: #fff; }
+.pk-badge-type.pk-type-normal   { background: var(--type-normal); color: #222; }
+.pk-badge-type.pk-type-feu      { background: var(--type-feu); color: #fff; }
+.pk-badge-type.pk-type-eau      { background: var(--type-eau); color: #fff; }
+.pk-badge-type.pk-type-plante   { background: var(--type-plante); color: #fff; }
+.pk-badge-type.pk-type-electrik { background: var(--type-electrik); color: #222; }
+.pk-badge-type.pk-type-glace    { background: var(--type-glace); color: #222; }
+.pk-badge-type.pk-type-combat   { background: var(--type-combat); color: #fff; }
+.pk-badge-type.pk-type-poison   { background: var(--type-poison); color: #fff; }
+.pk-badge-type.pk-type-sol      { background: var(--type-sol); color: #fff; }
+.pk-badge-type.pk-type-vol      { background: var(--type-vol); color: #fff; }
+.pk-badge-type.pk-type-psy      { background: var(--type-psy); color: #fff; }
+.pk-badge-type.pk-type-insecte  { background: var(--type-insecte); color: #222; }
+.pk-badge-type.pk-type-roche    { background: var(--type-roche); color: #222; }
+.pk-badge-type.pk-type-spectre  { background: var(--type-spectre); color: #fff; }
+.pk-badge-type.pk-type-dragon   { background: var(--type-dragon); color: #fff; }
+.pk-badge-type.pk-type-acier    { background: var(--type-acier); color: #fff; }
+.pk-badge-type.pk-type-tenebres { background: var(--type-tenebres); color: #fff; }
+.pk-badge-type.pk-type-fee      { background: var(--type-fee); color: #fff; }
 
 .pk-carte-corps {
   font-size: 0.85rem;
@@ -7713,4 +7709,351 @@ body.encre .pkdx {
     grid-template-columns: 1fr;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REFONTE SHOWDOWN : GABARIT DE COMBAT, ARÈNE, HEALTHBOXES, GRILLE & LOG
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Conteneur de combat Showdown principal (responsive 2 colonnes bureau / 1 colonne mobile) */
+.pk-showdown-combat {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 16px;
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 820px) {
+  .pk-showdown-combat {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Colonne de gauche (Arène + Pupitre d'actions) */
+.pk-combat-principal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Arène style Showdown avec perspective stadium */
+.pk-arene-showdown {
+  position: relative;
+  height: 380px;
+  background: radial-gradient(ellipse at center bottom, #1e293b 0%, #0f172a 70%, #080c14 100%);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--ombre-2);
+  perspective: 600px;
+}
+
+/* Socles des Pokémon (adverse haut-droite, joueur bas-gauche) */
+.pk-arene-socle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pk-arene-socle[data-cote="adverse"],
+.pk-arene-socle.adverse {
+  top: 75px;
+  right: 80px;
+  width: 180px;
+  height: 50px;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.25) 0%, rgba(15, 23, 42, 0.6) 80%);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.pk-arene-socle[data-cote="joueur"],
+.pk-arene-socle.joueur {
+  bottom: 40px;
+  left: 80px;
+  width: 220px;
+  height: 60px;
+  background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.25) 0%, rgba(15, 23, 42, 0.6) 80%);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+/* Sprites positionnés sur les socles */
+.pk-sprite-combattant {
+  position: absolute;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+  transition: transform 0.25s ease, filter 0.25s ease;
+  user-select: none;
+  pointer-events: none;
+}
+
+.pk-sprite-combattant[data-cote="adverse"],
+.pk-sprite-combattant.adverse {
+  top: 30px;
+  right: 120px;
+  width: 96px;
+  height: 96px;
+}
+
+.pk-sprite-combattant[data-cote="joueur"],
+.pk-sprite-combattant.joueur {
+  bottom: 35px;
+  left: 130px;
+  width: 112px;
+  height: 112px;
+}
+
+/* Fiches flottantes de statut (Showdown Healthboxes) */
+.pk-healthbox {
+  position: absolute;
+  background: var(--surface-carte);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  min-width: 200px;
+  z-index: 10;
+  color: var(--texte-principal);
+  box-sizing: border-box;
+}
+
+.pk-healthbox[data-cote="adverse"],
+.pk-healthbox.adverse {
+  top: 24px;
+  left: 24px;
+}
+
+.pk-healthbox[data-cote="joueur"],
+.pk-healthbox.joueur {
+  bottom: 30px;
+  right: 24px;
+}
+
+.pk-healthbox-en-tete {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.pk-healthbox-nom {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--texte-principal);
+}
+
+.pk-healthbox-niveau {
+  font-size: 0.78rem;
+  color: var(--texte-secondaire);
+  font-weight: 600;
+}
+
+.pk-healthbox-statut {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-left: 6px;
+}
+
+/* Jauge de PV Showdown */
+.pk-healthbar-cadre {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  padding: 2px;
+  height: 14px;
+  box-sizing: border-box;
+}
+
+.pk-healthbar {
+  height: 10px;
+  border-radius: 4px;
+  background: var(--hp-haut);
+  transition: width 0.4s ease, background 0.4s ease;
+  width: 100%;
+}
+
+.pk-healthbar.hp-haut {
+  background: var(--hp-haut);
+}
+
+.pk-healthbar.hp-moyen {
+  background: var(--hp-moyen);
+}
+
+.pk-healthbar.hp-critique {
+  background: var(--hp-critique);
+}
+
+.pk-healthbox-chiffres {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--texte-secondaire);
+  margin-top: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Pupitre de commande d'actions */
+.pk-actions-showdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Grille de capacités 2×2 Showdown */
+.pk-grille-attaques {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.pk-attaque-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--bordure-nette);
+  background: var(--surface-carte);
+  color: var(--texte-principal);
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.1s ease, filter 0.15s ease, border-color 0.15s ease;
+  position: relative;
+  min-height: 54px;
+  box-sizing: border-box;
+}
+
+.pk-attaque-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+  border-color: var(--bordure-focus);
+}
+
+.pk-attaque-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.pk-attaque-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+}
+
+.pk-attaque-haut {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.pk-attaque-bas {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  color: var(--texte-secondaire);
+  margin-top: 4px;
+}
+
+.pk-cat-tag {
+  font-size: 0.65rem;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pk-cat-tag.physique { background: #ce4069; color: #fff; }
+.pk-cat-tag.special { background: #4f90d5; color: #fff; }
+.pk-cat-tag.statut { background: #9099a1; color: #fff; }
+
+/* Boutons tactiques auxiliaires (Équipe, Sac, Fuir) */
+.pk-barre-tactique {
+  display: flex;
+  gap: 8px;
+}
+
+.pk-btn-tactique {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--surface-carte);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 6px;
+  color: var(--texte-principal);
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.pk-btn-tactique:hover:not(:disabled) {
+  background: var(--surface-survol);
+  border-color: var(--bordure-focus);
+}
+
+/* Journal de combat en direct (Live Battle Log) */
+.pk-battle-log {
+  background: var(--surface-base);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 12px;
+  padding: 12px;
+  max-height: 380px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--texte);
+  font-size: 0.82rem;
+  color: var(--texte-secondaire);
+  box-shadow: var(--ombre-1);
+  box-sizing: border-box;
+}
+
+.pk-log-tour {
+  font-weight: 700;
+  color: var(--texte-principal);
+  border-bottom: 1px solid var(--bordure-douce);
+  padding: 4px 0;
+  margin-top: 6px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.pk-log-ligne {
+  line-height: 1.4;
+  padding: 2px 0;
+}
+
+.pk-log-ligne strong {
+  color: var(--texte-principal);
+}
+
+.pk-log-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-right: 4px;
+}
+
+.pk-log-badge.critique { background: #ef4444; color: #fff; }
+.pk-log-badge.efficace { background: #22c55e; color: #fff; }
+.pk-log-badge.inefficace { background: #64748b; color: #fff; }
+.pk-log-badge.talent { background: #38bdf8; color: #080c14; }
+.pk-log-badge.statut { background: #eab308; color: #080c14; }
+
 
