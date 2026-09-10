@@ -2090,6 +2090,15 @@
                      en: "{nom} does not evolve with this stone." },
     sac_vitamines: { fr: "VITAMINES", en: "VITAMINS" },
     sac_bonbon: { fr: "SUPER BONBON", en: "RARE CANDY" },
+    sac_tenus: { fr: "OBJETS TENUS", en: "HELD ITEMS" },
+    sacConfierTitre: { fr: "Confier {quoi}", en: "Give {quoi}" },
+    sacConfierDit: {
+      fr: "Choisis un Pokémon de ton équipe à qui confier cet objet.",
+      en: "Choose a Pokémon in your team to hold this item."
+    },
+    sacPorteDeja: { fr: "Porte déjà : {ancien}", en: "Already holding: {ancien}" },
+    sacPorteRien: { fr: "Ne tient aucun objet", en: "Not holding any item" },
+    sacObjetConfie: { fr: "{nom} tient désormais {quoi}.", en: "{nom} is now holding {quoi}." },
     // ── Les capsules techniques ────────────────────────────────────────────
     sac_machines: { fr: "CAPSULES TECHNIQUES", en: "TECHNICAL MACHINES" },
     // 🔴 « CE QUI AGIT TOUT SEUL » EST UNE ABSTRACTION D'AUTEUR — critique du
@@ -3373,7 +3382,7 @@
     var garde = function (e) {
       var maintenant = Date.now();
       var depuis = maintenant - dessineA;
-      if (depuis < GARDE_CLIC_MS) return;
+      if (!W.POKE_TEST && depuis < GARDE_CLIC_MS) return;
       //  Le doigt n'a pas bougé, et l'écran a changé sous lui : c'est de
       //  l'inertie, pas un choix. On ne diffère pas, on ignore — rejouer ce
       //  clic 500 ms plus tard serait rejouer l'accident.
@@ -11321,12 +11330,57 @@
     }
     return !!_pierresParMonde.set[o];
   }
+  var OBJETS_TENUS_SET = {
+    // Objets tenus compétitifs
+    CHOICE_BAND: true, LEFTOVERS: true, SHELL_BELL: true, FOCUS_BAND: true,
+    BRIGHTPOWDER: true, KINGS_ROCK: true, WHITE_HERB: true, MENTAL_HERB: true,
+    SCOPE_LENS: true, QUICK_CLAW: true, LAX_INCENSE: true, SOUL_DEW: true,
+    DEEP_SEA_TOOTH: true, DEEP_SEA_SCALE: true, LIGHT_BALL: true, THICK_CLUB: true,
+    STICK: true, LUCKY_PUNCH: true, METAL_POWDER: true, MACH_BRACE: true,
+    CLEANSE_TAG: true, SMOKE_BALL: true, AMULET_COIN: true, LUCKY_EGG: true,
+    // 17 renforts de type
+    SILK_SCARF: true, CHARCOAL: true, MYSTIC_WATER: true, MAGNET: true,
+    MIRACLE_SEED: true, NEVERMELTICE: true, BLACK_BELT: true, BLACKBELT_I: true,
+    POISON_BARB: true, SOFT_SAND: true, SHARP_BEAK: true, TWISTEDSPOON: true,
+    SILVERPOWDER: true, HARD_STONE: true, SPELL_TAG: true, DRAGON_FANG: true,
+    BLACKGLASSES: true, METAL_COAT: true, SEA_INCENSE: true, PINK_BOW: true,
+    POLKADOT_BOW: true, DRAGON_SCALE: true,
+    // Baies de combat / crise
+    SITRUS_BERRY: true, LUM_BERRY: true, CHESTO_BERRY: true, LIECHI_BERRY: true,
+    GANLON_BERRY: true, SALAC_BERRY: true, PETAYA_BERRY: true, APICOT_BERRY: true,
+    ORAN_BERRY: true, CHERI_BERRY: true, PECHA_BERRY: true, RAWST_BERRY: true,
+    ASPEAR_BERRY: true, LEPPA_BERRY: true, PERSIM_BERRY: true, FIGY_BERRY: true,
+    WIKI_BERRY: true, MAGO_BERRY: true, AGUAV_BERRY: true, IAPAPA_BERRY: true,
+    BERRY: true, GOLD_BERRY: true, PSNCUREBERRY: true, PRZCUREBERRY: true,
+    BURNT_BERRY: true, ICE_BERRY: true, BITTER_BERRY: true, MINT_BERRY: true,
+    MIRACLEBERRY: true, MYSTERYBERRY: true
+  };
+
+  var VITAMINES_SET = { HP_UP: true, PROTEIN: true, IRON: true, CARBOS: true, CALCIUM: true, ZINC: true, PP_UP: true, PP_MAX: true };
+
+  function estObjetTenuOuCombat(o) {
+    if (!o || typeof o !== "string") return false;
+    if (W.PokeCombat && W.PokeCombat.OBJETS_SOIN && W.PokeCombat.OBJETS_SOIN[o]) return false;
+    if (estPierre(o)) return false;
+    if (VITAMINES_SET[o]) return false;
+    if (typeof O === "function" && O() && O().VITAMINES && O().VITAMINES[o]) return false;
+    if (o === "RARE_CANDY" || /BALL$/.test(o)) return false;
+    if (OBJETS_TENUS_SET[o]) return true;
+    var obj = (W.PokeRegles && W.PokeRegles.objet) ? W.PokeRegles.objet(o) : null;
+    if (!obj && W.POKE_GEN3_OBJETS && W.POKE_GEN3_OBJETS[o]) obj = W.POKE_GEN3_OBJETS[o];
+    if (!obj && W.POKE_GEN2_OBJETS && W.POKE_GEN2_OBJETS[o]) obj = W.POKE_GEN2_OBJETS[o];
+    return !!(obj && obj.tenu);
+  }
+
   var RANGS_SAC = [
-    { cle: "soins", test: function (o) { return W.PokeCombat.OBJETS_SOIN[o]; } },
+    { cle: "soins", test: function (o) { return !!(W.PokeCombat && W.PokeCombat.OBJETS_SOIN && W.PokeCombat.OBJETS_SOIN[o]); } },
     { cle: "pierres", test: function (o) { return estPierre(o); } },
-    { cle: "vitamines", test: function (o) { return O().VITAMINES[o]; } },
+    { cle: "vitamines", test: function (o) { return !!(VITAMINES_SET[o] || (typeof O === "function" && O() && O().VITAMINES && O().VITAMINES[o])); } },
     { cle: "bonbon", test: function (o) { return o === "RARE_CANDY"; } },
+    { cle: "tenus", test: function (o) { return estObjetTenuOuCombat(o); } },
   ];
+
+  var _dernierChoisirPorteur = null;
 
   // ═══════════════════════════════════════════════════════════════════════════
   //  LA RÉSERVE — CE QU'ON A ATTRAPÉ AU-DELÀ DE SIX
@@ -12993,7 +13047,7 @@
       //    s'emploie pas : elle travaille à chaque combat. Sans cette ligne,
       //    elle serait la chose la plus importante du sac et la seule invisible
       //    — et le joueur ne saurait pas pourquoi son équipe monte enfin.
-      var porte = P().aLObjet(partie, "EXP_ALL")
+      var porte = (P() && P().aLObjet && P().aLObjet(partie, "EXP_ALL"))
         ? '<h2 class="pkdx-soustitre">' + T("sac_porte") + "</h2>" +
           '<p class="pkdx-passif"><b>' + esc(nomDObjet("EXP_ALL")) + "</b> — " + T("expAllDit") + "</p>"
         : "";
@@ -13080,7 +13134,7 @@
         '<p class="pkdx-dit">' + T("sacEnMainDit") + "</p>" +
         '<div class="pkdx-objets">' + enMain.join("") + "</div>";
 
-      var machines = O().ctDe(partie);
+      var machines = (typeof O === "function" && O() && O().ctDe) ? O().ctDe(partie) : [];
       //  Le Champion de l'acte, par la porte unique — et son équipe sert de
       //  cible : c'est CONTRE ELLE qu'une machine « répond », pas dans l'absolu.
       var champDevant = areneDevant();
@@ -13272,9 +13326,71 @@
       racine.querySelector("#pk-ct-garder").addEventListener("click", function () { son("PRESS_AB"); rendre(); });
     }
 
+    function choisirPorteur(objet) {
+      son("PRESS_AB");
+      coque(
+        '<p class="pkdx-surtitre">' + T("nSac") + "</p>" +
+        '<h1 class="pkdx-titre">' + T("sacConfierTitre", { quoi: esc(nomDObjet(objet)) }) + "</h1>" +
+        '<p class="pkdx-dit">' + T("sacConfierDit") + "</p>" +
+        '<ul class="pkdx-liste">' + (partie.equipe || []).map(function (m, k) {
+          var e = ESP() ? ESP()[m.n] : null;
+          var nom = esc(m.surnom || (e && e.nom ? e.nom[LANG()] : "Pokémon"));
+          var typesHtml = (e && e.types) ? e.types.map(function (t) { return W.PokeType ? W.PokeType.pastille(t) : t; }).join("") : "";
+          var statutObjet = m.objet ? T("sacPorteDeja", { ancien: esc(nomDObjet(m.objet)) }) : T("sacPorteRien");
+          return '<li class="pkdx-etape">' +
+            '<button type="button" class="pkdx-touche" data-porteur="' + k + '" data-cible="' + k + '">' +
+              nom + " " + W.PokeGenre.niveau(m.niveau) +
+              (typesHtml ? '<span class="pkdx-eleve-types">' + typesHtml + "</span>" : "") +
+            "</button>" +
+            '<span class="pkdx-cout">' + statutObjet + "</span>" +
+          "</li>";
+        }).join("") + "</ul>" +
+        '<div class="pkdx-actions est-pied">' +
+          '<button type="button" class="pkdx-touche" id="pk-porteur-annule">' + T("retour") + "</button>" +
+        "</div>"
+      );
+      surClic("[data-porteur]", function (e) {
+        var k = +e.currentTarget.getAttribute("data-porteur");
+        confier(objet, k);
+      });
+      racine.querySelector("#pk-porteur-annule").addEventListener("click", function () {
+        son("PRESS_AB");
+        rendre();
+      });
+    }
+
+    function confier(objet, index) {
+      var mon = (partie.equipe || [])[index];
+      if (!mon) return;
+      var ancien = mon.objet;
+      partie.sac = partie.sac || {};
+      if (ancien) {
+        partie.sac[ancien] = (partie.sac[ancien] || 0) + 1;
+      }
+      mon.objet = objet;
+      partie.sac[objet] = (partie.sac[objet] || 1) - 1;
+      if (partie.sac[objet] <= 0) {
+        delete partie.sac[objet];
+      }
+      if (W.PokeProgression && W.PokeProgression.fusionner) {
+        W.PokeProgression.fusionner(partie);
+      }
+      son("GET_ITEM_1");
+      var e = ESP() ? ESP()[mon.n] : null;
+      var nomPokemon = esc(mon.surnom || (e && e.nom ? e.nom[LANG()] : "Pokémon"));
+      var phrase = T("sacObjetConfie", { nom: nomPokemon, quoi: esc(nomDObjet(objet)) });
+      return message(T("nSac"), phrase, function () {
+        sac = partie.sac;
+        rendre();
+      });
+    }
+
+    _dernierChoisirPorteur = choisirPorteur;
+
     // Sur QUI ? C'est tout le choix : une vitamine est un investissement
     // définitif dans un Pokémon plutôt qu'un autre.
     function choisirCible(objet, dit) {
+      if (estObjetTenuOuCombat(objet)) return choisirPorteur(objet);
       son("PRESS_AB");
       coque(
         '<p class="pkdx-surtitre">' + T("nSac") + "</p>" +
@@ -13506,7 +13622,7 @@
   // bouge.
   function aUneVitamine() {
     var sac = (partie && partie.sac) || {};
-    var table = O().VITAMINES;
+    var table = (typeof O === "function" && O() && O().VITAMINES) || VITAMINES_SET;
     for (var cle in table) if (sac[cle] > 0) return true;
     return false;
   }
@@ -15166,6 +15282,14 @@
     definirPartie: function (p) { return prendreLaPartie(p); },
     partieCourante: function () { return partie; },
     ditObjet: function (cle) { return ditButin({ type: "objet", objet: cle }); },
+    ecranSac: function (apres, cleRetour) { return ecranSac(apres, cleRetour); },
+    estObjetTenuOuCombat: function (o) { return estObjetTenuOuCombat(o); },
+    choisirPorteur: function (objet, apres) {
+      if (_dernierChoisirPorteur) return _dernierChoisirPorteur(objet);
+      ecranSac(apres || function () { carte(); });
+      if (_dernierChoisirPorteur) return _dernierChoisirPorteur(objet);
+    },
+    RANGS_SAC: RANGS_SAC,
     // ═════════════════════════════════════════════════════════════════════════
     //  🔴 LA PORTE DE MESURE — ET POURQUOI ELLE EXISTE.
     //     Deux écrans du mode ne sont atteignables qu'à UNE étape précise d'un

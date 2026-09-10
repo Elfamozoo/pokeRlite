@@ -12,7 +12,8 @@ function getOrCreateElement(id, initialAttrs = {}) {
     let _inner = attrs.innerHTML || "";
     elementMap[id] = {
       id,
-      disabled: !!attrs.disabled,
+      get disabled() { return !!attrs.disabled; },
+      set disabled(v) { attrs.disabled = !!v; },
       get innerHTML() { return _inner; },
       set innerHTML(v) { _inner = String(v); },
       get textContent() { return _inner; },
@@ -25,10 +26,9 @@ function getOrCreateElement(id, initialAttrs = {}) {
         };
       },
       getAttribute(attr) {
-        if (attr === "data-cle") return attrs["data-cle"] || null;
         if (attr === "id") return id;
-        if (attr === "aria-pressed") return attrs["aria-pressed"] || null;
-        return attrs[attr] || null;
+        if (attr === "disabled") return attrs.disabled ? "" : null;
+        return attrs[attr] != null ? attrs[attr] : null;
       },
       setAttribute(attr, val) {
         attrs[attr] = String(val);
@@ -61,58 +61,54 @@ const mockRacine = {
     for (const k in elementMap) delete elementMap[k];
     const tagRegex = /<([a-zA-Z0-9_-]+)\s+([^>]*?)>/g;
     let match;
+    let autoId = 0;
     while ((match = tagRegex.exec(val)) !== null) {
       const rawAttrs = match[2];
       const idMatch = rawAttrs.match(/id="([^"]+)"/);
       const classMatch = rawAttrs.match(/class="([^"]+)"/);
-      const cleMatch = rawAttrs.match(/data-cle="([^"]+)"/);
       const disabled = /\bdisabled\b/.test(rawAttrs);
       const classes = classMatch ? classMatch[1].split(/\s+/).filter(Boolean) : [];
-      const id = idMatch ? idMatch[1] : (cleMatch ? "cle-" + cleMatch[1] : null);
-      if (id) {
-        getOrCreateElement(id, {
-          classes,
-          disabled,
-          "data-cle": cleMatch ? cleMatch[1] : null
-        });
+      const attrs = { classes, disabled };
+      const attrRegex = /([a-zA-Z0-9_-]+)="([^"]*)"/g;
+      let am;
+      while ((am = attrRegex.exec(rawAttrs)) !== null) {
+        attrs[am[1]] = am[2];
       }
+      const id = idMatch ? idMatch[1] : (attrs["data-cle"] ? "cle-" + attrs["data-cle"] : "mock-el-" + (++autoId));
+      getOrCreateElement(id, attrs);
     }
   },
   classList: { add() {}, remove() {}, contains() { return false; } },
   querySelector(sel) {
-    const m = sel.match(/^#([a-zA-Z0-9_-]+)$/);
-    if (m) {
-      const id = m[1];
-      if (!racineHTML.includes('id="' + id + '"')) return null;
-      return getOrCreateElement(id);
-    }
-    if (sel.startsWith(".")) {
-      const cls = sel.slice(1);
-      for (const k in elementMap) {
-        if (elementMap[k].classList.contains(cls)) return elementMap[k];
-      }
-    }
-    if (sel.includes("[data-cle=")) {
-      const mCle = sel.match(/\[data-cle="([^"]+)"\]/);
-      if (mCle) {
-        for (const k in elementMap) {
-          if (elementMap[k].getAttribute("data-cle") === mCle[1]) return elementMap[k];
-        }
-      }
-    }
-    return null;
+    const list = this.querySelectorAll(sel);
+    return list.length > 0 ? list[0] : null;
   },
   querySelectorAll(sel) {
-    if (sel.startsWith(".")) {
-      const cls = sel.slice(1);
+    const parts = sel.split(",").map(s => s.trim()).filter(Boolean);
+    if (parts.length > 1) {
+      const res = [];
+      for (const p of parts) {
+        const sub = this.querySelectorAll(p);
+        for (const el of sub) if (!res.includes(el)) res.push(el);
+      }
+      return res;
+    }
+    const s = parts[0] || sel;
+    if (s.startsWith("#")) {
+      const id = s.slice(1);
+      return elementMap[id] ? [elementMap[id]] : [];
+    }
+    if (s.startsWith(".")) {
+      const cls = s.slice(1);
       return Object.values(elementMap).filter(el => el.classList.contains(cls));
     }
-    if (sel === "[data-cle]" || sel.includes("data-cle")) {
-      return Object.values(elementMap).filter(el => el.getAttribute("data-cle") != null);
+    const mAttrVal = s.match(/^\[([a-zA-Z0-9_-]+)="([^"]*)"\]$/);
+    if (mAttrVal) {
+      return Object.values(elementMap).filter(el => el.getAttribute(mAttrVal[1]) === mAttrVal[2]);
     }
-    if (sel.startsWith("#")) {
-      const id = sel.slice(1);
-      return elementMap[id] ? [elementMap[id]] : [];
+    const mAttr = s.match(/^\[([a-zA-Z0-9_-]+)\]$/);
+    if (mAttr) {
+      return Object.values(elementMap).filter(el => el.getAttribute(mAttr[1]) != null);
     }
     return [];
   }
@@ -144,6 +140,7 @@ sandbox.window = sandbox;
 sandbox.globalThis = sandbox;
 sandbox.W = sandbox;
 sandbox.D = sandbox.document;
+sandbox.POKE_TEST = true;
 
 function loadScript(path) {
   const code = fs.readFileSync(path, "utf8");
@@ -524,4 +521,133 @@ assert.ok(
 
 console.log("✓ Task 4: Tests unitaires de l'écran d'objet de départ réussis !");
 
+// ============================================================================
+// Task 5: Gestion et équipement des objets tenus dans le sac (js/poke/ui.js)
+// ============================================================================
 
+// 1. Helper estObjetTenuOuCombat
+assert.equal(typeof UI.estObjetTenuOuCombat, "function", "UI.estObjetTenuOuCombat exporté");
+
+// Objets tenus compétitifs retournent true
+assert.equal(UI.estObjetTenuOuCombat("CHOICE_BAND"), true, "CHOICE_BAND est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("LEFTOVERS"), true, "LEFTOVERS est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("SHELL_BELL"), true, "SHELL_BELL est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("FOCUS_BAND"), true, "FOCUS_BAND est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("BRIGHTPOWDER"), true, "BRIGHTPOWDER est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("KINGS_ROCK"), true, "KINGS_ROCK est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("WHITE_HERB"), true, "WHITE_HERB est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("MENTAL_HERB"), true, "MENTAL_HERB est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("SCOPE_LENS"), true, "SCOPE_LENS est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("QUICK_CLAW"), true, "QUICK_CLAW est un objet tenu");
+
+// 17 renforts de type retournent true
+assert.equal(UI.estObjetTenuOuCombat("SILK_SCARF"), true, "SILK_SCARF est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("CHARCOAL"), true, "CHARCOAL est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("MYSTIC_WATER"), true, "MYSTIC_WATER est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("MAGNET"), true, "MAGNET est un objet tenu");
+
+// Baies de combat / crise retournent true
+assert.equal(UI.estObjetTenuOuCombat("SITRUS_BERRY"), true, "SITRUS_BERRY est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("LUM_BERRY"), true, "LUM_BERRY est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("CHESTO_BERRY"), true, "CHESTO_BERRY est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("LIECHI_BERRY"), true, "LIECHI_BERRY est un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("SALAC_BERRY"), true, "SALAC_BERRY est un objet tenu");
+
+// Exclusions : soins, pierres, vitamines, bonbon, balls, clés
+assert.equal(UI.estObjetTenuOuCombat("POTION"), false, "POTION n'est pas un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("SUPER_POTION"), false, "SUPER_POTION n'est pas un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("FIRE_STONE"), false, "FIRE_STONE n'est pas un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("WATER_STONE"), false, "WATER_STONE n'est pas un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("PROTEIN"), false, "PROTEIN n'est pas un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("RARE_CANDY"), false, "RARE_CANDY n'est pas un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat("POKE_BALL"), false, "POKE_BALL n'est pas un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat(null), false, "null n'est pas un objet tenu");
+assert.equal(UI.estObjetTenuOuCombat(""), false, "'' n'est pas un objet tenu");
+
+// 2. RANGS_SAC et traductions
+assert.ok(Array.isArray(UI.RANGS_SAC), "UI.RANGS_SAC exporté");
+assert.ok(UI.RANGS_SAC.some(r => r.cle === "tenus"), "RANGS_SAC contient la catégorie 'tenus'");
+assert.equal(typeof UI.T("sac_tenus"), "string", "Traduction sac_tenus présente");
+assert.ok(UI.T("sacConfierTitre", { quoi: "Bandeau Choix" }).includes("Bandeau Choix"), "sacConfierTitre interpole le nom de l'objet");
+assert.equal(typeof UI.T("sacConfierDit"), "string", "Traduction sacConfierDit présente");
+assert.ok(UI.T("sacPorteDeja", { ancien: "Restes" }).includes("Restes"), "sacPorteDeja mentionne l'ancien objet");
+assert.ok(UI.T("sacPorteDeja", { ancien: "Restes" }).includes("Porte déjà :"), "sacPorteDeja commence par 'Porte déjà :'");
+assert.ok(UI.T("sacPorteRien").includes("Ne tient aucun objet"), "sacPorteRien mentionne 'Ne tient aucun objet'");
+assert.ok(UI.T("sacObjetConfie", { nom: "Pikachu", quoi: "Bandeau Choix" }).includes("Pikachu"), "sacObjetConfie mentionne le pokémon");
+
+// 3. Équipement d'un objet tenu depuis le sac
+const pTest5 = {
+  sac: { CHOICE_BAND: 1 },
+  equipe: [
+    { n: 25, niveau: 15, pv: 40, stats: { pv: 40 }, surnom: "Pikachu", objet: null, attaques: [] }
+  ],
+  regle: "voyage",
+  cles: {}
+};
+UI.definirPartie(pTest5);
+UI.ecranSac(function () {});
+
+// Vérifier que CHOICE_BAND apparaît sous la section tenus
+assert.ok(mockRacine.innerHTML.includes(UI.T("sac_tenus")), "Le sac affiche la section OBJETS TENUS");
+const btnLigneChoice = mockRacine.querySelector('[data-objet="CHOICE_BAND"]');
+assert.ok(btnLigneChoice, "Ligne d'objet CHOICE_BAND cliquable présente dans le sac");
+
+// Clic sur l'objet pour ouvrir choisirPorteur
+btnLigneChoice.click();
+assert.ok(mockRacine.innerHTML.includes("Pikachu"), "choisirPorteur affiche le membre de l'équipe");
+assert.ok(mockRacine.innerHTML.includes(UI.T("sacPorteRien")), "Affiche 'Ne tient aucun objet' pour Pikachu");
+
+const btnPorteur0 = mockRacine.querySelector('[data-porteur="0"]') || mockRacine.querySelector('[data-cible="0"]');
+assert.ok(btnPorteur0, "Bouton porteur 0 trouvé");
+
+// Clic sur Pikachu pour lui confier le Bandeau Choix
+sonsJoues.length = 0;
+btnPorteur0.click();
+
+assert.ok(sonsJoues.includes("GET_ITEM_1"), "GET_ITEM_1 joué lors de l'attribution de l'objet");
+assert.equal(pTest5.equipe[0].objet, "CHOICE_BAND", "Pikachu tient désormais CHOICE_BAND");
+assert.equal(pTest5.sac.CHOICE_BAND || 0, 0, "CHOICE_BAND a été retiré du sac");
+
+// Dialogue de confirmation puis retour au sac
+const btnSuivant = mockRacine.querySelector("#pk-suivant");
+assert.ok(btnSuivant, "Dialogue de confirmation #pk-suivant présent");
+btnSuivant.click();
+
+// Le sac re-rendu montre Pikachu dans EN MAIN
+assert.ok(mockRacine.innerHTML.includes(UI.T("sac_enMain")), "Affiche la section EN MAIN");
+assert.ok(mockRacine.querySelector('[data-reprendre="0"]'), "Bouton reprendre présent pour Pikachu");
+
+// 4. Remplacement d'un objet tenu et retour de l'ancien dans le sac
+pTest5.sac.LEFTOVERS = 1;
+UI.ecranSac(function () {});
+
+const btnLigneLeftovers = mockRacine.querySelector('[data-objet="LEFTOVERS"]');
+assert.ok(btnLigneLeftovers, "Bouton LEFTOVERS présent dans le sac");
+btnLigneLeftovers.click();
+
+assert.ok(mockRacine.innerHTML.includes("Porte déjà :") || mockRacine.innerHTML.includes("Bandeau Choix"),
+  "choisirPorteur indique que Pikachu porte déjà le Bandeau Choix");
+
+const btnPorteur0bis = mockRacine.querySelector('[data-porteur="0"]') || mockRacine.querySelector('[data-cible="0"]');
+btnPorteur0bis.click();
+
+const btnSuivant2 = mockRacine.querySelector("#pk-suivant");
+assert.ok(btnSuivant2, "#pk-suivant présent après remplacement");
+btnSuivant2.click();
+
+assert.equal(pTest5.equipe[0].objet, "LEFTOVERS", "Pikachu tient maintenant LEFTOVERS");
+assert.equal(pTest5.sac.LEFTOVERS || 0, 0, "LEFTOVERS retiré du sac");
+assert.equal(pTest5.sac.CHOICE_BAND, 1, "CHOICE_BAND est retourné dans le sac");
+
+// 5. Reprendre l'objet tenu via [data-reprendre]
+const btnReprendre = mockRacine.querySelector('[data-reprendre="0"]');
+assert.ok(btnReprendre, "Bouton [data-reprendre='0'] présent");
+btnReprendre.click();
+
+assert.equal(pTest5.equipe[0].objet, null, "Pikachu ne tient plus d'objet");
+assert.equal(pTest5.sac.LEFTOVERS, 1, "LEFTOVERS est retourné dans le sac");
+assert.ok(mockRacine.innerHTML.includes(UI.T("sac_tenus")), "Section OBJETS TENUS visible");
+assert.ok(mockRacine.querySelector('[data-objet="LEFTOVERS"]'), "LEFTOVERS affiché sous OBJETS TENUS");
+assert.ok(mockRacine.querySelector('[data-objet="CHOICE_BAND"]'), "CHOICE_BAND affiché sous OBJETS TENUS");
+
+console.log("✓ Task 5: Tests unitaires du flux d'équipement des objets tenus réussis !");
