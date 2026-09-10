@@ -18,6 +18,14 @@
   //    partiel, pas un contournement. En gen 1 le registre rend exactement ces
   //    deux globales : la ligne ne change rien à ce que le moteur lit.
   var ESP = function () { return W.PokeRegles ? W.PokeRegles.especes() : W.POKE_ESPECE; };
+  var ESPECE = function (n) {
+    if (W.PokeRegles && typeof W.PokeRegles.especeToute === "function") {
+      var esp = W.PokeRegles.especeToute(n);
+      if (esp) return esp;
+    }
+    var t = ESP();
+    return (t && t[n]) ? t[n] : null;
+  };
   var ATT = function () { return W.PokeRegles ? W.PokeRegles.attaques() : W.POKE_ATTAQUE_PAR_CLE; };
 
   // ── Courbes d'expérience ───────────────────────────────────────────────────
@@ -76,7 +84,8 @@
   var SPE_DEF = function () { return W.PokeRegles ? W.PokeRegles.speDef() : "spe"; };
 
   function calculerStats(p) {
-    var b = ESP()[p.n].base, d = p.dv, e = p.statExp, L = p.niveau;
+    var defEsp = ESPECE(p.n);
+    var b = (defEsp && defEsp.base) || (ESP()[p.n] && ESP()[p.n].base) || {}, d = p.dv, e = p.statExp, L = p.niveau;
     var s = {
       pv: Math.floor((terme(b.pv, d.pv, e.pv) * L) / 100) + L + 10,
       atk: Math.floor((terme(b.atk, d.atk, e.atk) * L) / 100) + 5,
@@ -110,7 +119,7 @@
   //  tard n'a donc pas ses attaques de départ — et c'est ce qui rend une
   //  capture tardive moins intéressante qu'un Pokémon élevé.
   function attaquesAuNiveau(n, niveau) {
-    var e = ESP()[n];
+    var e = ESPECE(n) || ESP()[n] || {};
     var liste = (e.depart || []).slice();
     var app = e.apprend || [];
     for (var i = 0; i < app.length; i++) {
@@ -174,7 +183,7 @@
 
   function creer(n, niveau, h, options) {
     var o = options || {};
-    var e = ESP()[n];
+    var e = ESPECE(n) || ESP()[n];
     if (!e) throw new Error("Espèce inconnue : " + n);
     var p = {
       n: e.n,

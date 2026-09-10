@@ -54,21 +54,29 @@
 
   function nomEspece(num) {
     if (W.PokeRegles && typeof W.PokeRegles.nomEspece === "function") {
-      return W.PokeRegles.nomEspece(num);
+      var n = W.PokeRegles.nomEspece(num);
+      if (n) return n;
     }
-    var esp = ESP();
-    if (esp && esp[num] && esp[num].nom) {
-      return typeof esp[num].nom === "object" ? (esp[num].nom.fr || esp[num].nom.en) : esp[num].nom;
+    var esp = (W.PokeRegles && typeof W.PokeRegles.especeToute === "function")
+      ? W.PokeRegles.especeToute(num)
+      : null;
+    if (!esp) esp = ESP()[num];
+    if (esp && esp.nom) {
+      return typeof esp.nom === "object" ? (esp.nom.fr || esp.nom.en) : esp.nom;
     }
     return "Pokémon #" + num;
   }
 
   function spritePokemon(mon) {
     if (mon && mon.sprite) return mon.sprite;
-    if (W.PokeIcones && typeof W.PokeIcones.sprite === "function") {
-      return W.PokeIcones.sprite(mon.espece);
+    var num = (mon && (mon.n || mon.espece)) || 0;
+    if (W.PokeSprites && typeof W.PokeSprites.art === "function") {
+      return W.PokeSprites.art(num);
     }
-    return "assets/img/poke/" + (mon && mon.espece ? mon.espece : "0") + ".png";
+    if (W.PokeSprites && typeof W.PokeSprites.face === "function") {
+      return W.PokeSprites.face(num);
+    }
+    return "assets/img/poke/art/" + num + ".webp";
   }
 
   function formatNature(natureCle) {
@@ -101,6 +109,11 @@
       SCOPE_LENS: "Lentille Scope",
       QUICK_CLAW: "Vive Griffe",
       WHITE_HERB: "Herbe Blanche",
+      FOCUS_BAND: "Bandeau",
+      BRIGHTPOWDER: "Poudre Claire",
+      KINGS_ROCK: "Roche Royale",
+      SHELL_BELL: "Grelot Coque",
+      MENTAL_HERB: "Herbe Mental",
       CHARCOAL: "Charbon",
       MYSTIC_WATER: "Eau Mystique",
       MAGNET: "Aimant",
@@ -111,10 +124,21 @@
       BLACKBELT_I: "Ceinture Noire",
       HARD_STONE: "Pierre Dure",
       METAL_COAT: "Peau Métal",
+      POISON_BARB: "Pic Venin",
+      SOFT_SAND: "Sable Doux",
+      SILVERPOWDER: "Poudre Argentée",
+      SPELL_TAG: "Rune Sort",
+      NEVERMELTICE: "Glace Éternelle",
+      SHARP_BEAK: "Bec Pointu",
+      DRAGON_FANG: "Croc Dragon",
       SITRUS_BERRY: "Baie Sitrus",
       LUM_BERRY: "Baie Prun",
-      FOCUS_BAND: "Bandeau",
-      BRIGHTPOWDER: "Poudre Claire"
+      CHESTO_BERRY: "Baie Maron",
+      LIECHI_BERRY: "Baie Litchii",
+      PETAYA_BERRY: "Baie Pétaya",
+      SALAC_BERRY: "Baie Sailac",
+      GANLON_BERRY: "Baie Lingan",
+      APICOT_BERRY: "Baie Abriko"
     };
     return (replis[objetCle] ? replis[objetCle] + " (" + objetCle + ")" : objetCle);
   }
@@ -142,7 +166,7 @@
   function formatAttaque(att) {
     var cle = typeof att === "string" ? att : (att && att.cle);
     if (!cle) return { cle: "-", nom: "-", type: "NORMAL", puissance: "-", precision: "-" };
-    var tableAtt = ATT();
+    var tableAtt = (W.PokeRegles && W.PokeRegles.attaques && W.PokeRegles.attaques()) || W.POKE_ATTAQUE_PAR_CLE || W.POKE_ATTAQUES || {};
     var def = tableAtt[cle];
     if (!def && W.POKE_GEN3_ATTAQUES) {
       if (Array.isArray(W.POKE_GEN3_ATTAQUES)) {
@@ -153,6 +177,8 @@
         def = W.POKE_GEN3_ATTAQUES[cle];
       }
     }
+    if (!def && W.POKE_ATTAQUE_PAR_CLE) def = W.POKE_ATTAQUE_PAR_CLE[cle];
+    if (!def && W.POKE_ATTAQUES && W.POKE_ATTAQUES[cle]) def = W.POKE_ATTAQUES[cle];
     var nom = (def && def.nom) ? (typeof def.nom === "object" ? (def.nom.fr || def.nom.en) : def.nom) : cle;
     var type = (def && def.type) ? def.type : "NORMAL";
     var pui = (def && def.puissance !== undefined && def.puissance !== null) ? (def.puissance || "-") : "-";
@@ -162,12 +188,47 @@
 
   // ── Catalogue Boutique PCo ──────────────────────────────────────────────────
   var CATALOGUE_BOUTIQUE = [
-    // Objets de combat
-    { cle: "LEFTOVERS",   nom: "Restes",         prix: 48, categorie: "Combat", desc: "Restaure 1/16 des PV max à chaque fin de tour." },
-    { cle: "CHOICE_BAND", nom: "Bandeau Choix",  prix: 64, categorie: "Combat", desc: "Augmente l'Attaque de 50% mais bloque sur un coup." },
-    { cle: "SCOPE_LENS",  nom: "Lentille Scope", prix: 48, categorie: "Combat", desc: "Augmente le taux de coups critiques." },
-    { cle: "QUICK_CLAW",  nom: "Vive Griffe",    prix: 24, categorie: "Combat", desc: "Peut donner la priorité au tour." },
-    { cle: "WHITE_HERB",  nom: "Herbe Blanche",  prix: 32, categorie: "Combat", desc: "Restaure immédiatement les statistiques diminuées." },
+    // Objets de combat compétitifs
+    { cle: "LEFTOVERS",    nom: "Restes",         prix: 48, categorie: "Combat", desc: "Restaure 1/16 des PV max à chaque fin de tour." },
+    { cle: "CHOICE_BAND",  nom: "Bandeau Choix",  prix: 64, categorie: "Combat", desc: "Augmente l'Attaque de 50% mais bloque sur la première capacité." },
+    { cle: "SCOPE_LENS",   nom: "Lentille Scope", prix: 48, categorie: "Combat", desc: "Augmente le taux de coups critiques." },
+    { cle: "QUICK_CLAW",   nom: "Vive Griffe",    prix: 24, categorie: "Combat", desc: "Donne une chance d'agir en premier à priorité égale." },
+    { cle: "WHITE_HERB",   nom: "Herbe Blanche",  prix: 32, categorie: "Combat", desc: "Restaure immédiatement les statistiques diminuées." },
+    { cle: "FOCUS_BAND",   nom: "Bandeau",        prix: 48, categorie: "Combat", desc: "Peut permettre d'éviter le K.O. en conservant 1 PV." },
+    { cle: "BRIGHTPOWDER", nom: "Poudre Claire",  prix: 64, categorie: "Combat", desc: "Baisse la précision des attaques adverses de 10%." },
+    { cle: "KINGS_ROCK",   nom: "Roche Royale",   prix: 48, categorie: "Combat", desc: "Peut apeurer l'ennemi lors d'une attaque directe." },
+    { cle: "SHELL_BELL",   nom: "Grelot Coque",   prix: 48, categorie: "Combat", desc: "Restaure 1/8 des dégâts infligés au défenseur." },
+    { cle: "MENTAL_HERB",  nom: "Herbe Mental",   prix: 32, categorie: "Combat", desc: "Dissipe immédiatement l'attirance ou la provocation." },
+
+    // Renforts de type (+10% dégâts)
+    { cle: "SILK_SCARF",   nom: "Mouchoir Soie",  prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Normal de 10%." },
+    { cle: "CHARCOAL",     nom: "Charbon",        prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Feu de 10%." },
+    { cle: "MYSTIC_WATER", nom: "Eau Mystique",   prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Eau de 10%." },
+    { cle: "MAGNET",       nom: "Aimant",         prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Électrik de 10%." },
+    { cle: "MIRACLE_SEED", nom: "Graine Miracle", prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Plante de 10%." },
+    { cle: "HARD_STONE",   nom: "Pierre Dure",    prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Roche de 10%." },
+    { cle: "NEVERMELTICE", nom: "Glace Éternelle",prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Glace de 10%." },
+    { cle: "BLACKGLASSES", nom: "Lunettes Noires",prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Ténèbres de 10%." },
+    { cle: "BLACKBELT_I",  nom: "Ceinture Noire", prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Combat de 10%." },
+    { cle: "TWISTEDSPOON", nom: "Cuillère Tordue",prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Psy de 10%." },
+    { cle: "SOFT_SAND",    nom: "Sable Doux",     prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Sol de 10%." },
+    { cle: "POISON_BARB",  nom: "Pic Venin",      prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Poison de 10%." },
+    { cle: "SILVERPOWDER", nom: "Poudre Argentée",prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Insecte de 10%." },
+    { cle: "SPELL_TAG",    nom: "Rune Sort",      prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Spectre de 10%." },
+    { cle: "SHARP_BEAK",   nom: "Bec Pointu",     prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Vol de 10%." },
+    { cle: "DRAGON_FANG",  nom: "Croc Dragon",    prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Dragon de 10%." },
+    { cle: "METAL_COAT",   nom: "Peau Métal",     prix: 24, categorie: "Renfort", desc: "Augmente les dégâts des attaques Acier de 10%." },
+
+    // Baies de combat et de crise
+    { cle: "SITRUS_BERRY", nom: "Baie Sitrus",    prix: 16, categorie: "Baies", desc: "Restaure 30 PV lorsque la santé descend sous 50% max." },
+    { cle: "LUM_BERRY",    nom: "Baie Prun",      prix: 16, categorie: "Baies", desc: "Soigne n'importe quel problème de statut majeur ou la confusion." },
+    { cle: "CHESTO_BERRY", nom: "Baie Maron",     prix: 16, categorie: "Baies", desc: "Réveille instantanément le porteur endormi (synergie Repos)." },
+    { cle: "LIECHI_BERRY", nom: "Baie Litchii",   prix: 24, categorie: "Baies", desc: "Augmente l'Attaque de 1 cran en situation critique (PV <= 25%)." },
+    { cle: "PETAYA_BERRY", nom: "Baie Pétaya",    prix: 24, categorie: "Baies", desc: "Augmente l'Attaque Spéciale de 1 cran en situation critique (PV <= 25%)." },
+    { cle: "SALAC_BERRY",  nom: "Baie Sailac",    prix: 24, categorie: "Baies", desc: "Augmente la Vitesse de 1 cran en situation critique (PV <= 25%)." },
+    { cle: "GANLON_BERRY", nom: "Baie Lingan",    prix: 24, categorie: "Baies", desc: "Augmente la Défense de 1 cran en situation critique (PV <= 25%)." },
+    { cle: "APICOT_BERRY", nom: "Baie Abriko",    prix: 24, categorie: "Baies", desc: "Augmente la Défense Spéciale de 1 cran en situation critique (PV <= 25%)." },
+
     // Vitamines & Préparation (1 PCo)
     { cle: "ZINC",        nom: "Zinc",           prix: 1,  categorie: "Vitamines", desc: "Augmente la Défense Spéciale de base." },
     { cle: "CALCIUM",     nom: "Calcium",        prix: 1,  categorie: "Vitamines", desc: "Augmente l'Attaque Spéciale de base." },
@@ -176,6 +237,7 @@
     { cle: "CARBOS",      nom: "Carbos",         prix: 1,  categorie: "Vitamines", desc: "Augmente la Vitesse de base." },
     { cle: "HP_UP",       nom: "PV Plus",        prix: 1,  categorie: "Vitamines", desc: "Augmente les PV de base." },
     { cle: "RARE_CANDY",  nom: "Super Bonbon",   prix: 1,  categorie: "Vitamines", desc: "Fait monter un Pokémon d'un niveau." },
+
     // Pierres d'évolution (8 PCo)
     { cle: "WATER_STONE",   nom: "Pierre Eau",   prix: 8,  categorie: "Pierres", desc: "Fait évoluer certains Pokémon d'eau." },
     { cle: "FIRE_STONE",    nom: "Pierre Feu",   prix: 8,  categorie: "Pierres", desc: "Fait évoluer certains Pokémon de feu." },
@@ -187,13 +249,18 @@
 
   // ── Rendu d'une carte de Pokémon riche ──────────────────────────────────────
   function rendreCartePokemon(mon, index, estSelectionne, typeCamp) {
-    var nom = nomEspece(mon.espece);
+    var num = (mon && (mon.n || mon.espece)) || 0;
+    var esp = (W.PokeRegles && typeof W.PokeRegles.especeToute === "function")
+      ? W.PokeRegles.especeToute(num)
+      : ((ESP() && ESP()[num]) || null);
+    var nom = esp ? (typeof esp.nom === "object" ? (esp.nom.fr || esp.nom.en) : esp.nom) : nomEspece(num);
     var sprite = spritePokemon(mon);
     var natureTexte = formatNature(mon.nature);
-    var objetTexte = formatObjet(mon.objet);
+    var objetTexte = formatObjet(mon.objet || mon.objetTenu);
     var talentInfo = formatTalent(mon);
 
-    var typesBadges = (mon.types || ["NORMAL"]).map(function (t) {
+    var types = (mon && mon.types) || (esp && esp.types) || ["NORMAL"];
+    var typesBadges = types.map(function (t) {
       return '<span class="pk-badge-type pk-type-' + esc(String(t).toLowerCase()) + '">' + esc(t) + '</span>';
     }).join(" ");
 
@@ -234,6 +301,9 @@
   // ═══════════════════════════════════════════════════════════════════════════
   function ouvrirHall(options) {
     options = options || {};
+    if (W.PokeRegles && typeof W.PokeRegles.poser === "function") {
+      W.PokeRegles.poser("gen3");
+    }
     var P = W.PokeProgression;
     var etat = (P && typeof P.usineLire === "function") ? P.usineLire() : {
       pco: 0,
@@ -335,6 +405,9 @@
       if (btnRetour) {
         btnRetour.addEventListener("click", function () {
           son("PRESS_AB");
+          if (W.PokeRegles && typeof W.PokeRegles.poser === "function") {
+            W.PokeRegles.poser("gen1");
+          }
           if (typeof options.retour === "function") {
             options.retour();
           }

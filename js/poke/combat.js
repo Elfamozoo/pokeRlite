@@ -92,7 +92,15 @@
     if (t.leftovers && p.objet === "LEFTOVERS") return t.leftovers.effet;
     if (t.choiceBand && p.objet === "CHOICE_BAND") return t.choiceBand.effet;
     if (t.whiteHerb && p.objet === "WHITE_HERB") return t.whiteHerb.effet;
+    if (t.focusBand && p.objet === "FOCUS_BAND") return t.focusBand.effet;
+    if (t.shellBell && p.objet === "SHELL_BELL") return t.shellBell.effet;
     if (p.objet === "LUM_BERRY") return "HELD_LUM_BERRY";
+    if (p.objet === "SITRUS_BERRY") return "HELD_SITRUS_BERRY";
+    if (p.objet === "LIECHI_BERRY") return "HELD_ATTACK_BOOST";
+    if (p.objet === "GANLON_BERRY") return "HELD_DEFENSE_BOOST";
+    if (p.objet === "SALAC_BERRY") return "HELD_SPEED_BOOST";
+    if (p.objet === "PETAYA_BERRY") return "HELD_SPECIAL_BOOST";
+    if (p.objet === "APICOT_BERRY") return "HELD_SPECIAL_DEF_BOOST";
     return null;
   }
 
@@ -929,6 +937,23 @@
       p.statutTours = 0;
       ev.push({ t: "tenuGuerit", cote: quiCote, objet: p.objet, statut: quoi, consomme: true });
       p.objet = null;
+      return;
+    }
+    // ── Les Baies de crise (Litchii, Lingan, Sailac, Pétaya, Abriko) ────────
+    if (t && t.pinch && t.pinch[e]) {
+      var statPinch = t.pinch[e];
+      var seuilPinch = t.pinchSeuil || 0.25;
+      if (p.pv <= Math.floor(p.stats.pv * seuilPinch)) {
+        if (cote && cote.paliers) {
+          if (cote.paliers[statPinch] === undefined) cote.paliers[statPinch] = 0;
+          if (cote.paliers[statPinch] < 6) {
+            cote.paliers[statPinch] = Math.min(6, cote.paliers[statPinch] + 1);
+            ev.push({ t: "tenuStatBoost", cote: quiCote, objet: p.objet, stat: statPinch, cran: 1, consomme: true });
+            p.objet = null;
+            return;
+          }
+        }
+      }
     }
   }
 
@@ -1974,8 +1999,8 @@
     ev.push({ t: "rageMonte", cote: quiCote });
   }
 
-  function encaisser(cote, p, d, ev, quiCote, detail) {
-    if (cote.volatils.clone > 0) {
+  function encaisser(cote, p, d, ev, quiCote, detail, h) {
+    if (cote && cote.volatils && cote.volatils.clone > 0) {
       var pris = Math.min(cote.volatils.clone, d);
       cote.volatils.clone -= pris;
       ev.push({ t: "cloneEncaisse", cote: quiCote, degats: pris });
@@ -1996,17 +2021,40 @@
     //    passe pas ici : c'est le canon, et c'est aussi ce qui empêche Ténacité
     //    de rendre un Pokémon immortel.
     // ═══════════════════════════════════════════════════════════════════════
-    if (cote.volatils.tenacite && p.pv > 0 && p.pv - d <= 0) {
+    if (cote && cote.volatils && cote.volatils.tenacite && p.pv > 0 && p.pv - d <= 0) {
       d = p.pv - 1;
       ev.push({ t: "tenaciteTient", cote: quiCote });
+    } else if (p.pv > 0 && p.pv - d <= 0) {
+      var _eFB = effetTenu(p);
+      if (_eFB === "HELD_FOCUS_BAND" || p.objet === "FOCUS_BAND") {
+        var tFB = TENUS();
+        var seuilFB = (tFB && tFB.focusBand && tFB.focusBand.seuil) || 26;
+        var baseFB = (tFB && tFB.focusBand && tFB.focusBand.sur) || 256;
+        if (h && typeof h.entier === "function" && h.entier(baseFB) < seuilFB) {
+          d = p.pv - 1;
+          ev.push({ t: "tenuBandeauTient", cote: quiCote, objet: p.objet });
+        }
+      }
     }
     MOT().poserPv(p, p.pv - d, "encaisser");
-    monterRage(cote, ev, quiCote);
+    if (cote) monterRage(cote, ev, quiCote);
     ev.push({
       t: "degats", cote: quiCote, degats: d,
       efficacite: detail ? detail.efficacite : 1,
       critique: detail ? detail.critique : false,
     });
+    // Grelot Coque (Shell Bell) : soigne 1/8 des dégâts infligés au défenseur
+    if (detail && detail.att && vivant(detail.att) && d > 0) {
+      var _eSB = effetTenu(detail.att);
+      if (_eSB === "HELD_SHELL_BELL" || detail.att.objet === "SHELL_BELL") {
+        var soinSB = Math.max(1, Math.floor(d / 8));
+        if (soinSB > 0 && detail.att.pv < detail.att.stats.pv) {
+          var aSB = detail.att.pv;
+          MOT().poserPv(detail.att, detail.att.pv + soinSB, "grelotCoque");
+          ev.push({ t: "tenuSoigne", cote: detail.coteAtt || "joueur", objet: detail.att.objet, soin: detail.att.pv - aSB, pv: detail.att.pv });
+        }
+      }
+    }
     if (!vivant(p)) ev.push({ t: "ko", cote: quiCote });
   }
 
@@ -2578,10 +2626,12 @@
       }
       // 🔴 Le clone encaisse À LA PLACE du Pokémon : c'est toute sa raison
       //    d'être, et il n'y a qu'un endroit où l'oublier.
+      r.att = pA;
+      r.coteAtt = quiA;
       var portes = 0;
       for (var kc = 0; kc < coups; kc++) {
         if (!vivant(pD)) break;
-        encaisser(cible, pD, r.degats, ev, quiD, r);
+        encaisser(cible, pD, r.degats, ev, quiD, r, h);
         portes++;
         // 🔴 DARD-NUÉE EMPOISONNE À CHAQUE DARD (audit 13/08) : 0/600 avant —
         //    TWINEEDLE_EFFECT n'était lu que comme « deux coups », le poison
@@ -3931,5 +3981,8 @@
     entreeEnCombat: entreeEnCombat,
     verifierImmuniteTalent: verifierImmuniteTalent,
     poserStatut: poserStatut,
+    encaisser: encaisser,
+    effetTenu: effetTenu,
+    objetFinDeTour: objetFinDeTour,
   };
 })(typeof window !== "undefined" ? window : globalThis);

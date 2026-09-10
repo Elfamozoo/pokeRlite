@@ -60,6 +60,19 @@
     // Roche Royale (King's Rock) : 30 / 256 chances d'apeurer sur coup porté
     flinch: { effet: "HELD_FLINCH", sur: 256, seuil: 30 },
 
+    // Grelot Coque (Shell Bell) : soigne 1/8 des dégâts infligés
+    shellBell: { effet: "HELD_SHELL_BELL", part: 8 },
+
+    // Baies de crise (Pinch berries) : +1 cran à <= 25% PV
+    pinch: {
+      HELD_ATTACK_BOOST: "atk",
+      HELD_DEFENSE_BOOST: "def",
+      HELD_SPEED_BOOST: "vit",
+      HELD_SPECIAL_BOOST: "sat",
+      HELD_SPECIAL_DEF_BOOST: "sdf"
+    },
+    pinchSeuil: 0.25,
+
     // Baie Mepo (Leppa Berry) : rend 10 PP au coup épuisé
     rendPP: { effet: "HELD_RESTORE_PP", pp: 10 },
 

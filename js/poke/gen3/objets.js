@@ -883,7 +883,7 @@
       "en": "Sitrus Berry"
     },
     "prix": 20,
-    "tenu": "HELD_BERRY"
+    "tenu": "HELD_SITRUS_BERRY"
   },
   "FIGY_BERRY": {
     "nom": {
@@ -1003,7 +1003,7 @@
       "en": "Apicot Berry"
     },
     "prix": 50,
-    "tenu": "HELD_SPECIAL_BOOST"
+    "tenu": "HELD_SPECIAL_DEF_BOOST"
   },
   "CLAW_FOSSIL": {
     "nom": {

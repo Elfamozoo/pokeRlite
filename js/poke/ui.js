@@ -3988,6 +3988,9 @@
     if (boutonUsine) {
       boutonUsine.addEventListener("click", function () {
         son("PRESS_AB");
+        if (W.PokeRegles && typeof W.PokeRegles.poser === "function") {
+          W.PokeRegles.poser("gen3");
+        }
         if (W.PokeUIUsine && W.PokeUIUsine.ouvrirHall) {
           W.PokeUIUsine.ouvrirHall({ retour: accueil });
         }
