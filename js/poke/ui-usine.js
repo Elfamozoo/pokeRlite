@@ -901,8 +901,13 @@
     var articlesHTML = CATALOGUE_BOUTIQUE.map(function (item) {
       var peutAcheter = soldePCo >= item.prix;
       var charges = coffre[item.cle] || 0;
+      var estAnglais = (W.PokeUI && typeof W.PokeUI.langue === "function" && W.PokeUI.langue() === "en");
       var badgeReserve = charges > 0
-        ? ' <span class="pk-boutique-reserve">En réserve : ' + charges + ' utilisations</span>'
+        ? ' <span class="pk-boutique-reserve">' +
+            (estAnglais
+              ? 'In storage: ' + charges + ' use' + (charges > 1 ? 's' : '')
+              : 'En réserve : ' + charges + ' utilisation' + (charges > 1 ? 's' : '')) +
+          '</span>'
         : '';
       return '<div class="pk-boutique-carte pk-cat-' + esc(item.categorie.toLowerCase()) + '">' +
         '<div class="pk-boutique-info">' +

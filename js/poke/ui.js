@@ -3510,6 +3510,7 @@
   function accueil() {
     partie = null;
     mondeEnAttente = false;
+    _dernierChoisirPorteur = null;
     // Une création abandonnée ne doit pas hanter la suivante : la lentille
     // lirait une étape close sur une partie qui n'existe plus.
     reprendreCreation = null;
