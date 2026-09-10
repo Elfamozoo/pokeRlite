@@ -255,5 +255,13 @@
     imgDos: function (n, suffixe) { return dossierSprite(n) + "dos/" + n + ".png" + (suffixe || ""); },
     spriteFace: function (n, suffixe) { return dossierSprite(n) + "face/" + n + ".png" + (suffixe || ""); },
     spriteDos: function (n, suffixe) { return dossierSprite(n) + "dos/" + n + ".png" + (suffixe || ""); },
+    combatFace: function (n, suffixe) {
+      // Collection complète et unifiée des 386 sprites couleur GBA/Showdown (face)
+      return "assets/img/poke/gen3/face/" + n + ".png" + (suffixe || "");
+    },
+    combatDos: function (n, suffixe) {
+      // Collection complète et unifiée des 386 sprites dos couleur GBA/Showdown (dos)
+      return "assets/img/poke/gen3/dos/" + n + ".png" + (suffixe || "");
+    },
   };
 })(typeof window !== "undefined" ? window : globalThis);

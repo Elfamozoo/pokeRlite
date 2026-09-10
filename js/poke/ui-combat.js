@@ -572,11 +572,18 @@
   //     d'un combat Pokémon, et c'est pour ça qu'on emploie les sprites
   //     d'époque plutôt que les artworks — l'artwork n'a pas de vue de dos.
   function sprite(mon, cote) {
-    // `?i=` : un sprite remplacé sous la même adresse reste en cache, côté
-    // navigateur ET côté Cloudflare. On bump à chaque retraitement.
-    // 🔴 LE DOSSIER SUIT LE MONDE — voir `PokeSprites`. Écrit en dur ici, il
-    //    montrait un cadre vide pour toute créature de Johto, sur l'écran le
-    //    plus regardé du mode.
+    // 🔴 COMBAT SHOWDOWN UNIFIÉ : toutes les générations (Gen 1, Gen 2, Gen 3)
+    //    utilisent le catalogue complet et homogène des 386 sprites couleur GBA (face & dos)
+    //    pour garantir un rendu moderne, haute définition et parfaitement uniforme.
+    if (!mon || !mon.n) return "";
+    if (W.PokeSprites) {
+      if (cote === "joueur" && typeof W.PokeSprites.combatDos === "function") {
+        return W.PokeSprites.combatDos(mon.n, "?i=6");
+      }
+      if (cote !== "joueur" && typeof W.PokeSprites.combatFace === "function") {
+        return W.PokeSprites.combatFace(mon.n, "?i=6");
+      }
+    }
     return cote === "joueur" ? W.PokeSprites.dos(mon.n, "?i=6") : W.PokeSprites.face(mon.n, "?i=6");
   }
 
@@ -720,7 +727,7 @@
       //  ⚠️ La face est le bon repli : elle existe pour les 151 espèces, elle
       //     est déjà chargée ailleurs, et un Pokémon vu de face reste lisible.
       '<img class="est-entrant pk-sprite-combattant" data-cote="' + cote + '" alt="' + esc(e.nom[LANG()]) + '" data-mon="' + mon.n + '"' +
-        " onerror=\"this.onerror=null;this.src='" + W.PokeSprites.face(mon.n) + "'\"" +
+        " onerror=\"this.onerror=null;this.src='" + ((W.PokeSprites && W.PokeSprites.combatFace) ? W.PokeSprites.combatFace(mon.n) : W.PokeSprites.face(mon.n)) + "'\"" +
         (W.PokeEclat && W.PokeEclat.chromatique(mon.dv) ? ' data-chromatique="oui"' : "") +
         ' src="' + sprite(mon, cote) + '">';
     // L'entrée ne se joue qu'une fois : la classe part dès que l'animation est
@@ -2423,7 +2430,8 @@
         var catLabel = catClass === "statut" ? "STAT" : (catClass === "special" ? "SPÉ" : "PHY");
 
         var typeKey = (a.type || "normal").toLowerCase();
-        var typeNom = (TYPES_NOMS && TYPES_NOMS()[a.type]) || a.type;
+        var tObj = TYPES_NOMS && TYPES_NOMS()[a.type];
+        var typeNom = (tObj && (tObj[LANG()] || tObj.fr || tObj.en)) || a.type;
         b.setAttribute("data-type", typeKey);
         b.style.setProperty("--type-couleur", "var(--type-" + typeKey + ")");
 

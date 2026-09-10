@@ -521,6 +521,11 @@ runTest("Move selection renders a 2x2 grid (.pk-grille-attaques) of colored move
 
   // Move name
   assert.match(txt, /Tonnerre/i, "First move button must display move name (Tonnerre)");
+  // Must NEVER output [object Object]
+  assert.ok(!txt.includes("[object Object]"), "Move button must never contain [object Object]");
+  const typeSpan = premier.querySelector(".pk-attaque-type");
+  assert.ok(typeSpan, "Move button must have .pk-attaque-type");
+  assert.ok(typeSpan.textContent.length > 0 && !typeSpan.textContent.includes("[object"), "Type name must be a valid localized string");
   // Category pill (PHY, SPÉ, STAT)
   const cat = premier.querySelector(".pk-cat-tag");
   assert.ok(cat, "Move button must include category tag .pk-cat-tag");

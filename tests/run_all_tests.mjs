@@ -3076,6 +3076,7 @@ test("Unified Showdown Combat Engine presentation (PokeUICombat.Ecran: perspecti
 
   const premier = boutons[0];
   assert.match(premier.textContent, /Tonnerre/i, "First move button must display Tonnerre");
+  assert.ok(!premier.textContent.includes("[object Object]"), "Move button must not contain [object Object]");
   const cat = premier.querySelector(".pk-cat-tag");
   assert.ok(cat, "Move button must include category tag .pk-cat-tag");
   assert.match(cat.textContent, /PHY|SPÉ|SPE|STAT/, "Category tag must display PHY, SPÉ, or STAT");
