@@ -8727,3 +8727,358 @@ body.encre .pkdx {
     grid-template-columns: 1fr;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TASK 4 : ÉCRANS CENTRAUX SHOWDOWN (LOBBY, CARTE TACTIQUE, SAC, COFFRE, DEX)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Modern Home Lobby (Accueil) ────────────────────────────────────────── */
+.pk-lobby-banner,
+.pk-accueil-banner {
+  background: var(--surface-carte, #162032);
+  border: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.1));
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pk-accueil-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: center;
+}
+
+.pk-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pk-stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--texte-secondaire, #94a3b8);
+}
+
+.pk-stat-val {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--texte-primaire, #f8fafc);
+}
+
+.pk-modes-grille,
+.pk-accueil-modes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.pk-mode-carte,
+.pk-accueil-touche,
+.pk-surface-carte {
+  background: var(--surface-carte, #162032);
+  border: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.12));
+  color: var(--texte-primaire, #f8fafc);
+  border-radius: 8px;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pk-mode-carte:hover,
+.pk-accueil-touche:hover,
+.pk-surface-carte:hover {
+  border-color: var(--bordure-focus, #06b6d4);
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.25);
+  transform: translateY(-2px);
+}
+
+/* ── 2. Tactical Roadmap (Carte) ───────────────────────────────────────────── */
+.pk-carte-tactique {
+  background: #090e17;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.pk-carte-acte {
+  border-bottom: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.12));
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.pk-carte-noeud {
+  background: var(--surface-carte, #162032);
+  border: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.14));
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.pk-carte-noeud:hover:not(:disabled) {
+  border-color: var(--bordure-focus, #06b6d4);
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
+  transform: scale(1.02);
+}
+
+.pk-carte-noeud.est-courant,
+.pk-carte-noeud-courant {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.5) !important;
+  background: linear-gradient(145deg, #182840, #131c2d) !important;
+}
+
+.pk-carte-barre-tactique {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  background: var(--surface-carte, #162032);
+  border: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.12));
+  border-radius: 10px;
+  margin-top: 16px;
+}
+
+/* ── 3. Tabbed Bag & Chest (Sac & Coffre) ──────────────────────────────────── */
+.pk-sac-onglets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 18px 0;
+  border-bottom: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.1));
+  padding-bottom: 12px;
+}
+
+.pk-sac-onglet {
+  background: var(--surface-carte, #162032);
+  border: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.12));
+  color: var(--texte-secondaire, #94a3b8);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pk-sac-onglet:hover {
+  color: var(--texte-primaire, #f8fafc);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.pk-sac-onglet.est-actif {
+  background: #06b6d4;
+  color: #04121d;
+  border-color: #06b6d4;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+}
+
+.pk-sac-carte {
+  background: var(--surface-carte, #162032) !important;
+  border: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.12)) !important;
+  border-radius: 8px;
+  color: var(--texte-primaire, #f8fafc) !important;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 6px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.pk-sac-carte:hover:not(:disabled) {
+  border-color: var(--bordure-focus, #06b6d4) !important;
+  background: #1e2c44 !important;
+}
+
+.pk-badge-quantite {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--texte-primaire, #f8fafc);
+}
+
+.pk-coffre-carte {
+  background: var(--surface-carte, #162032);
+  border: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.14));
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.pk-coffre-badge-charges {
+  align-self: flex-start;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+/* ── 4. Showdown Pokédex Detail Cards ──────────────────────────────────────── */
+.pk-dex-art-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 75%);
+  border: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.1));
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.pk-dex-art {
+  max-width: 140px;
+  max-height: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+}
+
+.pk-dex-stats {
+  margin: 16px 0;
+  background: var(--surface-carte, #162032);
+  border: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.12));
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.pk-dex-stats-grille {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.pk-stat-ligne {
+  display: grid;
+  grid-template-columns: 80px 40px 1fr;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.pk-stat-nom {
+  color: var(--texte-secondaire, #94a3b8);
+  font-weight: 600;
+}
+
+.pk-stat-val {
+  font-weight: 700;
+  color: var(--texte-primaire, #f8fafc);
+  text-align: right;
+}
+
+.pk-stat-barre,
+.pk-dex-stat {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.pk-stat-barre-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.pk-stat-fill-pv  { background: #22c55e; }
+.pk-stat-fill-atk { background: #ef4444; }
+.pk-stat-fill-def { background: #f59e0b; }
+.pk-stat-fill-spe,
+.pk-stat-fill-sat { background: #3b82f6; }
+.pk-stat-fill-sdf { background: #8b5cf6; }
+.pk-stat-fill-vit { background: #06b6d4; }
+
+/* Showdown Canonical Type Badges */
+.pk-badge-type {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  letter-spacing: 0.03em;
+}
+
+.pk-type-normal   { background: #a8a878; }
+.pk-type-feu,
+.pk-type-fire     { background: #f08030; }
+.pk-type-eau,
+.pk-type-water    { background: #6890f0; }
+.pk-type-plante,
+.pk-type-grass    { background: #78c850; }
+.pk-type-electrik,
+.pk-type-electric { background: #f8d030; color: #111827 !important; text-shadow: none; }
+.pk-type-glace,
+.pk-type-ice      { background: #98d8d8; color: #111827 !important; text-shadow: none; }
+.pk-type-combat,
+.pk-type-fighting { background: #c03028; }
+.pk-type-poison   { background: #a040a0; }
+.pk-type-sol,
+.pk-type-ground   { background: #e0c068; }
+.pk-type-vol,
+.pk-type-flying   { background: #a890f0; }
+.pk-type-psy,
+.pk-type-psychic  { background: #f85888; }
+.pk-type-insecte,
+.pk-type-bug      { background: #a8b820; }
+.pk-type-roche,
+.pk-type-rock     { background: #b8a038; }
+.pk-type-spectre,
+.pk-type-ghost    { background: #705898; }
+.pk-type-dragon   { background: #7038f8; }
+.pk-type-acier,
+.pk-type-steel    { background: #b8b8d0; color: #111827 !important; text-shadow: none; }
+.pk-type-tenebres,
+.pk-type-dark     { background: #705848; }
+
+.pk-dex-talent,
+.pk-dex-ability {
+  margin: 14px 0;
+  background: var(--surface-carte, #162032);
+  border: 1px solid var(--bordure-nette, rgba(255, 255, 255, 0.12));
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.pk-dex-talent-nom {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: var(--texte-primaire, #f8fafc);
+}
+
+.pk-dex-talent-desc {
+  color: var(--texte-secondaire, #94a3b8);
+  font-weight: 400;
+}
+
+.pk-dex-notice {
+  background: #1e293b;
+  border-left: 3px solid #06b6d4;
+  color: #f8fafc;
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 12px 0;
+}
+

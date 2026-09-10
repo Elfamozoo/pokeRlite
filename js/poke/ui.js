@@ -3348,6 +3348,7 @@
   var dernierClic = null;        // {x, y} du dernier clic reçu, tous écrans confondus
 
   function coque(contenu, libre) {
+    if (!racine && D.getElementById) racine = D.getElementById("poke-racine");
     sortieLibre = !!libre;
     dessineA = Date.now();
     racine.innerHTML =
@@ -3711,24 +3712,36 @@
       // La phase de la respiration : voir `--respire` dans la feuille. Le
       // décalage est NÉGATIF — l'animation reprend où elle en était au lieu
       // de repartir de sa première image à chaque redessin de l'accueil.
-      '<div class="pkdx-accueil-vitrine" style="' + phaseRespire() + '">' + vitrine + "</div>" +
-      // ═══════════════════════════════════════════════════════════════════
-      //  L'AFFICHE EN DEUX TEMPS (recomposition 12/08, mandat « toutes les
-      //  pages d'onboarding ») : au bureau, le TITRE et l'accroche à gauche,
-      //  la promesse (ou le fil de rang) à droite — au lieu d'une pile où
-      //  chaque ligne repousse l'action d'un cran. Le bouton remonte
-      //  au-dessus de la ligne de flottaison. Une colonne au téléphone.
-      // ═══════════════════════════════════════════════════════════════════
-      '<div class="pkdx-accueil-double">' +
-        "<div>" +
-          '<p class="pkdx-surtitre">' +
-            T((W.PokeRegles && W.PokeRegles.cles().length > 1) ? "sousAccueilDeuxMondes" : "sousAccueil",
-              { n: W.PokeRegles ? W.PokeRegles.dexTotalCompte() : 151 }) +
-          "</p>" +
-          '<h1 class="pkdx-titre est-geant">' + T("titreAccueil") + "</h1>" +
-          '<p class="pkdx-dit est-forte">' + T(connu ? "accueilRetour" : "accueil") + "</p>" +
+      '<div class="pk-lobby-banner pk-accueil-banner">' +
+        // La phase de la respiration : voir `--respire` dans la feuille. Le
+        // décalage est NÉGATIF — l'animation reprend où elle en était au lieu
+        // de repartir de sa première image à chaque redessin de l'accueil.
+        '<div class="pkdx-accueil-vitrine" style="' + phaseRespire() + '">' + vitrine + "</div>" +
+        // ═══════════════════════════════════════════════════════════════════
+        //  L'AFFICHE EN DEUX TEMPS (recomposition 12/08, mandat « toutes les
+        //  pages d'onboarding ») : au bureau, le TITRE et l'accroche à gauche,
+        //  la promesse (ou le fil de rang) à droite — au lieu d'une pile où
+        //  chaque ligne repousse l'action d'un cran. Le bouton remonte
+        //  au-dessus de la ligne de flottaison. Une colonne au téléphone.
+        // ═══════════════════════════════════════════════════════════════════
+        '<div class="pkdx-accueil-double">' +
+          "<div>" +
+            '<p class="pkdx-surtitre">' +
+              T((W.PokeRegles && W.PokeRegles.cles().length > 1) ? "sousAccueilDeuxMondes" : "sousAccueil",
+                { n: W.PokeRegles ? W.PokeRegles.dexTotalCompte() : 151 }) +
+            "</p>" +
+            '<h1 class="pkdx-titre est-geant">' + T("titreAccueil") + "</h1>" +
+            '<p class="pkdx-dit est-forte">' + T(connu ? "accueilRetour" : "accueil") + "</p>" +
+          "</div>" +
+          "<div>" +
+            filRang +
+            '<div class="pk-accueil-stats">' +
+              '<div class="pk-stat-item pk-stat-dex"><span class="pk-stat-label">' + esc(T("cPokedex")) + '</span> <span class="pk-stat-val">' + dex.pris + " / " + dex.total + '</span></div>' +
+              '<div class="pk-stat-item pk-stat-voyages"><span class="pk-stat-label">' + esc(T("cVoyages")) + '</span> <span class="pk-stat-val">' + (r ? r.voyages : 0) + '</span></div>' +
+              '<div class="pk-stat-item pk-stat-badges"><span class="pk-stat-label">' + esc(T("cBadges")) + '</span> <span class="pk-stat-val">' + ((r && r.badgesMax) || 0) + ' / 8</span></div>' +
+            '</div>' +
+          "</div>" +
         "</div>" +
-        "<div>" + filRang + "</div>" +
       "</div>" +
       // ═══════════════════════════════════════════════════════════════════════
       //  💬 L'INVITATION DISCORD DU SOIR (20→27/08, 18 h → minuit) — demande du
@@ -3753,7 +3766,7 @@
             "</div>" +
           "</aside>"
         : "") +
-      '<div class="pkdx-actions est-pied">' +
+      '<div class="pk-modes-grille pk-accueil-modes pkdx-actions est-pied">' +
         // ═══════════════════════════════════════════════════════════════════
         //  🔴 REPRENDRE PASSE AVANT COMMENCER, ET PORTE L'ACCENT. Un joueur qui
         //     revient a UN geste à faire, et c'est celui-là ; laisser
@@ -3763,34 +3776,20 @@
         //     rien apprend au joueur à ne plus la regarder.
         // ═══════════════════════════════════════════════════════════════════
         (voyageEnAttente
-          ? '<button type="button" class="pkdx-touche est-definitive" id="pk-reprendre">' +
+          ? '<button type="button" class="pkdx-touche pk-mode-carte pk-surface-carte est-definitive" id="pk-reprendre">' +
               W.PokeIcones.svg("ball") + T("reprendre") +
               '<span class="pkdx-touche-note">' +
                 esc(T("reprendreOu", { a: voyageEnAttente.partie.acte || 1,
                                        n: (voyageEnAttente.partie.badges || []).length })) +
               "</span></button>"
           : "") +
-        '<button type="button" class="pkdx-touche' + (voyageEnAttente ? "" : " est-definitive") + '" id="pk-go">' +
+        '<button type="button" class="pkdx-touche pk-mode-carte pk-surface-carte' + (voyageEnAttente ? "" : " est-definitive") + '" id="pk-go">' +
           W.PokeIcones.svg("ball") + T("commencer") +
           (voyageEnAttente ? '<span class="pkdx-touche-note">' + esc(T("reprendreNeuf")) + "</span>" : "") +
           "</button>" +
-        '<button type="button" class="pkdx-touche" id="pk-defi">' + T("defi") + "</button>" +
-        '<button type="button" class="pkdx-touche" id="pk-usine">' + T("usineTitre") + "</button>" +
-        // ═══════════════════════════════════════════════════════════════════
-        //  🔴 [20/08, Angel sur Discord] « LES RUNS NE SONT PAS SAUVEGARDÉES
-        //     ENTRE LES APPAREILS ? J'EN AVAIS COMMENCÉ UNE HIER, LÀ JE DOIS
-        //     REPRENDRE DU DÉBUT (JE SUIS BIEN CONNECTÉ) ». Il a raison, et il
-        //     a fait exactement ce qu'il fallait : le compte synchronise le
-        //     POKÉDEX (`/api/poke/sync`), pas le VOYAGE — celui-ci vit dans le
-        //     stockage du navigateur et n'est jamais envoyé au serveur.
-        //  🔑 Un joueur connecté suppose que tout suit son compte, et rien ne
-        //     lui disait le contraire. On le dit là où la question se pose :
-        //     sous le bouton qui reprend un voyage. Faire suivre le voyage est
-        //     une AUTRE affaire (le défi du jour ne doit surtout pas suivre —
-        //     un essai par appareil est ce qui tient le classement).
-        //  ⚠️ Seulement quand un voyage attend : sans voyage, la phrase parle
-        //     d'un objet qui n'existe pas.
-        // ═══════════════════════════════════════════════════════════════════
+        '<button type="button" class="pkdx-touche pk-mode-carte pk-surface-carte" id="pk-defi">' + T("defi") + "</button>" +
+        '<button type="button" class="pkdx-touche pk-mode-carte pk-surface-carte" id="pk-usine">' + T("usineTitre") + "</button>" +
+        '<button type="button" class="pkdx-touche pk-mode-carte pk-surface-carte" id="pk-duel">' + T("duel") + "</button>" +
         (voyageEnAttente ? '<p class="pkdx-dit est-note">' + T("voyageIci") + "</p>" : "") +
       "</div>" +
       // ═══════════════════════════════════════════════════════════════════════
@@ -3831,79 +3830,25 @@
       //     puis un orphelin, à 390 px elle rendait 1-2-2-1. Un repli qui laisse
       //     un élément seul ne se lit pas comme une rangée, il se lit comme un
       //     oubli.
-      //
-      //  🔴 ET LA CAUSE N'EST PAS LA LARGEUR, C'EST LE RANGEMENT. Ces six
-      //     boutons ne font pas le même métier : deux servent à JOUER —
-      //     commencer un voyage, prendre le défi du jour — et quatre mènent à un
-      //     ÉCRAN qu'on consulte. Les poser côte à côte demandait au joueur de
-      //     trier six portes identiques pour trouver la seule qui lance le jeu.
-      //
-      //     Deux rangées, donc, et par intention : jouer d'abord, les lieux
-      //     ensuite, en retrait. L'orphelin disparaît à toutes les largeurs
-      //     parce qu'il n'y a plus de rangée de six à replier.
       // ═══════════════════════════════════════════════════════════════════════
-      // ⚠️ ET ELLES GARDENT LEUR CADRE. J'ai d'abord passé ces quatre boutons
-      //    en `est-discrete` pour marquer le retrait — mais cette variante a été
-      //    écrite pour ARRÊTER SON VOYAGE : « elle se lit, et elle ne se clique
-      //    pas par mégarde ». Vu à l'écran, les quatre portes devenaient du texte
-      //    sans relief, c'est-à-dire l'inverse exact de ce que disent les trois
-      //    commentaires ci-dessous — le duel, le carnet et le Pokédex ont été
-      //    remontés ICI précisément pour qu'on les emprunte.
-      //    *Une variante porte une intention ; la reprendre pour une autre les
-      //    casse toutes les deux.* Le retrait se dit par la RANGÉE, pas par le
-      //    bouton : c'est la seconde, sans filet, après celle qui joue.
       '<div class="pkdx-actions est-lieux">' +
-        // 🔴 LE DUEL EST SUR L'ACCUEIL, PAS DANS UN SOUS-MENU. Une mécanique
-        //    livrée doit avoir sa porte d'entrée le jour même, et au premier
-        //    niveau : c'est la faute n°1 du projet, payée assez de fois.
-        '<button type="button" class="pkdx-touche" id="pk-duel">' + T("duel") + "</button>" +
-        '<button type="button" class="pkdx-touche" id="pk-classement">' + T("classement") + "</button>" +
-        // 🏷️ [18/08, Poltron] LE CERCLE — le clan des autres univers, enfin ici.
-        //    Le serveur le portait depuis l'ouverture ; c'est l'écran qui
-        //    manquait (`PokeClassement.cercle`). À côté du classement : c'est un
-        //    classement entre amis.
-        '<button type="button" class="pkdx-touche" id="pk-cercle">' + T("cercle") + "</button>" +
-        // 🔴 LE CARNET A SA PORTE DÈS L'ACCUEIL, ET C'EST LA CONDITION POUR
-        //    QU'IL SERVE À QUELQUE CHOSE. Une chasse qu'on découvre à l'écran
-        //    de fin ne dirige aucun voyage : elle raconte celui qu'on vient de
-        //    perdre. Elle doit se lire AVANT de partir, pour qu'on parte en la
-        //    visant. C'est la faute n°1 du projet — une mécanique livrée sans
-        //    sa porte d'entrée — et elle ne se repaie pas ici.
-        '<button type="button" class="pkdx-touche" id="pk-carnet">' + T("carnet") + "</button>" +
-        '<button type="button" class="pkdx-touche" id="pk-coffre">' +
+        '<button type="button" class="pkdx-touche pk-surface-carte pk-accueil-touche" id="pk-coffre">' +
           T("coffreTitre") +
           (nCoffre > 0 ? ' <span class="pkdx-touche-note" id="pk-coffre-compte">(' + nCoffre + ")</span>" : "") +
         "</button>" +
-        // 🔴 ET LES NOUVEAUTÉS ONT LEUR PORTE ICI AUSSI. Sept correctifs en une
-        //    nuit, tous demandés par des joueurs, et aucun endroit pour le leur
-        //    dire : celui qui signale rejouait le défaut du soir en croyant
-        //    qu'on n'avait rien fait. La pastille se pose après coup, quand le
-        //    fichier de notes a répondu — l'accueil ne l'attend pas.
-        '<button type="button" class="pkdx-touche" id="pk-neuf">' + T("neuf") +
+        '<button type="button" class="pkdx-touche pk-surface-carte pk-accueil-touche" id="pk-classement">' + T("classement") + "</button>" +
+        // 🏷️ [18/08, Poltron] LE CERCLE — le clan des autres univers, enfin ici.
+        '<button type="button" class="pkdx-touche pk-surface-carte pk-accueil-touche" id="pk-cercle">' + T("cercle") + "</button>" +
+        '<button type="button" class="pkdx-touche pk-surface-carte pk-accueil-touche" id="pk-carnet">' + T("carnet") + "</button>" +
+        '<button type="button" class="pkdx-touche pk-surface-carte pk-accueil-touche" id="pk-neuf">' + T("neuf") +
           '<span class="pkdx-pastille" id="pk-neuf-point" hidden></span>' +
         "</button>" +
-        // ═══════════════════════════════════════════════════════════════════
-        //  🔴 LE POKÉDEX N'AVAIT AUCUNE PORTE DEPUIS L'ACCUEIL. C'est la
-        //     collection qui persiste entre les voyages, celle dont le mode
-        //     porte le nom, celle qui ouvre les départs — et pour la regarder
-        //     il fallait PARTIR EN VOYAGE. Le relevé d'accueil en montrait le
-        //     compte et huit vignettes, sans un seul endroit où cliquer.
-        //     C'est la faute n°1 du dossier, sur la mécanique la plus centrale :
-        //     une collection qu'on ne peut pas contempler ne se collectionne
-        //     pas.
-        //  ⚠️ ON N'OUVRE QU'À CEUX QUI ONT COMMENCÉ. Un Pokédex de 151 cases
-        //     vides au tout premier écran, avant le premier voyage, ce sont
-        //     151 portes fermées — le mode a déjà refusé ça pour les sceaux.
-        // ═══════════════════════════════════════════════════════════════════
         (connu
-          ? '<button type="button" class="pkdx-touche" id="pk-dex-accueil">' + T("dexAccueil") + "</button>"
+          ? '<button type="button" class="pkdx-touche pk-surface-carte pk-accueil-touche" id="pk-dex-accueil">' + T("dexAccueil") + "</button>"
           : "") +
-        // 🔴 LA PORTE DU COMPTE — voir `connexion`. Elle est de cette rangée-ci
-        //    parce qu'elle mène à un ÉCRAN qu'on consulte, pas à une partie
-        //    qu'on joue : c'est le rangement que cette rangée porte déjà.
-        '<button type="button" class="pkdx-touche" id="pk-compte">' +
+        '<button type="button" class="pkdx-touche pk-surface-carte pk-accueil-touche" id="pk-compte">' +
           T(connecte() ? "monCompte" : "connexion") + "</button>" +
-        // 🌌 PAS DE LIEN VERS GATECIV ICI (20/08). Le propriétaire a demandé
+      "</div>" +  // 🌌 PAS DE LIEN VERS GATECIV ICI (20/08). Le propriétaire a demandé
         //    « un bouton comme pour Pokémon, DBZ… qui envoie sur mon jeu » ; il
         //    est posé sur l'accueil et la fin de voie de Naruto / Dragon Ball
         //    (`game.js`, `GATECIV_LIEN`). Ce mode-ci est un FAN GAME : sa règle
@@ -4440,13 +4385,13 @@
           var categorie = catItem ? catItem.categorie : "";
           var dit = (W.PokeDits && typeof W.PokeDits.objet === "function" ? W.PokeDits.objet(cle, T) : "") ||
                     (catItem && catItem.desc) || "";
-          return '<div class="pkdx-coffre-carte" data-cle="' + esc(cle) + '">' +
+          return '<div class="pkdx-coffre-carte pk-coffre-carte pk-surface-carte" data-cle="' + esc(cle) + '">' +
             '<div class="pkdx-coffre-carte-haut">' +
               '<span class="pkdx-coffre-nom">' + esc(nom) + '</span>' +
               (categorie ? ' <span class="pkdx-coffre-cat">(' + esc(categorie) + ')</span>' : '') +
             '</div>' +
             (dit ? '<p class="pkdx-coffre-dit">' + esc(dit) + '</p>' : '') +
-            '<div class="pkdx-coffre-badge-charges">' +
+            '<div class="pkdx-coffre-badge-charges pk-coffre-badge-charges">' +
               esc(T("coffreCharges", { n: charges })) +
             '</div>' +
           '</div>';
@@ -4507,7 +4452,7 @@
     var selection = null;
 
     function htmlGrille() {
-      return '<div class="pkdx-coffre-grille pkdx-objet-depart-grille">' +
+      return '<div class="pkdx-coffre-grille">' +
         cles.map(function (cle) {
           var charges = coffre[cle] || 0;
           var nom = nomDObjet(cle);
@@ -4524,7 +4469,7 @@
           var dit = (W.PokeDits && typeof W.PokeDits.objet === "function" ? W.PokeDits.objet(cle, T) : "") ||
                     (catItem && catItem.desc) || "";
           var estChoisi = selection === cle;
-          return '<button type="button" class="pkdx-coffre-carte pkdx-objet-depart-carte' + (estChoisi ? ' est-choisi' : '') + '"' +
+          return '<button type="button" class="pkdx-coffre-carte pk-coffre-carte pk-surface-carte pkdx-objet-depart-carte' + (estChoisi ? ' est-choisi' : '') + '"' +
             ' data-cle="' + esc(cle) + '"' +
             ' aria-pressed="' + (estChoisi ? 'true' : 'false') + '"' +
             ' id="pk-objet-depart-' + esc(cle) + '">' +
@@ -4533,7 +4478,7 @@
               (categorie ? ' <span class="pkdx-coffre-cat">(' + esc(categorie) + ')</span>' : '') +
             '</div>' +
             (dit ? '<p class="pkdx-coffre-dit">' + esc(dit) + '</p>' : '') +
-            '<div class="pkdx-coffre-badge-charges">' +
+            '<div class="pkdx-coffre-badge-charges pk-coffre-badge-charges">' +
               esc(T("coffreCharges", { n: charges })) +
             '</div>' +
           '</button>';
@@ -7450,9 +7395,10 @@
         //     endroit, `PokeObtenir` — la carte et l'écran lisent la même.
         var trocMort = n.type === "echange" &&
           !O().echangeJouable(partie, n.etape) && !O().retourJouable(partie);
-        return '<button type="button" class="pkdx-noeud' +
+        return '<button type="button" class="pkdx-noeud pk-carte-noeud' +
             (pris ? " est-pris" : "") + (perdu ? " est-perdu" : "") + (boss ? " est-boss" : "") +
-            (unique ? " est-unique" : "") + '"' +
+            (unique ? " est-unique" : "") +
+            (etat === "courante" && !perdu && !trocMort ? " est-courant pk-carte-noeud-courant" : "") + '"' +
             ' data-noeud="' + esc(n.id) + '" data-noeud-type="' + esc(n.type) + '"' +
             (t ? W.PokeType.attr(t) : "") +
             (etat === "courante" && !perdu && !trocMort ? "" : " disabled") + ">" +
@@ -7569,7 +7515,7 @@
       //    se recalculent tout seuls contre le nouveau papier. Réécrire trente
       //    règles aurait garanti la divergence.
       // ═══════════════════════════════════════════════════════════════════════
-      '<div class="pkdx-plateau">' +
+      '<div class="pkdx-plateau pk-carte-tactique">' +
       // ═══════════════════════════════════════════════════════════════════════
       //  🔴 LE RAIL — CE QU'ON DOIT VOIR PENDANT QU'ON PARCOURT LE CHEMIN.
       //     Mesuré le 09/08 à 1920 : la carte d'acte défile sur **1 727 px**
@@ -7586,7 +7532,7 @@
       //     enveloppe qui ne se voit qu'au bureau ne doit rien coûter ailleurs.
       // ═══════════════════════════════════════════════════════════════════════
       '<div class="pkdx-rail">' +
-      '<div class="pkdx-acte-tete">' +
+      '<div class="pkdx-acte-tete pk-carte-acte">' +
         '<p class="pkdx-surtitre">' + T("acte", { n: partie.acte, t: W.PokeActes.nombre() }) + "</p>" +
         '<h1 class="pkdx-titre">' + T("versVille", { v: esc(W.PokeActes.nomActe(acte, LANG())) }) + "</h1>" +
         // 🔴 ON NE SAVAIT JAMAIS OÙ L'ON EN ÉTAIT DANS L'ACTE. La carte disait
@@ -7810,7 +7756,7 @@
         '<button type="button" class="pkdx-touche est-discrete" id="pk-abandon">' +
           T("koAbandonner") + "</button>" +
       "</div>" +
-      '<div class="pkdx-actions est-pied est-carte">' +
+      '<div class="pkdx-actions est-pied est-carte pk-carte-barre-tactique">' +
         '<button type="button" class="pkdx-touche" id="pk-dex">' +
           W.PokeIcones.svg("pokedex") + T("pokedex").toUpperCase() +
           // 🔴 « POKÉDEX 1/151 » EN PLEIN JOHTO. Le compte venait de la
@@ -12952,62 +12898,49 @@
   //    second cas — on revient devant le Champion, pas sur la carte.
   function ecranSac(apres, cleRetour) {
     var sac = partie.sac || {};
+    var sacOnglet = "tous";
 
     function rendre(dit) {
       // ═══════════════════════════════════════════════════════════════════════
       //  UN OBJET DU SAC EST UN ARTICLE, COMME À LA BOUTIQUE — critique du 14/08
-      //
-      //  🔴 CE QU'IL ÉTAIT : un `.pkdx-etape`, c'est-à-dire un bouton étiré sur
-      //     TOUTE la largeur — mesuré à **1008 px pour le mot « Potion »**, nom
-      //     centré — avec la quantité posée DEHORS, dans une colonne de coût.
-      //     Pas seulement dehors à l'œil : `bouton.contains(compteur)` rendait
-      //     FAUX, c'était un frère dans le DOM. Les deux seuls faits d'un objet
-      //     — quoi, combien — séparés par un mètre de vide, et le nombre hors
-      //     de la cible qu'on touche.
-      //  🔴 ET IL NE DISAIT PAS CE QU'IL FAIT. Huit noms empilés — Potion,
-      //     Guérison, Rappel, Total Soin — et pour les lire il fallait SURVOLER,
-      //     geste qui n'existe pas au doigt. Pendant ce temps l'étal de la
-      //     boutique imprime l'effet de chaque article sous son nom, par
-      //     `PokeDits.objet`, la porte unique que la carte de butin lit aussi.
-      //     Le sac était le seul écran d'objets à se taire sur les objets.
-      //  ✅ ON RÉEMPLOIE `.pkdx-article`, on n'invente rien. Nom, quantité à la
-      //     place du prix, et la phrase de l'objet. Le joueur lit le même
-      //     dessin à la boutique et dans son sac : c'est le même objet.
-      //  ⚠️ `.pkdx-etape` reste pour l'écran des capsules, à qui il est destiné :
-      //     là-bas la colonne de droite porte une RAISON (« peut l'apprendre »,
-      //     « en connaît déjà quatre »), pas un compte.
+      //  Nom, quantité à la place du prix, et la phrase de l'objet.
       // ═══════════════════════════════════════════════════════════════════════
-      // ═══════════════════════════════════════════════════════════════════
-      //  UN OBJET EST UNE LIGNE, PAS UNE VIGNETTE — refonte du 14/08
-      //
-      //  🔴 « Je n'aime pas du tout », dit du sac comme de l'équipe. J'étais
-      //     passé de la pilule étirée à une grille de cartes ; c'était encore
-      //     une liste de produits. Un sac Pokémon est une LISTE : le nom à
-      //     gauche, la quantité alignée à droite, un `×` entre les deux. Cette
-      //     forme se scanne — les noms partent tous du même x, les nombres se
-      //     comparent en colonne — et c'est celle du jeu depuis 1996.
-      //  ✅ La phrase de l'objet reste, sous son nom : c'est ce qui manquait
-      //     vraiment (huit noms muets, et l'infobulle inaccessible au doigt).
-      //     Elle vient de `PokeDits.objet`, la porte que la boutique et la
-      //     carte de butin lisent déjà.
-      //  ⚠️ Toujours PAS d'infobulle : l'écran parle, la bulle ferait doublon.
-      // ═══════════════════════════════════════════════════════════════════
       function carteObjet(cle, n, actif, note) {
         var dit = W.PokeDits ? W.PokeDits.objet(cle, T, function (s) { return esc(nomStat(s)); }) : "";
-        return '<button type="button" class="pkdx-objet-ligne"' +
+        return '<button type="button" class="pkdx-objet-ligne pk-sac-carte pk-surface-carte"' +
             (actif ? ' data-objet="' + esc(cle) + '"' : " disabled") + ">" +
           '<span class="pkdx-objet-corps">' +
             '<span class="pkdx-objet-nom">' + esc(nomDObjet(cle)) + "</span>" +
             (dit ? '<span class="pkdx-objet-dit">' + dit + "</span>" : "") +
           "</span>" +
           '<span class="pkdx-objet-droite">' +
-            '<span class="pkdx-objet-n">×' + n + "</span>" +
+            '<span class="pkdx-objet-n pk-badge-quantite">×' + n + "</span>" +
             (note ? '<span class="pkdx-objet-note">' + note + "</span>" : "") +
           "</span>" +
         "</button>";
       }
 
+      var ongletsData = [
+        { id: "tous", label: LANG() === "fr" ? "Tous" : "All" },
+        { id: "soins", label: LANG() === "fr" ? "Soins" : "Healing" },
+        { id: "balls", label: "Balls" },
+        { id: "tenus", label: LANG() === "fr" ? "Objets Tenus" : "Held Items" },
+        { id: "vitamines", label: "Vitamines" },
+        { id: "pierres", label: LANG() === "fr" ? "Pierres" : "Stones" },
+        { id: "machines", label: LANG() === "fr" ? "Machines CT" : "TMs" },
+        { id: "cles", label: LANG() === "fr" ? "Clés" : "Keys" },
+      ];
+      var sacOngletsHTML = '<div class="pk-sac-onglets" role="tablist">' +
+        ongletsData.map(function (tab) {
+          return '<button type="button" class="pk-sac-onglet' + (sacOnglet === tab.id ? " est-actif" : "") +
+            '" data-sac-onglet="' + tab.id + '">' + esc(tab.label) + "</button>";
+        }).join("") +
+      '</div>';
+
       var rangs = RANGS_SAC.map(function (r) {
+        if (sacOnglet !== "tous" && sacOnglet !== r.cle && !(sacOnglet === "vitamines" && r.cle === "bonbon")) {
+          return "";
+        }
         var lignes = [];
         for (var o in sac) {
           if (!sac[o] || !r.test(o)) continue;
@@ -13019,72 +12952,34 @@
       }).join("");
 
       // ═══════════════════════════════════════════════════════════════════════
-      //  🔴 LE STOCK DE BALLS ÉTAIT LA DERNIÈRE LIGNE DE LA PAGE — critique du
-      //     14/08, mesuré au pixel **3 118 sur 3 278** à 360 px : sous sept
-      //     sections, en gris, sans titre, dans un `<p>` nu. Dans un jeu dont
-      //     la capture est le cœur, « combien de Balls me reste-t-il » est LA
-      //     question qu'on vient poser au sac avant un Champion, et c'était la
-      //     réponse la plus enterrée de l'écran.
-      //  ✅ Elles montent en PREMIER et prennent le dessin des autres objets.
-      //  ⚠️ LA LOI NE CHANGE PAS : « on les DIT, sans bouton » — une Ball ne
-      //     s'emploie qu'en combat, la rendre cliquable ici promettrait une
-      //     action qui n'existe pas. Elles sortent donc éteintes, avec leur
-      //     raison écrite dessus. C'était la PLACE qui était fausse, pas la loi.
+      //  🔴 LE STOCK DE BALLS : Les Balls montent en PREMIER et prennent le
+      //     dessin des autres objets. « On les DIT, sans bouton » — une Ball
+      //     ne s'emploie qu'en combat, la rendre cliquable ici promettrait une
+      //     action qui n'existe pas.
       // ═══════════════════════════════════════════════════════════════════════
       var balles = [];
-      for (var b in sac) if (/BALL$/.test(b) && sac[b]) balles.push(carteObjet(b, sac[b], false, T("sacBallsNote")));
+      if (sacOnglet === "tous" || sacOnglet === "balls") {
+        for (var b in sac) if (/BALL$/.test(b) && sac[b]) balles.push(carteObjet(b, sac[b], false, T("sacBallsNote")));
+      }
 
-      // ═══════════════════════════════════════════════════════════════════════
-      // 🔴 CINQUANTE MACHINES DANS LES DONNÉES, AUCUNE ENSEIGNABLE. Les CT
-      //    tombaient en butin, le journal les nommait, et le sac ne les
-      //    montrait même pas : elles vivent dans `partie.ct`, pas dans
-      //    `partie.sac`. `apprendreCT` existait, complète, et n'était appelée
-      //    QUE par le simulateur d'équilibrage — qui mesurait donc un joueur
-      //    mieux armé que le vrai.
-      //    C'est le levier qui manquait au mode : voir le type d'un Champion,
-      //    puis décider à QUI donner Tonnerre. Une CT ne s'emploie qu'une fois.
-      // ═══════════════════════════════════════════════════════════════════════
-      // 🔴 UN OBJET QUI AGIT SANS QU'ON LE CLIQUE DOIT LE DIRE. L'EXP.ALL ne
-      //    s'emploie pas : elle travaille à chaque combat. Sans cette ligne,
-      //    elle serait la chose la plus importante du sac et la seule invisible
-      //    — et le joueur ne saurait pas pourquoi son équipe monte enfin.
-      var porte = (P() && P().aLObjet && P().aLObjet(partie, "EXP_ALL"))
+      // 🔴 UN OBJET QUI AGIT SANS QU'ON LE CLIQUE DOIT LE DIRE (EXP.ALL).
+      var porte = ((sacOnglet === "tous" || sacOnglet === "tenus") && P() && P().aLObjet && P().aLObjet(partie, "EXP_ALL"))
         ? '<h2 class="pkdx-soustitre">' + T("sac_porte") + "</h2>" +
           '<p class="pkdx-passif"><b>' + esc(nomDObjet("EXP_ALL")) + "</b> — " + T("expAllDit") + "</p>"
         : "";
 
       // ═══════════════════════════════════════════════════════════════════
-      //  🔴 LES CLÉS N'APPARAISSAIENT NULLE PART DANS LE SAC. Un voyage en
-      //     récolte jusqu'à dix — CS, Ticket, Scope Sylphe, Clé Secrète — et
-      //     ce sont elles qui OUVRENT les étapes. Le joueur les recevait une
-      //     fois, sur un écran qu'il quittait aussitôt, et ne pouvait plus
-      //     jamais savoir ce qu'il tenait ni ce que ça débloquait.
-      //     C'est la classe n°1 du dossier, sur les objets dont l'ouverture
-      //     de contenu est la seule fonction.
-      //  ⚠️ Elles ne se cliquent pas : une clé ne s'emploie pas, elle ouvre.
-      //     Elles vivent donc dans `partie.cles`, pas dans le sac — et c'est
-      //     pour ça qu'aucune boucle sur `sac` ne pouvait les trouver.
-      // ═══════════════════════════════════════════════════════════════════
-      // ═══════════════════════════════════════════════════════════════════
-      //  🔴 QUATRE ENTRÉES SUR CINQ EXPLIQUAIENT POURQUOI L'OBJET NE SERT À
-      //     RIEN — critique du 14/08. « Rien à ouvrir », « se traversent à
-      //     pied », « pas d'ascenseur », « t'a déjà confié Force » : une
-      //     section dont 80 % du contenu est une excuse, et la seule clé qui
-      //     ouvre quelque chose noyée au milieu.
-      //  ✅ ON NE RETIRE PAS LE TEXTE — savoir qu'une clé ne sert à rien ICI
-      //     est une information vraie, et la cacher ferait croire à un oubli.
-      //     On les RANGE : ce qui ouvre passe devant. L'ordre porte alors
-      //     l'information, et la première ligne lue est celle qui compte.
+      //  🔴 LES CLÉS : Elles ne se cliquent pas, elles ouvrent.
       // ═══════════════════════════════════════════════════════════════════
       var tenues = [], muettes = [];
-      for (var ck in (partie.cles || {})) {
-        if (!partie.cles[ck] || !CLES_V()[ck]) continue;
-        var dit = ditOuvre([ck]);
-        var li = '<li class="pkdx-cle">' +
-          '<b>' + esc(CLES_V()[ck].nom[LANG()]) + "</b>" + dit + "</li>";
-        //  `ditOuvre` nomme une étape quand la clé en ouvre une : la présence
-        //  d'un `<b>` dans sa phrase est le signe qu'il y a une porte derrière.
-        (/<b>/.test(dit) ? tenues : muettes).push(li);
+      if (sacOnglet === "tous" || sacOnglet === "cles") {
+        for (var ck in (partie.cles || {})) {
+          if (!partie.cles[ck] || !CLES_V()[ck]) continue;
+          var ditCl = ditOuvre([ck]);
+          var li = '<li class="pkdx-cle">' +
+            '<b>' + esc(CLES_V()[ck].nom[LANG()]) + "</b>" + ditCl + "</li>";
+          (/<b>/.test(ditCl) ? tenues : muettes).push(li);
+        }
       }
       tenues = tenues.concat(muettes);
       var blocCles = !tenues.length ? "" :
@@ -13093,51 +12988,32 @@
 
       // ═══════════════════════════════════════════════════════════════════════
       //  CE QUE TON ÉQUIPE TIENT EN MAIN — 21/08/2026
-      //
-      //  🔴 UNE MÉCANIQUE ENTIÈRE ÉTAIT À SENS UNIQUE. Johto donne un objet en
-      //     main à soixante et une espèces ; `moteur.js` le pose à la création,
-      //     le combat le consomme (une baie qui soigne, une Roche Royale qui
-      //     fait reculer) — et le joueur n'avait AUCUN moyen de le reprendre.
-      //     Un objet tenu n'entrait jamais dans le sac : il naissait sur une
-      //     bête et y mourait.
-      //
-      //  🔑 CE N'EST PAS UN CONFORT, C'EST LA DERNIÈRE PORTE DE LA PIERRE LUNE.
-      //     Mesuré : `MOON_STONE` n'est vendue nulle part à Johto et ne traîne
-      //     dans aucun décor. Sa SEULE source est la main de Mélofée, Mélodelfe
-      //     et Mélo — et Mélo sort de l'Œuf Étrange, qui est dans le voyage.
-      //     Sans ce bouton, Nidorina, Nidorino, Mélofée et Rondoudou
-      //     n'évoluaient dans aucune partie de Johto, jamais.
-      //
-      //  ⚠️ ON NE PREND QUE CE QUI PEUT SERVIR AILLEURS ? Non — on prend TOUT.
-      //     Trancher pour le joueur quelle baie mérite le sac, c'est décider à
-      //     sa place ; et la ligne dit déjà ce que fait l'objet.
       // ═══════════════════════════════════════════════════════════════════════
       var enMain = [];
-      for (var im = 0; im < (partie.equipe || []).length; im++) {
-        var mm = partie.equipe[im];
-        if (!mm || !mm.objet) continue;
-        var ditT = W.PokeDits ? W.PokeDits.objet(mm.objet, T, function (s) { return esc(nomStat(s)); }) : "";
-        enMain.push('<button type="button" class="pkdx-objet-ligne" data-reprendre="' + im + '">' +
-          '<span class="pkdx-objet-corps">' +
-            '<span class="pkdx-objet-nom">' + esc(nomDObjet(mm.objet)) + "</span>" +
-            // 🔴 « tenu par X » EST UNE PHRASE COMPOSÉE : sa largeur dépend du
-            //    surnom que le joueur a donné. La colonne de droite est en
-            //    `nowrap` — une étiquette de longueur connue y tient, pas
-            //    celle-ci. Elle descend donc dans le corps, qui se replie.
-            '<span class="pkdx-objet-dit">' +
-              esc(T("sacTenuPar", { nom: mm.surnom || ESP()[mm.n].nom[LANG()] })) +
-              (ditT ? " — " + ditT : "") + "</span>" +
-          "</span>" +
-        "</button>");
+      if (sacOnglet === "tous" || sacOnglet === "tenus") {
+        for (var im = 0; im < (partie.equipe || []).length; im++) {
+          var mm = partie.equipe[im];
+          if (!mm || !mm.objet) continue;
+          var ditT = W.PokeDits ? W.PokeDits.objet(mm.objet, T, function (s) { return esc(nomStat(s)); }) : "";
+          enMain.push('<button type="button" class="pkdx-objet-ligne pk-sac-carte pk-surface-carte" data-reprendre="' + im + '">' +
+            '<span class="pkdx-objet-corps">' +
+              '<span class="pkdx-objet-nom">' + esc(nomDObjet(mm.objet)) + "</span>" +
+              '<span class="pkdx-objet-dit">' +
+                esc(T("sacTenuPar", { nom: mm.surnom || ESP()[mm.n].nom[LANG()] })) +
+                (ditT ? " — " + ditT : "") + "</span>" +
+            "</span>" +
+          "</button>");
+        }
       }
       var blocEnMain = !enMain.length ? "" :
         '<h2 class="pkdx-soustitre">' + T("sac_enMain") + "</h2>" +
         '<p class="pkdx-dit">' + T("sacEnMainDit") + "</p>" +
         '<div class="pkdx-objets">' + enMain.join("") + "</div>";
 
-      var machines = (typeof O === "function" && O() && O().ctDe) ? O().ctDe(partie) : [];
-      //  Le Champion de l'acte, par la porte unique — et son équipe sert de
-      //  cible : c'est CONTRE ELLE qu'une machine « répond », pas dans l'absolu.
+      // ═══════════════════════════════════════════════════════════════════════
+      //  MACHINES CT ET RÉPONSES AUX CHAMPIONS
+      // ═══════════════════════════════════════════════════════════════════════
+      var machines = (typeof O === "function" && O() && O().ctDe && (sacOnglet === "tous" || sacOnglet === "machines")) ? O().ctDe(partie) : [];
       var champDevant = areneDevant();
       function repondAuChampion(m) {
         if (!champDevant || !W.PokeCombat || !W.PokeCombat.efficacite) return false;
@@ -13163,17 +13039,6 @@
               (a && a.puissance ? T("ctPuissance", { n: a.puissance }) : T("ctSansDegats")) + "</span>" +
             '<span class="pkdx-machine-qui">' +
               (peuvent.length ? T("ctQui", { n: peuvent.length }) : T("ctPersonne")) + "</span>" +
-            // ═══════════════════════════════════════════════════════════════
-            //  🔴 LE RAIL DIT « une capsule technique peut y répondre », ET LE
-            //     SAC NE DISAIT PAS LAQUELLE. La v504 a donné une voix au
-            //     second facteur du mode ; sans cette ligne, elle envoie le
-            //     joueur fouiller huit machines dont aucune n'annonce ce
-            //     qu'elle vaut CONTRE CE CHAMPION-LÀ. Une alerte qui nomme un
-            //     remède doit mener au remède.
-            //  ⚠️ Seulement si quelqu'un peut l'apprendre : une machine que
-            //     personne n'apprend n'est pas une réponse, et la carte est
-            //     déjà grisée pour le dire.
-            // ═══════════════════════════════════════════════════════════════
             (peuvent.length && repondAuChampion(m)
               ? '<span class="pkdx-machine-reponse">' +
                   esc(T("ctRepond", { qui: W.PokeGenre.nomChampion(champDevant) })) + "</span>" : "") +
@@ -13183,18 +13048,8 @@
       coque(
         '<p class="pkdx-surtitre">' + T("nSac") + "</p>" +
         '<h1 class="pkdx-titre">' + T("sacTitre") + "</h1>" +
-        // 🔴 UN CONSEIL SUR CE QU'ON NE POSSÈDE PAS N'EST PAS UN CONSEIL. Le
-        //    sac ouvrait toujours sur « Les vitamines sont définitives » —
-        //    y compris au premier acte, avec trois Potions et rien d'autre.
-        //    La phrase est bonne, elle arrivait juste à qui n'avait aucune
-        //    vitamine à donner, et le joueur apprend à ne plus lire cette
-        //    ligne. Elle attend maintenant d'avoir une raison de paraître.
-        // 🔴 « UN OBJET UTILISÉ EST DÉPENSÉ POUR DE BON » A ÉTÉ RETIRÉ. C'était
-        //    vrai de tous les consommables de tous les jeux, ça n'apprenait
-        //    rien, et ça occupait la ligne la plus lue de l'écran — juste sous
-        //    le titre. Le « ×3 » sur chaque carte dit la même chose en mieux :
-        //    il descend quand on dépense. La phrase des vitamines, elle, reste :
-        //    celle-là annonce une irréversibilité qu'aucun compteur ne montre.
+        sacOngletsHTML +
+        // 🔴 UN CONSEIL SUR CE QU'ON NE POSSÈDE PAS N'EST PAS UN CONSEIL.
         (dit ? '<p class="pkdx-dit est-alerte">' + dit + "</p>"
              : aUneVitamine() ? '<p class="pkdx-dit">' + T("sacDitVitamine") + "</p>" : "") +
         (balles.length ? '<h2 class="pkdx-soustitre">' + T("sacBalls") + "</h2>" +
@@ -13208,6 +13063,10 @@
           '<button type="button" class="pkdx-touche" id="pk-sac-retour">' + T(cleRetour || "retourCarte") + "</button>" +
         "</div>"
       );
+      surClic("[data-sac-onglet]", function (e) {
+        sacOnglet = e.currentTarget.getAttribute("data-sac-onglet") || "tous";
+        rendre();
+      });
       surClic("[data-objet]", function (e) {
         choisirCible(e.currentTarget.getAttribute("data-objet"));
       });
@@ -15280,7 +15139,15 @@
     ecranCoffre: function () { return ecranCoffre(); },
     ecranObjetDepart: function (suite) { return ecranObjetDepart(suite); },
     versCarteOuObjetDepart: function (suite) { return versCarteOuObjetDepart(suite); },
-    definirPartie: function (p) { return prendreLaPartie(p); },
+    definirPartie: function (p, h) {
+      if (!racine && D.getElementById) racine = D.getElementById("poke-racine");
+      if (h) {
+        hasard = h;
+      } else if (!hasard && W.PokeHasard) {
+        hasard = new W.PokeHasard((p && p.graine) || 12345);
+      }
+      return prendreLaPartie(p);
+    },
     partieCourante: function () { return partie; },
     ditObjet: function (cle) { return ditButin({ type: "objet", objet: cle }); },
     ecranSac: function (apres, cleRetour) { return ecranSac(apres, cleRetour); },

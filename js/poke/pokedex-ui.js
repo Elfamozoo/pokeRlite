@@ -217,7 +217,21 @@
     // 🔴 Elle passe par la porte unique `PokeType` — seule garantie qu'une
     //    couleur de type ne s'affiche jamais sans le nom qui la rend lisible.
     var p = W.PokeType.pastille(t, { info: true, seule: true });
+    var typeCle = String(t).toLowerCase();
+    p = p.replace('class="pkdx-type"', 'class="pkdx-type pk-badge-type pk-type-' + typeCle + '"');
     return suffixe ? p + '<span class="pkdx-chiffre"> ' + esc(suffixe) + "</span>" : p;
+  }
+
+  function talentDe(cle) {
+    if (!cle) return null;
+    if (W.PokeTalents && typeof W.PokeTalents.table === "function") {
+      var tbl = W.PokeTalents.table();
+      if (tbl && tbl[cle]) return tbl[cle];
+    }
+    if (W.POKE_GEN3_TALENTS && W.POKE_GEN3_TALENTS[cle]) {
+      return W.POKE_GEN3_TALENTS[cle];
+    }
+    return null;
   }
 
   // ── L'état d'une espèce ────────────────────────────────────────────────────
@@ -548,38 +562,72 @@
         return null;
       })() : null;
 
+      var statsHtml = "";
+      if (e.base) {
+        var statDefs = [];
+        statDefs.push({ cle: "pv", label: LANG() === "fr" ? "PV" : "HP", val: e.base.pv || 0, couleur: "pv" });
+        statDefs.push({ cle: "atk", label: LANG() === "fr" ? "Attaque" : "Attack", val: e.base.atk || 0, couleur: "atk" });
+        statDefs.push({ cle: "def", label: LANG() === "fr" ? "Défense" : "Defense", val: e.base.def || 0, couleur: "def" });
+        if (e.base.sat !== undefined && e.base.sdf !== undefined) {
+          statDefs.push({ cle: "sat", label: LANG() === "fr" ? "Att. Spé" : "Sp. Atk", val: e.base.sat || 0, couleur: "sat" });
+          statDefs.push({ cle: "sdf", label: LANG() === "fr" ? "Déf. Spé" : "Sp. Def", val: e.base.sdf || 0, couleur: "sdf" });
+        } else if (e.base.spe !== undefined) {
+          statDefs.push({ cle: "spe", label: LANG() === "fr" ? "Spécial" : "Special", val: e.base.spe || 0, couleur: "spe" });
+        }
+        statDefs.push({ cle: "vit", label: LANG() === "fr" ? "Vitesse" : "Speed", val: e.base.vit || 0, couleur: "vit" });
+
+        statsHtml = '<div class="pk-dex-stats">' +
+          '<h2 class="pkdx-titre">' + (LANG() === "fr" ? "Statistiques de base" : "Base Stats") + '</h2>' +
+          '<div class="pk-dex-stats-grille">' +
+            statDefs.map(function (s) {
+              var pct = Math.min(100, Math.max(5, Math.round((s.val / 200) * 100)));
+              return '<div class="pk-stat-ligne">' +
+                '<span class="pk-stat-nom">' + esc(s.label) + '</span>' +
+                '<span class="pk-stat-val">' + s.val + '</span>' +
+                '<div class="pk-stat-barre pk-dex-stat" data-stat="' + s.cle + '">' +
+                  '<div class="pk-stat-barre-fill pk-stat-fill-' + s.couleur + '" style="width: ' + pct + '%;"></div>' +
+                '</div>' +
+              '</div>';
+            }).join("") +
+          '</div>' +
+        '</div>';
+      }
+
+      var talentHtml = "";
+      if (e.talent) {
+        var tal = talentDe(e.talent);
+        var nomTal = tal ? (tal.nom[LANG()] || tal.nom.fr) : e.talent;
+        var descTal = tal ? (tal.desc[LANG()] || tal.desc.fr) : "";
+        talentHtml = '<div class="pk-dex-talent pk-dex-ability">' +
+          '<h2 class="pkdx-titre">' + (LANG() === "fr" ? "Talent" : "Ability") + '</h2>' +
+          '<p class="pk-dex-talent-nom"><b>' + esc(nomTal) + '</b>' +
+            (descTal ? ' — <span class="pk-dex-talent-desc">' + esc(descTal) + '</span>' : '') +
+          '</p>' +
+        '</div>';
+      }
+
       hote.innerHTML =
-        // ── ON PEUT L'ENTENDRE ──────────────────────────────────────────────
-        // 🔴 CENT CINQUANTE ET UN CRIS PORTÉS, ET ON N'EN ENTENDAIT QU'EN
-        //    COMBAT. La voix d'un Pokémon est une part de son identité au
-        //    moins autant que son dessin — et la fiche du Pokédex est
-        //    exactement l'endroit où l'on vient regarder une créature de
-        //    près. Le bouton la rend audible à la demande.
-        // 🔴 SEULEMENT CE QU'ON A CROISÉ. Faire crier une espèce jamais vue
-        //    donnerait une information que le Pokédex refuse par ailleurs de
-        //    donner — le nom même reste caché tant qu'on ne l'a pas croisée.
         '<h1 class="pkdx-titre">N° ' + n + " · " + esc(e.nom[LANG()]) +
           (W.PokeSon ? ' <button type="button" class="pkdx-cri" id="pkdx-cri"' +
             ' aria-label="' + T("ecouterCri") + '" title="' + T("ecouterCri") + '">' +
             W.PokeIcones.svg("son", { taille: 16 }) + "</button>" : "") +
         "</h1>" +
         '<div class="pkdx-fiche-haut">' +
-          // L'artwork officiel se charge à la demande ; sans lui, le sprite
-          // d'époque tient le rôle. Un 404 ne doit jamais laisser un trou.
-          '<img class="pkdx-portrait" alt="' + esc(e.nom[LANG()]) + '" data-etat="' + etat + '"' +
-            ' src="assets/img/poke/art/' + n + '.webp" ' +
-            'onerror="this.onerror=null;this.src=\'' + W.PokeSprites.face(n, "?i=6") + '\';this.classList.add(\'est-sprite\')">' +
+          '<div class="pk-dex-art-wrap">' +
+            '<img class="pkdx-portrait pk-dex-art" alt="' + esc(e.nom[LANG()]) + '" data-etat="' + etat + '"' +
+              ' src="assets/img/poke/art/' + n + '.webp" ' +
+              'onerror="this.onerror=null;this.src=\'' + W.PokeSprites.face(n, "?i=6") + '\';this.classList.add(\'est-sprite\')">' +
+          '</div>' +
           '<div class="pkdx-fiche-cle">' +
             "<p>" + esc(e.genre[LANG()]) + "</p>" +
             "<p>" + e.types.map(function (t) { return pastille(t); }).join(" ") + "</p>" +
-            // La taille et le poids sont les deux seules décimales que le mode
-            // MONTRE. Elles passent par la porte de langue, comme les accords.
             "<p>" + T("taille") + " " + W.PokeGenre.decimal(e.taille / 10) + " m · " +
               T("poids") + " " + W.PokeGenre.decimal(e.poids / 10) + " kg</p>" +
           "</div>" +
         "</div>" +
-        // 🔴 La notice est celle du jeu, mot pour mot. On ne la réécrit pas.
-        '<p class="pkdx-notice">' + esc(e.dex[LANG()] || T("inconnu")) + "</p>" +
+        '<p class="pkdx-notice pk-dex-notice">' + esc(e.dex[LANG()] || T("inconnu")) + "</p>" +
+        statsHtml +
+        talentHtml +
         (etat === "vu" ? "<p>" + T("vuPas") + "</p>" : "") +
         (pr ? "<p>" + provenance(pr, lieu, dAvant) + "</p>" : "") +
         // 🔴 UNE CHANCE SUR 8192 QUI NE LAISSE AUCUNE TRACE N'EST PAS UNE
