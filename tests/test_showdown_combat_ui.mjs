@@ -338,10 +338,16 @@ function createIsolatedContext(customGlobals = {}) {
     Map,
     Set,
     JSON,
+    MessageChannel: globalThis.MessageChannel || class {
+      constructor() {
+        this.port1 = { onmessage: null, postMessage: (msg) => { if (this.port2.onmessage) this.port2.onmessage({ data: msg }); } };
+        this.port2 = { onmessage: null, postMessage: (msg) => { if (this.port1.onmessage) this.port1.onmessage({ data: msg }); } };
+      }
+    },
     document: mockDoc,
     window: null,
-    setTimeout: (fn, ms) => setTimeout(fn, ms),
-    clearTimeout: (id) => clearTimeout(id),
+    setTimeout: () => 1,
+    clearTimeout: () => {},
     ...customGlobals,
   };
   ctx.window = ctx;
@@ -414,7 +420,9 @@ function createDummyState() {
         }
       ],
       actif: 0,
-      volatils: {}
+      paliers: context.PokeCombat ? context.PokeCombat.paliersNeufs() : { atk: 0, def: 0, spe: 0, vit: 0, precision: 0, esquive: 0 },
+      volatils: {},
+      participants: { 0: true }
     },
     adverse: {
       dresseur: true,
@@ -434,7 +442,9 @@ function createDummyState() {
         }
       ],
       actif: 0,
-      volatils: {}
+      paliers: context.PokeCombat ? context.PokeCombat.paliersNeufs() : { atk: 0, def: 0, spe: 0, vit: 0, precision: 0, esquive: 0 },
+      volatils: {},
+      participants: { 0: true }
     },
     tour: 0,
     fini: null
@@ -608,10 +618,17 @@ runTest("Live Battle Log updates on turns and dire()", () => {
   assert.equal(toast.textContent, "Pikachu lance Tonnerre !", "Toast in arena must display spoken dialogue");
   assert.match(logFlux.textContent, /Pikachu lance Tonnerre !/, "Battle log must record spoken dialogue");
 
+  // Executing an action automatically adds turn header --- Tour 1 ---
+  ecran.agir({ type: "attaque", index: 0 });
+  assert.match(logFlux.textContent, /---\s*Tour\s*1\s*---/, "Executing ecran.agir automatically adds turn header --- Tour 1 ---");
+  const tourHeader = logFlux.querySelector(".pk-log-tour");
+  assert.ok(tourHeader, "Must render .pk-log-tour element");
+  assert.match(tourHeader.textContent, /---\s*Tour\s*1\s*---/, ".pk-log-tour must contain --- Tour 1 ---");
+
   // Turn header appending
   if (typeof ecran.ajouterTour === "function") {
-    ecran.ajouterTour(1);
-    assert.match(logFlux.textContent, /---\s*Tour\s*1\s*---/, "Battle log must record turn header --- Tour 1 ---");
+    ecran.ajouterTour(2);
+    assert.match(logFlux.textContent, /---\s*Tour\s*2\s*---/, "Battle log must record turn header --- Tour 2 ---");
   }
 
   // Styled log entry with tag

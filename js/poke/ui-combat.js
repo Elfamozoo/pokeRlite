@@ -2877,6 +2877,7 @@
     var advAction = this.opt.politiqueAdverse
       ? this.opt.politiqueAdverse(this.etat, this.opt.hasard) : null;
     var ev = W.PokeCombat.jouerTour(this.etat, action, this.opt.hasard, advAction);
+    this.ajouterTour(this.etat ? this.etat.tour : 1);
     if (this.opt.journal) this.opt.journal.push(action);
     this.jouer(ev);
   };
