@@ -651,3 +651,89 @@ assert.ok(mockRacine.querySelector('[data-objet="LEFTOVERS"]'), "LEFTOVERS affic
 assert.ok(mockRacine.querySelector('[data-objet="CHOICE_BAND"]'), "CHOICE_BAND affiché sous OBJETS TENUS");
 
 console.log("✓ Task 5: Tests unitaires du flux d'équipement des objets tenus réussis !");
+
+// ============================================================================
+// Task 6: Sauvetage d'objets tenus en mode Nuzlocke (js/poke/partie.js)
+// ============================================================================
+
+loadScript("js/poke/partie.js");
+const PokePartie = sandbox.W.PokePartie || sandbox.PokePartie;
+assert.ok(PokePartie, "PokePartie exporté");
+
+// 1. Interface : PokePartie.nettoyerEquipe exporté
+assert.equal(typeof PokePartie.nettoyerEquipe, "function", "PokePartie.nettoyerEquipe doit être exporté");
+assert.equal(PokePartie.nettoyerEquipe, PokePartie.appliquerNuzlocke, "nettoyerEquipe est un alias de appliquerNuzlocke");
+
+const nettoyerEquipe = PokePartie.nettoyerEquipe;
+
+// 2. Nuzlocke : sauvetage de l'objet tenu lors d'un KO
+const monNuzlocke = { n: 25, niveau: 20, pv: 0, objet: "CHOICE_BAND" };
+const partieNuzlocke = {
+  regle: "nuzlocke",
+  equipe: [monNuzlocke],
+  sac: {},
+  perdus: [],
+  etape: 1
+};
+
+const partis = nettoyerEquipe(partieNuzlocke);
+
+// Vérifier que l'objet est retourné dans le sac
+assert.equal(partieNuzlocke.sac.CHOICE_BAND, 1, "partie.sac.CHOICE_BAND === 1 après mort en Nuzlocke");
+// Vérifier que le Pokémon mort n'a plus l'objet tenu
+assert.equal(monNuzlocke.objet, null, "Le Pokémon mort a objet === null");
+assert.equal(partis[0].objet, null, "Le Pokémon dans partis a objet === null");
+// Vérifier que le Pokémon a quitté l'équipe et rejoint perdus
+assert.equal(partieNuzlocke.equipe.length, 0, "Le Pokémon KO a été retiré de l'équipe Nuzlocke");
+assert.equal(partieNuzlocke.perdus.length, 1, "Le Pokémon a rejoint partie.perdus");
+
+// 3. Nuzlocke : cumul d'objets dans le sac si plusieurs KO
+const monA = { n: 1, niveau: 15, pv: 0, objet: "LEFTOVERS" };
+const monB = { n: 4, niveau: 16, pv: 0, objet: "LEFTOVERS" };
+const partieNuzlockeCumul = {
+  regle: "nuzlocke",
+  equipe: [monA, monB],
+  sac: { LEFTOVERS: 1 },
+  perdus: [],
+  etape: 2
+};
+nettoyerEquipe(partieNuzlockeCumul);
+assert.equal(partieNuzlockeCumul.sac.LEFTOVERS, 3, "Les objets tenus identiques se cumulent dans le sac");
+assert.equal(monA.objet, null, "monA.objet === null");
+assert.equal(monB.objet, null, "monB.objet === null");
+assert.equal(partieNuzlockeCumul.equipe.length, 0, "Équipe vidée");
+assert.equal(partieNuzlockeCumul.perdus.length, 2, "2 Pokémon dans perdus");
+
+// 4. Nuzlocke : Pokémon KO sans objet tenu
+const monSansObjet = { n: 7, niveau: 10, pv: 0, objet: null };
+const partieNuzlockeSans = {
+  regle: "nuzlocke",
+  equipe: [monSansObjet],
+  sac: {},
+  perdus: [],
+  etape: 1
+};
+nettoyerEquipe(partieNuzlockeSans);
+assert.equal(partieNuzlockeSans.equipe.length, 0, "Retiré de l'équipe");
+assert.equal(partieNuzlockeSans.perdus.length, 1, "Ajouté à perdus");
+assert.deepEqual(partieNuzlockeSans.sac, {}, "Le sac reste vide");
+
+// 5. Invariance hors Nuzlocke : les Pokémon avec pv <= 0 restent dans l'équipe et gardent leur objet
+const monNormalKO = { n: 25, niveau: 20, pv: 0, objet: "CHOICE_BAND" };
+const partieNormale = {
+  regle: "voyage",
+  equipe: [monNormalKO],
+  sac: {},
+  perdus: [],
+  etape: 1
+};
+
+const partisNormal = nettoyerEquipe(partieNormale);
+assert.deepEqual(partisNormal, [], "Aucun Pokémon n'est retourné en mode hors Nuzlocke");
+assert.equal(partieNormale.sac.CHOICE_BAND, undefined, "Aucun objet transféré au sac hors Nuzlocke");
+assert.equal(monNormalKO.objet, "CHOICE_BAND", "Le Pokémon KO garde son objet tenu hors Nuzlocke");
+assert.equal(partieNormale.equipe.length, 1, "Le Pokémon reste dans l'équipe hors Nuzlocke");
+assert.equal(partieNormale.perdus.length, 0, "Aucun Pokémon dans perdus hors Nuzlocke");
+
+console.log("✓ Task 6: Tests unitaires du sauvetage d'objets en mode Nuzlocke réussis !");
+

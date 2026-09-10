@@ -1123,6 +1123,11 @@
     for (i = p.equipe.length - 1; i >= 0; i--) {
       if (p.equipe[i].pv <= 0) {
         partis.push(p.equipe[i]);
+        if (p.equipe[i].objet) {
+          p.sac = p.sac || {};
+          p.sac[p.equipe[i].objet] = (p.sac[p.equipe[i].objet] || 0) + 1;
+          p.equipe[i].objet = null;
+        }
         p.perdus.push({ n: p.equipe[i].n, niveau: p.equipe[i].niveau, zone: p.etape });
         p.equipe.splice(i, 1);
       }
@@ -1130,6 +1135,7 @@
     if (!p.equipe.length && p.regle === "nuzlocke") p.fini = "equipe";
     return partis;
   }
+  var nettoyerEquipe = appliquerNuzlocke;
 
   // ── Le score ───────────────────────────────────────────────────────────────
   //  🔴 Les poids sont un POINT DE DÉPART, à régler sur 900 parties simulées
@@ -1362,6 +1368,7 @@
     echouerDansLActe: echouerDansLActe,
     essaisRestants: essaisRestants,
     appliquerNuzlocke: appliquerNuzlocke,
+    nettoyerEquipe: nettoyerEquipe,
     score: score,
     // Le barème seul, pour le serveur : il rejoue un RÉSUMÉ, pas une partie.
     scoreDeBilan: scoreDeBilan,
