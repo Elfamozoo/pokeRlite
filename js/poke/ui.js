@@ -239,6 +239,19 @@
     usineEchange: { fr: "Échange de Pokémon", en: "Swap Pokémon" },
     usineBoutique: { fr: "Boutique PCo", en: "Battle Shop" },
     usinePco: { fr: "PCo", en: "BP" },
+    coffreTitre: { fr: "Coffre", en: "Chest" },
+    coffreDit: {
+      fr: "Réserve d'objets acquis à la Zone de Combat. Chaque objet dispose de 5 charges et peut être emporté au départ d'une aventure.",
+      en: "Reserve of items acquired at the Battle Factory. Each item has 5 charges and can be taken at the start of a run.",
+    },
+    coffreVide: {
+      fr: "Ton coffre est vide. Explore la Zone de Combat pour remporter des PCo et acheter des objets à la boutique !",
+      en: "Your chest is empty. Explore the Battle Factory to earn BP and buy items at the shop!",
+    },
+    coffreCharges: {
+      fr: "⚡ {n} {n|utilisation restante|utilisations restantes}",
+      en: "⚡ {n} {n|use remaining|uses remaining}",
+    },
     // 💬 L'invitation Discord du soir (20→27/08) — voir `ANNONCE_DISCORD`.
     annonceTitre: { fr: "Un bug ? Une idée ? Viens le dire.", en: "A bug? An idea? Come and say it." },
     annonceDit: {
@@ -2553,6 +2566,7 @@
     badgeGagne: { fr: "Badge {b} obtenu !", en: "{b} Badge obtained!" },
     ferme: { fr: "Cette route est fermée.", en: "This route is closed." },
   };
+  var TRADUCTIONS = TXT;
 
   // 🔴 UNE SEULE PORTE POUR TOUT TEXTE D'ÉCRAN. Elle passe par le résolveur
   //    d'accords : le genre du joueur y entre, les jetons y sont remplacés, et
@@ -3497,6 +3511,8 @@
     // l'échelle. Lu une fois : le relevé ne rouvre pas le compte pour un champ.
     var sceauMaxi = (W.PokeSceaux && W.PokeProgression)
       ? (W.PokeProgression.lire().sceauMax || 0) : 0;
+    var nCoffre = (W.PokeProgression && typeof W.PokeProgression.coffreCompte === "function")
+      ? W.PokeProgression.coffreCompte() : 0;
 
     // Un aperçu de la collection, en dessin : des chiffres seuls ne donnent pas
     // envie de la remplir. 🔴 On dit « aperçu », pas « les dernières prises » :
@@ -3837,6 +3853,10 @@
         //    visant. C'est la faute n°1 du projet — une mécanique livrée sans
         //    sa porte d'entrée — et elle ne se repaie pas ici.
         '<button type="button" class="pkdx-touche" id="pk-carnet">' + T("carnet") + "</button>" +
+        '<button type="button" class="pkdx-touche" id="pk-coffre">' +
+          T("coffreTitre") +
+          (nCoffre > 0 ? ' <span class="pkdx-touche-note" id="pk-coffre-compte">(' + nCoffre + ")</span>" : "") +
+        "</button>" +
         // 🔴 ET LES NOUVEAUTÉS ONT LEUR PORTE ICI AUSSI. Sept correctifs en une
         //    nuit, tous demandés par des joueurs, et aucun endroit pour le leur
         //    dire : celui qui signale rejouait le défaut du soir en croyant
@@ -4100,6 +4120,13 @@
       son("PRESS_AB");
       ecranCarnet();
     });
+    var bCoffre = racine.querySelector("#pk-coffre");
+    if (bCoffre) {
+      bCoffre.addEventListener("click", function () {
+        son("PRESS_AB");
+        ecranCoffre();
+      });
+    }
     // 🔴 LA COLLECTION, HORS VOYAGE. L'écran du Pokédex attend une `partie` :
     //    on lui en donne une VIDE, sans version. C'est exactement ce qu'il faut
     //    dire — hors partie, rien n'a été pris « pendant ce voyage » et il n'y
@@ -4363,6 +4390,72 @@
       son("PRESS_AB");
       accueil();
     });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  LE COFFRE D'OBJETS — RÉSERVE DE DÉPART À 5 CHARGES (ZONE DE COMBAT)
+  // ═══════════════════════════════════════════════════════════════════════════
+  function ecranCoffre() {
+    var coffre = (W.PokeProgression && typeof W.PokeProgression.coffreLire === "function")
+      ? W.PokeProgression.coffreLire()
+      : {};
+    var cles = Object.keys(coffre);
+    var corps = "";
+
+    if (cles.length === 0) {
+      corps = '<div class="pkdx-coffre-vide">' +
+        '<p class="pkdx-dit">' + esc(T("coffreVide")) + '</p>' +
+      '</div>';
+    } else {
+      corps = '<div class="pkdx-coffre-grille">' +
+        cles.map(function (cle) {
+          var charges = coffre[cle] || 0;
+          var nom = nomDObjet(cle);
+          var catItem = null;
+          if (W.PokeUIUsine && Array.isArray(W.PokeUIUsine.CATALOGUE_BOUTIQUE)) {
+            for (var i = 0; i < W.PokeUIUsine.CATALOGUE_BOUTIQUE.length; i++) {
+              if (W.PokeUIUsine.CATALOGUE_BOUTIQUE[i].cle === cle) {
+                catItem = W.PokeUIUsine.CATALOGUE_BOUTIQUE[i];
+                break;
+              }
+            }
+          }
+          var categorie = catItem ? catItem.categorie : "";
+          var dit = (W.PokeDits && typeof W.PokeDits.objet === "function" ? W.PokeDits.objet(cle, T) : "") ||
+                    (catItem && catItem.desc) || "";
+          return '<div class="pkdx-coffre-carte" data-cle="' + esc(cle) + '">' +
+            '<div class="pkdx-coffre-carte-haut">' +
+              '<span class="pkdx-coffre-nom">' + esc(nom) + '</span>' +
+              (categorie ? ' <span class="pkdx-coffre-cat">(' + esc(categorie) + ')</span>' : '') +
+            '</div>' +
+            (dit ? '<p class="pkdx-coffre-dit">' + esc(dit) + '</p>' : '') +
+            '<div class="pkdx-coffre-badge-charges">' +
+              esc(T("coffreCharges", { n: charges })) +
+            '</div>' +
+          '</div>';
+        }).join("") +
+      '</div>';
+    }
+
+    coque(
+      '<div class="pkdx-plateau pkdx-coffre">' +
+        '<p class="pkdx-surtitre">' + esc(T("usineTitre")) + '</p>' +
+        '<h1 class="pkdx-titre">' + esc(T("coffreTitre")) + '</h1>' +
+        '<p class="pkdx-dit">' + esc(T("coffreDit")) + '</p>' +
+        corps +
+        '<div class="pkdx-actions est-pied">' +
+          '<button type="button" class="pkdx-touche" id="pk-coffre-retour">' + esc(T("retour")) + '</button>' +
+        '</div>' +
+      '</div>'
+    );
+
+    var bRetour = racine.querySelector("#pk-coffre-retour");
+    if (bRetour) {
+      bRetour.addEventListener("click", function () {
+        son("PRESS_AB");
+        accueil();
+      });
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -13244,7 +13337,15 @@
 
   function nomDObjet(cle) {
     var o = W.PokeRegles ? W.PokeRegles.objet(cle) : (W.POKE_OBJETS && W.POKE_OBJETS[cle]);
-    return o ? o.nom[LANG()] : cle;
+    if (!o && W.POKE_GEN3_OBJETS && W.POKE_GEN3_OBJETS[cle]) o = W.POKE_GEN3_OBJETS[cle];
+    if (!o && W.PokeUIUsine && Array.isArray(W.PokeUIUsine.CATALOGUE_BOUTIQUE)) {
+      for (var i = 0; i < W.PokeUIUsine.CATALOGUE_BOUTIQUE.length; i++) {
+        if (W.PokeUIUsine.CATALOGUE_BOUTIQUE[i].cle === cle) {
+          return W.PokeUIUsine.CATALOGUE_BOUTIQUE[i].nom;
+        }
+      }
+    }
+    return o ? (typeof o.nom === "object" ? o.nom[LANG()] : o.nom) : cle;
   }
 
   // Le sac porte-t-il une vitamine ? La liste vient de `VITAMINES`, la table
@@ -14905,6 +15006,8 @@
   W.PokeUI = {
     T: T,
     carte: function () { return carte(); },
+    accueil: function () { return accueil(); },
+    ecranCoffre: function () { return ecranCoffre(); },
     ditObjet: function (cle) { return ditButin({ type: "objet", objet: cle }); },
     // ═════════════════════════════════════════════════════════════════════════
     //  🔴 LA PORTE DE MESURE — ET POURQUOI ELLE EXISTE.
