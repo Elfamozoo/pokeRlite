@@ -81,3 +81,123 @@ assert.equal(P.coffreConsommer(null), 0, "coffreConsommer(null) renvoie 0");
 assert.equal(P.coffreConsommer(""), 0, "coffreConsommer('') renvoie 0");
 
 console.log("✓ Task 1: Tests unitaires du moteur de Coffre réussis !");
+
+// ============================================================================
+// Task 2: Découplage Boutique PCo & Badge "En réserve"
+// ============================================================================
+
+// Charger ui-usine.js dans le sandbox
+loadScript("js/poke/ui-usine.js");
+const UIUsine = sandbox.W.PokeUIUsine || sandbox.PokeUIUsine;
+assert.ok(UIUsine, "PokeUIUsine exporté");
+assert.ok(Array.isArray(UIUsine.CATALOGUE_BOUTIQUE), "CATALOGUE_BOUTIQUE exporté");
+
+// Mock de conteneur DOM pour ouvrirBoutiquePCo
+function createMockCible() {
+  let _html = "";
+  const cible = {
+    buttons: [],
+    get innerHTML() {
+      return _html;
+    },
+    set innerHTML(val) {
+      _html = val;
+      cible.buttons = [];
+      const regex = /<button[^>]*class="[^"]*pk-boutique-acheter[^"]*"[^>]*data-cle="([^"]+)"[^>]*>/g;
+      let match;
+      while ((match = regex.exec(val)) !== null) {
+        const cle = match[1];
+        const listeners = [];
+        cible.buttons.push({
+          cle,
+          getAttribute: (attr) => (attr === "data-cle" ? cle : null),
+          addEventListener: (evt, fn) => {
+            if (evt === "click") listeners.push(fn);
+          },
+          click: () => {
+            for (const fn of listeners) fn({ preventDefault: () => {} });
+          }
+        });
+      }
+    },
+    querySelectorAll: (sel) => {
+      if (sel === ".pk-boutique-acheter") return cible.buttons;
+      return [];
+    },
+    querySelector: (sel) => null
+  };
+  return cible;
+}
+
+// Initialiser le solde PCo
+P.ajouterPCo(100);
+const soldeInitial = P.usineLire().pco;
+assert.ok(soldeInitial >= 100, "Solde PCo initial suffisant");
+
+// Initialiser le coffre vide pour le test
+const coffreAvant = P.coffreLire();
+assert.equal(coffreAvant.CHOICE_BAND, undefined, "CHOICE_BAND pas encore dans le coffre");
+
+// Rendu initial de la boutique
+const mockCible = createMockCible();
+const htmlInitial = UIUsine.ouvrirBoutiquePCo({ cible: mockCible });
+assert.ok(mockCible.innerHTML.includes("Bandeau Choix") || mockCible.innerHTML.includes("CHOICE_BAND"), "Boutique affiche Bandeau Choix");
+assert.ok(!mockCible.innerHTML.includes("pk-boutique-reserve"), "Pas de badge En réserve initialement");
+
+// Espionner P.depenserPCo, P.coffreAjouter, et P.ajouterObjet
+let depenserPCoAppele = false;
+let coffreAjouterAppele = false;
+let ajouterObjetAppele = false;
+
+const origDepenser = P.depenserPCo;
+const origCoffreAjouter = P.coffreAjouter;
+const origAjouterObjet = P.ajouterObjet;
+
+P.depenserPCo = function (...args) {
+  depenserPCoAppele = true;
+  return origDepenser.apply(this, args);
+};
+
+P.coffreAjouter = function (...args) {
+  coffreAjouterAppele = true;
+  return origCoffreAjouter.apply(this, args);
+};
+
+P.ajouterObjet = function (...args) {
+  ajouterObjetAppele = true;
+  return origAjouterObjet.apply(this, args);
+};
+
+// Trouver le bouton pour CHOICE_BAND (prix = 64 PCo)
+const btnChoiceBand = mockCible.buttons.find(b => b.cle === "CHOICE_BAND");
+assert.ok(btnChoiceBand, "Bouton d'achat CHOICE_BAND trouvé");
+
+// Déclencher le clic d'achat
+btnChoiceBand.click();
+
+// 1. P.depenserPCo(64) a bien été appelé
+assert.equal(depenserPCoAppele, true, "P.depenserPCo doit être appelé");
+
+// 2. P.coffreAjouter("CHOICE_BAND", 5) a été appelé et le coffre a été crédité de 5 charges
+assert.equal(coffreAjouterAppele, true, "P.coffreAjouter doit être appelé lors d'un achat boutique");
+assert.equal(P.coffreLire().CHOICE_BAND, 5, "Le coffre contient exactement 5 charges de CHOICE_BAND");
+
+// 3. P.ajouterObjet n'a JAMAIS été appelé (découplage total avec le sac de run)
+assert.equal(ajouterObjetAppele, false, "P.ajouterObjet ne doit PAS être appelé par la boutique");
+const sac = P.sac ? P.sac() : (P.lire().sac || {});
+assert.equal(sac.CHOICE_BAND || 0, 0, "partie.sac ne doit pas contenir CHOICE_BAND");
+
+// 4. Le re-rendu de la boutique affiche le badge 'En réserve : 5 utilisations'
+assert.ok(mockCible.innerHTML.includes('class="pk-boutique-reserve"'), "Le badge .pk-boutique-reserve doit être présent dans le HTML");
+assert.ok(mockCible.innerHTML.includes("En réserve : 5 utilisations"), "Le badge doit afficher 'En réserve : 5 utilisations'");
+
+// 5. Achat supplémentaire pour tester le cumul de charges
+P.ajouterPCo(100);
+const btnChoiceBand2 = mockCible.buttons.find(b => b.cle === "CHOICE_BAND");
+assert.ok(btnChoiceBand2, "Bouton CHOICE_BAND retrouvé après re-rendu");
+btnChoiceBand2.click();
+
+assert.equal(P.coffreLire().CHOICE_BAND, 10, "10 charges cumulées après deuxième achat");
+assert.ok(mockCible.innerHTML.includes("En réserve : 10 utilisations"), "Affiche 'En réserve : 10 utilisations'");
+
+console.log("✓ Task 2: Tests unitaires du découplage Boutique PCo réussis !");

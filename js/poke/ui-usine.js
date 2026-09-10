@@ -896,9 +896,14 @@
     options = options || {};
     var P = W.PokeProgression;
     var soldePCo = (P && typeof P.usineLire === "function") ? P.usineLire().pco : 0;
+    var coffre = (P && typeof P.coffreLire === "function") ? P.coffreLire() : {};
 
     var articlesHTML = CATALOGUE_BOUTIQUE.map(function (item) {
       var peutAcheter = soldePCo >= item.prix;
+      var charges = coffre[item.cle] || 0;
+      var badgeReserve = charges > 0
+        ? ' <span class="pk-boutique-reserve">En réserve : ' + charges + ' utilisations</span>'
+        : '';
       return '<div class="pk-boutique-carte pk-cat-' + esc(item.categorie.toLowerCase()) + '">' +
         '<div class="pk-boutique-info">' +
           '<div class="pk-boutique-nom">' + esc(item.nom) + ' <span class="pk-boutique-code">(' + esc(item.cle) + ')</span></div>' +
@@ -906,6 +911,7 @@
           '<div class="pk-boutique-meta">' +
             '<span class="pk-boutique-categorie">' + esc(item.categorie) + '</span> ' +
             '<span class="pk-boutique-prix"><strong>' + item.prix + ' PCo</strong></span>' +
+            badgeReserve +
           '</div>' +
         '</div>' +
         '<button type="button" class="pkdx-touche pk-boutique-acheter" data-cle="' + esc(item.cle) + '"' +
@@ -945,7 +951,7 @@
             if (!itemTrouve || !P) return;
             var ok = P.depenserPCo(itemTrouve.prix);
             if (ok) {
-              P.ajouterObjet(itemTrouve.cle, 1);
+              P.coffreAjouter(itemTrouve.cle, 5);
               son("ACHAT");
               ouvrirBoutiquePCo(options);
             } else {
