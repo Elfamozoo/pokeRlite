@@ -125,6 +125,7 @@
       // lu par l'écran de fin — même vie que `chassesNeuves` : il ne vaut que
       // pour l'écran qui suit la clôture.
       sceauNeuf: 0,
+      coffre: {},
     };
   }
 
@@ -1323,6 +1324,41 @@
     return p.sac[cleObjet];
   }
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  LE COFFRE D'ACCUEIL — RÉSERVE D'OBJETS À 5 CHARGES (MÉTA-PROGRESSION)
+  // ═══════════════════════════════════════════════════════════════════════════
+  function coffreLire() {
+    var p = lire();
+    return p.coffre || {};
+  }
+
+  function coffreCompte() {
+    var c = coffreLire();
+    return Object.keys(c).length;
+  }
+
+  function coffreAjouter(cleObjet, charges) {
+    if (!cleObjet) return 0;
+    var n = typeof charges === "number" && charges > 0 ? Math.floor(charges) : 5;
+    var p = lire();
+    p.coffre = p.coffre || {};
+    p.coffre[cleObjet] = (p.coffre[cleObjet] || 0) + n;
+    ecrire(p);
+    return p.coffre[cleObjet];
+  }
+
+  function coffreConsommer(cleObjet) {
+    if (!cleObjet) return 0;
+    var p = lire();
+    if (!p.coffre || !(p.coffre[cleObjet] > 0)) return 0;
+    p.coffre[cleObjet] -= 1;
+    if (p.coffre[cleObjet] <= 0) {
+      delete p.coffre[cleObjet];
+    }
+    ecrire(p);
+    return (p.coffre && p.coffre[cleObjet]) || 0;
+  }
+
   W.PokeProgression = {
     CLE: CLE,
     GARDES_MAX: GARDES_MAX,
@@ -1374,5 +1410,9 @@
     debloquerSymboleUsine: debloquerSymboleUsine,
     sac: sac,
     ajouterObjet: ajouterObjet,
+    coffreLire: coffreLire,
+    coffreAjouter: coffreAjouter,
+    coffreConsommer: coffreConsommer,
+    coffreCompte: coffreCompte,
   };
 })(typeof window !== "undefined" ? window : globalThis);
