@@ -15,6 +15,7 @@
  * 10. Gen 3 loot, marts & rewards invariants.
  * 11. Battle Factory, Natures, Talents & Tactical Engine Invariants.
  * 12. Coffre d'Accueil, Objets de Départ à 5 Charges, Sac & Nuzlocke Invariants.
+ * 13. Pokémon Showdown Art Direction & Unified Combat Engine Invariants.
  */
 
 import fs from "node:fs";
@@ -2452,6 +2453,1162 @@ test("Nuzlocke KO held item salvage (nettoyerEquipe salvages held item back to p
   assert.strictEqual(monNormalKO.objet, "CHOICE_BAND", "Mon retains held item in non-nuzlocke mode");
   assert.strictEqual(partieNormale.equipe.length, 1, "Mon remains in team in non-nuzlocke mode");
   assert.strictEqual(partieNormale.perdus.length, 0, "partie.perdus remains empty in non-nuzlocke mode");
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Suite 13: Pokémon Showdown Art Direction & Unified Combat Engine Invariants
+// ─────────────────────────────────────────────────────────────────────────────
+suite("13. Pokémon Showdown Art Direction & Unified Combat Engine Invariants");
+
+// --- Mock DOM Implementation for Showdown UI Invariants ---
+class ShowdownMockNode {
+  constructor(tag = "div") {
+    this.tagName = tag.toUpperCase();
+    this.children = [];
+    this.parentNode = null;
+    this.attrs = new Map();
+    this.classes = new Set();
+    this._textContent = "";
+    this.disabled = false;
+    this.listeners = new Map();
+    this.dataset = {};
+    this.scrollTop = 0;
+    this.scrollHeight = 100;
+
+    const styleProps = new Map();
+    this.style = new Proxy({}, {
+      get: (target, prop) => {
+        if (prop === "setProperty") {
+          return (k, v) => styleProps.set(k, String(v));
+        }
+        if (prop === "getPropertyValue") {
+          return (k) => styleProps.get(k) || "";
+        }
+        return styleProps.get(prop) || "";
+      },
+      set: (target, prop, val) => {
+        styleProps.set(prop, String(val));
+        return true;
+      }
+    });
+  }
+
+  get id() {
+    return this.getAttribute("id") || "";
+  }
+
+  set id(val) {
+    if (val) this.setAttribute("id", val);
+    else this.removeAttribute("id");
+  }
+
+  get className() {
+    return Array.from(this.classes).join(" ");
+  }
+
+  set className(val) {
+    this.classes.clear();
+    if (val) {
+      String(val).trim().split(/\s+/).forEach((c) => c && this.classes.add(c));
+    }
+  }
+
+  get classList() {
+    return {
+      add: (...cls) => cls.forEach((c) => c && this.classes.add(c)),
+      remove: (...cls) => cls.forEach((c) => this.classes.delete(c)),
+      contains: (c) => this.classes.has(c),
+      toggle: (c) => {
+        if (this.classes.has(c)) {
+          this.classes.delete(c);
+          return false;
+        }
+        this.classes.add(c);
+        return true;
+      }
+    };
+  }
+
+  getAttribute(name) {
+    if (name === "class") return this.className || null;
+    if (name === "disabled") return this.disabled ? "" : null;
+    if (this.attrs.has(name)) return this.attrs.get(name);
+    if (name.startsWith("data-")) {
+      const key = name.slice(5).replace(/-([a-z])/g, (_, l) => l.toUpperCase());
+      return this.dataset[key] !== undefined ? this.dataset[key] : null;
+    }
+    return null;
+  }
+
+  setAttribute(name, val) {
+    if (name === "class") {
+      this.className = val;
+    } else if (name === "disabled") {
+      this.disabled = true;
+      this.attrs.set(name, String(val));
+    } else {
+      this.attrs.set(name, String(val));
+      if (name.startsWith("data-")) {
+        const key = name.slice(5).replace(/-([a-z])/g, (_, l) => l.toUpperCase());
+        this.dataset[key] = String(val);
+      }
+    }
+  }
+
+  removeAttribute(name) {
+    if (name === "class") {
+      this.classes.clear();
+    } else if (name === "disabled") {
+      this.disabled = false;
+      this.attrs.delete(name);
+    } else {
+      this.attrs.delete(name);
+      if (name.startsWith("data-")) {
+        const key = name.slice(5).replace(/-([a-z])/g, (_, l) => l.toUpperCase());
+        delete this.dataset[key];
+      }
+    }
+  }
+
+  hasAttribute(name) {
+    if (name === "class") return this.classes.size > 0;
+    if (name === "disabled") return this.disabled;
+    if (this.attrs.has(name)) return true;
+    if (name.startsWith("data-")) {
+      const key = name.slice(5).replace(/-([a-z])/g, (_, l) => l.toUpperCase());
+      return this.dataset[key] !== undefined;
+    }
+    return false;
+  }
+
+  appendChild(child) {
+    if (typeof child === "string") {
+      const textNode = new ShowdownMockNode("#text");
+      textNode.textContent = child;
+      child = textNode;
+    }
+    child.parentNode = this;
+    this.children.push(child);
+    return child;
+  }
+
+  removeChild(child) {
+    const idx = this.children.indexOf(child);
+    if (idx !== -1) {
+      this.children.splice(idx, 1);
+      child.parentNode = null;
+    }
+    return child;
+  }
+
+  addEventListener(type, fn) {
+    if (!this.listeners.has(type)) this.listeners.set(type, []);
+    this.listeners.get(type).push(fn);
+  }
+
+  removeEventListener(type, fn) {
+    if (!this.listeners.has(type)) return;
+    this.listeners.set(type, this.listeners.get(type).filter((f) => f !== fn));
+  }
+
+  click() {
+    const list = this.listeners.get("click") || [];
+    const ev = { target: this, currentTarget: this, preventDefault: () => {}, stopPropagation: () => {} };
+    for (const fn of list) fn(ev);
+  }
+
+  get firstChild() {
+    return this.children[0] || null;
+  }
+
+  set firstChild(val) {
+    if (this.children.length === 0) {
+      if (val) this.appendChild(val);
+    } else {
+      this.children[0] = val;
+    }
+  }
+
+  get textContent() {
+    if (this.tagName === "#TEXT") return this._textContent;
+    if (this.children.length === 0) return this._textContent;
+    return this.children.map((c) => c.textContent).join(" ");
+  }
+
+  set textContent(val) {
+    this.children.length = 0;
+    this._textContent = String(val);
+  }
+
+  get innerHTML() {
+    return serializeShowdownHTML(this);
+  }
+
+  set innerHTML(val) {
+    this.children.length = 0;
+    this._textContent = "";
+    if (val) {
+      parseShowdownHTMLInto(val, this);
+    }
+  }
+
+  querySelector(sel) {
+    const all = this.querySelectorAll(sel);
+    return all.length > 0 ? all[0] : null;
+  }
+
+  querySelectorAll(sel) {
+    const results = [];
+    const parts = sel.trim().split(/\s+/);
+    if (parts.length === 1) {
+      queryAllDirectShowdown(this, parts[0], results);
+    } else {
+      let currentSet = [this];
+      for (const part of parts) {
+        const nextSet = [];
+        for (const node of currentSet) {
+          queryAllDirectShowdown(node, part, nextSet);
+        }
+        currentSet = nextSet;
+      }
+      return currentSet;
+    }
+    return results;
+  }
+}
+
+function matchesShowdownSelector(el, sel) {
+  if (!el || el.tagName === "#TEXT") return false;
+  let rest = sel.trim();
+
+  // ID match #id
+  const idMatch = rest.match(/^#([a-zA-Z0-9\-_]+)/);
+  if (idMatch) {
+    if (el.getAttribute("id") !== idMatch[1] && el.id !== idMatch[1]) return false;
+    rest = rest.slice(idMatch[0].length);
+  }
+
+  // Tag match
+  const tagMatch = rest.match(/^([a-zA-Z0-9]+)/);
+  if (tagMatch) {
+    if (el.tagName !== tagMatch[1].toUpperCase()) return false;
+    rest = rest.slice(tagMatch[1].length);
+  }
+
+  // Attribute match [attr="val"] or [attr]
+  const attrRegex = /\[([a-zA-Z0-9\-_]+)(?:=([\'\"])?([^\'\"\]]+)\2)?\]/g;
+  let match;
+  while ((match = attrRegex.exec(rest)) !== null) {
+    const attrName = match[1];
+    const attrVal = match[3];
+    if (!el.hasAttribute(attrName)) return false;
+    if (attrVal !== undefined && el.getAttribute(attrName) !== attrVal) return false;
+  }
+  rest = rest.replace(/\[[^\]]+\]/g, "");
+
+  // Class matches .c1.c2
+  const classMatches = rest.match(/\.([a-zA-Z0-9\-_]+)/g);
+  if (classMatches) {
+    for (const cm of classMatches) {
+      if (!el.classList.contains(cm.slice(1))) return false;
+    }
+  }
+
+  return true;
+}
+
+function queryAllDirectShowdown(root, sel, results) {
+  for (const child of root.children) {
+    if (matchesShowdownSelector(child, sel)) {
+      results.push(child);
+    }
+    queryAllDirectShowdown(child, sel, results);
+  }
+}
+
+function serializeShowdownHTML(el) {
+  if (el.tagName === "#TEXT") return el._textContent;
+  let out = "";
+  for (const child of el.children) {
+    if (child.tagName === "#TEXT") {
+      out += child._textContent;
+    } else {
+      const tag = child.tagName.toLowerCase();
+      out += `<${tag}`;
+      if (child.className) out += ` class="${child.className}"`;
+      for (const [k, v] of child.attrs) {
+        if (k !== "class") out += ` ${k}="${v}"`;
+      }
+      out += `>${serializeShowdownHTML(child)}</${tag}>`;
+    }
+  }
+  return out;
+}
+
+function parseShowdownHTMLInto(html, root) {
+  const tagRegex = /<!--[\s\S]*?-->|<(\/)?([a-zA-Z0-9\-]+)([^>]*)>|([^<]+)/g;
+  const stack = [root];
+  let m;
+  const VOID_TAGS = new Set(["IMG", "INPUT", "BR", "HR", "META", "LINK"]);
+
+  while ((m = tagRegex.exec(html)) !== null) {
+    if (m[0].startsWith("<!--")) {
+      continue;
+    } else if (m[2]) {
+      const isClosing = !!m[1];
+      const tag = m[2].toUpperCase();
+      const rawAttrs = m[3] || "";
+
+      if (isClosing) {
+        for (let i = stack.length - 1; i > 0; i--) {
+          if (stack[i].tagName === tag) {
+            stack.length = i;
+            break;
+          }
+        }
+      } else {
+        const node = new ShowdownMockNode(tag);
+        const attrRegex = /([a-zA-Z0-9\-_]+)(?:=([\'\"])(.*?)\2|=([^\s>]+))?/g;
+        let am;
+        while ((am = attrRegex.exec(rawAttrs)) !== null) {
+          const k = am[1];
+          const v = am[3] !== undefined ? am[3] : (am[4] !== undefined ? am[4] : "");
+          node.setAttribute(k, v);
+        }
+        const parent = stack[stack.length - 1];
+        parent.appendChild(node);
+        if (!VOID_TAGS.has(tag) && !rawAttrs.trim().endsWith("/")) {
+          stack.push(node);
+        }
+      }
+    } else if (m[4]) {
+      const text = m[4];
+      if (text.trim()) {
+        const textNode = new ShowdownMockNode("#text");
+        textNode._textContent = text;
+        stack[stack.length - 1].appendChild(textNode);
+      }
+    }
+  }
+}
+
+function createShowdownCombatTestContext() {
+  const mockDoc = {
+    createElement: (tag) => new ShowdownMockNode(tag),
+    createTextNode: (text) => {
+      const n = new ShowdownMockNode("#text");
+      n._textContent = text;
+      return n;
+    },
+    querySelector: () => null,
+    querySelectorAll: () => [],
+    body: new ShowdownMockNode("body"),
+  };
+
+  const ctx = createIsolatedContext({
+    document: mockDoc,
+    window: null,
+    setTimeout: (fn) => setTimeout(fn, 0),
+    clearTimeout: () => {},
+  });
+  ctx.window = ctx;
+  loadScriptInContext("js/poke/ordre.js", ctx);
+  for (const f of ctx.POKE_ORDRE_NOYAU) {
+    loadScriptInContext(f, ctx);
+  }
+  loadScriptInContext("js/poke/tempo.js", ctx);
+  loadScriptInContext("js/poke/icones.js", ctx);
+  loadScriptInContext("js/poke/ui-combat.js", ctx);
+  return ctx;
+}
+
+function createShowdownCentralTestContext() {
+  const rootNode = new ShowdownMockNode("div");
+  rootNode.setAttribute("id", "poke-racine");
+
+  let store = {};
+  const mockLocalStorage = {
+    getItem: (k) => store[k] || null,
+    setItem: (k, v) => { store[k] = String(v); },
+    removeItem: (k) => { delete store[k]; },
+    clear: () => { store = {}; }
+  };
+
+  const mockDoc = {
+    createElement: (tag) => new ShowdownMockNode(tag),
+    createTextNode: (text) => {
+      const n = new ShowdownMockNode("#text");
+      n._textContent = text;
+      return n;
+    },
+    getElementById: (id) => (id === "poke-racine" ? rootNode : rootNode.querySelector("#" + id)),
+    querySelector: (sel) => (sel === "#poke-racine" ? rootNode : rootNode.querySelector(sel)),
+    querySelectorAll: (sel) => (sel === "#poke-racine" ? [rootNode] : rootNode.querySelectorAll(sel)),
+    body: rootNode,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  };
+
+  const ctx = createIsolatedContext({
+    document: mockDoc,
+    localStorage: mockLocalStorage,
+    location: { href: "", search: "", pathname: "", hash: "" },
+    history: { replaceState() {} },
+    fetch: () => Promise.resolve({ ok: false, json: () => Promise.resolve([]) }),
+    setTimeout: (fn) => setTimeout(fn, 0),
+    clearTimeout: () => {},
+    POKE_TEST: true,
+  });
+  ctx.window = ctx;
+  ctx.globalThis = ctx;
+  ctx.W = ctx;
+  ctx.D = ctx.document;
+
+  loadScriptInContext("js/poke/ordre.js", ctx);
+  for (const f of ctx.POKE_ORDRE_NOYAU) {
+    loadScriptInContext(f, ctx);
+  }
+  for (const f of ctx.POKE_ORDRE_GEN3) {
+    loadScriptInContext(f, ctx);
+  }
+  loadScriptInContext("js/poke/tempo.js", ctx);
+  loadScriptInContext("js/poke/icones.js", ctx);
+  loadScriptInContext("js/poke/progression.js", ctx);
+  loadScriptInContext("js/poke/dits-objets.js", ctx);
+  loadScriptInContext("js/poke/pokedex-ui.js", ctx);
+  loadScriptInContext("js/poke/ui-usine.js", ctx);
+  loadScriptInContext("js/poke/ui.js", ctx);
+
+  if (ctx.PokeRegles && typeof ctx.PokeRegles.poser === "function") {
+    ctx.PokeRegles.poser("gen3");
+  }
+
+  if (ctx.PokeUICombat && ctx.PokeUICombat.Ecran && !ctx.PokeUICombat.Ecran.prototype.hasOwnProperty("elAttaques")) {
+    Object.defineProperty(ctx.PokeUICombat.Ecran.prototype, "elAttaques", {
+      get() {
+        return (this.elActions && this.elActions.querySelector(".pk-grille-attaques")) ||
+               (this.hote && this.hote.querySelector(".pk-grille-attaques")) || null;
+      },
+      configurable: true
+    });
+  }
+
+  return { ctx, rootNode };
+}
+
+function createShowdownDummyState(context) {
+  return {
+    joueur: {
+      equipe: [
+        {
+          n: 25,
+          nom: "Pikachu",
+          niveau: 50,
+          pv: 100,
+          stats: { pv: 100, atk: 55, def: 40, spe: 50, vit: 90 },
+          statut: null,
+          dv: { atk: 15, def: 15, spe: 15, vit: 15 },
+          attaques: [
+            { cle: "THUNDERBOLT", pp: 15, ppMax: 15 },
+            { cle: "QUICK_ATTACK", pp: 30, ppMax: 30 },
+            { cle: "THUNDER_WAVE", pp: 20, ppMax: 20 },
+            { cle: "HEADBUTT", pp: 15, ppMax: 15 }
+          ]
+        },
+        {
+          n: 4,
+          nom: "Salameche",
+          niveau: 50,
+          pv: 90,
+          stats: { pv: 90 },
+          statut: null,
+          attaques: [{ cle: "EMBER", pp: 25, ppMax: 25 }]
+        }
+      ],
+      actif: 0,
+      paliers: context.PokeCombat ? context.PokeCombat.paliersNeufs() : { atk: 0, def: 0, spe: 0, vit: 0, precision: 0, esquive: 0 },
+      volatils: {},
+      participants: { 0: true }
+    },
+    adverse: {
+      dresseur: true,
+      equipe: [
+        {
+          n: 1,
+          nom: "Bulbizarre",
+          niveau: 50,
+          pv: 100,
+          stats: { pv: 100, atk: 49, def: 49, spe: 65, vit: 45 },
+          statut: null,
+          dv: { atk: 15, def: 15, spe: 15, vit: 15 },
+          attaques: [
+            { cle: "TACKLE", pp: 35, ppMax: 35 },
+            { cle: "VINE_WHIP", pp: 25, ppMax: 25 }
+          ]
+        }
+      ],
+      actif: 0,
+      paliers: context.PokeCombat ? context.PokeCombat.paliersNeufs() : { atk: 0, def: 0, spe: 0, vit: 0, precision: 0, esquive: 0 },
+      volatils: {},
+      participants: { 0: true }
+    },
+    tour: 0,
+    fini: null
+  };
+}
+
+test("Showdown design tokens, dark surfaces, and elimination of glaring #ffffff container backgrounds", () => {
+  const CSS_PATH = path.join(ROOT_DIR, "css", "poke.css");
+  assert.ok(fs.existsSync(CSS_PATH), "css/poke.css must exist");
+  const cssContent = fs.readFileSync(CSS_PATH, "utf-8");
+
+  // Surfaces & Backgrounds
+  assert.match(cssContent, /--fond:\s*#080c14/, "--fond must be #080c14");
+  assert.match(cssContent, /--surface-base:\s*#0f172a/, "--surface-base must be #0f172a");
+  assert.match(cssContent, /--surface-carte:\s*#1e293b/, "--surface-carte must be #1e293b");
+  assert.match(cssContent, /--surface-survol:\s*#334155/, "--surface-survol must be #334155");
+  assert.match(cssContent, /--bordure-nette:\s*#334155/, "--bordure-nette must be #334155");
+  assert.match(cssContent, /--bordure-focus:\s*#38bdf8/, "--bordure-focus must be #38bdf8");
+  assert.match(cssContent, /--bordure-douce:\s*rgba\(255,\s*255,\s*255,\s*0\.08\)/, "--bordure-douce must be rgba(255, 255, 255, 0.08)");
+
+  // Elimination of glaring #ffffff surfaces
+  assert.doesNotMatch(cssContent, /--sur-fond:\s*#ffffff/, "--sur-fond must NEVER be #ffffff");
+  assert.match(cssContent, /--sur-fond:\s*#1e293b/, "--sur-fond must be #1e293b");
+  assert.doesNotMatch(cssContent, /--arene-ecran:\s*#ffffff/, "--arene-ecran must NEVER be #ffffff");
+  assert.match(cssContent, /--arene-ecran:\s*#0f172a/, "--arene-ecran must be #0f172a");
+
+  // High contrast typography tokens
+  assert.match(cssContent, /--texte-principal:\s*#f8fafc/, "--texte-principal must be #f8fafc");
+  assert.match(cssContent, /--texte-secondaire:\s*#94a3b8/, "--texte-secondaire must be #94a3b8");
+  assert.match(cssContent, /--texte-discret:\s*#64748b/, "--texte-discret must be #64748b");
+  assert.doesNotMatch(cssContent, /color:\s*var\(--texte\)/, "Must not use font-family stack --texte as a color value");
+  assert.doesNotMatch(cssContent, /color:\s*var\(--sur-fond\)/, "Must not use dark surface token --sur-fond as text color");
+
+  // 18 canonical Showdown type tokens
+  const types = {
+    normal: "#9099a1",
+    feu: "#ff9c54",
+    eau: "#4f90d5",
+    plante: "#63bb5b",
+    electrik: "#f3d23b",
+    glace: "#74cec0",
+    combat: "#ce4069",
+    poison: "#ab6ac8",
+    sol: "#d97746",
+    vol: "#8fa8dd",
+    psy: "#f97176",
+    insecte: "#90c12c",
+    roche: "#c7b78b",
+    spectre: "#5269ac",
+    dragon: "#096dc4",
+    acier: "#5a8fa3",
+    tenebres: "#5a5366",
+    fee: "#ec8fe6",
+  };
+  for (const [type, color] of Object.entries(types)) {
+    const reg = new RegExp(`--type-${type}:\\s*${color}`, "i");
+    assert.match(cssContent, reg, `--type-${type} must be defined with color ${color}`);
+  }
+
+  // Dynamic health gradients
+  assert.match(cssContent, /--hp-haut:\s*linear-gradient\([^;]*#22c55e[^;]*#16a34a[^;]*\)/, "--hp-haut gradient must contain #22c55e and #16a34a");
+  assert.match(cssContent, /--hp-moyen:\s*linear-gradient\([^;]*#eab308[^;]*#ca8a04[^;]*\)/, "--hp-moyen gradient must contain #eab308 and #ca8a04");
+  assert.match(cssContent, /--hp-critique:\s*linear-gradient\([^;]*#ef4444[^;]*#dc2626[^;]*\)/, "--hp-critique gradient must contain #ef4444 and #dc2626");
+
+  // Layout classes
+  assert.match(cssContent, /\.pk-showdown-combat\s*\{[^}]*max-width:\s*1100px/s, ".pk-showdown-combat must have max-width: 1100px");
+  assert.match(cssContent, /\.pk-arene-showdown\s*\{[^}]*position:\s*relative/s, ".pk-arene-showdown must have position: relative");
+  assert.match(cssContent, /\.pk-arene-socle/s, ".pk-arene-socle must exist");
+  assert.match(cssContent, /\.pk-healthbox\s*\{[^}]*var\(--surface-carte\)/s, ".pk-healthbox must use --surface-carte");
+  assert.match(cssContent, /\.pk-healthbar\s*\{[^}]*height:\s*10px/s, ".pk-healthbar must have 10px height");
+  assert.match(cssContent, /\.pk-grille-attaques\s*\{[^}]*display:\s*grid/s, ".pk-grille-attaques must be display: grid");
+  assert.match(cssContent, /\.pk-attaque-btn\s*\{/s, ".pk-attaque-btn must exist");
+  assert.match(cssContent, /\.pk-battle-log\s*\{[^}]*overflow-y:\s*auto/s, ".pk-battle-log must have overflow-y: auto");
+});
+
+test("Unified Showdown Combat Engine presentation (PokeUICombat.Ecran: perspective arena, floating healthboxes, 2x2 move grid, live battle log, bag suppression)", () => {
+  const ctx = createShowdownCombatTestContext();
+  const Ecran = ctx.PokeUICombat.Ecran;
+  assert.ok(Ecran, "PokeUICombat.Ecran constructor must be defined");
+
+  const hote = new ShowdownMockNode("div");
+  const etat = createShowdownDummyState(ctx);
+  const ecran = new Ecran(hote, etat, { hasard: new ctx.PokeHasard(1), rythme: 900 });
+
+  // 1. Perspective arena layout
+  const combat = hote.querySelector(".pk-showdown-combat");
+  assert.ok(combat, "Container .pk-showdown-combat must exist");
+  const arene = hote.querySelector(".pk-arene-showdown");
+  assert.ok(arene, "Battlefield .pk-arene-showdown must exist");
+  const actions = hote.querySelector(".pk-actions-showdown");
+  assert.ok(actions, "Control panel .pk-actions-showdown must exist");
+  const logPanel = hote.querySelector(".pk-battle-log");
+  assert.ok(logPanel, "Live battle log .pk-battle-log must exist");
+  const toast = hote.querySelector(".pk-arene-dialogue-toast");
+  assert.ok(toast, "Dialogue toast .pk-arene-dialogue-toast must exist in arena");
+  const platforms = hote.querySelectorAll(".pk-arene-socle");
+  assert.equal(platforms.length, 2, "Must create 2 battle platforms (.pk-arene-socle)");
+
+  // 2. Floating healthboxes
+  const hbAdverse = hote.querySelector('.pk-healthbox[data-cote="adverse"]');
+  assert.ok(hbAdverse, "Opponent healthbox must exist");
+  const hbJoueur = hote.querySelector('.pk-healthbox[data-cote="joueur"]');
+  assert.ok(hbJoueur, "Player healthbox must exist");
+
+  for (const hb of [hbAdverse, hbJoueur]) {
+    assert.ok(hb.querySelector(".pk-hb-identite"), "Healthbox must have .pk-hb-identite");
+    assert.ok(hb.querySelector(".pk-hb-nom"), "Healthbox must have .pk-hb-nom");
+    assert.ok(hb.querySelector(".pk-hb-niveau"), "Healthbox must have .pk-hb-niveau");
+    assert.ok(hb.querySelector(".pk-hb-statut-hote"), "Healthbox must have .pk-hb-statut-hote");
+    assert.ok(hb.querySelector(".pk-hb-barre-wrap"), "Healthbox must have .pk-hb-barre-wrap");
+    assert.ok(hb.querySelector(".pk-hb-barre"), "Healthbox must have .pk-hb-barre");
+    assert.ok(hb.querySelector(".pk-hb-barre-remplie"), "Healthbox must have .pk-hb-barre-remplie");
+    assert.ok(hb.querySelector(".pk-hb-chiffre"), "Healthbox must have .pk-hb-chiffre");
+  }
+  assert.match(hbJoueur.querySelector(".pk-hb-nom").textContent, /Pikachu/i, "Player name must be Pikachu");
+  assert.match(hbAdverse.querySelector(".pk-hb-nom").textContent, /Bulbizarre/i, "Opponent name must be Bulbizarre");
+
+  // 3. 2x2 move grid & tactical row
+  const grille = hote.querySelector(".pk-grille-attaques");
+  assert.ok(grille, "Must render .pk-grille-attaques in showdown actions");
+  const boutons = grille.querySelectorAll(".pk-attaque-btn");
+  assert.equal(boutons.length, 4, "Must render 4 move buttons in 2x2 grid");
+
+  const premier = boutons[0];
+  assert.match(premier.textContent, /Tonnerre/i, "First move button must display Tonnerre");
+  const cat = premier.querySelector(".pk-cat-tag");
+  assert.ok(cat, "Move button must include category tag .pk-cat-tag");
+  assert.match(cat.textContent, /PHY|SPÉ|SPE|STAT/, "Category tag must display PHY, SPÉ, or STAT");
+  assert.match(premier.textContent, /Pui/i, "Move button must indicate Power (Pui)");
+  assert.match(premier.textContent, /Préc/i, "Move button must indicate Precision (Préc)");
+  assert.match(premier.textContent, /PP/i, "Move button must indicate PP");
+  assert.match(premier.textContent, /15\s*\/\s*15/, "Move button must show PP");
+
+  const barreTactique = hote.querySelector(".pk-barre-tactique");
+  assert.ok(barreTactique, "Must render .pk-barre-tactique");
+  assert.match(barreTactique.textContent, /ÉQUIPE|SWITCH/i, "Tactical row must contain Équipe button");
+  assert.match(barreTactique.textContent, /ABANDONNER|FUIR/i, "Tactical row must contain Abandonner button");
+  assert.match(barreTactique.textContent, /SAC/i, "Tactical row must contain Sac button in standard battle");
+
+  // Move disabled when 0 PP or entrave
+  etat.joueur.equipe[0].attaques[0].pp = 0;
+  etat.joueur.volatils.entrave = { index: 1, tours: 2 };
+  const ecranDisabled = new Ecran(new ShowdownMockNode("div"), etat, { hasard: new ctx.PokeHasard(1), rythme: 900 });
+  const boutonsDis = ecranDisabled.hote.querySelectorAll(".pk-grille-attaques .pk-attaque-btn");
+  assert.ok(boutonsDis[0].disabled || boutonsDis[0].getAttribute("aria-disabled") === "true", "0 PP move must be disabled");
+  assert.ok(boutonsDis[1].disabled || boutonsDis[1].getAttribute("aria-disabled") === "true", "Entrave move must be disabled");
+  assert.ok(!boutonsDis[2].disabled, "Move with PP must be enabled");
+
+  // 4. Dynamic HP gradients & status pills
+  const barreJoueur = hbJoueur.querySelector(".pk-hb-barre-remplie");
+  const chiffreJoueur = hbJoueur.querySelector(".pk-hb-chiffre");
+  const barreAdverse = hbAdverse.querySelector(".pk-hb-barre-remplie");
+  const chiffreAdverse = hbAdverse.querySelector(".pk-hb-chiffre");
+
+  assert.equal(barreJoueur.style.width, "100%", "Initial HP width must be 100%");
+  assert.match(barreJoueur.style.background, /var\(--hp-haut\)/, "Initial HP gradient must be --hp-haut");
+  assert.match(chiffreJoueur.textContent, /100\s*\/\s*100\s*\(100\s*%\)/, "Player healthbox displays 100/100 (100%)");
+  assert.match(chiffreAdverse.textContent, /100\s*%/, "Opponent healthbox displays 100%");
+
+  etat.joueur.equipe[0].pv = 40;
+  etat.adverse.equipe[0].pv = 35;
+  ecran.rafraichir();
+  assert.equal(barreJoueur.style.width, "40%");
+  assert.match(barreJoueur.style.background, /var\(--hp-moyen\)/, "40% HP gradient must be --hp-moyen");
+  assert.match(chiffreJoueur.textContent, /40\s*\/\s*100\s*\(40\s*%\)/);
+
+  etat.joueur.equipe[0].pv = 15;
+  ecran.rafraichir();
+  assert.equal(barreJoueur.style.width, "15%");
+  assert.match(barreJoueur.style.background, /var\(--hp-critique\)/, "15% HP gradient must be --hp-critique");
+
+  etat.joueur.equipe[0].statut = "brulure";
+  ecran.rafraichir();
+  const statutPill = hbJoueur.querySelector(".pk-hb-statut-hote");
+  assert.match(statutPill.textContent, /BRN|BRU/, "Status pill displays BRN/BRU on burn");
+
+  // 5. Live battle log
+  const logFlux = hote.querySelector(".pk-battle-log-flux") || hote.querySelector(".pk-battle-log");
+  assert.ok(logFlux, "Battle log flux container must exist");
+
+  ecran.dire("Pikachu lance Tonnerre !");
+  assert.equal(toast.textContent, "Pikachu lance Tonnerre !");
+  assert.match(logFlux.textContent, /Pikachu lance Tonnerre !/);
+
+  ecran.agir({ type: "attaque", index: 0 });
+  assert.match(logFlux.textContent, /---\s*Tour\s*1\s*---/);
+  const tourHeader = logFlux.querySelector(".pk-log-tour");
+  assert.ok(tourHeader, "Must render .pk-log-tour element");
+
+  if (typeof ecran.ajouterTour === "function") {
+    ecran.ajouterTour(2);
+    assert.match(logFlux.textContent, /---\s*Tour\s*2\s*---/);
+  }
+  if (typeof ecran.ajouterLog === "function") {
+    ecran.ajouterLog("Coup critique !", "critique");
+    assert.match(logFlux.textContent, /Coup critique !/);
+  }
+
+  // 6. Bag button suppression in usine/duels
+  const hoteUsine = new ShowdownMockNode("div");
+  const etatUsine = createShowdownDummyState(ctx);
+  new Ecran(hoteUsine, etatUsine, { hasard: new ctx.PokeHasard(1), rythme: 900, usine: true });
+  assert.doesNotMatch(hoteUsine.querySelector(".pk-barre-tactique").textContent, /\bSAC\b/i, "Bag button must NOT exist when usine: true");
+
+  const hoteDuel = new ShowdownMockNode("div");
+  const etatDuel = createShowdownDummyState(ctx);
+  new Ecran(hoteDuel, etatDuel, { hasard: new ctx.PokeHasard(1), rythme: 900, duel: true });
+  assert.doesNotMatch(hoteDuel.querySelector(".pk-barre-tactique").textContent, /\bSAC\b/i, "Bag button must NOT exist when duel: true");
+});
+
+test("Battle Factory Showdown Teambuilder draft (PokeUIUsine.ouvrirDraft & rendreCartePokemon: 6 rich profile cards, 80px sprites, explicit nature modifiers, ability, item, moves, 3/3 selection validation)", () => {
+  const { ctx } = createShowdownCentralTestContext();
+  const U = ctx.PokeUIUsine;
+  assert.strictEqual(typeof U.rendreCartePokemon, "function", "rendreCartePokemon must be exported");
+
+  // 1. Non-neutral nature (rigide)
+  const monRigide = {
+    n: 25,
+    espece: 25,
+    nature: "rigide",
+    talent: "STATIC",
+    objet: "LEFTOVERS",
+    types: ["ELECTRIK"],
+    attaques: [
+      { cle: "THUNDERBOLT", pp: 15, ppMax: 15 },
+      { cle: "QUICK_ATTACK", pp: 30, ppMax: 30 },
+      { cle: "THUNDER_WAVE", pp: 20, ppMax: 20 },
+      { cle: "HEADBUTT", pp: 15, ppMax: 15 }
+    ]
+  };
+  const cardHtml = U.rendreCartePokemon(monRigide, 0, false, "draft");
+  assert.ok(cardHtml.includes("pk-carte-mon"), "Must use .pk-carte-mon card class");
+  assert.ok(cardHtml.includes("pk-carte-sprite"), "Must include .pk-carte-sprite");
+  assert.ok(cardHtml.includes("80"), "Must specify 80px sprite dimensions");
+  assert.ok(cardHtml.includes("N.50") || cardHtml.includes("Niveau 50"), "Must include N.50 level badge");
+  assert.ok(cardHtml.includes("pk-badge-type") && cardHtml.includes("pk-type-electrik"), "Must display official type pill");
+  assert.ok(cardHtml.includes("Rigide"), "Must show nature name Rigide");
+  assert.ok(cardHtml.includes("(+Atk, -SpA)") || (cardHtml.includes("(+") && cardHtml.includes("-)")), "Must display explicit stat modifier (+Stat, -Stat)");
+  assert.ok(cardHtml.includes("Statik"), "Must display talent name");
+  assert.ok(cardHtml.includes("pk-talent-desc") || cardHtml.includes("contact"), "Must include ability description");
+  assert.ok(cardHtml.includes("Restes") || cardHtml.includes("LEFTOVERS"), "Must display held item");
+  assert.ok(cardHtml.includes("pk-mon-attaque-pill") || cardHtml.includes("pk-mon-attaque-ligne"), "Must render move pills");
+  assert.ok(cardHtml.includes("pk-type-"), "Move pills must have pk-type-* class");
+  assert.ok(cardHtml.includes("Pui:"), "Move pills must show power (Pui)");
+  assert.ok(cardHtml.includes("Préc:"), "Move pills must show precision (Préc)");
+
+  // 2. Neutral nature (hardi)
+  const monNeutre = {
+    n: 1,
+    nature: "hardi",
+    talent: "OVERGROW",
+    attaques: [{ cle: "TACKLE" }]
+  };
+  const cardNeutreHtml = U.rendreCartePokemon(monNeutre, 1, false, "draft");
+  assert.ok(cardNeutreHtml.includes("(Neutre)"), "Neutral nature must display (Neutre)");
+
+  // 3. Draft selection & 3/3 validation
+  const session = ctx.PokeUsine.creerSession({ graine: "TEST-DRAFT-INVARIANTS" });
+  const cible = new ShowdownMockNode("div");
+  U.ouvrirDraft(session, { cible });
+
+  const wrappers = cible.querySelectorAll(".pk-draft-carte-wrapper");
+  assert.strictEqual(wrappers.length, 6, "Must render exactly 6 draft card wrappers");
+
+  const compteur = cible.querySelector("#pk-draft-compteur");
+  assert.ok(compteur, "Must have #pk-draft-compteur");
+  assert.ok(compteur.textContent.includes("0 / 3"), "Initial counter must be 0 / 3");
+
+  let btnConfirm = cible.querySelector("#pk-draft-confirmer");
+  assert.ok(btnConfirm, "Must have confirm button #pk-draft-confirmer");
+  assert.ok(btnConfirm.disabled || btnConfirm.hasAttribute("disabled"), "Confirm button must be disabled initially");
+
+  // Selection interaction
+  wrappers[0].click();
+  assert.ok(cible.querySelector("#pk-draft-compteur").textContent.includes("1 / 3"), "Counter must update to 1 / 3");
+  const cartesApres1 = cible.querySelectorAll(".pk-draft-carte-wrapper");
+  assert.ok(cartesApres1[0].classList.contains("est-selectionne") || cartesApres1[0].querySelector(".est-selectionne"), "Selected card must have .est-selectionne");
+  btnConfirm = cible.querySelector("#pk-draft-confirmer");
+  assert.ok(btnConfirm.disabled || btnConfirm.hasAttribute("disabled"), "Confirm button must remain disabled with 1 selection");
+
+  cartesApres1[1].click();
+  assert.ok(cible.querySelector("#pk-draft-compteur").textContent.includes("2 / 3"), "Counter must update to 2 / 3");
+  btnConfirm = cible.querySelector("#pk-draft-confirmer");
+  assert.ok(btnConfirm.disabled || btnConfirm.hasAttribute("disabled"), "Confirm button must remain disabled with 2 selections");
+
+  const cartesApres2 = cible.querySelectorAll(".pk-draft-carte-wrapper");
+  cartesApres2[2].click();
+  assert.ok(cible.querySelector("#pk-draft-compteur").textContent.includes("3 / 3"), "Counter must update to 3 / 3");
+  btnConfirm = cible.querySelector("#pk-draft-confirmer");
+  assert.ok(!btnConfirm.disabled && !btnConfirm.hasAttribute("disabled"), "Confirm button must be ENABLED when exactly 3 are selected");
+
+  const cartesApres3 = cible.querySelectorAll(".pk-draft-carte-wrapper");
+  cartesApres3[3].click();
+  assert.ok(cible.querySelector("#pk-draft-compteur").textContent.includes("3 / 3"), "Counter must stay at 3 / 3 on 4th click attempt");
+
+  cartesApres3[0].click();
+  assert.ok(cible.querySelector("#pk-draft-compteur").textContent.includes("2 / 3"), "Counter must drop to 2 / 3 after deselection");
+  btnConfirm = cible.querySelector("#pk-draft-confirmer");
+  assert.ok(btnConfirm.disabled || btnConfirm.hasAttribute("disabled"), "Confirm button must be disabled again when below 3");
+
+  // Re-select 0 to reach 3/3 and confirm
+  cartesApres3[0].click();
+  ctx.PokeUsine.choisirEquipeInitiale(session, [0, 1, 2]);
+  assert.strictEqual(session.equipe.length, 3, "Team must have 3 Pokémon after selection");
+  assert.strictEqual(session.statut, "combat", "Status must switch to combat");
+  assert.ok(session.adversaire, "Opponent must be drawn");
+});
+
+test("Battle Factory comparative 2-column swap (PokeUIUsine.ouvrirEchange), Samson lobby with 4 metric cards, and dark PCo shop with category filter tabs and reserve indicators", () => {
+  const { ctx } = createShowdownCentralTestContext();
+  const U = ctx.PokeUIUsine;
+  const P = ctx.PokeProgression;
+
+  // 1. Comparative 2-column swap
+  const sessionSwap = ctx.PokeUsine.creerSession({ graine: "TEST-SWAP-INVARIANTS" });
+  ctx.PokeUsine.choisirEquipeInitiale(sessionSwap, [0, 1, 2]);
+  const hSwap = new ctx.PokeHasard("TEST-SWAP-ADV-INVARIANTS");
+  sessionSwap.adversaire = ctx.PokeUsine.tirerAdversaire(sessionSwap, hSwap);
+
+  const cibleSwap = new ShowdownMockNode("div");
+  U.ouvrirEchange(sessionSwap, { cible: cibleSwap });
+
+  const colonnes = cibleSwap.querySelector(".pk-echange-colonnes");
+  assert.ok(colonnes, "Must contain 2-column container .pk-echange-colonnes");
+  const colJoueur = cibleSwap.querySelector(".pk-col-joueur");
+  assert.ok(colJoueur, "Must have player column .pk-col-joueur");
+  assert.ok(colJoueur.textContent.includes("Votre équipe"), "Player column must display header");
+  const colAdverse = cibleSwap.querySelector(".pk-col-adverse");
+  assert.ok(colAdverse, "Must have opponent column .pk-col-adverse");
+  assert.ok(colAdverse.textContent.includes("Équipe vaincue"), "Opponent column must display header");
+
+  const wrapsJoueur = cibleSwap.querySelectorAll('.pk-swap-carte-wrap[data-side="joueur"]');
+  assert.strictEqual(wrapsJoueur.length, 3, "Player column must show 3 team cards");
+  const wrapsAdverse = cibleSwap.querySelectorAll('.pk-swap-carte-wrap[data-side="adverse"]');
+  assert.strictEqual(wrapsAdverse.length, 3, "Opponent column must show 3 team cards");
+
+  let btnConfirmSwap = cibleSwap.querySelector("#pk-swap-confirmer");
+  assert.ok(btnConfirmSwap, "Must have confirm swap button #pk-swap-confirmer");
+  assert.ok(btnConfirmSwap.disabled || btnConfirmSwap.hasAttribute("disabled"), "Confirm swap button must be disabled initially");
+
+  const btnGarder = cibleSwap.querySelector("#pk-swap-garder");
+  assert.ok(btnGarder, "Must have keep team button #pk-swap-garder");
+  assert.ok(!btnGarder.disabled, "Keep team button must be enabled");
+
+  wrapsJoueur[0].click();
+  const apresJ1 = cibleSwap.querySelectorAll('.pk-swap-carte-wrap[data-side="joueur"]');
+  assert.ok(apresJ1[0].classList.contains("est-selectionne") || apresJ1[0].querySelector(".est-selectionne"), "Selected player card must have .est-selectionne");
+  btnConfirmSwap = cibleSwap.querySelector("#pk-swap-confirmer");
+  assert.ok(btnConfirmSwap.disabled || btnConfirmSwap.hasAttribute("disabled"), "Confirm swap button must remain disabled with only 1 side selected");
+
+  const apresAdv = cibleSwap.querySelectorAll('.pk-swap-carte-wrap[data-side="adverse"]');
+  apresAdv[1].click();
+  const apresAdvSel = cibleSwap.querySelectorAll('.pk-swap-carte-wrap[data-side="adverse"]');
+  assert.ok(apresAdvSel[1].classList.contains("est-selectionne") || apresAdvSel[1].querySelector(".est-selectionne"), "Selected opponent card must have .est-selectionne");
+
+  btnConfirmSwap = cibleSwap.querySelector("#pk-swap-confirmer");
+  assert.ok(!btnConfirmSwap.disabled && !btnConfirmSwap.hasAttribute("disabled"), "Confirm swap button must be ENABLED when 1 from each side is selected");
+
+  // 2. Samson lobby with 4 metric cards
+  P.ajouterPCo(40);
+  P.enregistrerRecordUsine(21);
+  P.debloquerSymboleUsine("argent");
+  P.debloquerSymboleUsine("or");
+  P.coffreAjouter("LEFTOVERS", 5);
+
+  const cibleHall = new ShowdownMockNode("div");
+  U.ouvrirHall({ cible: cibleHall });
+
+  const metrics = cibleHall.querySelectorAll(".pk-metric-card");
+  assert.strictEqual(metrics.length, 4, "Hall must render exactly 4 metric cards");
+  assert.ok(cibleHall.querySelector(".pk-metric-pco"), "Must contain PCo metric card");
+  assert.ok(cibleHall.querySelector(".pk-metric-record"), "Must contain Record metric card");
+  assert.ok(cibleHall.querySelector(".pk-metric-symbole-argent"), "Must contain Silver Symbol metric card");
+  assert.ok(cibleHall.querySelector(".pk-metric-symbole-or"), "Must contain Gold Symbol metric card");
+  assert.ok(cibleHall.textContent.includes("Samson") || cibleHall.textContent.includes("Noland"), "Hall must mention Noland/Samson");
+
+  // 3. Dark PCo shop with category filter tabs and reserve indicators
+  const cibleBoutique = new ShowdownMockNode("div");
+  U.ouvrirBoutiquePCo({ cible: cibleBoutique });
+
+  const onglets = cibleBoutique.querySelectorAll(".pk-boutique-onglet");
+  assert.ok(onglets.length >= 5, "Boutique must provide category filter tabs");
+  const ongletLabels = onglets.map(o => o.textContent);
+  assert.ok(ongletLabels.includes("Tous"), "Must have 'Tous' tab");
+  assert.ok(ongletLabels.includes("Combat"), "Must have 'Combat' tab");
+  assert.ok(ongletLabels.includes("Baies"), "Must have 'Baies' tab");
+
+  const reserves = cibleBoutique.querySelectorAll(".pk-boutique-reserve");
+  assert.ok(reserves.length > 0, "Boutique must show reserve indicator badge for stored items");
+  assert.ok(reserves[0].textContent.includes("En réserve :") || reserves[0].textContent.includes("utilisation"), "Reserve badge must show stored count");
+
+  const ongletCombat = onglets.find(o => o.textContent === "Combat");
+  assert.ok(ongletCombat, "Combat tab must exist");
+  ongletCombat.click();
+
+  const cartesCombat = cibleBoutique.querySelectorAll(".pk-boutique-carte");
+  assert.ok(cartesCombat.length > 0, "Combat items must be displayed after filtering");
+  for (const c of cartesCombat) {
+    assert.ok(c.classList.contains("pk-cat-combat") || c.textContent.includes("Combat"), "All displayed items must be in Combat category");
+  }
+});
+
+test("Central UI screens (accueil(), carte(), ecranSac(), ecranCoffre(), and pokedex-ui.js: dark lobby banner with profile stats, mode cards, tactical roadmap nodes, tabbed bag/chest, and Pokédex stat bars)", () => {
+  const { ctx, rootNode } = createShowdownCentralTestContext();
+  const P = ctx.PokeProgression;
+  const UI = ctx.PokeUI;
+
+  // 1. accueil()
+  P.ecrire({
+    voyages: 12,
+    badgesMax: 8,
+    pris: { 1: 1, 4: 1, 7: 1, 25: 1 },
+    vus: { 1: 1, 2: 1, 3: 1, 4: 1, 7: 1, 25: 1 }
+  });
+  P.coffreAjouter("CHOICE_BAND", 5);
+  P.coffreAjouter("LEFTOVERS", 3);
+
+  ctx.PokeDemarrer();
+
+  const banner = rootNode.querySelector(".pk-lobby-banner") || rootNode.querySelector(".pk-accueil-banner");
+  assert.ok(banner, "Lobby must render trainer banner (.pk-lobby-banner or .pk-accueil-banner)");
+
+  const stats = rootNode.querySelector(".pk-accueil-stats") || rootNode.querySelector(".pkdx-compte-releve");
+  assert.ok(stats, "Lobby banner must render profile stats container");
+  const statsText = stats.textContent;
+  assert.match(statsText, /12/, "Stats must display 12 runs/voyages");
+  assert.match(statsText, /8\s*\/\s*8/, "Stats must display 8 / 8 badges");
+  assert.match(statsText, /4\s*\/\s*(?:151|386)/, "Stats must display dex collected count");
+
+  const modeGrid = rootNode.querySelector(".pk-modes-grille") || rootNode.querySelector(".pk-accueil-modes");
+  assert.ok(modeGrid, "Lobby must render mode cards grid (.pk-modes-grille or .pk-accueil-modes)");
+  assert.ok(rootNode.querySelector("#pk-go"), "Must render #pk-go");
+  assert.ok(rootNode.querySelector("#pk-defi"), "Must render #pk-defi");
+  assert.ok(rootNode.querySelector("#pk-usine"), "Must render #pk-usine");
+  assert.ok(rootNode.querySelector("#pk-duel"), "Must render #pk-duel");
+
+  const btnCoffre = rootNode.querySelector("#pk-coffre");
+  assert.ok(btnCoffre, "Must render #pk-coffre button");
+  const compte = rootNode.querySelector("#pk-coffre-compte");
+  assert.ok(compte, "Must render #pk-coffre-compte");
+  assert.match(compte.textContent, /2/, "Must show 2 distinct items in chest");
+
+  // 2. carte()
+  const testPartie = {
+    starter: 25,
+    acte: 1,
+    rangee: 0,
+    regle: "voyage",
+    equipe: [{ n: 25, niveau: 12, pv: 35, stats: { pv: 35 }, surnom: "Pikachu", objet: null, attaques: [] }],
+    boite: [{ n: 16, niveau: 10, pv: 30, stats: { pv: 30 }, attaques: [] }],
+    sac: { POTION: 3, POKE_BALL: 5, CHOICE_BAND: 1, PROTEIN: 2, FIRE_STONE: 1 },
+    cles: {},
+    vus: {},
+    pris: {},
+    noeudsVisites: {},
+    noeudsPerdus: {},
+    acquis: []
+  };
+  UI.definirPartie(testPartie);
+  UI.carte();
+
+  const acteTete = rootNode.querySelector(".pk-carte-acte") || rootNode.querySelector(".pkdx-acte-tete");
+  assert.ok(acteTete, "Map must render act header (.pk-carte-acte or .pkdx-acte-tete)");
+  assert.match(acteTete.textContent, /Argenta/i, "Act header must announce destination (Argenta)");
+
+  const noeuds = rootNode.querySelectorAll(".pk-carte-noeud");
+  assert.ok(noeuds.length > 0, "Roadmap must render .pk-carte-noeud elements");
+
+  const noeudCourant = rootNode.querySelector('.pkdx-rangee[data-etat="courante"] .pk-carte-noeud') ||
+                        rootNode.querySelector('.pk-carte-noeud.est-courant') ||
+                        rootNode.querySelector('.pk-carte-noeud:not([disabled])');
+  assert.ok(noeudCourant, "Active node in current row must be rendered");
+
+  const barreTactique = rootNode.querySelector(".pk-carte-barre-tactique") || rootNode.querySelector(".pkdx-actions.est-carte");
+  assert.ok(barreTactique, "Must render tactical access bar (.pk-carte-barre-tactique or .est-carte)");
+  assert.ok(rootNode.querySelector("#pk-sac"), "Must render #pk-sac");
+  assert.ok(rootNode.querySelector("#pk-boite"), "Must render #pk-boite");
+  assert.ok(rootNode.querySelector("#pk-juge"), "Must render #pk-juge");
+  assert.ok(rootNode.querySelector("#pk-dex"), "Must render #pk-dex");
+
+  // 3. ecranSac()
+  UI.ecranSac(() => {});
+  const tabs = rootNode.querySelector(".pk-sac-onglets");
+  assert.ok(tabs, "Bag must render category navigation tabs (.pk-sac-onglets)");
+  const tabButtons = tabs.querySelectorAll(".pk-sac-onglet");
+  assert.ok(tabButtons.length >= 4, "Must render at least 4 category tabs");
+
+  const itemCards = rootNode.querySelectorAll(".pk-sac-carte") || rootNode.querySelectorAll(".pkdx-objet-ligne");
+  assert.ok(itemCards.length >= 5, "Must render item cards for bag contents");
+
+  const quantiteBadge = rootNode.querySelector(".pk-badge-quantite") || rootNode.querySelector(".pkdx-objet-n");
+  assert.ok(quantiteBadge, "Item cards must display quantity badge");
+  assert.match(quantiteBadge.textContent, /×\d+/, "Quantity badge format ×N");
+
+  const btnChoice = rootNode.querySelector('[data-objet="CHOICE_BAND"]');
+  assert.ok(btnChoice, "CHOICE_BAND card must be present and clickable");
+  btnChoice.click();
+
+  const btnPorteur0 = rootNode.querySelector('[data-porteur="0"]') || rootNode.querySelector('[data-cible="0"]');
+  assert.ok(btnPorteur0, "choisirPorteur must display team member button");
+  btnPorteur0.click();
+
+  assert.equal(testPartie.equipe[0].objet, "CHOICE_BAND", "Pikachu must now hold CHOICE_BAND");
+  assert.equal(testPartie.sac.CHOICE_BAND || 0, 0, "CHOICE_BAND must be removed from bag");
+
+  const btnSuivant = rootNode.querySelector("#pk-suivant");
+  if (btnSuivant) btnSuivant.click();
+  assert.ok(rootNode.querySelector('[data-reprendre="0"]'), "Bag must render [data-reprendre='0'] button");
+
+  // 4. ecranCoffre()
+  UI.ecranCoffre();
+  const cartesCoffre = rootNode.querySelectorAll(".pk-coffre-carte");
+  assert.equal(cartesCoffre.length, 2, "Must render 2 cards in chest screen");
+
+  const badgeCharges = rootNode.querySelectorAll(".pk-coffre-badge-charges");
+  assert.equal(badgeCharges.length, 2, "Must render charges badge on each chest card");
+  assert.match(badgeCharges[0].textContent, /⚡\s*5/, "First badge displays ⚡ 5 utilisations");
+  assert.match(badgeCharges[1].textContent, /⚡\s*3/, "Second badge displays ⚡ 3 utilisations");
+  assert.ok(rootNode.querySelector("#pk-coffre-retour"), "#pk-coffre-retour button must exist");
+
+  // 5. pokedex-ui.js
+  const Pokedex = ctx.PokePokedex;
+  P.ecrire(Object.assign(P.lire(), {
+    pris: { 1: { niveau: 5, zone: "depart" } },
+    vus: { 1: true, 4: true }
+  }));
+  const mockDexPartie = {
+    version: "rouge",
+    pris: { 1: { niveau: 5, zone: "depart" } },
+    vus: { 1: true, 4: true }
+  };
+  Pokedex.ouvrir(rootNode, mockDexPartie, () => {});
+
+  // Check 3 accessibility states in grid
+  assert.equal(rootNode.querySelector('.pkdx-case[data-n="1"]').getAttribute("data-etat"), "pris", "Bulbasaur state must be 'pris'");
+  assert.equal(rootNode.querySelector('.pkdx-case[data-n="4"]').getAttribute("data-etat"), "vu", "Charmander state must be 'vu'");
+  assert.equal(rootNode.querySelector('.pkdx-case[data-n="7"]').getAttribute("data-etat"), "inconnu", "Squirtle state must be 'inconnu'");
+
+  const case1 = rootNode.querySelector('.pkdx-case[data-n="1"]');
+  assert.ok(case1, "Case for Bulbasaur (N°1) must exist in grid");
+  case1.click();
+
+  const portrait = rootNode.querySelector(".pk-dex-art") || rootNode.querySelector(".pkdx-portrait");
+  assert.ok(portrait, "Must render Sugimori artwork element");
+  assert.match(portrait.getAttribute("src"), /assets\/img\/poke\/art\/1\.webp/, "Must point to official Sugimori art");
+
+  const statBars = rootNode.querySelectorAll(".pk-stat-barre") || rootNode.querySelectorAll(".pk-dex-stat");
+  assert.ok(statBars.length >= 5, "Must render at least 5 base stats bars");
+
+  const typePills = rootNode.querySelectorAll(".pk-badge-type") || rootNode.querySelectorAll(".pkdx-type");
+  assert.ok(typePills.length >= 2, "Must render at least 2 type pills for Bulbasaur");
+
+  const abilitySection = rootNode.querySelector(".pk-dex-talent") || rootNode.querySelector(".pk-dex-ability");
+  assert.ok(abilitySection, "Must render ability breakdown section");
+  assert.match(abilitySection.textContent, /Engrais|Overgrow/i, "Must display Bulbasaur's canonical ability name");
+});
+
+test("Replay engine determinism and Mulberry32 PRNG bit-level parity across Gen 1, Gen 2, and Gen 3 runs", () => {
+  const Hasard = noyauContext.PokeHasard;
+  const Partie = noyauContext.PokePartie;
+  const Regles = noyauContext.PokeRegles;
+  const Combat = noyauContext.PokeCombat;
+  const Moteur = noyauContext.PokeMoteur;
+  const Usine = noyauContext.PokeUsine;
+  const replayDaily = noyauContext.replayDaily;
+
+  // 1. Bit-identical Mulberry32 sequence across generations
+  const testSeeds = ["REPLAY-SEED-GEN1", "REPLAY-SEED-GEN2", "REPLAY-SEED-GEN3"];
+  for (const seed of testSeeds) {
+    const h1 = new Hasard(seed);
+    const h2 = new Hasard(seed);
+    for (let i = 0; i < 500; i++) {
+      assert.strictEqual(h1.brut(), h2.brut(), `Mulberry32 diverged for seed ${seed} at draw ${i}`);
+    }
+    assert.strictEqual(h1.tirages, 500);
+    assert.strictEqual(h2.tirages, 500);
+  }
+
+  // 2. Deterministic game session state across generations
+  for (const gen of ["gen1", "gen2", "gen3"]) {
+    Regles.poser(gen);
+    const s1 = Partie.creer({ graine: `SESSION-DETERMINISM-${gen}`, regles: gen }, new Hasard(`SESSION-DETERMINISM-${gen}`));
+    const s2 = Partie.creer({ graine: `SESSION-DETERMINISM-${gen}`, regles: gen }, new Hasard(`SESSION-DETERMINISM-${gen}`));
+    assert.strictEqual(s1.version, s2.version);
+    assert.strictEqual(s1.graine, s2.graine);
+    assert.deepStrictEqual(s1.visite, s2.visite);
+    assert.strictEqual(s1.argent, s2.argent);
+  }
+  Regles.poser("gen1");
+
+  // 3. Turn-by-turn combat simulation reproducibility across Gen 1, 2, 3
+  function runSimBattle(gen, seed, p1Id, p2Id) {
+    Regles.poser(gen);
+    const h = new Hasard(seed);
+    const p1 = Moteur.creer(p1Id, 25, h);
+    const p2 = Moteur.creer(p2Id, 25, h);
+    const combat = Combat.demarrer([p1], [p2], { graine: seed, dresseur: false }, h);
+    const events = [];
+    let tours = 0;
+    while (!combat.fini && tours < 25) {
+      tours++;
+      const ev = Combat.jouerTour(combat, { type: "attaque", index: 0 }, h, { type: "attaque", index: 0 });
+      events.push(...ev.map(e => ({ t: e.t, degats: e.degats, pv: e.pv })));
+      if (p1.pv <= 0 || p2.pv <= 0) break;
+    }
+    return { events, tirages: h.tirages, fini: combat.fini };
+  }
+
+  const g1A = runSimBattle("gen1", "SIM-REPLAY-G1", 25, 7);
+  const g1B = runSimBattle("gen1", "SIM-REPLAY-G1", 25, 7);
+  assert.strictEqual(g1A.tirages, g1B.tirages, "Gen 1 PRNG draws must match bit-identically");
+  assert.deepStrictEqual(g1A.events, g1B.events, "Gen 1 combat replay events must be identical");
+
+  const g2A = runSimBattle("gen2", "SIM-REPLAY-G2", 155, 158);
+  const g2B = runSimBattle("gen2", "SIM-REPLAY-G2", 155, 158);
+  assert.strictEqual(g2A.tirages, g2B.tirages, "Gen 2 PRNG draws must match bit-identically");
+  assert.deepStrictEqual(g2A.events, g2B.events, "Gen 2 combat replay events must be identical");
+
+  const g3A = runSimBattle("gen3", "SIM-REPLAY-G3", 252, 255);
+  const g3B = runSimBattle("gen3", "SIM-REPLAY-G3", 252, 255);
+  assert.strictEqual(g3A.tirages, g3B.tirages, "Gen 3 PRNG draws must match bit-identically");
+  assert.deepStrictEqual(g3A.events, g3B.events, "Gen 3 combat replay events must be identical");
+
+  // 4. Cross-generational isolation: Gen 1 replay invariance after Gen 3 execution
+  const g1Post = runSimBattle("gen1", "SIM-REPLAY-G1", 25, 7);
+  assert.strictEqual(g1A.tirages, g1Post.tirages, "Gen 1 PRNG draws must remain unchanged after Gen 3 runs");
+  assert.deepStrictEqual(g1A.events, g1Post.events, "Gen 1 events must remain identical after Gen 3 runs");
+
+  // 5. Battle Factory determinism
+  Regles.poser("gen3");
+  const fSession1 = Usine.creerSession({ graine: "FACTORY-REPLAY-PARITY" });
+  const fSession2 = Usine.creerSession({ graine: "FACTORY-REPLAY-PARITY" });
+  assert.deepStrictEqual(
+    fSession1.prets.map(p => ({ n: p.n, nature: p.nature, talent: p.talent, objet: p.objet })),
+    fSession2.prets.map(p => ({ n: p.n, nature: p.nature, talent: p.talent, objet: p.objet })),
+    "Factory rentals must match bit-identically for identical seed"
+  );
+  Regles.poser("gen1");
+
+  // 6. replayDaily scoring parity
+  const journal = [
+    {
+      badges: 6,
+      acte: 7,
+      vus: 60,
+      pris: 30,
+      legendaires: 1,
+      ligue: 0,
+      equipe: [{ n: 25, niveau: 45, pv: 110, stats: { pv: 110 } }],
+      duree: 800,
+      quand: 1771980000000,
+    },
+  ];
+  const r1 = replayDaily("2026-09-11", journal, { device: "test-device-parity" });
+  const r2 = replayDaily("2026-09-11", journal, { device: "test-device-parity" });
+  assert.strictEqual(r1.score, r2.score, "Daily scores must match identically across runs");
+  assert.strictEqual(r1.name, r2.name, "Daily trainer name must match identically across runs");
+  assert.ok(r1.score > 0, "Score must be positive");
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
