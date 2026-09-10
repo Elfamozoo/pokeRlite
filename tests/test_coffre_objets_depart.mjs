@@ -3,11 +3,80 @@ import fs from "node:fs";
 
 let racineHTML = "";
 const elementMap = {};
+
+function getOrCreateElement(id, initialAttrs = {}) {
+  if (!elementMap[id]) {
+    const listeners = {};
+    const classes = new Set(initialAttrs.classes || []);
+    const attrs = Object.assign({}, initialAttrs);
+    let _inner = attrs.innerHTML || "";
+    elementMap[id] = {
+      id,
+      disabled: !!attrs.disabled,
+      get innerHTML() { return _inner; },
+      set innerHTML(v) { _inner = String(v); },
+      get textContent() { return _inner; },
+      set textContent(v) { _inner = String(v); },
+      get classList() {
+        return {
+          add(c) { classes.add(c); },
+          remove(c) { classes.delete(c); },
+          contains(c) { return classes.has(c); }
+        };
+      },
+      getAttribute(attr) {
+        if (attr === "data-cle") return attrs["data-cle"] || null;
+        if (attr === "id") return id;
+        if (attr === "aria-pressed") return attrs["aria-pressed"] || null;
+        return attrs[attr] || null;
+      },
+      setAttribute(attr, val) {
+        attrs[attr] = String(val);
+      },
+      removeAttribute(attr) {
+        delete attrs[attr];
+      },
+      addEventListener(evt, fn) {
+        listeners[evt] = listeners[evt] || [];
+        listeners[evt].push(fn);
+      },
+      click() {
+        if (listeners.click) {
+          listeners.click.forEach(f => f({
+            preventDefault() {},
+            currentTarget: elementMap[id],
+            target: elementMap[id]
+          }));
+        }
+      }
+    };
+  }
+  return elementMap[id];
+}
+
 const mockRacine = {
   get innerHTML() { return racineHTML; },
   set innerHTML(val) {
     racineHTML = val;
     for (const k in elementMap) delete elementMap[k];
+    const tagRegex = /<([a-zA-Z0-9_-]+)\s+([^>]*?)>/g;
+    let match;
+    while ((match = tagRegex.exec(val)) !== null) {
+      const rawAttrs = match[2];
+      const idMatch = rawAttrs.match(/id="([^"]+)"/);
+      const classMatch = rawAttrs.match(/class="([^"]+)"/);
+      const cleMatch = rawAttrs.match(/data-cle="([^"]+)"/);
+      const disabled = /\bdisabled\b/.test(rawAttrs);
+      const classes = classMatch ? classMatch[1].split(/\s+/).filter(Boolean) : [];
+      const id = idMatch ? idMatch[1] : (cleMatch ? "cle-" + cleMatch[1] : null);
+      if (id) {
+        getOrCreateElement(id, {
+          classes,
+          disabled,
+          "data-cle": cleMatch ? cleMatch[1] : null
+        });
+      }
+    }
   },
   classList: { add() {}, remove() {}, contains() { return false; } },
   querySelector(sel) {
@@ -15,19 +84,38 @@ const mockRacine = {
     if (m) {
       const id = m[1];
       if (!racineHTML.includes('id="' + id + '"')) return null;
-      if (!elementMap[id]) {
-        const listeners = {};
-        elementMap[id] = {
-          id,
-          addEventListener(evt, fn) { listeners[evt] = listeners[evt] || []; listeners[evt].push(fn); },
-          click() { if (listeners.click) listeners.click.forEach(f => f({ preventDefault() {} })); }
-        };
-      }
-      return elementMap[id];
+      return getOrCreateElement(id);
     }
-    return { addEventListener() {}, remove() {} };
+    if (sel.startsWith(".")) {
+      const cls = sel.slice(1);
+      for (const k in elementMap) {
+        if (elementMap[k].classList.contains(cls)) return elementMap[k];
+      }
+    }
+    if (sel.includes("[data-cle=")) {
+      const mCle = sel.match(/\[data-cle="([^"]+)"\]/);
+      if (mCle) {
+        for (const k in elementMap) {
+          if (elementMap[k].getAttribute("data-cle") === mCle[1]) return elementMap[k];
+        }
+      }
+    }
+    return null;
   },
-  querySelectorAll() { return []; }
+  querySelectorAll(sel) {
+    if (sel.startsWith(".")) {
+      const cls = sel.slice(1);
+      return Object.values(elementMap).filter(el => el.classList.contains(cls));
+    }
+    if (sel === "[data-cle]" || sel.includes("data-cle")) {
+      return Object.values(elementMap).filter(el => el.getAttribute("data-cle") != null);
+    }
+    if (sel.startsWith("#")) {
+      const id = sel.slice(1);
+      return elementMap[id] ? [elementMap[id]] : [];
+    }
+    return [];
+  }
 };
 
 // Isolated NOYAU loader
@@ -312,4 +400,128 @@ assert.ok(
 assert.ok(mockRacine.querySelector("#pk-coffre-retour"), "Bouton retour présent sur écran vide");
 
 console.log("✓ Task 3: Tests unitaires de l'écran du Coffre réussis !");
+
+// ============================================================================
+// Task 4: Écran de sélection d'objet de départ & consommation de charges
+// ============================================================================
+
+// 1. Nouvelles traductions
+assert.equal(typeof UI.T("objetDepartTitre"), "string", "Traduction objetDepartTitre présente");
+assert.equal(typeof UI.T("objetDepartDit"), "string", "Traduction objetDepartDit présente");
+assert.ok(UI.T("emporterObjet", { nom: "Bandeau Choix" }).includes("Bandeau Choix"), "Traduction emporterObjet interpole le nom");
+assert.equal(typeof UI.T("partirSansObjet"), "string", "Traduction partirSansObjet présente");
+
+// 2. Export des méthodes requises
+assert.equal(typeof UI.ecranObjetDepart, "function", "UI.ecranObjetDepart exporté");
+assert.equal(typeof UI.versCarteOuObjetDepart, "function", "UI.versCarteOuObjetDepart exporté");
+
+// 3. Bypass si partie.compare === true (Défi du jour)
+P.coffreAjouter("CHOICE_BAND", 5);
+assert.ok(P.coffreCompte() > 0, "Coffre non-vide pour tester le bypass");
+
+let suiteAppelee = false;
+const suiteMock = () => { suiteAppelee = true; };
+
+// Simuler une partie défi
+UI.definirPartie({ compare: true, sac: {}, regle: "voyage" });
+suiteAppelee = false;
+UI.versCarteOuObjetDepart(suiteMock);
+assert.equal(suiteAppelee, true, "Le défi du jour doit immédiatement appeler suite() / carte()");
+assert.ok(!mockRacine.innerHTML.includes("pkdx-ecran-objet-depart"), "L'écran d'objet de départ ne doit pas être rendu au Défi du jour");
+
+// 4. Bypass si le coffre est vide sur une partie normale
+const pDataVide = P.lire();
+pDataVide.coffre = {};
+P.ecrire(pDataVide);
+assert.equal(P.coffreCompte(), 0, "Coffre vidé");
+
+UI.definirPartie({ compare: false, sac: {}, regle: "voyage" });
+suiteAppelee = false;
+UI.versCarteOuObjetDepart(suiteMock);
+assert.equal(suiteAppelee, true, "Coffre vide doit immédiatement appeler suite() / carte()");
+assert.ok(!mockRacine.innerHTML.includes("pkdx-ecran-objet-depart"), "L'écran ne doit pas être affiché si coffre vide");
+
+// 5. Rendu de l'écran d'objet de départ quand le coffre est non-vide
+P.coffreAjouter("CHOICE_BAND", 5);
+P.coffreAjouter("LEFTOVERS", 3);
+assert.equal(P.coffreCompte(), 2, "Coffre garni de 2 objets");
+
+suiteAppelee = false;
+UI.versCarteOuObjetDepart(suiteMock);
+assert.equal(suiteAppelee, false, "suite() ne doit pas être appelée immédiatement quand coffre non-vide");
+assert.ok(
+  mockRacine.innerHTML.includes("pkdx-ecran-objet-depart") || mockRacine.innerHTML.includes(UI.T("objetDepartTitre")),
+  "Écran d'objet de départ affiché"
+);
+assert.ok(
+  mockRacine.innerHTML.includes("Bandeau Choix") || mockRacine.innerHTML.includes("CHOICE_BAND"),
+  "Affiche Bandeau Choix"
+);
+assert.ok(
+  mockRacine.innerHTML.includes("Restes") || mockRacine.innerHTML.includes("LEFTOVERS"),
+  "Affiche Restes"
+);
+
+const btnEmporter = mockRacine.querySelector("#pk-objet-depart-ok");
+assert.ok(btnEmporter, "Bouton #pk-objet-depart-ok présent");
+assert.equal(btnEmporter.disabled, true, "Bouton Emporter désactivé tant qu'aucun objet n'est sélectionné");
+
+const btnSans = mockRacine.querySelector("#pk-objet-depart-sans");
+assert.ok(btnSans, "Bouton #pk-objet-depart-sans présent");
+
+// 6. Protection contre clic sur bouton désactivé
+suiteAppelee = false;
+btnEmporter.click();
+assert.equal(suiteAppelee, false, "Le clic sur le bouton Emporter désactivé ne doit rien déclencher");
+assert.equal(P.coffreLire().CHOICE_BAND, 5, "Aucune charge consommée lors d'un clic prématuré");
+
+// Espionner les effets sonores
+const sonsJoues = [];
+sandbox.W.PokeSon = {
+  jouer: (nom) => { sonsJoues.push(nom); },
+  muet: () => false,
+  volume: () => 1
+};
+
+// Sélection d'un objet et clic sur Emporter
+const carteChoice = mockRacine.querySelector("#pk-objet-depart-CHOICE_BAND");
+assert.ok(carteChoice, "Carte CHOICE_BAND trouvée");
+carteChoice.click();
+
+assert.ok(sonsJoues.includes("PRESS_AB"), "PRESS_AB joué lors de la sélection d'objet");
+assert.equal(btnEmporter.disabled, false, "Bouton Emporter activé après sélection");
+assert.ok(
+  btnEmporter.innerHTML.includes("Bandeau Choix") || btnEmporter.innerHTML.includes("CHOICE_BAND"),
+  "Bouton Emporter affiche le nom de l'objet sélectionné"
+);
+
+btnEmporter.click();
+assert.equal(suiteAppelee, true, "suite() appelée après clic Emporter");
+assert.ok(sonsJoues.includes("GET_ITEM_1"), "GET_ITEM_1 joué lors du choix de l'objet de départ");
+assert.equal(P.coffreLire().CHOICE_BAND, 4, "1 charge de CHOICE_BAND consommée dans le coffre");
+const partieCourante = UI.partieCourante ? UI.partieCourante() : P.lire();
+const sacCourant = UI.partieCourante ? UI.partieCourante().sac : (P.sac ? P.sac() : {});
+assert.equal(sacCourant.CHOICE_BAND, 1, "1 exemplaire de CHOICE_BAND ajouté au sac de la partie");
+
+// 7. Partir sans objet ne consomme aucune charge
+suiteAppelee = false;
+UI.versCarteOuObjetDepart(suiteMock);
+const btnSans2 = mockRacine.querySelector("#pk-objet-depart-sans");
+assert.ok(btnSans2, "Bouton #pk-objet-depart-sans présent au re-rendu");
+btnSans2.click();
+assert.equal(suiteAppelee, true, "suite() appelée après clic Partir sans objet");
+assert.equal(P.coffreLire().CHOICE_BAND, 4, "Charges de CHOICE_BAND inchangées (4)");
+assert.equal(P.coffreLire().LEFTOVERS, 3, "Charges de LEFTOVERS inchangées (3)");
+
+// 8. Intégration du flux de départ : choixCompagnon dirige vers l'écran d'objet de départ si le coffre est non-vide
+UI.definirPartie({ compare: false, sac: {}, regle: "voyage", starter: 1, equipe: [{ n: 1, niveau: 5 }] });
+assert.ok(P.coffreCompte() > 0, "Coffre non-vide pour le test d'intégration");
+UI.mesurerCompagnon();
+assert.ok(
+  mockRacine.innerHTML.includes("pkdx-ecran-objet-depart") || mockRacine.innerHTML.includes(UI.T("objetDepartTitre")),
+  "choixCompagnon (sans compagnon dispo) mène à l'écran d'objet de départ"
+);
+
+console.log("✓ Task 4: Tests unitaires de l'écran d'objet de départ réussis !");
+
 

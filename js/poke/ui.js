@@ -252,6 +252,13 @@
       fr: "⚡ {n} {n|utilisation restante|utilisations restantes}",
       en: "⚡ {n} {n|use remaining|uses remaining}",
     },
+    objetDepartTitre: { fr: "Objet de départ", en: "Starting Item" },
+    objetDepartDit: {
+      fr: "Choisis un objet de ton coffre à emporter pour cette aventure (consomme 1 charge).",
+      en: "Choose an item from your chest to take on this run (consumes 1 charge).",
+    },
+    emporterObjet: { fr: "Emporter {nom}", en: "Take {nom}" },
+    partirSansObjet: { fr: "Partir sans objet", en: "Leave without item" },
     // 💬 L'invitation Discord du soir (20→27/08) — voir `ANNONCE_DISCORD`.
     annonceTitre: { fr: "Un bug ? Une idée ? Viens le dire.", en: "A bug? An idea? Come and say it." },
     annonceDit: {
@@ -2908,7 +2915,7 @@
       "</header>";
     }
 
-    var d = P().comptePokedex(partie);
+    var d = (P() && typeof P().comptePokedex === "function") ? P().comptePokedex(partie) : { vus: 0, pris: 0 };
     var badges = "";
     for (var i = 1; i <= 8; i++) {
       // 🔴 AUCUN BADGE NE S'EST JAMAIS ALLUMÉ. `partie.badges` contient des
@@ -2949,7 +2956,7 @@
             return '<b class="pkdx-hud-regle" data-info="regleDuJour" data-info-val="' +
               esc(r.id) + '" tabindex="0">' + esc(r.nom[LANG()]) + "</b> ";
           })() +
-          T("acte", { n: partie.acte, t: W.PokeActes.nombre() }) + "</span></span>" +
+          T("acte", { n: partie.acte, t: (W.PokeActes && typeof W.PokeActes.nombre === "function") ? W.PokeActes.nombre() : 9 }) + "</span></span>" +
       // ═══════════════════════════════════════════════════════════════════════
       //  🔴 LE BLOC DU SON VIVAIT DANS LE RELEVÉ, ET C'EST LUI QUI COÛTAIT UNE
       //     TROISIÈME LIGNE. Mesuré le 09/08 à 390 px : le bandeau faisait
@@ -2969,7 +2976,7 @@
       '<span class="pkdx-hud-releve">' +
         '<span class="pkdx-badges" title="' + T("badges") + '">' + badges + "</span>" +
         '<span title="' + esc(T("pokedexVoyage")) + '"><b>' +
-          d.pris + "/" + P().atteignables(partie.version) + "</b>" +
+          d.pris + "/" + ((P() && typeof P().atteignables === "function") ? P().atteignables(partie.version) : 151) + "</b>" +
           "<span>" + T("pokedexVoyage") + "</span></span>" +
         // 🔴 `argent()`, PAS UNE CONCATÉNATION. Le bandeau écrivait « 3000 ₽ »
         //    pendant qu'un nœud de dresseur, juste dessous, écrivait « 1 050 ₽ ».
@@ -3147,7 +3154,7 @@
       //    Le curseur vit à côté du bouton, pas dans un menu : un réglage
       //    qu'on cherche est un réglage qu'on n'emploie pas.
       '<input type="range" class="pkdx-volume" id="pk-volume" min="0" max="100" step="5"' +
-        ' value="' + Math.round(W.PokeSon.volume() * 100) + '"' +
+        ' value="' + Math.round((W.PokeSon && typeof W.PokeSon.volume === "function" ? W.PokeSon.volume() : 1) * 100) + '"' +
         ' aria-label="' + T("volume") + '" title="' + T("volume") + '">' +
     "</span>";
   }
@@ -4454,6 +4461,152 @@
       bRetour.addEventListener("click", function () {
         son("PRESS_AB");
         accueil();
+      });
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  L'ÉCRAN D'OBJET DE DÉPART (COFFRE → SAC DE RUN)
+  // ═══════════════════════════════════════════════════════════════════════════
+  function versCarteOuObjetDepart(suite) {
+    var ensuite = typeof suite === "function" ? suite : carte;
+    var PR = W.PokeProgression;
+    // 🔴 LE DÉFI DU JOUR NE REÇOIT AUCUN OBJET DU COFFRE :
+    //    `partie.compare` interdit tout acquis hors partie là où l'on se compare.
+    if (partie && partie.compare) return ensuite();
+    // Coffre vide : aucun écran d'objet à afficher, passage direct à la carte
+    if (!PR || typeof PR.coffreCompte !== "function" || PR.coffreCompte() === 0) {
+      return ensuite();
+    }
+    return ecranObjetDepart(ensuite);
+  }
+
+  function ecranObjetDepart(suite) {
+    var ensuite = typeof suite === "function" ? suite : carte;
+    var PR = W.PokeProgression;
+    var coffre = (PR && typeof PR.coffreLire === "function") ? PR.coffreLire() : {};
+    var cles = Object.keys(coffre).filter(function (k) { return (coffre[k] || 0) > 0; });
+
+    if (cles.length === 0) {
+      return ensuite();
+    }
+
+    reprendreCreation = function () { ecranObjetDepart(ensuite); };
+    moissonAvantSortie = null;
+
+    var selection = null;
+
+    function htmlGrille() {
+      return '<div class="pkdx-coffre-grille pkdx-objet-depart-grille">' +
+        cles.map(function (cle) {
+          var charges = coffre[cle] || 0;
+          var nom = nomDObjet(cle);
+          var catItem = null;
+          if (W.PokeUIUsine && Array.isArray(W.PokeUIUsine.CATALOGUE_BOUTIQUE)) {
+            for (var i = 0; i < W.PokeUIUsine.CATALOGUE_BOUTIQUE.length; i++) {
+              if (W.PokeUIUsine.CATALOGUE_BOUTIQUE[i].cle === cle) {
+                catItem = W.PokeUIUsine.CATALOGUE_BOUTIQUE[i];
+                break;
+              }
+            }
+          }
+          var categorie = catItem ? catItem.categorie : "";
+          var dit = (W.PokeDits && typeof W.PokeDits.objet === "function" ? W.PokeDits.objet(cle, T) : "") ||
+                    (catItem && catItem.desc) || "";
+          var estChoisi = selection === cle;
+          return '<button type="button" class="pkdx-coffre-carte pkdx-objet-depart-carte' + (estChoisi ? ' est-choisi' : '') + '"' +
+            ' data-cle="' + esc(cle) + '"' +
+            ' aria-pressed="' + (estChoisi ? 'true' : 'false') + '"' +
+            ' id="pk-objet-depart-' + esc(cle) + '">' +
+            '<div class="pkdx-coffre-carte-haut">' +
+              '<span class="pkdx-coffre-nom">' + esc(nom) + '</span>' +
+              (categorie ? ' <span class="pkdx-coffre-cat">(' + esc(categorie) + ')</span>' : '') +
+            '</div>' +
+            (dit ? '<p class="pkdx-coffre-dit">' + esc(dit) + '</p>' : '') +
+            '<div class="pkdx-coffre-badge-charges">' +
+              esc(T("coffreCharges", { n: charges })) +
+            '</div>' +
+          '</button>';
+        }).join("") +
+      '</div>';
+    }
+
+    function texteBoutonEmporter() {
+      if (!selection) {
+        return esc(T("emporterObjet", { nom: "" }).trim());
+      }
+      return esc(T("emporterObjet", { nom: nomDObjet(selection) }));
+    }
+
+    coque(
+      '<div class="pkdx-plateau pkdx-coffre pkdx-ecran-objet-depart">' +
+        '<p class="pkdx-surtitre">' + esc(T("coffreTitre")) + '</p>' +
+        '<h1 class="pkdx-titre">' + esc(T("objetDepartTitre")) + '</h1>' +
+        '<p class="pkdx-dit">' + esc(T("objetDepartDit")) + '</p>' +
+        '<div id="pk-objet-depart-conteneur">' + htmlGrille() + '</div>' +
+        '<div class="pkdx-actions est-pied">' +
+          '<button type="button" class="pkdx-touche est-definitive" id="pk-objet-depart-ok" disabled>' +
+            texteBoutonEmporter() +
+          '</button>' +
+          '<button type="button" class="pkdx-touche" id="pk-objet-depart-sans">' +
+            esc(T("partirSansObjet")) +
+          '</button>' +
+        '</div>' +
+      '</div>'
+    );
+
+    function attacherCartes() {
+      var cartes = racine.querySelectorAll(".pkdx-objet-depart-carte");
+      for (var i = 0; i < cartes.length; i++) {
+        (function (btn) {
+          btn.addEventListener("click", function () {
+            var cle = btn.getAttribute("data-cle");
+            selection = cle;
+            son("PRESS_AB");
+            for (var j = 0; j < cartes.length; j++) {
+              var c = cartes[j];
+              var actif = c.getAttribute("data-cle") === cle;
+              c.setAttribute("aria-pressed", actif ? "true" : "false");
+              if (actif) c.classList.add("est-choisi");
+              else c.classList.remove("est-choisi");
+            }
+            var btnOk = racine.querySelector("#pk-objet-depart-ok");
+            if (btnOk) {
+              btnOk.disabled = false;
+              btnOk.innerHTML = texteBoutonEmporter();
+            }
+          });
+        })(cartes[i]);
+      }
+    }
+
+    attacherCartes();
+
+    var btnOk = racine.querySelector("#pk-objet-depart-ok");
+    if (btnOk) {
+      btnOk.addEventListener("click", function () {
+        if (!selection) return;
+        if (btnOk.disabled) return;
+        if (PR && typeof PR.coffreConsommer === "function") {
+          PR.coffreConsommer(selection);
+        }
+        if (partie) {
+          if (!partie.sac) partie.sac = {};
+          partie.sac[selection] = (partie.sac[selection] || 0) + 1;
+        }
+        garderLeVoyage();
+        son("GET_ITEM_1");
+        reprendreCreation = null;
+        ensuite();
+      });
+    }
+
+    var btnSans = racine.querySelector("#pk-objet-depart-sans");
+    if (btnSans) {
+      btnSans.addEventListener("click", function () {
+        son("PRESS_AB");
+        reprendreCreation = null;
+        ensuite();
       });
     }
   }
@@ -5944,8 +6097,8 @@
     //    C'est lui que le vivier de départ interroge déjà pour refuser les
     //    starters débloqués au Défi du jour ; s'en écarter aurait donné deux
     //    règles pour la même question, et un jour deux réponses.
-    if (partie.compare) return carte();
-    if (!PR.compagnonAutorise(partie.regle, partie.compare ? "defi" : "libre")) return carte();
+    if (partie.compare) return versCarteOuObjetDepart();
+    if (!PR.compagnonAutorise(partie.regle, partie.compare ? "defi" : "libre")) return versCarteOuObjetDepart();
 
     // On n'emmène que ce qu'on a réellement pris, et jamais une seconde fois
     // l'espèce qu'on vient de choisir au départ.
@@ -5989,7 +6142,7 @@
     // 🔴 TRIÉ PAR SOLIDITÉ, PAS PAR NUMÉRO DE POKÉDEX. L'ordre d'une liste est
     //    un conseil silencieux, et l'ordre du Pokédex n'en est pas un.
     dispo.sort(function (a, b) { return forceDe(b) - forceDe(a); });
-    if (!dispo.length) return carte();
+    if (!dispo.length) return versCarteOuObjetDepart();
 
     var niveau = partie.equipe[0] ? partie.equipe[0].niveau : 5;
 
@@ -6037,11 +6190,11 @@
       partie.equipe.push(mon);
       P().prendre(partie, num, "compagnon", niveau);
       criDe(num);
-      carte();
+      versCarteOuObjetDepart();
     });
     // 🔴 PARTIR SEUL RESTE UN CHOIX. Un joueur qui vise le score le fera : le
     //    compagnon ne rapporte aucun point et occupe une place d'équipe.
-    racine.querySelector("#pk-seul").addEventListener("click", function () { son("PRESS_AB"); carte(); });
+    racine.querySelector("#pk-seul").addEventListener("click", function () { son("PRESS_AB"); versCarteOuObjetDepart(); });
   }
 
   // Les espèces propres à une version, calculées depuis les tables de rencontre.
@@ -15008,6 +15161,10 @@
     carte: function () { return carte(); },
     accueil: function () { return accueil(); },
     ecranCoffre: function () { return ecranCoffre(); },
+    ecranObjetDepart: function (suite) { return ecranObjetDepart(suite); },
+    versCarteOuObjetDepart: function (suite) { return versCarteOuObjetDepart(suite); },
+    definirPartie: function (p) { return prendreLaPartie(p); },
+    partieCourante: function () { return partie; },
     ditObjet: function (cle) { return ditButin({ type: "objet", objet: cle }); },
     // ═════════════════════════════════════════════════════════════════════════
     //  🔴 LA PORTE DE MESURE — ET POURQUOI ELLE EXISTE.
