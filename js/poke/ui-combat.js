@@ -719,7 +719,7 @@
       //     qui rate lui aussi boucle indéfiniment sur le même gestionnaire.
       //  ⚠️ La face est le bon repli : elle existe pour les 151 espèces, elle
       //     est déjà chargée ailleurs, et un Pokémon vu de face reste lisible.
-      '<img class="est-entrant" alt="' + esc(e.nom[LANG()]) + '" data-mon="' + mon.n + '"' +
+      '<img class="est-entrant pk-sprite-combattant" data-cote="' + cote + '" alt="' + esc(e.nom[LANG()]) + '" data-mon="' + mon.n + '"' +
         " onerror=\"this.onerror=null;this.src='" + W.PokeSprites.face(mon.n) + "'\"" +
         (W.PokeEclat && W.PokeEclat.chromatique(mon.dv) ? ' data-chromatique="oui"' : "") +
         ' src="' + sprite(mon, cote) + '">';
@@ -1271,50 +1271,69 @@
 
   Ecran.prototype.monter = function () {
     this.hote.innerHTML =
-      '<div class="pkdx-combat">' +
-        // ═══ L'ÉCRAN DU GAME BOY EN ENTIER — 160 × 144 (chantier 12/08) ═════
-        // 🔴 L'ARÈNE SEULE (96 lignes) COUPAIT LES ANIMATIONS : le ROM dessine
-        //    sur sa boîte de texte (jamais `OAM_BEHIND_BG`) — Jet d'Eau
-        //    adverse y perdait 86 % de ses tuiles. Et la bande sous l'arène
-        //    étant sombre, aucun débordement ne pouvait s'y afficher (les
-        //    planches sont du trait sur blanc opaque).
-        // ✅ On rend donc l'ÉCRAN COMPLET de 1996 : l'arène (96 lignes) et la
-        //    BOÎTE DE TEXTE blanche (48 lignes) dans un même cadre. Le journal
-        //    vit dans la boîte — il affiche une phrase à la fois, comme elle —
-        //    et la couche d'animation couvre les 144 lignes : plus rien à
-        //    couper, le blanc de la boîte est celui pour lequel les tuiles ont
-        //    été dessinées.
-        // 🔴 LES CAMPS RESTENT DANS L'ARÈNE (34 sprites au fond blanc opaque,
-        //    voir `--arene-ecran`) : ses coordonnées `--rom-*` ne bougent pas.
-        '<div class="pkdx-ecran-gb">' +
-          '<div class="pkdx-arene">' +
-            '<div class="pkdx-camp" data-cote="adverse"></div>' +
-            '<div class="pkdx-camp" data-cote="joueur"></div>' +
-          "</div>" +
-          '<div class="pkdx-boite">' +
-            '<div class="pkdx-dialogue" role="status" aria-live="polite"></div>' +
-          "</div>" +
-        "</div>" +
-        '<div class="pkdx-actions"></div>' +
-      "</div>";
-    this.elAdverse = this.hote.querySelector('[data-cote="adverse"]');
-    this.elJoueur = this.hote.querySelector('[data-cote="joueur"]');
-    // La scène : c'est elle qui porte la couche d'animation et les effets
-    // d'écran du ROM (secousse, éclair, palette).
-    this.elCombat = this.hote.querySelector(".pkdx-combat");
-    // ═══════════════════════════════════════════════════════════════════════
-    // 🔴 L'ANIMATION SE CALE SUR L'ÉCRAN GB, PAS SUR LE BLOC DE COMBAT. La
-    //    leçon d'origine (« c'est même pas cadré ») reste : l'hôte doit être
-    //    EXACTEMENT le repère du ROM, jamais un bloc qui contient d'autres
-    //    choses. Ce repère est aujourd'hui `.pkdx-ecran-gb` — arène + boîte,
-    //    160 × 144, l'écran entier de 1996 — et les effets d'écran (secousse,
-    //    éclair, palette, pluie) le suivent en entier, comme sur la machine :
-    //    le Game Boy secouait AUSSI sa boîte de texte.
-    // ═══════════════════════════════════════════════════════════════════════
-    this.elArene = this.hote.querySelector(".pkdx-arene") || this.elCombat;
+      '<div class="pk-showdown-combat pkdx-combat">' +
+        '<div class="pk-arene-colonne pk-combat-principal">' +
+          '<div class="pk-arene-showdown pkdx-arene pkdx-ecran-gb">' +
+            '<!-- Opponent Floating Healthbox (top-left) -->' +
+            '<div class="pk-healthbox pk-healthbox-adverse" data-cote="adverse">' +
+              '<div class="pk-hb-identite">' +
+                '<span class="pk-hb-nom"></span> ' +
+                '<span class="pk-hb-niveau"></span>' +
+              '</div>' +
+              '<div class="pk-hb-statut-hote"></div>' +
+              '<div class="pk-hb-barre-wrap">' +
+                '<div class="pk-hb-barre"><div class="pk-hb-barre-remplie"></div></div>' +
+                '<span class="pk-hb-chiffre"></span>' +
+              '</div>' +
+            '</div>' +
+
+            '<!-- Opponent Platform (top-right) -->' +
+            '<div class="pk-arene-socle pk-socle-adverse" data-cote="adverse">' +
+              '<div class="pkdx-camp" data-cote="adverse"></div>' +
+            '</div>' +
+
+            '<!-- Player Platform (bottom-left) -->' +
+            '<div class="pk-arene-socle pk-socle-joueur" data-cote="joueur">' +
+              '<div class="pkdx-camp" data-cote="joueur"></div>' +
+            '</div>' +
+
+            '<!-- Player Floating Healthbox (bottom-right) -->' +
+            '<div class="pk-healthbox pk-healthbox-joueur" data-cote="joueur">' +
+              '<div class="pk-hb-identite">' +
+                '<span class="pk-hb-nom"></span> ' +
+                '<span class="pk-hb-niveau"></span>' +
+              '</div>' +
+              '<div class="pk-hb-statut-hote"></div>' +
+              '<div class="pk-hb-barre-wrap">' +
+                '<div class="pk-hb-barre"><div class="pk-hb-barre-remplie"></div></div>' +
+                '<span class="pk-hb-chiffre"></span>' +
+              '</div>' +
+            '</div>' +
+
+            '<!-- Subtitle overlay -->' +
+            '<div class="pk-arene-dialogue-toast pkdx-dialogue" role="status" aria-live="polite"></div>' +
+          '</div>' +
+
+          '<!-- Action controls panel -->' +
+          '<div class="pk-actions-showdown pkdx-actions"></div>' +
+        '</div>' +
+
+        '<!-- Right Column: Live Battle Log -->' +
+        '<div class="pk-battle-log-colonne">' +
+          '<div class="pk-battle-log-header">Journal de Combat</div>' +
+          '<div class="pk-battle-log-flux pk-battle-log" role="log" aria-live="polite"></div>' +
+        '</div>' +
+      '</div>';
+    this.elAdverse = this.hote.querySelector('.pkdx-camp[data-cote="adverse"]');
+    this.elJoueur = this.hote.querySelector('.pkdx-camp[data-cote="joueur"]');
+    this.elHbAdverse = this.hote.querySelector('.pk-healthbox[data-cote="adverse"]');
+    this.elHbJoueur = this.hote.querySelector('.pk-healthbox[data-cote="joueur"]');
+    this.elCombat = this.hote.querySelector(".pk-showdown-combat") || this.hote.querySelector(".pkdx-combat");
+    this.elArene = this.hote.querySelector(".pk-arene-showdown") || this.hote.querySelector(".pkdx-arene") || this.elCombat;
     this.elEcran = this.hote.querySelector(".pkdx-ecran-gb") || this.elArene;
-    this.elTexte = this.hote.querySelector(".pkdx-dialogue");
-    this.elActions = this.hote.querySelector(".pkdx-actions");
+    this.elTexte = this.hote.querySelector(".pk-arene-dialogue-toast") || this.hote.querySelector(".pkdx-dialogue");
+    this.elActions = this.hote.querySelector(".pk-actions-showdown") || this.hote.querySelector(".pkdx-actions");
+    this.elLogFlux = this.hote.querySelector(".pk-battle-log-flux") || this.hote.querySelector(".pk-battle-log");
     this.prechargerLesSprites();
     this.resynchroniser();
     this.rafraichir();
@@ -1549,15 +1568,120 @@
     rendreReste(this.elJoueur, "joueur", this.etat);
     rendrePaliers(this.elAdverse, "adverse", this.etat);
     rendrePaliers(this.elJoueur, "joueur", this.etat);
-    //  🔴 Les nappes de type autour de l'arène (v563) sont RETIRÉES sur
-    //     verdict du propriétaire : « une aura qui sert à rien ». Il a
-    //     raison — sur un adversaire Normal, la lumière beige se lisait comme
-    //     une tache dans le vide, pas comme une information. La place du
-    //     type en combat, ce sont les pastilles des fiches, déjà là.
+    this.rafraichirHealthboxes();
+  };
+
+  var STATUS_SHOWDOWN = {
+    brulure: "BRN", brn: "BRN",
+    para: "PAR", par: "PAR",
+    gel: "FRZ", frz: "FRZ",
+    sommeil: "SLP", slp: "SLP",
+    poison: "PSN", poisonGrave: "PSN", psn: "PSN", tox: "TOX"
+  };
+
+  Ecran.prototype.rafraichirHealthboxes = function () {
+    var a = this.affiche || {};
+    var cotes = [
+      ["joueur", this.etat.joueur, this.elHbJoueur || (this.hote && this.hote.querySelector('.pk-healthbox[data-cote="joueur"]'))],
+      ["adverse", this.etat.adverse, this.elHbAdverse || (this.hote && this.hote.querySelector('.pk-healthbox[data-cote="adverse"]'))]
+    ];
+
+    for (var i = 0; i < cotes.length; i++) {
+      var cote = cotes[i][0];
+      var camp = cotes[i][1];
+      var hb = cotes[i][2];
+      if (!camp || !hb) continue;
+      var mon = W.PokeCombat.actif(camp);
+      if (!mon) continue;
+
+      var v = (a[cote] != null) ? a[cote] : mon.pv;
+      var max = (mon.stats && mon.stats.pv) || 1;
+      var ratio = Math.max(0, Math.min(1, v / max));
+
+      // Identité
+      var elNom = hb.querySelector(".pk-hb-nom");
+      if (elNom) elNom.textContent = nomDe(mon);
+
+      var elNiv = hb.querySelector(".pk-hb-niveau");
+      if (elNiv) elNiv.textContent = (W.PokeGenre && W.PokeGenre.niveau) ? W.PokeGenre.niveau(mon.niveau) : ("N. " + mon.niveau);
+
+      // Statut
+      var elStatut = hb.querySelector(".pk-hb-statut-hote");
+      if (elStatut) {
+        if (mon.statut) {
+          var code = STATUS_SHOWDOWN[mon.statut] || (abrege ? abrege(mon.statut) : mon.statut.toUpperCase());
+          elStatut.innerHTML = '<span class="pk-statut-pill pkdx-statut" data-statut="' + mon.statut + '">' + code + '</span>';
+        } else {
+          elStatut.innerHTML = "";
+        }
+      }
+
+      // Barre remplie
+      var elBarre = hb.querySelector(".pk-hb-barre-remplie");
+      if (elBarre) {
+        elBarre.style.width = (Math.max(0, Math.min(100, (v / max) * 100))) + "%";
+        if (elBarre.classList && elBarre.classList.remove) {
+          elBarre.classList.remove("hp-haut", "hp-moyen", "hp-critique");
+        }
+        if (ratio > 0.5) {
+          elBarre.style.background = "var(--hp-haut)";
+          if (elBarre.classList && elBarre.classList.add) elBarre.classList.add("hp-haut");
+        } else if (ratio >= 0.2) {
+          elBarre.style.background = "var(--hp-moyen)";
+          if (elBarre.classList && elBarre.classList.add) elBarre.classList.add("hp-moyen");
+        } else {
+          elBarre.style.background = "var(--hp-critique)";
+          if (elBarre.classList && elBarre.classList.add) elBarre.classList.add("hp-critique");
+        }
+      }
+
+      // Chiffres
+      var elChiffre = hb.querySelector(".pk-hb-chiffre");
+      if (elChiffre) {
+        if (cote === "adverse") {
+          elChiffre.textContent = pourCent(ratio);
+        } else {
+          elChiffre.textContent = v + " / " + max + " (" + pourCent(ratio) + ")";
+        }
+      }
+    }
   };
 
   Ecran.prototype.dire = function (texte) {
-    this.elTexte.textContent = texte;
+    if (this.elTexte) this.elTexte.textContent = texte || "";
+    if (texte) {
+      this.ajouterLog(texte);
+    }
+  };
+
+  Ecran.prototype.ajouterTour = function (n) {
+    var tourNum = n != null ? n : (this.etat ? this.etat.tour : 1);
+    var div = W.document.createElement("div");
+    div.className = "pk-log-tour";
+    div.textContent = "--- Tour " + tourNum + " ---";
+    if (this.elLogFlux) {
+      this.elLogFlux.appendChild(div);
+      this.elLogFlux.scrollTop = this.elLogFlux.scrollHeight;
+    }
+  };
+
+  Ecran.prototype.ajouterLog = function (texte, tag) {
+    if (!texte) return;
+    var div = W.document.createElement("div");
+    div.className = "pk-log-ligne";
+    if (tag) {
+      var badge = W.document.createElement("span");
+      badge.className = "pk-log-badge " + tag;
+      badge.textContent = tag.toUpperCase();
+      div.appendChild(badge);
+      div.appendChild(W.document.createTextNode(" " + texte));
+    } else {
+      div.textContent = texte;
+    }
+    if (this.elLogFlux) {
+      this.elLogFlux.appendChild(div);
+      this.elLogFlux.scrollTop = this.elLogFlux.scrollHeight;
+    }
   };
 
   // Les événements qui FRAPPENT. Ils ne prennent pas leur propre temps : ils se
@@ -2062,6 +2186,7 @@
     };
     maj(this.elJoueur, W.PokeCombat.actif(this.etat.joueur), a.joueur);
     maj(this.elAdverse, W.PokeCombat.actif(this.etat.adverse), a.adverse);
+    this.rafraichirHealthboxes();
   };
 
   // ── Les menus ──────────────────────────────────────────────────────────────
@@ -2140,138 +2265,100 @@
   };
 
   Ecran.prototype.menuPrincipal = function () {
+    this.menuAttaques();
+  };
+
+  Ecran.prototype.rendreBarreTactique = function () {
     var self = this;
-    this.elActions.innerHTML = "";
-    // 🔴 QUATRE BOUTONS IDENTIQUES NE DISENT PAS QUOI FAIRE. Attaquer est
-    //    l'action du tour ; le sac, l'équipe et la fuite en sont les recours.
-    //    Tant qu'ils se ressemblaient tous, le regard devait les lire un par un
-    //    à chaque tour — des centaines de fois par voyage.
-    this.bouton(T("aAttaquer"), function () { self.menuAttaques(); }, { classe: "est-definitive" });
-    // 🔴 EN DUEL, LE SAC ET LA FUITE N'EXISTENT PAS — et on ne les grise pas, on
-    //    ne les met pas. Un duel n'oppose que deux équipes : ni potion, ni objet
-    //    de statistique, ni rien qui vienne du compte. Deux boutons éteints à
-    //    chaque tour raconteraient l'inverse, et la règle est déjà écrite à
-    //    l'écran de duel avant qu'on entre.
-    // ═══════════════════════════════════════════════════════════════════════
-    // 🔴 UN SERMENT QUI FERME LE SAC DOIT FERMER LE BOUTON, PAS LE DÉCEVOIR.
-    //    Le Serment de l'audace et celui de la vertu retirent les soins en
-    //    plein combat. Laisser le bouton actif et refuser au clic serait la
-    //    faute que ce dossier traque partout — « le jeu sait, et il ne dit
-    //    pas ». Le bouton disparaît, et l'écran des serments l'annonce avant
-    //    qu'on s'engage.
-    // ═══════════════════════════════════════════════════════════════════════
-    // ═══════════════════════════════════════════════════════════════════════
-    //  🔴 `soinInterdit` FERMAIT TOUT LE SAC, POKÉ BALLS COMPRISES — et le
-    //     Serment du sacrifice promet en toutes lettres « tes coups ET TES
-    //     POKÉ BALLS gagnent un tiers ». Son bonus de capture était donc
-    //     INATTEIGNABLE : aucune Ball ne pouvait plus être lancée de tout le
-    //     voyage, et rien ne le disait. Même écrasement pour `audace`, `vertu`
-    //     et `economieDeGuerre`.
-    //  ✅ LE DRAPEAU NE FERME QUE CE QU'IL NOMME : les soins. Le sac reste
-    //     ouvert tant qu'il porte une Ball ou un objet de statistique — voir
-    //     `menuSac`, qui saute le rayon des soins sous le même drapeau.
-    // ═══════════════════════════════════════════════════════════════════════
-    var jure = this.opt.serments || {};
-    // ═══════════════════════════════════════════════════════════════════════
-    //  🔴 [17/08, .nevix] LE TOUR PRIS S'ÉTEINT ICI, PAS AU CLIC. Cinq
-    //     mécaniques retirent son tour au joueur — l'étreinte subie, la prise
-    //     qu'on exerce, la charge, la fureur, la patience, la rage. Aucune
-    //     n'était visible : les quatre boutons restaient allumés, et le sac
-    //     dépensait une Ball qui ne partait jamais. On éteint ce qui ne peut
-    //     rien faire, et chaque bouton dit sa raison — la règle du dossier.
-    //  ⚠️ ATTAQUER reste allumé : c'est la seule chose qui puisse se jouer, et
-    //     le moteur y remplacera le coup par celui qui est forcé.
-    //  ⚠️ ÉQUIPE reste allumé quand le repli casse la prise (`changerOk`) :
-    //     c'est le contre-jeu tranché le 13/08, et l'éteindre le supprimerait.
-    // ═══════════════════════════════════════════════════════════════════════
-    var pris = W.PokeCombat.tourForce ? W.PokeCombat.tourForce(this.etat) : null;
-    if (!this.opt.duel && !this.opt.usine) {
-      var bSac = this.bouton(T("aSac"), function () { self.menuSac(); },
-        { desactive: !!pris, note: pris ? raisonDite(pris.raison) : null });
-      if (pris) {
-        bSac.setAttribute("data-info", "refus");
-        bSac.setAttribute("data-info-val", pris.raison);
-      }
-    }
+    var jure = (this.opt && this.opt.serments) || {};
+    var pris = W.PokeCombat && W.PokeCombat.tourForce ? W.PokeCombat.tourForce(this.etat) : null;
+
+    var eq = (this.etat && this.etat.joueur && this.etat.joueur.equipe) || [];
+    var actifIdx = (this.etat && this.etat.joueur && this.etat.joueur.actif) || 0;
     var remplacants = 0;
-    for (var k = 0; k < this.etat.joueur.equipe.length; k++) {
-      if (k !== this.etat.joueur.actif && W.PokeCombat.vivant(this.etat.joueur.equipe[k])) remplacants++;
+    for (var k = 0; k < eq.length; k++) {
+      if (k !== actifIdx && W.PokeCombat && W.PokeCombat.vivant && W.PokeCombat.vivant(eq[k])) remplacants++;
     }
-    // 🔴 UN BOUTON ÉTEINT DIT POURQUOI — Y COMPRIS CEUX QUI N'ONT PAS D'OBJET
-    //    DERRIÈRE. La règle était appliquée aux potions seulement, parce que le
-    //    moteur nommait leurs refus. Balayé en jouant : ÉQUIPE s'éteint quand
-    //    personne d'autre ne tient debout, FUIR s'éteint devant un dresseur, et
-    //    les deux le faisaient sans un mot. Devant un bouton gris muet, le
-    //    joueur ne peut pas distinguer une règle du jeu d'un défaut de l'écran.
-    // ⚠️ Celui-ci reste éteint, et il le dit en clair : contrairement à la
-    //    fuite, « personne d'autre ne tient debout » est un ÉTAT passager, pas
-    //    une règle à enseigner, et le jeu d'origine n'a pas de réplique pour
-    //    lui. Cinq mots sous le libellé, comme dans le sac.
-    // ⚠️ SEUL ≠ DERNIER DEBOUT. « Personne d'autre ne tient debout » raconte
-    //    des coéquipiers tombés — parti seul, il n'y a personne à raconter.
     var eqBloque = remplacants === 0 || !!(pris && !pris.changerOk);
-    // ⚠️ `pris` PEUT ÊTRE NUL ICI, et l'oublier plantait le montage de l'écran
-    //    de combat dès qu'un remplaçant tenait debout hors de toute prise —
-    //    c'est-à-dire dans le cas ordinaire. Attrapé au banc, au premier
-    //    montage : `Cannot read properties of null (reading 'raison')`.
     var raisonEq = remplacants === 0
-      ? (this.etat.joueur.equipe.length === 1 ? "sansAutre" : "seulDebout")
+      ? (eq.length === 1 ? "sansAutre" : "seulDebout")
       : (pris ? pris.raison : null);
-    var bEq = this.bouton(T("aEquipe"), function () { self.menuEquipe(false); },
-      { desactive: eqBloque,
-        note: eqBloque ? raisonDite(raisonEq) : null });
+
+    var barre = W.document.createElement("div");
+    barre.className = "pk-barre-tactique";
+
+    // 1. ÉQUIPE
+    var btnEq = W.document.createElement("button");
+    btnEq.type = "button";
+    btnEq.className = "pk-btn-tactique pkdx-touche";
+    btnEq.setAttribute("data-action", "equipe");
+    btnEq.textContent = T("aEquipe") || "ÉQUIPE";
     if (eqBloque) {
-      bEq.setAttribute("data-info", "refus");
-      bEq.setAttribute("data-info-val", raisonEq);
-    }
-    // ═══════════════════════════════════════════════════════════════════════
-    //  🔴 FUIR NE S'ÉTEINT PLUS DEVANT UN DRESSEUR — LE JEU RÉPOND.
-    //
-    //  Tout le chemin canon existait et ne pouvait pas sortir : `combat.js`
-    //  émet `fuiteRefusee`, la table porte la réplique du ROM — « Impossible de
-    //  fuir un combat de dresseurs ! » —, et le son `DENIED` lui est associé.
-    //  Trois pièces câblées, et un bouton gris devant, donc rien ne se
-    //  déclenchait jamais. C'est la classe n°1 du dossier, en entier.
-    //
-    //  🔴 ET ÇA NE COÛTE RIEN, VÉRIFIÉ DANS LE MOTEUR : la branche rend ses
-    //     événements et sort AVANT la riposte et avant la fin de tour. Aucun
-    //     tour perdu, aucun tirage consommé — le contrat de rejeu ne bouge pas.
-    //
-    //  ⚠️ On préfère d'ordinaire éteindre un bouton qui ne peut rien faire.
-    //     Pas celui-ci : « on ne fuit pas un dresseur » est une RÈGLE du jeu,
-    //     pas un état passager, et le jeu d'origine l'enseigne en la disant,
-    //     avec sa voix et son bruit. Un bouton gris n'enseigne rien — et le
-    //     commentaire ci-dessus dit lui-même qu'on ne peut pas le distinguer
-    //     d'un défaut de l'écran.
-    // ═══════════════════════════════════════════════════════════════════════
-    // ═══════════════════════════════════════════════════════════════════════
-    // 🔴 DEVANT UN DRESSEUR, LA SORTIE N'EST PAS LA FUITE MAIS LE FORFAIT.
-    //    Relevé en jouant : dernier Pokémon incapable de toucher l'adversaire
-    //    (Normal contre un Spectre), et « on ne fuit pas un dresseur » — le
-    //    combat ne finissait jamais. « FUITE » n'y menait qu'à un refus répété.
-    //    On la remplace donc par « ABANDONNER » : cliquer ouvre l'avertissement
-    //    (c'est une défaite, avec ses coûts) puis, confirmé, déclare forfait.
-    //  ⚠️ JAMAIS INTERDIT, même sous un serment qui défend la fuite : un serment
-    //     resserre le jeu, il n'enferme pas dans un combat sans fin. Seul le
-    //     duel n'a pas de forfait — il a sa propre fin.
-    // ═══════════════════════════════════════════════════════════════════════
-    if (this.etat.adverse.dresseur) {
-      if (!this.opt.duel) {
-        this.bouton(T("aAbandonner"), function () { self.menuAbandon(); });
+      btnEq.disabled = true;
+      btnEq.setAttribute("aria-disabled", "true");
+      if (raisonEq) {
+        var noteEq = W.document.createElement("span");
+        noteEq.className = "pkdx-touche-note";
+        noteEq.textContent = raisonDite(raisonEq);
+        btnEq.appendChild(noteEq);
       }
-    } else if (!this.opt.duel && !jure.fuiteInterdite) {
-      // 🔴 [17/08] LA FUITE S'ÉTEINT SOUS UNE PRISE, ET ELLE LE DIT. Elle ne
-      //    coûtait pas d'objet, mais elle devenait une attaque en silence :
-      //    le joueur croyait fuir et voyait son Pokémon frapper.
-      //    ⚠️ Devant un DRESSEUR c'est « ABANDONNER » qui s'affiche, juste
-      //       au-dessus, et lui n'est jamais fermé : voir `jouerTour`.
-      var bFui = this.bouton(T("aFuir"), function () { self.agir({ type: "fuite" }); },
-        { desactive: !!pris, note: pris ? raisonDite(pris.raison) : null });
+    } else {
+      btnEq.addEventListener("click", function () { self.menuEquipe(false); });
+    }
+    barre.appendChild(btnEq);
+
+    // 2. SAC (supprimé en Usine de Combat ou en Duel)
+    if (!this.opt || (!this.opt.duel && !this.opt.usine)) {
+      var btnSac = W.document.createElement("button");
+      btnSac.type = "button";
+      btnSac.className = "pk-btn-tactique pkdx-touche";
+      btnSac.setAttribute("data-action", "sac");
+      btnSac.textContent = T("aSac") || "SAC";
       if (pris) {
-        bFui.setAttribute("data-info", "refus");
-        bFui.setAttribute("data-info-val", pris.raison);
+        btnSac.disabled = true;
+        btnSac.setAttribute("aria-disabled", "true");
+        var noteSac = W.document.createElement("span");
+        noteSac.className = "pkdx-touche-note";
+        noteSac.textContent = raisonDite(pris.raison);
+        btnSac.appendChild(noteSac);
+      } else {
+        btnSac.addEventListener("click", function () { self.menuSac(); });
       }
+      barre.appendChild(btnSac);
     }
+
+    // 3. ABANDONNER / FUIR
+    var adverseDresseur = this.etat && this.etat.adverse && this.etat.adverse.dresseur;
+    if (adverseDresseur) {
+      if (!this.opt || !this.opt.duel) {
+        var btnAbandon = W.document.createElement("button");
+        btnAbandon.type = "button";
+        btnAbandon.className = "pk-btn-tactique pkdx-touche";
+        btnAbandon.setAttribute("data-action", "abandon");
+        btnAbandon.textContent = T("aAbandonner") || "ABANDONNER";
+        btnAbandon.addEventListener("click", function () { self.menuAbandon(); });
+        barre.appendChild(btnAbandon);
+      }
+    } else if ((!this.opt || !this.opt.duel) && !jure.fuiteInterdite) {
+      var btnFui = W.document.createElement("button");
+      btnFui.type = "button";
+      btnFui.className = "pk-btn-tactique pkdx-touche";
+      btnFui.setAttribute("data-action", "fuite");
+      btnFui.textContent = T("aFuir") || "FUIR";
+      if (pris) {
+        btnFui.disabled = true;
+        btnFui.setAttribute("aria-disabled", "true");
+        var noteFui = W.document.createElement("span");
+        noteFui.className = "pkdx-touche-note";
+        noteFui.textContent = raisonDite(pris.raison);
+        btnFui.appendChild(noteFui);
+      } else {
+        btnFui.addEventListener("click", function () { self.agir({ type: "fuite" }); });
+      }
+      barre.appendChild(btnFui);
+    }
+
+    this.elActions.appendChild(barre);
   };
 
   // 🔴 UN FORFAIT SE CONFIRME — C'EST IRRÉVERSIBLE. Un clic accidentel sur
@@ -2289,138 +2376,90 @@
 
   Ecran.prototype.menuAttaques = function () {
     var self = this;
-    var mon = W.PokeCombat.actif(this.etat.joueur);
+    var mon = this.etat && this.etat.joueur && W.PokeCombat.actif(this.etat.joueur);
     this.elActions.innerHTML = "";
 
-    // 🔴 TROUVÉ PAR L'AUTO-JOUEUR DOM : à court de PP sur les quatre attaques,
-    //    l'écran ne proposait plus que « RETOUR » et le joueur était BLOQUÉ —
-    //    alors que le moteur sait très bien enchaîner sur Lutte. Le moteur
-    //    savait, l'écran ne disait rien. C'est la classe de défaut n°1 du
-    //    projet, et c'est la troisième fois que cet outil l'attrape.
-    // 🔴 [22/08, rapport de Rayhane] LA GARDE COMPTAIT LES PP, PAS LES COUPS
-    //    JOUABLES. Trois attaques à zéro plus une ENTRAVÉE font une somme
-    //    positive : le joueur voyait quatre boutons gris et « RETOUR »,
-    //    sans aucune action possible. « Ce serait sympa que l'on puisse au
-    //    moins utiliser Lutte. » Il a raison, et c'est la règle de 1996 :
-    //    Lutte vient quand plus RIEN n'est jouable, pas quand les PP sont
-    //    à zéro.
-    //  ⚠️ MÊME LECTURE QUE LES BOUTONS, juste en dessous : un coup est gris
-    //     si `pp <= 0 || estEntrave`. La garde lit la même chose, sinon les
-    //     deux vérités divergent au premier cas tordu — et c'est ce cas
-    //     tordu qui a bloqué un joueur en production.
-    var entraveMenu = this.etat.joueur.volatils.entrave;
+    var vj = (this.etat && this.etat.joueur && this.etat.joueur.volatils) || {};
+    var entraveMenu = vj.entrave;
+    var attList = (mon && mon.attaques) || [];
     var jouables = 0;
-    for (var k = 0; k < mon.attaques.length; k++) {
-      if (mon.attaques[k].pp > 0 && !(entraveMenu && entraveMenu.index === k)) jouables++;
+    for (var k = 0; k < attList.length; k++) {
+      if (attList[k] && attList[k].pp > 0 && !(entraveMenu && entraveMenu.index === k)) jouables++;
     }
-    if (jouables <= 0) {
+    if (attList.length > 0 && jouables <= 0) {
       this.dire(T("plusDePP"));
       this.bouton(T("lutter"), function () { self.agir({ type: "attaque", index: 0 }); },
         { classe: "est-definitive" });
-      this.bouton(T("retour"), function () { self.menuPrincipal(); });
+      this.rendreBarreTactique();
       return;
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 🔴 LA DÉCISION CENTRALE DU JEU SE PRENAIT À L'AVEUGLE. Le menu d'attaques
-    //    donnait un nom et des PP. Ni le TYPE — alors que les deux combattants
-    //    affichent le leur juste au-dessus — ni la PUISSANCE, ni ce que le coup
-    //    vaut CONTRE CE QU'ON A EN FACE. Choisir entre Charge et Rugissement
-    //    demandait de connaître les deux tables du jeu par cœur.
-    // 🔴 ET LA TEINTE ÉTAIT POSÉE SANS ÊTRE PEINTE : `PokeType.poser` écrit
-    //    `--teinte` sur le bouton, mais `.pkdx-touche` ne la consomme que sous
-    //    `est-typee`. Une couleur promise et jamais rendue — la même faute que
-    //    sur l'écran d'oubli d'attaque, deux heures plus tôt.
-    // ═══════════════════════════════════════════════════════════════════════
-    var adverse = W.PokeCombat.actif(this.etat.adverse);
-    var typesEnFace = ESP()[adverse.n].types;
+    var adverse = this.etat && this.etat.adverse && W.PokeCombat.actif(this.etat.adverse);
+    var typesEnFace = (adverse && ESP()[adverse.n] && ESP()[adverse.n].types) || [];
+    var entrave = vj.entrave;
 
-    // 🔴 UN COUP ENTRAVÉ SE VOIT AVANT DE SE CLIQUER (13/08). L'ennemi pose
-    //    Entrave, le moteur refuse le coup — mais le bouton restait allumé :
-    //    le joueur le pressait, perdait son tour, et découvrait la contrainte
-    //    au moment exact où elle le condamnait. Un refus se dit AVANT.
-    var entrave = this.etat.joueur.volatils.entrave;
+    var grille = W.document.createElement("div");
+    grille.className = "pk-grille-attaques";
 
-    for (var i = 0; i < mon.attaques.length; i++) {
+    for (var i = 0; i < attList.length; i++) {
       (function (k) {
-        var m = mon.attaques[k];
-        var a = ATT()[m.cle];
+        var m = attList[k];
+        if (!m) return;
+        var a = ATT()[m.cle] || (typeof m.cle === "string" && (ATT()[m.cle.toUpperCase()] || ATT()[m.cle.toLowerCase()]));
+        if (!a) return;
         var estEntrave = !!(entrave && entrave.index === k);
-        // ⚠️ UN COUP À ZÉRO PP S'ÉTEIGNAIT SANS UN MOT, sur le menu le plus
-        //    utilisé du jeu. « 0/15 » était bien écrit, rien ne le liait au gris.
-        var b = self.bouton(a.nom[LANG()],
-          function () { self.agir({ type: "attaque", index: k }); },
-          { desactive: m.pp <= 0 || estEntrave, classe: "est-typee pkdx-coup",
-            note: m.pp <= 0 ? raisonDite("plusDePP") : null });
+        var desactive = m.pp <= 0 || estEntrave;
+        var note = m.pp <= 0 ? (raisonDite("plusDePP") || "Plus de PP") : (estEntrave ? T("coupEntrave") : null);
 
-        // Ce que le coup vaut ici, et rien d'autre : un chiffre d'efficacité
-        // afficherait une mécanique, un mot dit une décision.
-        // ═══════════════════════════════════════════════════════════════════
-        //  🔴 « SANS EFFET » N'ÉTAIT JAMAIS ANNONCÉ SUR UN COUP DE PUISSANCE
-        //     ZÉRO, alors que le moteur les REFUSE. Cage Éclair et Regard
-        //     Médusant (`puissance: 0`) sur un Sol ou un Roche, Ombre Nocturne
-        //     sur un Normal : le bouton ne disait rien, le tour était perdu.
-        //     C'est la classe n°1 du dossier, sur les cas les plus fréquents du
-        //     début de partie.
-        //  ⚠️ ON NE L'ANNONCE QUE LÀ OÙ LE MOTEUR REFUSE VRAIMENT : les coups à
-        //     dégâts fixes (`SPECIAL_DAMAGE`, `SUPER_FANG`, `OHKO`) et la
-        //     paralysie pure. Un coup de statut ordinaire n'a pas de type
-        //     opposable — l'annoncer « sans effet » serait faux dans l'autre sens.
-        // ═══════════════════════════════════════════════════════════════════
-        var REFUSE_SUR_IMMUNITE = { SPECIAL_DAMAGE_EFFECT: 1, OHKO_EFFECT: 1, SUPER_FANG_EFFECT: 1 };
-        // ⚠️ `PARALYZE_EFFECT` est la SEULE clé de statut pur que le moteur
-        //    refuse sur immunité de type (voir `combat.js`, « seul cas canon 1G
-        //    certain »). On nomme donc exactement celle-là, pas la famille.
-        var opposable = a.puissance > 0 || REFUSE_SUR_IMMUNITE[a.effet] ||
-          a.effet === "PARALYZE_EFFECT";
-        var eff = opposable ? W.PokeCombat.efficacite(a.type, typesEnFace) : 1;
-        var mot = !opposable ? "" :
-          eff === 0 ? T("effNulle") :
-          !a.puissance ? "" :
-          eff > 1 ? T("effForte") :
-          eff < 1 ? T("effFaible") : "";
-        // La raison du refus prend la place du mot d'efficacité : un coup
-        // qu'on ne peut pas jouer n'a pas besoin de dire ce qu'il vaudrait.
-        if (estEntrave) mot = T("coupEntrave");
+        var b = W.document.createElement("button");
+        b.type = "button";
+        b.className = "pk-attaque-btn pkdx-touche est-typee pkdx-coup";
+        if (desactive) {
+          b.disabled = true;
+          b.setAttribute("aria-disabled", "true");
+        }
+
+        var catClass = !a.puissance ? "statut" : (W.PokeCombat && W.PokeCombat.estSpecial && W.PokeCombat.estSpecial(a.type)) ? "special" : "physique";
+        var catLabel = catClass === "statut" ? "STAT" : (catClass === "special" ? "SPÉ" : "PHY");
+
+        var typeKey = (a.type || "normal").toLowerCase();
+        var typeNom = (TYPES_NOMS && TYPES_NOMS()[a.type]) || a.type;
+        b.setAttribute("data-type", typeKey);
+        b.style.setProperty("--type-couleur", "var(--type-" + typeKey + ")");
+
+        var puiStr = a.puissance ? a.puissance : "-";
+        var precStr = a.precision != null ? a.precision : (a.puissance ? 100 : "-");
+        var ppStr = m.pp + " / " + m.ppMax;
+        var statsText = "Pui " + puiStr + " | Préc " + (precStr === "-" ? "-" : precStr + "%") + " | PP " + ppStr;
 
         b.innerHTML =
-          '<span class="pkdx-coup-tete">' +
-            W.PokeType.pastille(a.type) +
-            '<b>' + esc(a.nom[LANG()]) + "</b>" +
-          "</span>" +
-          '<span class="pkdx-coup-pied">' +
-            (a.puissance ? '<span class="pkdx-coup-force">' + a.puissance + "</span>"
-                         : ditEffetCourt(a)) +
-            //  🔴 PHYSIQUE OU SPÉCIAL — demandé par un testeur (12/08), et il
-            //     a mis le doigt sur la règle la plus cachée de 1996 : la
-            //     catégorie suit le TYPE, pas l'attaque. Le moteur l'applique
-            //     depuis toujours (`estSpecial`), l'écran la DIT enfin — même
-            //     porte, jamais une seconde table.
-            (a.puissance ? '<span class="pkdx-coup-categorie">' +
-              T(W.PokeCombat.estSpecial(a.type) ? "coupSpecial" : "coupPhysique") + "</span>" : "") +
-            '<span class="pkdx-coup-pp">' + m.pp + "/" + m.ppMax + " " + T("pp") + "</span>" +
-          "</span>" +
-          // 🔴 UN ÉTAT EMPRUNTAIT LA FORME D'UN VERDICT. « BLOQUÉE PAR ENTRAVE »
-          //    remplaçait bien le mot, mais `data-eff` continuait d'être calculé
-          //    depuis l'EFFICACITÉ : un coup entravé super efficace sortait en
-          //    encre pleine grasse — le style de « super efficace » — et un coup
-          //    de statut entravé en encre douce, celui de « peu efficace ». La
-          //    loi du mode dit qu'un état se distingue par sa propre forme, pas
-          //    par celle d'autre chose.
-          (mot ? '<span class="pkdx-coup-eff" data-eff="' +
-            (estEntrave ? "bloque" : eff === 0 ? "nulle" : eff > 1 ? "forte" : "faible") +
-            '">' + mot + "</span>" : "");
-        // 🔴 L'infobulle du mode, pas le `title` du navigateur : celui-ci met
-        //    deux secondes à venir, ne s'ouvre pas au clavier et n'existe pas
-        //    sur téléphone. Les PP RESTANTS voyagent avec, parce que c'est ce
-        //    que le joueur veut savoir — la table ne dit que le maximum.
-        W.PokeType.poser(b, a.type);
+          '<div class="pk-attaque-haut">' +
+            '<span class="pk-attaque-nom"><b>' + esc(a.nom[LANG()] || a.nom.fr || a.nom) + '</b></span>' +
+            '<span class="pk-cat-tag ' + catClass + '">' + catLabel + '</span>' +
+          '</div>' +
+          '<div class="pk-attaque-bas">' +
+            '<span class="pk-attaque-type">' + esc(typeNom) + '</span>' +
+            '<span class="pk-attaque-stats">' + statsText + '</span>' +
+          '</div>' +
+          (note ? '<span class="pk-attaque-note pkdx-touche-note">' + esc(note) + '</span>' : '');
+
+        if (desactive) {
+          b.addEventListener("click", function (e) { e.preventDefault(); });
+        } else {
+          b.addEventListener("click", function () {
+            self.agir({ type: "attaque", index: k });
+          });
+        }
         b.setAttribute("data-info", "attaque");
         b.setAttribute("data-info-val", m.cle);
         b.setAttribute("data-pp", m.pp + " / " + m.ppMax);
+
+        grille.appendChild(b);
       })(i);
     }
-    this.bouton(T("retour"), function () { self.menuPrincipal(); });
+    this.elActions.appendChild(grille);
+
+    this.rendreBarreTactique();
   };
 
   // ═══════════════════════════════════════════════════════════════════════════

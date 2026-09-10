@@ -8056,4 +8056,153 @@ body.encre .pkdx {
 .pk-log-badge.talent { background: #38bdf8; color: #080c14; }
 .pk-log-badge.statut { background: #eab308; color: #080c14; }
 
+/* ── Classes fiches flottantes .pk-hb-* ─────────────────────────────────────── */
+.pk-hb-identite {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.pk-hb-nom {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--texte-principal);
+}
+
+.pk-hb-niveau {
+  font-size: 0.78rem;
+  color: var(--texte-secondaire);
+  font-weight: 600;
+}
+
+.pk-hb-statut-hote {
+  display: inline-block;
+  min-height: 18px;
+  margin-bottom: 3px;
+}
+
+.pk-statut-pill {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+.pk-statut-pill[data-statut="brulure"], .pk-statut-pill[data-statut="brn"] { background: #ea580c; }
+.pk-statut-pill[data-statut="para"], .pk-statut-pill[data-statut="par"] { background: #ca8a04; }
+.pk-statut-pill[data-statut="gel"], .pk-statut-pill[data-statut="frz"] { background: #0284c7; }
+.pk-statut-pill[data-statut="sommeil"], .pk-statut-pill[data-statut="slp"] { background: #64748b; }
+.pk-statut-pill[data-statut="poison"], .pk-statut-pill[data-statut="psn"], .pk-statut-pill[data-statut="poisonGrave"], .pk-statut-pill[data-statut="tox"] { background: #9333ea; }
+
+.pk-hb-barre-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pk-hb-barre {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  padding: 2px;
+  height: 14px;
+  box-sizing: border-box;
+}
+
+.pk-hb-barre-remplie {
+  height: 10px;
+  border-radius: 4px;
+  background: var(--hp-haut);
+  transition: width 0.4s ease, background 0.4s ease;
+  width: 100%;
+}
+
+.pk-hb-barre-remplie.hp-haut { background: var(--hp-haut); }
+.pk-hb-barre-remplie.hp-moyen { background: var(--hp-moyen); }
+.pk-hb-barre-remplie.hp-critique { background: var(--hp-critique); }
+
+.pk-hb-chiffre {
+  font-size: 0.75rem;
+  color: var(--texte-secondaire);
+  margin-top: 3px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Toast de dialogue sous l'arène Showdown */
+.pk-arene-dialogue-toast {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 8px;
+  padding: 8px 18px;
+  color: var(--texte-principal);
+  font-weight: 600;
+  font-size: 0.88rem;
+  max-width: 80%;
+  text-align: center;
+  z-index: 20;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.pk-arene-dialogue-toast:empty {
+  display: none;
+}
+
+/* Masquage de l'ancienne fiche GB en mode Showdown */
+.pk-showdown-combat .pkdx-fiche {
+  display: none !important;
+}
+
+/* Colonne et en-tête du Journal de combat */
+.pk-battle-log-colonne {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-base);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--ombre-1);
+}
+
+.pk-battle-log-header {
+  padding: 10px 14px;
+  background: var(--surface-carte);
+  border-bottom: 1px solid var(--bordure-nette);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--texte-principal);
+  letter-spacing: 0.03em;
+}
+
+.pk-battle-log-flux {
+  padding: 12px;
+  max-height: 334px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--texte);
+  font-size: 0.82rem;
+  color: var(--texte-secondaire);
+  box-sizing: border-box;
+}
+
+.pk-combat-principal,
+.pk-arene-colonne {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+
 
