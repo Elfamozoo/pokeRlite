@@ -14,6 +14,7 @@
  *  9. Gen 3 (Hoenn) species completeness, 9-act roguelite structure, boss reachability, and legendary mapping.
  * 10. Gen 3 loot, marts & rewards invariants.
  * 11. Battle Factory, Natures, Talents & Tactical Engine Invariants.
+ * 12. Coffre d'Accueil, Objets de Départ à 5 Charges, Sac & Nuzlocke Invariants.
  */
 
 import fs from "node:fs";
@@ -1857,6 +1858,600 @@ test("Cross-generational bit-level PRNG determinism & replay parity across Gen 1
   assert.deepStrictEqual(runA, runB, "Gen 3 turn-by-turn combat simulation must be 100% deterministic and replayable");
 
   Regles.poser("gen1");
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Suite 12: Coffre d'Accueil, Objets de Départ à 5 Charges, Sac & Nuzlocke Invariants
+// ─────────────────────────────────────────────────────────────────────────────
+suite("12. Coffre d'Accueil, Objets de Départ à 5 Charges, Sac & Nuzlocke Invariants");
+
+function createChestTestContext() {
+  let racineHTML = "";
+  const elementMap = {};
+
+  function getOrCreateElement(id, initialAttrs = {}) {
+    if (!elementMap[id]) {
+      const listeners = {};
+      const classes = new Set(initialAttrs.classes || []);
+      const attrs = Object.assign({}, initialAttrs);
+      let _inner = attrs.innerHTML || "";
+      elementMap[id] = {
+        id,
+        get disabled() { return !!attrs.disabled; },
+        set disabled(v) { attrs.disabled = !!v; },
+        get innerHTML() { return _inner; },
+        set innerHTML(v) { _inner = String(v); },
+        get textContent() { return _inner; },
+        set textContent(v) { _inner = String(v); },
+        get classList() {
+          return {
+            add(c) { classes.add(c); },
+            remove(c) { classes.delete(c); },
+            contains(c) { return classes.has(c); }
+          };
+        },
+        getAttribute(attr) {
+          if (attr === "id") return id;
+          if (attr === "disabled") return attrs.disabled ? "" : null;
+          return attrs[attr] != null ? attrs[attr] : null;
+        },
+        setAttribute(attr, val) {
+          attrs[attr] = String(val);
+        },
+        removeAttribute(attr) {
+          delete attrs[attr];
+        },
+        addEventListener(evt, fn) {
+          listeners[evt] = listeners[evt] || [];
+          listeners[evt].push(fn);
+        },
+        click() {
+          if (listeners.click) {
+            listeners.click.forEach(f => f({
+              preventDefault() {},
+              currentTarget: elementMap[id],
+              target: elementMap[id]
+            }));
+          }
+        }
+      };
+    }
+    return elementMap[id];
+  }
+
+  const mockRacine = {
+    get innerHTML() { return racineHTML; },
+    set innerHTML(val) {
+      racineHTML = val;
+      for (const k in elementMap) delete elementMap[k];
+      const tagRegex = /<([a-zA-Z0-9_-]+)\s+([^>]*?)>/g;
+      let match;
+      let autoId = 0;
+      while ((match = tagRegex.exec(val)) !== null) {
+        const rawAttrs = match[2];
+        const idMatch = rawAttrs.match(/id="([^"]+)"/);
+        const classMatch = rawAttrs.match(/class="([^"]+)"/);
+        const disabled = /\bdisabled\b/.test(rawAttrs);
+        const classes = classMatch ? classMatch[1].split(/\s+/).filter(Boolean) : [];
+        const attrs = { classes, disabled };
+        const attrRegex = /([a-zA-Z0-9_-]+)="([^"]*)"/g;
+        let am;
+        while ((am = attrRegex.exec(rawAttrs)) !== null) {
+          attrs[am[1]] = am[2];
+        }
+        const id = idMatch ? idMatch[1] : (attrs["data-cle"] ? "cle-" + attrs["data-cle"] : "mock-el-" + (++autoId));
+        getOrCreateElement(id, attrs);
+      }
+    },
+    classList: { add() {}, remove() {}, contains() { return false; } },
+    querySelector(sel) {
+      const list = this.querySelectorAll(sel);
+      return list.length > 0 ? list[0] : null;
+    },
+    querySelectorAll(sel) {
+      const parts = sel.split(",").map(s => s.trim()).filter(Boolean);
+      if (parts.length > 1) {
+        const res = [];
+        for (const p of parts) {
+          const sub = this.querySelectorAll(p);
+          for (const el of sub) if (!res.includes(el)) res.push(el);
+        }
+        return res;
+      }
+      const s = parts[0] || sel;
+      if (s.startsWith("#")) {
+        const id = s.slice(1);
+        return elementMap[id] ? [elementMap[id]] : [];
+      }
+      if (s.startsWith(".")) {
+        const cls = s.slice(1);
+        return Object.values(elementMap).filter(el => el.classList.contains(cls));
+      }
+      const mAttrVal = s.match(/^\[([a-zA-Z0-9_-]+)="([^"]*)"\]$/);
+      if (mAttrVal) {
+        return Object.values(elementMap).filter(el => el.getAttribute(mAttrVal[1]) === mAttrVal[2]);
+      }
+      const mAttr = s.match(/^\[([a-zA-Z0-9_-]+)\]$/);
+      if (mAttr) {
+        return Object.values(elementMap).filter(el => el.getAttribute(mAttr[1]) != null);
+      }
+      return [];
+    }
+  };
+
+  const store = {};
+  const mockStorage = {
+    getItem: (k) => store[k] || null,
+    setItem: (k, v) => { store[k] = String(v); },
+    removeItem: (k) => { delete store[k]; },
+    clear: () => { for (const k in store) delete store[k]; }
+  };
+
+  const mockDoc = {
+    getElementById: (id) => (id === "poke-racine" ? mockRacine : null),
+    querySelector: (s) => mockRacine.querySelector(s),
+    querySelectorAll: (s) => mockRacine.querySelectorAll(s),
+  };
+
+  const ctx = createIsolatedContext({
+    fetch: () => Promise.resolve({ ok: true, json: () => Promise.resolve({}) }),
+    setTimeout: (fn, ms) => setTimeout(fn, ms),
+    clearTimeout: (id) => clearTimeout(id),
+    location: { href: "", search: "", pathname: "", hash: "" },
+    history: { replaceState() {} },
+    localStorage: mockStorage,
+    document: mockDoc,
+    POKE_TEST: true,
+  });
+
+  ctx.window = ctx;
+  ctx.globalThis = ctx;
+  ctx.W = ctx;
+  ctx.D = mockDoc;
+  ctx.mockRacine = mockRacine;
+  ctx.mockStorage = mockStorage;
+
+  const scriptsToLoad = [
+    "js/poke/rng.js",
+    "js/poke/progression.js",
+    "js/poke/ui-usine.js",
+    "js/poke/regles.js",
+    "js/poke/depart.js",
+    "js/poke/icones.js",
+    "js/poke/genre.js",
+    "js/poke/dits-objets.js",
+    "js/poke/gen3/objets.js",
+    "js/poke/ui.js",
+    "js/poke/partie.js"
+  ];
+
+  for (const s of scriptsToLoad) {
+    loadScriptInContext(s, ctx);
+  }
+
+  if (typeof ctx.PokeDemarrer === "function") {
+    ctx.PokeDemarrer();
+  }
+
+  return ctx;
+}
+
+test("Meta-progression chest API lifecycle in PokeProgression (add 5, cumulative charges, consume, zero cleanup, count)", () => {
+  const ctx = createChestTestContext();
+  const P = ctx.PokeProgression;
+  assert.ok(P, "PokeProgression must be defined");
+  assert.strictEqual(typeof P.coffreLire, "function", "coffreLire must be a function");
+  assert.strictEqual(typeof P.coffreCompte, "function", "coffreCompte must be a function");
+  assert.strictEqual(typeof P.coffreAjouter, "function", "coffreAjouter must be a function");
+  assert.strictEqual(typeof P.coffreConsommer, "function", "coffreConsommer must be a function");
+
+  // Initial state: empty chest
+  assert.strictEqual(Object.keys(P.coffreLire()).length, 0, "Chest must be initially empty");
+  assert.strictEqual(P.coffreCompte(), 0, "Chest item count must be 0 initially");
+
+  // Adding items and cumulative charges
+  const c1 = P.coffreAjouter("CHOICE_BAND", 5);
+  assert.strictEqual(c1, 5, "Adding 5 charges of CHOICE_BAND must return 5");
+  assert.strictEqual(P.coffreCompte(), 1, "Chest must count 1 distinct item");
+  assert.strictEqual(P.coffreLire().CHOICE_BAND, 5, "5 charges stored for CHOICE_BAND");
+
+  const c2 = P.coffreAjouter("CHOICE_BAND", 5);
+  assert.strictEqual(c2, 10, "Accumulating charges must yield 10 charges");
+  assert.strictEqual(P.coffreLire().CHOICE_BAND, 10, "10 charges stored for CHOICE_BAND");
+
+  // Default charges parameter (5)
+  const cDefault = P.coffreAjouter("LEFTOVERS");
+  assert.strictEqual(cDefault, 5, "Adding without charges parameter must default to 5 charges");
+  assert.strictEqual(P.coffreCompte(), 2, "Chest must count 2 distinct items");
+  assert.strictEqual(P.coffreLire().LEFTOVERS, 5, "5 charges stored for LEFTOVERS");
+
+  // Consuming charges
+  const rem1 = P.coffreConsommer("CHOICE_BAND");
+  assert.strictEqual(rem1, 9, "Consuming 1 charge leaves 9 charges");
+
+  // Consume remaining 9 charges to reach 0
+  for (let i = 0; i < 9; i++) {
+    P.coffreConsommer("CHOICE_BAND");
+  }
+  // Zero cleanup: key deleted on exhaustion
+  assert.strictEqual(P.coffreLire().CHOICE_BAND, undefined, "CHOICE_BAND key must be deleted on exhaustion");
+  assert.strictEqual(P.coffreCompte(), 1, "Chest must count 1 remaining item (LEFTOVERS)");
+  assert.strictEqual(P.coffreLire().LEFTOVERS, 5, "LEFTOVERS remains intact at 5 charges");
+
+  // Consuming non-existent item returns 0 without crashing
+  const remNone = P.coffreConsommer("OBJET_INEXISTANT");
+  assert.strictEqual(remNone, 0, "Consuming non-existent item returns 0");
+
+  // Consume LEFTOVERS to empty chest
+  for (let i = 0; i < 5; i++) {
+    P.coffreConsommer("LEFTOVERS");
+  }
+  assert.strictEqual(P.coffreLire().LEFTOVERS, undefined, "LEFTOVERS deleted on exhaustion");
+  assert.strictEqual(P.coffreCompte(), 0, "Chest is empty");
+
+  // Edge cases: null, undefined, empty string
+  assert.strictEqual(P.coffreAjouter(null), 0, "coffreAjouter(null) returns 0");
+  assert.strictEqual(P.coffreAjouter(""), 0, "coffreAjouter('') returns 0");
+  assert.strictEqual(P.coffreConsommer(null), 0, "coffreConsommer(null) returns 0");
+  assert.strictEqual(P.coffreConsommer(""), 0, "coffreConsommer('') returns 0");
+});
+
+test("Decoupled Battle Shop integration (ouvrirBoutiquePCo adds 5 charges to chest, reservation badge displayed, run bag untouched)", () => {
+  const ctx = createChestTestContext();
+  const P = ctx.PokeProgression;
+  const UIUsine = ctx.PokeUIUsine;
+  assert.ok(UIUsine, "PokeUIUsine must be defined");
+  assert.strictEqual(typeof UIUsine.ouvrirBoutiquePCo, "function");
+
+  // Setup PCo balance and verify chest empty
+  P.ajouterPCo(100);
+  assert.ok(P.usineLire().pco >= 100, "Initial PCo balance must be >= 100");
+  assert.strictEqual(P.coffreLire().CHOICE_BAND, undefined, "CHOICE_BAND not in chest initially");
+
+  // Mock target container
+  let targetHTML = "";
+  const mockCible = {
+    buttons: [],
+    get innerHTML() { return targetHTML; },
+    set innerHTML(val) {
+      targetHTML = val;
+      mockCible.buttons = [];
+      const regex = /<button[^>]*class="[^"]*pk-boutique-acheter[^"]*"[^>]*data-cle="([^"]+)"[^>]*>/g;
+      let match;
+      while ((match = regex.exec(val)) !== null) {
+        const cle = match[1];
+        const listeners = [];
+        mockCible.buttons.push({
+          cle,
+          getAttribute: (attr) => (attr === "data-cle" ? cle : null),
+          addEventListener: (evt, fn) => { if (evt === "click") listeners.push(fn); },
+          click: () => { for (const fn of listeners) fn({ preventDefault: () => {} }); }
+        });
+      }
+    },
+    querySelectorAll: (sel) => (sel === ".pk-boutique-acheter" ? mockCible.buttons : []),
+    querySelector: () => null,
+  };
+
+  UIUsine.ouvrirBoutiquePCo({ cible: mockCible });
+  assert.ok(mockCible.innerHTML.includes("CHOICE_BAND") || mockCible.innerHTML.includes("Bandeau Choix"));
+  assert.ok(!mockCible.innerHTML.includes("pk-boutique-reserve"), "No reservation badge initially");
+
+  // Spies
+  let depenserCalled = false;
+  let coffreAjouterCalled = false;
+  let ajouterObjetCalled = false;
+
+  const origDepenser = P.depenserPCo;
+  const origCoffreAjouter = P.coffreAjouter;
+  const origAjouterObjet = P.ajouterObjet;
+
+  P.depenserPCo = function (...args) {
+    depenserCalled = true;
+    return origDepenser.apply(this, args);
+  };
+  P.coffreAjouter = function (...args) {
+    coffreAjouterCalled = true;
+    return origCoffreAjouter.apply(this, args);
+  };
+  P.ajouterObjet = function (...args) {
+    ajouterObjetCalled = true;
+    return origAjouterObjet.apply(this, args);
+  };
+
+  const btnChoice = mockCible.buttons.find(b => b.cle === "CHOICE_BAND");
+  assert.ok(btnChoice, "Buy button for CHOICE_BAND must exist");
+
+  btnChoice.click();
+
+  // Assertions:
+  // 1. P.depenserPCo called
+  assert.strictEqual(depenserCalled, true, "depenserPCo must be called");
+  // 2. P.coffreAjouter called with 5 charges
+  assert.strictEqual(coffreAjouterCalled, true, "coffreAjouter must be called");
+  assert.strictEqual(P.coffreLire().CHOICE_BAND, 5, "Chest credited with exactly 5 charges");
+  // 3. P.ajouterObjet was NOT called (run bag decoupled)
+  assert.strictEqual(ajouterObjetCalled, false, "ajouterObjet must NOT be called by Battle Shop");
+  const runBag = P.sac ? P.sac() : (P.lire().sac || {});
+  assert.strictEqual(runBag.CHOICE_BAND || 0, 0, "run bag must remain untouched");
+  // 4. Reservation badge in re-rendered HTML
+  assert.ok(mockCible.innerHTML.includes('class="pk-boutique-reserve"'), "Badge .pk-boutique-reserve must be rendered");
+  assert.ok(mockCible.innerHTML.includes("En réserve : 5 utilisations"), "Badge must display 5 utilisations");
+
+  // 5. Subsequent purchase accumulates charges
+  P.ajouterPCo(100);
+  const btnChoice2 = mockCible.buttons.find(b => b.cle === "CHOICE_BAND");
+  assert.ok(btnChoice2, "Button found after re-render");
+  btnChoice2.click();
+
+  assert.strictEqual(P.coffreLire().CHOICE_BAND, 10, "10 charges accumulated in chest");
+  assert.ok(mockCible.innerHTML.includes("En réserve : 10 utilisations"), "Badge must display 10 utilisations");
+});
+
+test("Starting loadout selection invariants (daily challenge bypass, empty chest bypass, charge consumption and partie.sac addition, 'Partir sans objet')", () => {
+  const ctx = createChestTestContext();
+  const P = ctx.PokeProgression;
+  const UI = ctx.PokeUI;
+  const racine = ctx.mockRacine;
+
+  assert.strictEqual(typeof UI.versCarteOuObjetDepart, "function");
+  assert.strictEqual(typeof UI.ecranObjetDepart, "function");
+
+  // Invariant 1: Daily Challenge bypass (partie.compare === true)
+  P.coffreAjouter("CHOICE_BAND", 5);
+  assert.ok(P.coffreCompte() > 0, "Chest is non-empty");
+
+  let suiteCalled = false;
+  const mockSuite = () => { suiteCalled = true; };
+
+  UI.definirPartie({ compare: true, sac: {}, regle: "voyage", vus: {}, pris: {}, badges: [] });
+  suiteCalled = false;
+  UI.versCarteOuObjetDepart(mockSuite);
+  assert.strictEqual(suiteCalled, true, "Daily challenge must immediately bypass to suite()");
+  assert.ok(!racine.innerHTML.includes("pkdx-ecran-objet-depart"), "Loadout screen must not render for daily challenge");
+
+  // Invariant 2: Empty chest bypass in normal run
+  const pData = P.lire();
+  pData.coffre = {};
+  P.ecrire(pData);
+  assert.strictEqual(P.coffreCompte(), 0, "Chest emptied");
+
+  UI.definirPartie({ compare: false, sac: {}, regle: "voyage", vus: {}, pris: {}, badges: [] });
+  suiteCalled = false;
+  UI.versCarteOuObjetDepart(mockSuite);
+  assert.strictEqual(suiteCalled, true, "Empty chest must immediately bypass to suite()");
+  assert.ok(!racine.innerHTML.includes("pkdx-ecran-objet-depart"), "Loadout screen must not render if chest is empty");
+
+  // Invariant 3: Non-empty chest triggers starting loadout selection and charge consumption
+  P.coffreAjouter("CHOICE_BAND", 5);
+  P.coffreAjouter("LEFTOVERS", 3);
+  assert.strictEqual(P.coffreCompte(), 2);
+
+  suiteCalled = false;
+  UI.versCarteOuObjetDepart(mockSuite);
+  assert.strictEqual(suiteCalled, false, "suite() must not be called immediately when chest has items");
+  assert.ok(racine.innerHTML.includes("pkdx-ecran-objet-depart") || racine.innerHTML.includes(UI.T("objetDepartTitre")), "Loadout screen rendered");
+  assert.ok(racine.innerHTML.includes("CHOICE_BAND") || racine.innerHTML.includes("Bandeau Choix"));
+  assert.ok(racine.innerHTML.includes("LEFTOVERS") || racine.innerHTML.includes("Restes"));
+
+  const btnEmporter = racine.querySelector("#pk-objet-depart-ok");
+  const btnSans = racine.querySelector("#pk-objet-depart-sans");
+  assert.ok(btnEmporter, "#pk-objet-depart-ok must exist");
+  assert.ok(btnSans, "#pk-objet-depart-sans must exist");
+  assert.strictEqual(btnEmporter.disabled, true, "Emporter button must be disabled until item selected");
+
+  // Clicking disabled button does nothing
+  suiteCalled = false;
+  btnEmporter.click();
+  assert.strictEqual(suiteCalled, false, "Clicking disabled button does nothing");
+  assert.strictEqual(P.coffreLire().CHOICE_BAND, 5, "Zero charges consumed on disabled click");
+
+  // Select CHOICE_BAND card
+  const cardChoice = racine.querySelector("#pk-objet-depart-CHOICE_BAND");
+  assert.ok(cardChoice, "CHOICE_BAND card must exist");
+  cardChoice.click();
+  assert.strictEqual(btnEmporter.disabled, false, "Emporter button enabled after selection");
+
+  // Confirm selection
+  btnEmporter.click();
+  assert.strictEqual(suiteCalled, true, "suite() called after Emporter click");
+  assert.strictEqual(P.coffreLire().CHOICE_BAND, 4, "1 charge consumed from chest (5 -> 4)");
+  const sacCourant = UI.partieCourante ? UI.partieCourante().sac : (P.sac ? P.sac() : {});
+  assert.strictEqual(sacCourant.CHOICE_BAND, 1, "1 unit of CHOICE_BAND added to partie.sac");
+
+  // Invariant 4: "Partir sans objet"
+  suiteCalled = false;
+  UI.versCarteOuObjetDepart(mockSuite);
+  const btnSans2 = racine.querySelector("#pk-objet-depart-sans");
+  assert.ok(btnSans2, "#pk-objet-depart-sans must exist on re-render");
+  btnSans2.click();
+  assert.strictEqual(suiteCalled, true, "suite() called after 'Partir sans objet'");
+  assert.strictEqual(P.coffreLire().CHOICE_BAND, 4, "Charges remain 4");
+  assert.strictEqual(P.coffreLire().LEFTOVERS, 3, "Charges remain 3");
+});
+
+test("Adventure bag held item category & equipment flow (estObjetTenuOuCombat, RANGS_SAC.tenus, equipping, swapping and recovering old item, reprendre)", () => {
+  const ctx = createChestTestContext();
+  const UI = ctx.PokeUI;
+  const racine = ctx.mockRacine;
+
+  assert.strictEqual(typeof UI.estObjetTenuOuCombat, "function");
+
+  // 1. estObjetTenuOuCombat categorization
+  const heldItems = [
+    "CHOICE_BAND", "LEFTOVERS", "SHELL_BELL", "FOCUS_BAND", "BRIGHTPOWDER",
+    "KINGS_ROCK", "WHITE_HERB", "MENTAL_HERB", "SCOPE_LENS", "QUICK_CLAW"
+  ];
+  for (const item of heldItems) {
+    assert.strictEqual(UI.estObjetTenuOuCombat(item), true, `${item} must be held item`);
+  }
+
+  const typeBoosters = ["SILK_SCARF", "CHARCOAL", "MYSTIC_WATER", "MAGNET"];
+  for (const item of typeBoosters) {
+    assert.strictEqual(UI.estObjetTenuOuCombat(item), true, `${item} must be held item`);
+  }
+
+  const berries = ["SITRUS_BERRY", "LUM_BERRY", "CHESTO_BERRY", "LIECHI_BERRY", "SALAC_BERRY"];
+  for (const berry of berries) {
+    assert.strictEqual(UI.estObjetTenuOuCombat(berry), true, `${berry} must be held item`);
+  }
+
+  const nonHeld = ["POTION", "SUPER_POTION", "FIRE_STONE", "WATER_STONE", "PROTEIN", "RARE_CANDY", "POKE_BALL", null, ""];
+  for (const item of nonHeld) {
+    assert.strictEqual(UI.estObjetTenuOuCombat(item), false, `${item} must not be held item`);
+  }
+
+  // 2. RANGS_SAC category
+  assert.ok(Array.isArray(UI.RANGS_SAC), "UI.RANGS_SAC must be an array");
+  const tenusCat = UI.RANGS_SAC.find(r => r.cle === "tenus");
+  assert.ok(tenusCat, "RANGS_SAC must contain 'tenus' category");
+  assert.strictEqual(typeof tenusCat.test, "function");
+
+  // 3. Equipment flow: equipping from bag
+  const party = {
+    sac: { CHOICE_BAND: 1 },
+    equipe: [
+      { n: 25, niveau: 15, pv: 40, stats: { pv: 40 }, surnom: "Pikachu", objet: null, attaques: [] }
+    ],
+    regle: "voyage",
+    cles: {},
+    vus: {},
+    pris: {},
+    badges: []
+  };
+  UI.definirPartie(party);
+  UI.ecranSac(() => {});
+
+  assert.ok(racine.innerHTML.includes(UI.T("sac_tenus")), "Bag displays OBJETS TENUS section");
+  const itemLine = racine.querySelector('[data-objet="CHOICE_BAND"]');
+  assert.ok(itemLine, "Clickable CHOICE_BAND line in bag");
+
+  itemLine.click();
+  assert.ok(racine.innerHTML.includes("Pikachu"), "choisirPorteur displays team member");
+  assert.ok(racine.innerHTML.includes(UI.T("sacPorteRien")), "Shows 'Ne tient aucun objet'");
+
+  const btnMember0 = racine.querySelector('[data-porteur="0"]') || racine.querySelector('[data-cible="0"]');
+  assert.ok(btnMember0, "Team member selection button must exist");
+  btnMember0.click();
+
+  assert.strictEqual(party.equipe[0].objet, "CHOICE_BAND", "Pikachu now holds CHOICE_BAND");
+  assert.strictEqual(party.sac.CHOICE_BAND || 0, 0, "CHOICE_BAND removed from bag");
+
+  // Dismiss dialog
+  const btnNext = racine.querySelector("#pk-suivant");
+  assert.ok(btnNext, "Confirmation dialog #pk-suivant exists");
+  btnNext.click();
+
+  // Bag re-renders: EN MAIN shows Pikachu holding CHOICE_BAND with reprendre button
+  assert.ok(racine.innerHTML.includes(UI.T("sac_enMain")), "EN MAIN section displayed");
+  assert.ok(racine.querySelector('[data-reprendre="0"]'), "[data-reprendre='0'] button present");
+
+  // 4. Swapping held item and recovering old item back to bag
+  party.sac.LEFTOVERS = 1;
+  UI.ecranSac(() => {});
+
+  const leftLine = racine.querySelector('[data-objet="LEFTOVERS"]');
+  assert.ok(leftLine, "LEFTOVERS item line in bag");
+  leftLine.click();
+
+  assert.ok(racine.innerHTML.includes("Porte déjà :") || racine.innerHTML.includes("Bandeau Choix"),
+    "Indicates member already holds an item");
+
+  const btnMember0Swap = racine.querySelector('[data-porteur="0"]') || racine.querySelector('[data-cible="0"]');
+  btnMember0Swap.click();
+
+  const btnNext2 = racine.querySelector("#pk-suivant");
+  assert.ok(btnNext2);
+  btnNext2.click();
+
+  assert.strictEqual(party.equipe[0].objet, "LEFTOVERS", "Pikachu now holds LEFTOVERS");
+  assert.strictEqual(party.sac.LEFTOVERS || 0, 0, "LEFTOVERS removed from bag");
+  assert.strictEqual(party.sac.CHOICE_BAND, 1, "CHOICE_BAND recovered into bag");
+
+  // 5. Reprendre (unequip)
+  const btnReprendre = racine.querySelector('[data-reprendre="0"]');
+  assert.ok(btnReprendre, "[data-reprendre='0'] button present");
+  btnReprendre.click();
+
+  assert.strictEqual(party.equipe[0].objet, null, "Pikachu no longer holds an item");
+  assert.strictEqual(party.sac.LEFTOVERS, 1, "LEFTOVERS returned to bag");
+  assert.ok(racine.querySelector('[data-objet="LEFTOVERS"]'), "LEFTOVERS displayed under OBJETS TENUS");
+  assert.ok(racine.querySelector('[data-objet="CHOICE_BAND"]'), "CHOICE_BAND displayed under OBJETS TENUS");
+});
+
+test("Nuzlocke KO held item salvage (nettoyerEquipe salvages held item back to partie.sac, resets mon.objet = null, non-nuzlocke invariance)", () => {
+  const PokePartie = noyauContext.PokePartie;
+  assert.ok(PokePartie, "PokePartie must be defined in noyauContext");
+  assert.strictEqual(typeof PokePartie.nettoyerEquipe, "function", "PokePartie.nettoyerEquipe must be exported");
+  assert.strictEqual(PokePartie.nettoyerEquipe, PokePartie.appliquerNuzlocke, "nettoyerEquipe must alias appliquerNuzlocke");
+
+  const nettoyerEquipe = PokePartie.nettoyerEquipe;
+
+  // 1. Nuzlocke: salvage held item on KO
+  const monNuzlocke = { n: 25, niveau: 20, pv: 0, objet: "CHOICE_BAND" };
+  const partieNuzlocke = {
+    regle: "nuzlocke",
+    equipe: [monNuzlocke],
+    sac: {},
+    perdus: [],
+    etape: 1
+  };
+
+  const partis = nettoyerEquipe(partieNuzlocke);
+
+  assert.strictEqual(partieNuzlocke.sac.CHOICE_BAND, 1, "partie.sac.CHOICE_BAND === 1 after Nuzlocke KO");
+  assert.strictEqual(monNuzlocke.objet, null, "Fainted mon.objet must be reset to null");
+  assert.strictEqual(partis[0].objet, null, "partis[0].objet must be null");
+  assert.strictEqual(partieNuzlocke.equipe.length, 0, "Fainted mon removed from active team");
+  assert.strictEqual(partieNuzlocke.perdus.length, 1, "Fainted mon added to partie.perdus");
+
+  // 2. Nuzlocke: multiple KO with cumulative held items
+  const monA = { n: 1, niveau: 15, pv: 0, objet: "LEFTOVERS" };
+  const monB = { n: 4, niveau: 16, pv: 0, objet: "LEFTOVERS" };
+  const partieNuzlockeCumul = {
+    regle: "nuzlocke",
+    equipe: [monA, monB],
+    sac: { LEFTOVERS: 1 },
+    perdus: [],
+    etape: 2
+  };
+  nettoyerEquipe(partieNuzlockeCumul);
+  assert.strictEqual(partieNuzlockeCumul.sac.LEFTOVERS, 3, "Duplicate held items accumulate in bag (1 + 2 = 3)");
+  assert.strictEqual(monA.objet, null);
+  assert.strictEqual(monB.objet, null);
+  assert.strictEqual(partieNuzlockeCumul.equipe.length, 0);
+  assert.strictEqual(partieNuzlockeCumul.perdus.length, 2);
+
+  // 3. Nuzlocke: KO without held item
+  const monSansObjet = { n: 7, niveau: 10, pv: 0, objet: null };
+  const partieNuzlockeSans = {
+    regle: "nuzlocke",
+    equipe: [monSansObjet],
+    sac: {},
+    perdus: [],
+    etape: 1
+  };
+  nettoyerEquipe(partieNuzlockeSans);
+  assert.strictEqual(partieNuzlockeSans.equipe.length, 0);
+  assert.strictEqual(partieNuzlockeSans.perdus.length, 1);
+  assert.strictEqual(Object.keys(partieNuzlockeSans.sac).length, 0, "Bag remains empty when fainted mon had no item");
+
+  // 4. Non-Nuzlocke invariance: fainted mon remains in team and keeps held item
+  const monNormalKO = { n: 25, niveau: 20, pv: 0, objet: "CHOICE_BAND" };
+  const partieNormale = {
+    regle: "voyage",
+    equipe: [monNormalKO],
+    sac: {},
+    perdus: [],
+    etape: 1
+  };
+
+  const partisNormal = nettoyerEquipe(partieNormale);
+  assert.strictEqual(partisNormal.length, 0, "No mon returned in non-nuzlocke mode");
+  assert.strictEqual(partieNormale.sac.CHOICE_BAND, undefined, "No item transferred to bag in non-nuzlocke mode");
+  assert.strictEqual(monNormalKO.objet, "CHOICE_BAND", "Mon retains held item in non-nuzlocke mode");
+  assert.strictEqual(partieNormale.equipe.length, 1, "Mon remains in team in non-nuzlocke mode");
+  assert.strictEqual(partieNormale.perdus.length, 0, "partie.perdus remains empty in non-nuzlocke mode");
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
