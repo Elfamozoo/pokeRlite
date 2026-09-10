@@ -84,18 +84,22 @@
   }
 
   function formatNature(natureCle) {
-    if (!natureCle) return "Neutre";
+    if (!natureCle) return "Neutre (Neutre)";
     var cle = String(natureCle).toLowerCase();
-    var nat = (W.POKE_GEN3_NATURES && W.POKE_GEN3_NATURES[cle]) || null;
-    if (nat && nat.nom) {
-      var nom = typeof nat.nom === "object" ? (nat.nom.fr || nat.nom.en) : nat.nom;
-      var bonus = "";
+    var nat = (W.PokeNatures && typeof W.PokeNatures.table === "function" && W.PokeNatures.table()[cle]) ||
+              (W.POKE_GEN3_NATURES && W.POKE_GEN3_NATURES[cle]) || null;
+    if (nat) {
+      var nom = (nat.nom && (typeof nat.nom === "object" ? (nat.nom.fr || nat.nom.en) : nat.nom)) || (cle.charAt(0).toUpperCase() + cle.slice(1));
+      var mapStat = { atk: "Atk", def: "Déf", sat: "SpA", sdf: "SpD", vit: "Vit" };
+      var impact = "";
       if (nat.plus && nat.moins) {
-        bonus = " (+" + nat.plus.toUpperCase() + ", -" + nat.moins.toUpperCase() + ")";
+        impact = " (+" + (mapStat[nat.plus] || nat.plus.toUpperCase()) + ", -" + (mapStat[nat.moins] || nat.moins.toUpperCase()) + ")";
+      } else {
+        impact = " (Neutre)";
       }
-      return nom + bonus + " (" + cle + ")";
+      return nom + impact + " (" + cle + ")";
     }
-    return cle.charAt(0).toUpperCase() + cle.slice(1) + " (" + cle + ")";
+    return cle.charAt(0).toUpperCase() + cle.slice(1) + " (Neutre) (" + cle + ")";
   }
 
   function formatObjet(objetCle) {
@@ -148,21 +152,29 @@
   }
 
   function formatTalent(mon) {
-    var cle = mon.talent;
+    var cle = (mon && mon.talent) || "";
     if (!cle && W.PokeCombat && typeof W.PokeCombat.talentDe === "function") {
       cle = W.PokeCombat.talentDe(mon);
     }
     if (!cle && W.PokeGen3Talents && typeof W.PokeGen3Talents.talentDe === "function") {
       cle = W.PokeGen3Talents.talentDe(mon);
     }
+    if (!cle && W.PokeTalents && typeof W.PokeTalents.talentDe === "function") {
+      cle = W.PokeTalents.talentDe(mon);
+    }
+    if (!cle && W.PokeTalents && typeof W.PokeTalents.de === "function") {
+      cle = W.PokeTalents.de(mon);
+    }
     if (!cle) cle = "Inconnu";
 
-    var table = (W.PokeGen3Talents && W.PokeGen3Talents.TALENTS) || W.POKE_GEN3_TALENTS || {};
+    var table = (W.PokeGen3Talents && W.PokeGen3Talents.TALENTS) ||
+                (W.PokeTalents && typeof W.PokeTalents.table === "function" && W.PokeTalents.table()) ||
+                W.POKE_GEN3_TALENTS || {};
     var tal = table[cle];
     if (tal && tal.nom) {
       var nom = typeof tal.nom === "object" ? (tal.nom.fr || tal.nom.en) : tal.nom;
       var desc = tal.desc ? (typeof tal.desc === "object" ? (tal.desc.fr || tal.desc.en) : tal.desc) : "";
-      return { cle: cle, nom: nom, desc: desc, affichage: nom + " : " + desc };
+      return { cle: cle, nom: nom, desc: desc, affichage: nom + (desc ? " : " + desc : "") };
     }
     return { cle: cle, nom: cle, desc: "", affichage: cle };
   }
@@ -265,14 +277,18 @@
 
     var types = (mon && mon.types) || (esp && esp.types) || ["NORMAL"];
     var typesBadges = types.map(function (t) {
-      return '<span class="pk-badge-type pk-type-' + esc(String(t).toLowerCase()) + '">' + esc(t) + '</span>';
+      var tLower = esc(String(t).toLowerCase());
+      return '<span class="pk-badge-type pk-type-' + tLower + '" data-type="' + tLower + '">' + esc(t) + '</span>';
     }).join(" ");
 
     var attaquesHTML = (mon.attaques || []).map(function (att) {
       var inf = formatAttaque(att);
-      return '<div class="pk-mon-attaque-ligne">' +
+      var typeLower = esc(String(inf.type || "normal").toLowerCase());
+      var typeClass = "pk-type-" + typeLower;
+      return '<div class="pk-mon-attaque-pill pk-mon-attaque-ligne ' + typeClass + '" data-type="' + typeLower + '">' +
+        '<span class="pk-badge-type ' + typeClass + '">' + esc(inf.type) + '</span> ' +
         '<span class="pk-mon-att-nom">' + esc(inf.nom) + '</span> ' +
-        '<span class="pk-mon-att-meta">' + esc(inf.type) + ' | Pui: ' + esc(inf.puissance) + ' | Préc: ' + esc(inf.precision) + '</span>' +
+        '<span class="pk-mon-att-meta">Pui: ' + esc(inf.puissance) + ' | Préc: ' + esc(inf.precision) + '</span>' +
         '</div>';
     }).join("");
 
@@ -282,19 +298,21 @@
 
     return '<div class="' + classeCarte + '" data-index="' + index + '" data-camp="' + (typeCamp || "") + '">' +
       '<div class="pk-carte-en-tete">' +
-        '<img src="' + esc(sprite) + '" alt="' + esc(nom) + '" class="pk-carte-sprite" />' +
+        '<img src="' + esc(sprite) + '" alt="' + esc(nom) + '" class="pk-carte-sprite" width="80" height="80" style="width:80px;height:80px;" />' +
         '<div class="pk-carte-identite">' +
-          '<div class="pk-carte-nom">' + esc(nom) + ' <span class="pk-carte-niveau">Niveau 50 (N.50)</span></div>' +
+          '<div class="pk-carte-nom-wrap"><span class="pk-carte-nom">' + esc(nom) + '</span> <span class="pk-carte-niveau">Niveau 50 (N.50)</span></div>' +
           '<div class="pk-carte-types">' + typesBadges + '</div>' +
         '</div>' +
       '</div>' +
       '<div class="pk-carte-corps">' +
-        '<div class="pk-carte-ligne"><strong>Nature :</strong> ' + esc(natureTexte) + '</div>' +
-        '<div class="pk-carte-ligne"><strong>Talent :</strong> ' + esc(talentInfo.nom) + (talentInfo.desc ? ' <small class="pk-talent-desc">(' + esc(talentInfo.desc) + ')</small>' : '') + '</div>' +
-        '<div class="pk-carte-ligne"><strong>Objet :</strong> ' + esc(objetTexte) + '</div>' +
+        '<div class="pk-carte-ligne pk-carte-nature"><strong>Nature :</strong> <span class="pk-nature-val">' + esc(natureTexte) + '</span></div>' +
+        '<div class="pk-carte-ligne pk-carte-talent"><strong>Talent :</strong> <span class="pk-talent-nom">' + esc(talentInfo.nom) + '</span>' + (talentInfo.desc ? ' <span class="pk-talent-desc">(' + esc(talentInfo.desc) + ')</span>' : '') + '</div>' +
+        '<div class="pk-carte-ligne pk-carte-objet"><strong>Objet :</strong> <span class="pk-badge-objet">' + esc(objetTexte) + '</span></div>' +
         '<div class="pk-carte-attaques-bloc">' +
           '<div class="pk-attaques-titre">Capacités :</div>' +
-          attaquesHTML +
+          '<div class="pk-grille-attaques-mon">' +
+            attaquesHTML +
+          '</div>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -324,19 +342,22 @@
         '<div class="pk-usine-sous-titre">Meneur de zone : Savant de l\'Usine Samson (Factory Head Noland)</div>' +
       '</div>' +
       '<div class="pk-usine-panneau-stats">' +
-        '<div class="pk-stat-boite">' +
+        '<div class="pk-stat-boite pk-metric-card pk-metric-pco">' +
           '<span class="pk-stat-label">Points de Combat (PCo) :</span> ' +
           '<span class="pk-stat-valeur pk-pco-val">' + etat.pco + ' PCo</span>' +
         '</div>' +
-        '<div class="pk-stat-boite">' +
+        '<div class="pk-stat-boite pk-metric-card pk-metric-record">' +
           '<span class="pk-stat-label">Record consécutif :</span> ' +
           '<span class="pk-stat-valeur pk-record-val">' + etat.record + ' victoires</span>' +
         '</div>' +
-        '<div class="pk-stat-boite pk-symboles-boite">' +
-          '<span class="pk-stat-label">Symboles du Savoir :</span> ' +
+        '<div class="pk-stat-boite pk-metric-card pk-metric-symbole-argent">' +
+          '<span class="pk-stat-label">Symbole Savoir Argent :</span> ' +
           '<span class="pk-symbole-badge pk-symbole-argent ' + (etat.symboles && etat.symboles.argent ? 'est-obtenu' : 'est-verrouille') + '">' +
             'Argent (Silver) : ' + (etat.symboles && etat.symboles.argent ? 'Obtenu' : 'Non obtenu') +
-          '</span> ' +
+          '</span>' +
+        '</div>' +
+        '<div class="pk-stat-boite pk-metric-card pk-metric-symbole-or">' +
+          '<span class="pk-stat-label">Symbole Savoir Or :</span> ' +
           '<span class="pk-symbole-badge pk-symbole-or ' + (etat.symboles && etat.symboles.or ? 'est-obtenu' : 'est-verrouille') + '">' +
             'Or (Gold) : ' + (etat.symboles && etat.symboles.or ? 'Obtenu' : 'Non obtenu') +
           '</span>' +
@@ -437,7 +458,7 @@
     function genererHTML() {
       var cartesHTML = session.prets.map(function (mon, idx) {
         var estSel = selection.includes(idx);
-        return '<div class="pk-draft-carte-wrapper" data-idx="' + idx + '">' +
+        return '<div class="pk-draft-carte-wrapper' + (estSel ? ' est-selectionne' : '') + '" data-idx="' + idx + '">' +
           rendreCartePokemon(mon, idx, estSel, "draft") +
         '</div>';
       }).join("");
@@ -622,14 +643,14 @@
     function genererHTML() {
       var colJoueurHTML = equipeJoueur.map(function (mon, idx) {
         var estSel = (selJoueur === idx);
-        return '<div class="pk-swap-carte-wrap" data-side="joueur" data-idx="' + idx + '">' +
+        return '<div class="pk-swap-carte-wrap' + (estSel ? ' est-selectionne' : '') + '" data-side="joueur" data-idx="' + idx + '">' +
           rendreCartePokemon(mon, idx, estSel, "joueur") +
         '</div>';
       }).join("");
 
       var colAdverseHTML = equipeAdverse.map(function (mon, idx) {
         var estSel = (selAdverse === idx);
-        return '<div class="pk-swap-carte-wrap" data-side="adverse" data-idx="' + idx + '">' +
+        return '<div class="pk-swap-carte-wrap' + (estSel ? ' est-selectionne' : '') + '" data-side="adverse" data-idx="' + idx + '">' +
           rendreCartePokemon(mon, idx, estSel, "adverse") +
         '</div>';
       }).join("");
@@ -878,49 +899,76 @@
     var P = W.PokeProgression;
     var soldePCo = (P && typeof P.usineLire === "function") ? P.usineLire().pco : 0;
     var coffre = (P && typeof P.coffreLire === "function") ? P.coffreLire() : {};
+    var categorieActive = options.categorieActive || "Tous";
+    var categories = ["Tous", "Combat", "Renfort", "Baies", "Vitamines", "Pierres"];
 
-    var articlesHTML = CATALOGUE_BOUTIQUE.map(function (item) {
-      var peutAcheter = soldePCo >= item.prix;
-      var charges = coffre[item.cle] || 0;
-      var estAnglais = (W.PokeUI && typeof W.PokeUI.langue === "function" && W.PokeUI.langue() === "en");
-      var badgeReserve = charges > 0
-        ? ' <span class="pk-boutique-reserve">' +
-            (estAnglais
-              ? 'In storage: ' + charges + ' use' + (charges > 1 ? 's' : '')
-              : 'En réserve : ' + charges + ' utilisation' + (charges > 1 ? 's' : '')) +
-          '</span>'
-        : '';
-      return '<div class="pk-boutique-carte pk-cat-' + esc(item.categorie.toLowerCase()) + '">' +
-        '<div class="pk-boutique-info">' +
-          '<div class="pk-boutique-nom">' + esc(item.nom) + ' <span class="pk-boutique-code">(' + esc(item.cle) + ')</span></div>' +
-          '<div class="pk-boutique-desc">' + esc(item.desc) + '</div>' +
-          '<div class="pk-boutique-meta">' +
-            '<span class="pk-boutique-categorie">' + esc(item.categorie) + '</span> ' +
-            '<span class="pk-boutique-prix"><strong>' + item.prix + ' PCo</strong></span>' +
-            badgeReserve +
+    function genererHTML() {
+      var ongletsHTML = '<div class="pk-boutique-onglets">' + categories.map(function (cat) {
+        return '<button type="button" class="pk-boutique-onglet' + (cat === categorieActive ? ' est-actif' : '') + '" data-cat="' + esc(cat) + '">' + esc(cat) + '</button>';
+      }).join("") + '</div>';
+
+      var articlesFiltres = CATALOGUE_BOUTIQUE.filter(function (item) {
+        return categorieActive === "Tous" || item.categorie === categorieActive;
+      });
+
+      var articlesHTML = articlesFiltres.map(function (item) {
+        var peutAcheter = soldePCo >= item.prix;
+        var charges = coffre[item.cle] || 0;
+        var estAnglais = (W.PokeUI && typeof W.PokeUI.langue === "function" && W.PokeUI.langue() === "en");
+        var badgeReserve = charges > 0
+          ? ' <span class="pk-boutique-reserve">' +
+              (estAnglais
+                ? 'In storage: ' + charges + ' use' + (charges > 1 ? 's' : '')
+                : 'En réserve : ' + charges + ' utilisation' + (charges > 1 ? 's' : '')) +
+            '</span>'
+          : '';
+        return '<div class="pk-boutique-carte pk-cat-' + esc(item.categorie.toLowerCase()) + '">' +
+          '<div class="pk-boutique-info">' +
+            '<div class="pk-boutique-nom">' + esc(item.nom) + ' <span class="pk-boutique-code">(' + esc(item.cle) + ')</span></div>' +
+            '<div class="pk-boutique-desc">' + esc(item.desc) + '</div>' +
+            '<div class="pk-boutique-meta">' +
+              '<span class="pk-boutique-categorie">' + esc(item.categorie) + '</span> ' +
+              '<span class="pk-boutique-prix"><strong>' + item.prix + ' PCo</strong></span>' +
+              badgeReserve +
+            '</div>' +
+          '</div>' +
+          '<button type="button" class="pkdx-touche pk-boutique-acheter" data-cle="' + esc(item.cle) + '"' +
+            (peutAcheter ? '' : ' disabled="disabled"') + '>Acheter</button>' +
+        '</div>';
+      }).join("");
+
+      return '<div class="pk-usine-container pk-usine-boutique">' +
+        '<div class="pk-usine-banniere">' +
+          '<h2 class="pk-usine-titre">Boutique PCo (Battle Shop)</h2>' +
+          '<div class="pk-boutique-solde-cadre">' +
+            'Solde disponible : <span class="pk-solde-pco-val"><strong>' + soldePCo + ' PCo</strong></span>' +
           '</div>' +
         '</div>' +
-        '<button type="button" class="pkdx-touche pk-boutique-acheter" data-cle="' + esc(item.cle) + '"' +
-          (peutAcheter ? '' : ' disabled="disabled"') + '>Acheter</button>' +
-      '</div>';
-    }).join("");
-
-    var html = '<div class="pk-usine-container pk-usine-boutique">' +
-      '<div class="pk-usine-banniere">' +
-        '<h2 class="pk-usine-titre">Boutique PCo (Battle Shop)</h2>' +
-        '<div class="pk-boutique-solde-cadre">' +
-          'Solde disponible : <span class="pk-solde-pco-val"><strong>' + soldePCo + ' PCo</strong></span>' +
+        ongletsHTML +
+        '<div class="pk-boutique-grille">' + articlesHTML + '</div>' +
+        '<div class="pkdx-actions pk-boutique-actions">' +
+          '<button type="button" class="pkdx-touche" id="pk-boutique-retour">Retour au Hall</button>' +
         '</div>' +
-      '</div>' +
-      '<div class="pk-boutique-grille">' + articlesHTML + '</div>' +
-      '<div class="pkdx-actions pk-boutique-actions">' +
-        '<button type="button" class="pkdx-touche" id="pk-boutique-retour">Retour au Hall</button>' +
-      '</div>' +
-    '</div>';
+      '</div>';
+    }
 
+    var html = genererHTML();
     var cible = obtenirCible(options);
-    if (cible) {
-      cible.innerHTML = html;
+
+    function rattacherEvenements() {
+      if (!cible) return;
+
+      var onglets = cible.querySelectorAll(".pk-boutique-onglet");
+      for (var t = 0; t < onglets.length; t++) {
+        (function (tab) {
+          tab.addEventListener("click", function () {
+            categorieActive = tab.getAttribute("data-cat") || "Tous";
+            son("PRESS_AB");
+            cible.innerHTML = genererHTML();
+            rattacherEvenements();
+          });
+        })(onglets[t]);
+      }
 
       var boutons = cible.querySelectorAll(".pk-boutique-acheter");
       for (var b = 0; b < boutons.length; b++) {
@@ -939,6 +987,7 @@
             if (ok) {
               P.coffreAjouter(itemTrouve.cle, 5);
               son("ACHAT");
+              options.categorieActive = categorieActive;
               ouvrirBoutiquePCo(options);
             } else {
               son("DENIED");
@@ -956,6 +1005,11 @@
       }
     }
 
+    if (cible) {
+      cible.innerHTML = html;
+      rattacherEvenements();
+    }
+
     return html;
   }
 
@@ -968,6 +1022,7 @@
     ouvrirVictoireSerie: ouvrirVictoireSerie,
     ouvrirDefaite: ouvrirDefaite,
     ouvrirBoutiquePCo: ouvrirBoutiquePCo,
+    rendreCartePokemon: rendreCartePokemon,
     CATALOGUE_BOUTIQUE: CATALOGUE_BOUTIQUE
   };
 

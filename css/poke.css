@@ -8204,5 +8204,526 @@ body.encre .pkdx {
   gap: 14px;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   TASK 3: SHOWDOWN TEAMBUILDER DRAFT, COMPARATIVE SWAP & FACTORY LOBBY
+   ═══════════════════════════════════════════════════════════════════════════ */
 
+/* Pastilles de type officielles Showdown */
+.pk-badge-type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
 
+.pk-type-normal { background: var(--type-normal); color: #ffffff; }
+.pk-type-feu, .pk-type-fire { background: var(--type-feu); color: #ffffff; }
+.pk-type-eau, .pk-type-water { background: var(--type-eau); color: #ffffff; }
+.pk-type-plante, .pk-type-grass { background: var(--type-plante); color: #ffffff; }
+.pk-type-electrik, .pk-type-electric { background: var(--type-electrik); color: #080c14; }
+.pk-type-glace, .pk-type-ice { background: var(--type-glace); color: #080c14; }
+.pk-type-combat, .pk-type-fighting { background: var(--type-combat); color: #ffffff; }
+.pk-type-poison { background: var(--type-poison); color: #ffffff; }
+.pk-type-sol, .pk-type-ground { background: var(--type-sol); color: #ffffff; }
+.pk-type-vol, .pk-type-flying { background: var(--type-vol); color: #ffffff; }
+.pk-type-psy, .pk-type-psychic { background: var(--type-psy); color: #ffffff; }
+.pk-type-insecte, .pk-type-bug { background: var(--type-insecte); color: #ffffff; }
+.pk-type-roche, .pk-type-rock { background: var(--type-roche); color: #ffffff; }
+.pk-type-spectre, .pk-type-ghost { background: var(--type-spectre); color: #ffffff; }
+.pk-type-dragon { background: var(--type-dragon); color: #ffffff; }
+.pk-type-acier, .pk-type-steel { background: var(--type-acier); color: #ffffff; }
+.pk-type-tenebres, .pk-type-dark { background: var(--type-tenebres); color: #ffffff; }
+.pk-type-fee, .pk-type-fairy { background: var(--type-fee); color: #ffffff; }
+
+/* Conteneur Usine Showdown */
+.pk-usine-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+  background: var(--surface-base);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 12px;
+  color: var(--texte-principal);
+  font-family: var(--texte);
+  box-sizing: border-box;
+}
+
+.pk-usine-banniere {
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--bordure-nette);
+  padding-bottom: 16px;
+}
+
+.pk-usine-titre {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--texte-principal);
+  margin: 0 0 6px 0;
+}
+
+.pk-usine-sous-titre {
+  font-size: 0.88rem;
+  color: var(--texte-secondaire);
+}
+
+/* 4 Cartes Métriques (Hall) */
+.pk-usine-panneau-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.pk-metric-card,
+.pk-stat-boite {
+  background: var(--surface-carte);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: var(--ombre-1);
+}
+
+.pk-stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--texte-discret);
+  letter-spacing: 0.04em;
+}
+
+.pk-stat-valeur {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--texte-principal);
+}
+
+.pk-symbole-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.pk-symbole-badge.est-obtenu {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.pk-symbole-badge.est-verrouille {
+  background: rgba(100, 116, 139, 0.15);
+  color: var(--texte-discret);
+  border: 1px solid rgba(100, 116, 139, 0.25);
+}
+
+/* Dialogue Meneur Samson */
+.pk-usine-dialogue-meneur {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--surface-carte);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+
+.pk-meneur-avatar {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.pk-meneur-texte {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--texte-principal);
+  font-style: italic;
+}
+
+/* Carte Pokémon Teambuilder Showdown */
+.pk-carte-mon {
+  background: var(--surface-carte);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: var(--ombre-1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.pk-carte-mon:hover {
+  background: var(--surface-survol);
+  border-color: var(--texte-discret);
+}
+
+.pk-carte-mon.est-selectionne,
+.pk-draft-carte-wrapper.est-selectionne .pk-carte-mon,
+.pk-swap-carte-wrap.est-selectionne .pk-carte-mon {
+  border-color: var(--bordure-focus);
+  box-shadow: 0 0 0 2px var(--bordure-focus), 0 4px 16px rgba(56, 189, 248, 0.25);
+}
+
+.pk-carte-en-tete {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--bordure-douce);
+  padding-bottom: 8px;
+}
+
+.pk-carte-sprite {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.pk-carte-identite {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.pk-carte-nom-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.pk-carte-nom {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--texte-principal);
+}
+
+.pk-carte-niveau {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--texte-secondaire);
+}
+
+.pk-carte-types {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pk-carte-corps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--texte-secondaire);
+}
+
+.pk-carte-ligne {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pk-carte-ligne strong {
+  color: var(--texte-principal);
+  font-weight: 600;
+}
+
+.pk-talent-nom {
+  font-weight: 600;
+  color: var(--texte-principal);
+}
+
+.pk-talent-desc {
+  font-size: 0.78rem;
+  color: var(--texte-discret);
+}
+
+.pk-badge-objet {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--texte-principal);
+  font-weight: 600;
+}
+
+/* 4 Pastilles de capacités */
+.pk-carte-attaques-bloc {
+  margin-top: 4px;
+  border-top: 1px solid var(--bordure-douce);
+  padding-top: 8px;
+}
+
+.pk-attaques-titre {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--texte-discret);
+  margin-bottom: 6px;
+  letter-spacing: 0.03em;
+}
+
+.pk-grille-attaques-mon {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.pk-mon-attaque-pill,
+.pk-mon-attaque-ligne {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 6px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.78rem;
+  box-sizing: border-box;
+}
+
+.pk-mon-att-nom {
+  font-weight: 700;
+  color: var(--texte-principal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pk-mon-att-meta {
+  font-size: 0.7rem;
+  color: var(--texte-secondaire);
+}
+
+/* Écran de Draft */
+.pk-usine-draft-compteur {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--texte-secondaire);
+  margin-top: 4px;
+}
+
+.pk-compteur-val {
+  color: var(--bordure-focus);
+}
+
+.pk-draft-grille {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Écran d'échange comparatif 2 colonnes */
+.pk-echange-colonnes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.pk-echange-colonne {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.pk-col-titre {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--texte-principal);
+  border-bottom: 2px solid var(--bordure-nette);
+  padding-bottom: 8px;
+  margin: 0;
+}
+
+.pk-col-joueur .pk-col-titre {
+  border-bottom-color: #38bdf8;
+}
+
+.pk-col-adverse .pk-col-titre {
+  border-bottom-color: #f87171;
+}
+
+.pk-echange-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Boutique PCo */
+.pk-boutique-solde-cadre {
+  font-size: 1.05rem;
+  color: var(--texte-secondaire);
+  margin-top: 4px;
+}
+
+.pk-solde-pco-val {
+  color: #38bdf8;
+  font-size: 1.2rem;
+}
+
+.pk-boutique-onglets {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.pk-boutique-onglet {
+  padding: 6px 14px;
+  background: var(--surface-base);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 6px;
+  color: var(--texte-secondaire);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pk-boutique-onglet:hover {
+  background: var(--surface-survol);
+  color: var(--texte-principal);
+}
+
+.pk-boutique-onglet.est-actif {
+  background: var(--surface-survol);
+  border-color: var(--bordure-focus);
+  color: var(--texte-principal);
+}
+
+.pk-boutique-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.pk-boutique-carte {
+  background: var(--surface-carte);
+  border: 1px solid var(--bordure-nette);
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: var(--ombre-1);
+}
+
+.pk-boutique-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pk-boutique-nom {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--texte-principal);
+}
+
+.pk-boutique-code {
+  font-size: 0.75rem;
+  color: var(--texte-discret);
+  font-weight: normal;
+}
+
+.pk-boutique-desc {
+  font-size: 0.8rem;
+  color: var(--texte-secondaire);
+  line-height: 1.4;
+}
+
+.pk-boutique-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.pk-boutique-categorie {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--texte-secondaire);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.pk-boutique-prix {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.pk-boutique-reserve {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* Actions Usine */
+.pk-usine-actions,
+.pk-draft-actions,
+.pk-echange-actions,
+.pk-victoire-actions,
+.pk-defaite-actions,
+.pk-boutique-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+/* Responsivité */
+@media (max-width: 900px) {
+  .pk-draft-grille {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pk-echange-colonnes {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .pk-draft-grille {
+    grid-template-columns: 1fr;
+  }
+  .pk-usine-panneau-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pk-grille-attaques-mon {
+    grid-template-columns: 1fr;
+  }
+}

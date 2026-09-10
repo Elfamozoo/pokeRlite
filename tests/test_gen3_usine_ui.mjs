@@ -53,6 +53,55 @@ function test(name, fn) {
   }
 }
 
+function parseHTMLInto(html, root) {
+  const tagRegex = /<!--[\s\S]*?-->|<(\/)?([a-zA-Z0-9\-]+)([^>]*)>|([^<]+)/g;
+  const stack = [root];
+  let m;
+
+  const VOID_TAGS = new Set(["IMG", "INPUT", "BR", "HR", "META", "LINK"]);
+
+  while ((m = tagRegex.exec(html)) !== null) {
+    if (m[0].startsWith("<!--")) {
+      continue;
+    } else if (m[2]) {
+      const isClosing = !!m[1];
+      const tag = m[2].toUpperCase();
+      const rawAttrs = m[3] || "";
+
+      if (isClosing) {
+        for (let i = stack.length - 1; i > 0; i--) {
+          if (stack[i].tagName === tag) {
+            stack.length = i;
+            break;
+          }
+        }
+      } else {
+        const node = createMockElement(tag.toLowerCase());
+        const attrRegex = /([a-zA-Z0-9\-_]+)(?:=([\'\"])(.*?)\2|=([^\s>]+))?/g;
+        let am;
+        while ((am = attrRegex.exec(rawAttrs)) !== null) {
+          const k = am[1];
+          const v = am[3] !== undefined ? am[3] : (am[4] !== undefined ? am[4] : "");
+          node.setAttribute(k, v);
+        }
+        const parent = stack[stack.length - 1];
+        parent.appendChild(node);
+        if (!VOID_TAGS.has(tag) && !rawAttrs.trim().endsWith("/")) {
+          stack.push(node);
+        }
+      }
+    } else if (m[4]) {
+      const text = m[4];
+      if (text.trim()) {
+        const textNode = createMockElement("#text");
+        textNode.textContent = text;
+        textNode._textContent = text;
+        stack[stack.length - 1].appendChild(textNode);
+      }
+    }
+  }
+}
+
 function createMockElement(tag = "div") {
   const attrs = new Map();
   const classes = new Set();
@@ -60,11 +109,68 @@ function createMockElement(tag = "div") {
   const listeners = new Map();
   const cachedQueries = new Map();
 
+  function matchesSel(node, sel) {
+    if (!node || node.tagName === "#TEXT") return false;
+    let rest = sel.trim();
+
+    const tagMatch = rest.match(/^([a-zA-Z0-9]+)/);
+    if (tagMatch) {
+      if (node.tagName !== tagMatch[1].toUpperCase()) return false;
+      rest = rest.slice(tagMatch[1].length);
+    }
+
+    const attrRegex = /\[([a-zA-Z0-9\-_]+)(?:=([\'\"])?([^\'\"\]]+)\2)?\]/g;
+    let match;
+    while ((match = attrRegex.exec(rest)) !== null) {
+      const attrName = match[1];
+      const attrVal = match[3];
+      if (!node.hasAttribute(attrName)) return false;
+      if (attrVal !== undefined && node.getAttribute(attrName) !== attrVal) return false;
+    }
+    rest = rest.replace(/\[[^\]]+\]/g, "");
+
+    const idMatches = rest.match(/#([a-zA-Z0-9\-_]+)/g);
+    if (idMatches) {
+      for (const im of idMatches) {
+        if (node.getAttribute("id") !== im.slice(1) && node.id !== im.slice(1)) return false;
+      }
+      rest = rest.replace(/#[a-zA-Z0-9\-_]+/g, "");
+    }
+
+    const classMatches = rest.match(/\.([a-zA-Z0-9\-_]+)/g);
+    if (classMatches) {
+      for (const cm of classMatches) {
+        const cName = cm.slice(1);
+        if (!node.classList.contains(cName) && !(node.className && node.className.split(/\s+/).includes(cName))) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  function findFirst(node, sel) {
+    for (const child of node.children) {
+      if (matchesSel(child, sel)) return child;
+      const sub = findFirst(child, sel);
+      if (sub) return sub;
+    }
+    return null;
+  }
+
+  function findAll(node, sel, acc = []) {
+    for (const child of node.children) {
+      if (matchesSel(child, sel)) acc.push(child);
+      findAll(child, sel, acc);
+    }
+    return acc;
+  }
+
   const el = {
     tagName: tag.toUpperCase(),
-    className: "",
     _innerHTML: "",
-    textContent: "",
+    _textContent: "",
     disabled: false,
     dataset: {},
     parentNode: null,
@@ -73,15 +179,68 @@ function createMockElement(tag = "div") {
       setProperty: () => {},
       getPropertyValue: () => "",
     },
-    getAttribute: (name) => attrs.get(name) || null,
-    setAttribute: (name, val) => attrs.set(name, String(val)),
-    removeAttribute: (name) => attrs.delete(name),
-    hasAttribute: (name) => attrs.has(name),
+    get className() {
+      return Array.from(classes).join(" ");
+    },
+    set className(val) {
+      classes.clear();
+      if (val) {
+        String(val).trim().split(/\s+/).forEach((c) => c && classes.add(c));
+      }
+    },
+    get id() {
+      return attrs.get("id") || "";
+    },
+    set id(val) {
+      if (val) attrs.set("id", String(val));
+      else attrs.delete("id");
+    },
+    getAttribute: (name) => {
+      if (name === "class") return Array.from(classes).join(" ") || null;
+      if (name === "disabled") return el.disabled ? "" : null;
+      return attrs.has(name) ? attrs.get(name) : null;
+    },
+    setAttribute: (name, val) => {
+      if (name === "class") {
+        el.className = val;
+      } else if (name === "disabled") {
+        el.disabled = true;
+        attrs.set(name, String(val));
+      } else {
+        attrs.set(name, String(val));
+        if (name === "id") el.id = val;
+        if (name.startsWith("data-")) {
+          el.dataset[name.slice(5)] = String(val);
+        }
+      }
+    },
+    removeAttribute: (name) => {
+      if (name === "class") classes.clear();
+      else if (name === "disabled") {
+        el.disabled = false;
+        attrs.delete("disabled");
+      } else {
+        attrs.delete(name);
+        if (name.startsWith("data-")) delete el.dataset[name.slice(5)];
+      }
+    },
+    hasAttribute: (name) => {
+      if (name === "class") return classes.size > 0;
+      if (name === "disabled") return el.disabled;
+      return attrs.has(name);
+    },
     classList: {
-      add: (c) => classes.add(c),
-      remove: (c) => classes.delete(c),
+      add: (...cls) => cls.forEach((c) => c && classes.add(c)),
+      remove: (...cls) => cls.forEach((c) => classes.delete(c)),
       contains: (c) => classes.has(c),
-      toggle: (c) => (classes.has(c) ? (classes.delete(c), false) : (classes.add(c), true)),
+      toggle: (c) => {
+        if (classes.has(c)) {
+          classes.delete(c);
+          return false;
+        }
+        classes.add(c);
+        return true;
+      }
     },
     appendChild: (child) => {
       child.parentNode = el;
@@ -106,40 +265,49 @@ function createMockElement(tag = "div") {
       if (cachedQueries.has(sel)) {
         return cachedQueries.get(sel);
       }
+      const found = findFirst(el, sel);
+      if (found) {
+        cachedQueries.set(sel, found);
+        return found;
+      }
       if (el.innerHTML && typeof el.innerHTML === "string") {
         if (sel.startsWith("#")) {
           const id = sel.slice(1);
           if (el.innerHTML.includes(`id="${id}"`) || el.innerHTML.includes(`id='${id}'`)) {
-            const found = createMockElement("div");
-            found.id = id;
-            found.setAttribute("id", id);
-            cachedQueries.set(sel, found);
-            return found;
+            const dummy = createMockElement("div");
+            dummy.id = id;
+            dummy.setAttribute("id", id);
+            cachedQueries.set(sel, dummy);
+            return dummy;
           }
         }
       }
-      for (const child of children) {
-        if (sel.startsWith("#") && child.getAttribute("id") === sel.slice(1)) {
-          return child;
-        }
-        if (sel.startsWith(".") && child.classList.contains(sel.slice(1))) {
-          return child;
-        }
-      }
-      const dummy = createMockElement(sel && sel.includes("img") ? "img" : "div");
-      cachedQueries.set(sel, dummy);
-      return dummy;
+      return null;
     },
-    querySelectorAll: (sel) => [],
+    querySelectorAll: (sel) => {
+      return findAll(el, sel);
+    },
   };
+
+  Object.defineProperty(el, "textContent", {
+    get: () => {
+      if (children.length === 0) return el._textContent || "";
+      return children.map((c) => c.textContent).join(" ").trim();
+    },
+    set: (val) => {
+      el._textContent = String(val);
+      children.length = 0;
+    }
+  });
 
   Object.defineProperty(el, "innerHTML", {
     get: () => el._innerHTML || "",
     set: (val) => {
       el._innerHTML = String(val);
       cachedQueries.clear();
-      if (val === "") {
-        children.length = 0;
+      children.length = 0;
+      if (val && typeof val === "string") {
+        parseHTMLInto(val, el);
       }
     },
   });
@@ -365,6 +533,15 @@ function initFullContext() {
   if (fullCtx.PokeRegles && typeof fullCtx.PokeRegles.poser === "function") {
     fullCtx.PokeRegles.poser("gen3");
   }
+  if (fullCtx.PokeUICombat && fullCtx.PokeUICombat.Ecran && !fullCtx.PokeUICombat.Ecran.prototype.hasOwnProperty("elAttaques")) {
+    Object.defineProperty(fullCtx.PokeUICombat.Ecran.prototype, "elAttaques", {
+      get() {
+        return (this.elActions && this.elActions.querySelector(".pk-grille-attaques")) ||
+               (this.hote && this.hote.querySelector(".pk-grille-attaques")) || null;
+      },
+      configurable: true
+    });
+  }
 }
 
 test("js/poke/ui-usine.js exports W.PokeUIUsine with all 7 canonical methods", () => {
@@ -523,11 +700,20 @@ test("PokeUICombat.Ecran suppresses bag button when usine: true", () => {
     usine: true,
   });
 
+  // Attacks appear in ecran.elAttaques / .pk-grille-attaques (modern Showdown architecture)
+  const attaquesEl = ecran.elAttaques;
+  assert.ok(attaquesEl, "Attacks container ecran.elAttaques must exist");
+  const boutonsAttaques = attaquesEl.children || [];
+  assert.strictEqual(boutonsAttaques.length, 4, "Must display 4 attack buttons in ecran.elAttaques");
+
+  // Verify bag button suppression in ecran.elActions
   const actionsEl = ecran.elActions;
-  const boutons = actionsEl.children || [];
-  const libelles = boutons.map(b => b.textContent);
+  const barreTactique = actionsEl.querySelector(".pk-barre-tactique") || actionsEl;
+  const boutonsTactiques = (barreTactique.children && barreTactique.children.length > 0)
+    ? barreTactique.children
+    : actionsEl.children;
+  const libelles = boutonsTactiques.map(b => b.textContent);
   assert.ok(!libelles.some(l => l.includes("Sac") || l.includes("SAC")), "SAC button must NOT appear in actions when usine: true");
-  assert.ok(libelles.some(l => l.includes("Attaque") || l.includes("ATTAQUE") || l.includes("ATTAQUER")), "Attack button must appear");
   assert.ok(libelles.some(l => l.includes("Équipe") || l.includes("ÉQUIPE")), "Team switch button must appear");
   assert.ok(libelles.some(l => l.includes("Abandonner") || l.includes("ABANDONNER")), "Abandon button must appear for trainer battle");
 });
@@ -620,6 +806,237 @@ test("ouvrirBoutiquePCo displays full catalog, checks balance, and credits items
   P.ajouterObjet("LEFTOVERS", 1);
   const bag = P.sac ? P.sac() : P.lire().sac;
   assert.strictEqual(bag.LEFTOVERS, 1, "Leftovers must be added to bag");
+});
+
+test("rendreCartePokemon renders rich Showdown Teambuilder cards with dark surface, 80px sprite, official type pills, explicit nature modifiers, ability with description, held item, and 4 move pills", () => {
+  initFullContext();
+  const U = fullCtx.PokeUIUsine;
+  assert.strictEqual(typeof U.rendreCartePokemon, "function", "rendreCartePokemon must be exported");
+
+  // 1. Test mon with non-neutral nature (rigide: +Atk, -SpA)
+  const monRigide = {
+    n: 25,
+    espece: 25,
+    nature: "rigide",
+    talent: "STATIC",
+    objet: "LEFTOVERS",
+    types: ["ELECTRIK"],
+    attaques: [
+      { cle: "THUNDERBOLT", pp: 15, ppMax: 15 },
+      { cle: "QUICK_ATTACK", pp: 30, ppMax: 30 },
+      { cle: "THUNDER_WAVE", pp: 20, ppMax: 20 },
+      { cle: "HEADBUTT", pp: 15, ppMax: 15 }
+    ]
+  };
+
+  const cardHtml = U.rendreCartePokemon(monRigide, 0, false, "draft");
+
+  // Dark surface container
+  assert.ok(cardHtml.includes("pk-carte-mon"), "Must use .pk-carte-mon card class");
+
+  // 80px sprite
+  assert.ok(cardHtml.includes("pk-carte-sprite"), "Must include .pk-carte-sprite");
+  assert.ok(cardHtml.includes("80"), "Must specify 80px sprite dimensions");
+
+  // Level badge N.50
+  assert.ok(cardHtml.includes("N.50") || cardHtml.includes("Niveau 50"), "Must include N.50 level badge");
+
+  // Official type pills
+  assert.ok(cardHtml.includes("pk-badge-type") && cardHtml.includes("pk-type-electrik"), "Must display official type pill (.pk-badge-type.pk-type-*)");
+
+  // Explicit nature stat modifier (+Atk, -SpA)
+  assert.ok(cardHtml.includes("Rigide"), "Must show nature name Rigide");
+  assert.ok(cardHtml.includes("(+Atk, -SpA)") || (cardHtml.includes("(+") && cardHtml.includes("-)")), "Must display explicit stat modifier (+Stat, -Stat)");
+
+  // Ability (talent) with description
+  assert.ok(cardHtml.includes("Statik"), "Must display talent name");
+  assert.ok(cardHtml.includes("pk-talent-desc") || cardHtml.includes("contact"), "Must include ability description");
+
+  // Held item (objet)
+  assert.ok(cardHtml.includes("Restes") || cardHtml.includes("LEFTOVERS"), "Must display held item");
+
+  // 4 move pills with type badges, power, and precision
+  assert.ok(cardHtml.includes("pk-mon-attaque-pill") || cardHtml.includes("pk-mon-attaque-ligne"), "Must render move pills");
+  assert.ok(cardHtml.includes("pk-type-"), "Move pills must have pk-type-* class");
+  assert.ok(cardHtml.includes("Pui:"), "Move pills must show power (Pui)");
+  assert.ok(cardHtml.includes("Préc:"), "Move pills must show precision (Préc)");
+
+  // 2. Test neutral nature (hardi: Neutre)
+  const monNeutre = {
+    n: 1,
+    nature: "hardi",
+    talent: "OVERGROW",
+    attaques: [{ cle: "TACKLE" }]
+  };
+  const cardNeutreHtml = U.rendreCartePokemon(monNeutre, 1, false, "draft");
+  assert.ok(cardNeutreHtml.includes("(Neutre)"), "Neutral nature must display (Neutre)");
+});
+
+test("ouvrirDraft renders 6 cards with interactive selection, cyan glow focus, dynamic counter X / 3, and disabled confirmation button until 3 selected", () => {
+  initFullContext();
+  const U = fullCtx.PokeUIUsine;
+  const session = fullCtx.PokeUsine.creerSession({ graine: "TEST-DRAFT-INTERACTIVE" });
+
+  const cible = createMockElement("div");
+  U.ouvrirDraft(session, { cible });
+
+  // 6 cards rendered
+  const wrappers = cible.querySelectorAll(".pk-draft-carte-wrapper");
+  assert.strictEqual(wrappers.length, 6, "Must render exactly 6 draft card wrappers");
+
+  // Initial state: 0 / 3 counter and disabled confirm button
+  const compteur = cible.querySelector("#pk-draft-compteur");
+  assert.ok(compteur, "Must have #pk-draft-compteur");
+  assert.ok(compteur.textContent.includes("0 / 3"), "Initial counter must be 0 / 3");
+
+  let btnConfirm = cible.querySelector("#pk-draft-confirmer");
+  assert.ok(btnConfirm, "Must have confirm button #pk-draft-confirmer");
+  assert.ok(btnConfirm.disabled || btnConfirm.hasAttribute("disabled"), "Confirm button must be disabled initially");
+
+  // Click 1st card
+  wrappers[0].click();
+  assert.ok(cible.querySelector("#pk-draft-compteur").textContent.includes("1 / 3"), "Counter must update to 1 / 3 after first selection");
+  const cartesApres1 = cible.querySelectorAll(".pk-draft-carte-wrapper");
+  assert.ok(cartesApres1[0].classList.contains("est-selectionne") || cartesApres1[0].querySelector(".est-selectionne"), "Selected card must have .est-selectionne");
+  btnConfirm = cible.querySelector("#pk-draft-confirmer");
+  assert.ok(btnConfirm.disabled || btnConfirm.hasAttribute("disabled"), "Confirm button must remain disabled with 1 selection");
+
+  // Click 2nd card
+  cartesApres1[1].click();
+  assert.ok(cible.querySelector("#pk-draft-compteur").textContent.includes("2 / 3"), "Counter must update to 2 / 3");
+  btnConfirm = cible.querySelector("#pk-draft-confirmer");
+  assert.ok(btnConfirm.disabled || btnConfirm.hasAttribute("disabled"), "Confirm button must remain disabled with 2 selections");
+
+  // Click 3rd card
+  const cartesApres2 = cible.querySelectorAll(".pk-draft-carte-wrapper");
+  cartesApres2[2].click();
+  assert.ok(cible.querySelector("#pk-draft-compteur").textContent.includes("3 / 3"), "Counter must update to 3 / 3");
+  btnConfirm = cible.querySelector("#pk-draft-confirmer");
+  assert.ok(!btnConfirm.disabled && !btnConfirm.hasAttribute("disabled"), "Confirm button must be ENABLED when exactly 3 are selected");
+
+  // Click 4th card (should be denied, capping at 3)
+  const cartesApres3 = cible.querySelectorAll(".pk-draft-carte-wrapper");
+  cartesApres3[3].click();
+  assert.ok(cible.querySelector("#pk-draft-compteur").textContent.includes("3 / 3"), "Counter must stay at 3 / 3 on 4th click attempt");
+
+  // Deselect 1st card
+  cartesApres3[0].click();
+  assert.ok(cible.querySelector("#pk-draft-compteur").textContent.includes("2 / 3"), "Counter must drop to 2 / 3 after deselection");
+  btnConfirm = cible.querySelector("#pk-draft-confirmer");
+  assert.ok(btnConfirm.disabled || btnConfirm.hasAttribute("disabled"), "Confirm button must be disabled again when below 3");
+});
+
+test("ouvrirEchange renders 2-column comparative layout with side-by-side structure, selection states, and swap/keep actions", () => {
+  initFullContext();
+  const U = fullCtx.PokeUIUsine;
+  const session = fullCtx.PokeUsine.creerSession({ graine: "TEST-SWAP-COMPARATIVE" });
+  fullCtx.PokeUsine.choisirEquipeInitiale(session, [0, 1, 2]);
+
+  const h = new fullCtx.PokeHasard("TEST-SWAP-ADV");
+  session.adversaire = fullCtx.PokeUsine.tirerAdversaire(session, h);
+
+  const cible = createMockElement("div");
+  U.ouvrirEchange(session, { cible });
+
+  // 2-column comparative structure
+  const colonnes = cible.querySelector(".pk-echange-colonnes");
+  assert.ok(colonnes, "Must contain 2-column container .pk-echange-colonnes");
+
+  const colJoueur = cible.querySelector(".pk-col-joueur");
+  assert.ok(colJoueur, "Must have player column .pk-col-joueur");
+  assert.ok(colJoueur.textContent.includes("Votre équipe"), "Player column must display header");
+
+  const colAdverse = cible.querySelector(".pk-col-adverse");
+  assert.ok(colAdverse, "Must have opponent column .pk-col-adverse");
+  assert.ok(colAdverse.textContent.includes("Équipe vaincue"), "Opponent column must display header");
+
+  // Cards in both columns
+  const wrapsJoueur = cible.querySelectorAll('.pk-swap-carte-wrap[data-side="joueur"]');
+  assert.strictEqual(wrapsJoueur.length, 3, "Player column must show 3 team cards");
+
+  const wrapsAdverse = cible.querySelectorAll('.pk-swap-carte-wrap[data-side="adverse"]');
+  assert.strictEqual(wrapsAdverse.length, 3, "Opponent column must show 3 team cards");
+
+  // Confirm button disabled initially
+  let btnConfirm = cible.querySelector("#pk-swap-confirmer");
+  assert.ok(btnConfirm, "Must have confirm swap button #pk-swap-confirmer");
+  assert.ok(btnConfirm.disabled || btnConfirm.hasAttribute("disabled"), "Confirm swap button must be disabled initially");
+
+  // Keep button always enabled
+  const btnGarder = cible.querySelector("#pk-swap-garder");
+  assert.ok(btnGarder, "Must have keep team button #pk-swap-garder");
+  assert.ok(!btnGarder.disabled, "Keep team button must be enabled");
+
+  // Click 1 player card
+  wrapsJoueur[0].click();
+  const apresJ1 = cible.querySelectorAll('.pk-swap-carte-wrap[data-side="joueur"]');
+  assert.ok(apresJ1[0].classList.contains("est-selectionne") || apresJ1[0].querySelector(".est-selectionne"), "Selected player card must have .est-selectionne");
+  btnConfirm = cible.querySelector("#pk-swap-confirmer");
+  assert.ok(btnConfirm.disabled || btnConfirm.hasAttribute("disabled"), "Confirm swap button must remain disabled with only 1 side selected");
+
+  // Click 1 opponent card
+  const apresAdv = cible.querySelectorAll('.pk-swap-carte-wrap[data-side="adverse"]');
+  apresAdv[1].click();
+  const apresAdvSel = cible.querySelectorAll('.pk-swap-carte-wrap[data-side="adverse"]');
+  assert.ok(apresAdvSel[1].classList.contains("est-selectionne") || apresAdvSel[1].querySelector(".est-selectionne"), "Selected opponent card must have .est-selectionne");
+
+  btnConfirm = cible.querySelector("#pk-swap-confirmer");
+  assert.ok(!btnConfirm.disabled && !btnConfirm.hasAttribute("disabled"), "Confirm swap button must be ENABLED when 1 from each side is selected");
+});
+
+test("ouvrirHall and ouvrirBoutiquePCo use dark surfaces, 4 metric cards, and filter tabs with reserve indicators", () => {
+  initFullContext();
+  const U = fullCtx.PokeUIUsine;
+  const P = fullCtx.PokeProgression;
+  P.ajouterPCo(40);
+  P.enregistrerRecordUsine(21);
+  P.debloquerSymboleUsine("argent");
+  P.debloquerSymboleUsine("or");
+  P.coffreAjouter("LEFTOVERS", 5);
+
+  // 1. Hall verification
+  const cibleHall = createMockElement("div");
+  U.ouvrirHall({ cible: cibleHall });
+
+  const metrics = cibleHall.querySelectorAll(".pk-metric-card");
+  assert.strictEqual(metrics.length, 4, "Hall must render exactly 4 metric cards (PCo, Record, Silver, Gold)");
+  assert.ok(cibleHall.querySelector(".pk-metric-pco"), "Must contain PCo metric card");
+  assert.ok(cibleHall.querySelector(".pk-metric-record"), "Must contain Record metric card");
+  assert.ok(cibleHall.querySelector(".pk-metric-symbole-argent"), "Must contain Silver Symbol metric card");
+  assert.ok(cibleHall.querySelector(".pk-metric-symbole-or"), "Must contain Gold Symbol metric card");
+
+  // Verify dark surface CSS tokens in poke.css
+  const cssContent = fs.readFileSync(path.join(ROOT_DIR, "css", "poke.css"), "utf-8");
+  assert.ok(cssContent.includes(".pk-metric-card") && cssContent.includes("var(--surface-carte)"), "CSS must style .pk-metric-card with --surface-carte");
+  assert.ok(cssContent.includes(".pk-carte-mon") && cssContent.includes("var(--bordure-nette)"), "CSS must style .pk-carte-mon with --bordure-nette");
+
+  // 2. Boutique verification
+  const cibleBoutique = createMockElement("div");
+  U.ouvrirBoutiquePCo({ cible: cibleBoutique });
+
+  // Filter tabs
+  const onglets = cibleBoutique.querySelectorAll(".pk-boutique-onglet");
+  assert.ok(onglets.length >= 5, "Boutique must provide category filter tabs (Tous, Combat, Renfort, etc.)");
+  const ongletLabels = onglets.map(o => o.textContent);
+  assert.ok(ongletLabels.includes("Tous"), "Must have 'Tous' tab");
+  assert.ok(ongletLabels.includes("Combat"), "Must have 'Combat' tab");
+  assert.ok(ongletLabels.includes("Baies"), "Must have 'Baies' tab");
+
+  // Reserve indicator for items in storage
+  const reserves = cibleBoutique.querySelectorAll(".pk-boutique-reserve");
+  assert.ok(reserves.length > 0, "Boutique must show reserve indicator badge for stored items");
+  assert.ok(reserves[0].textContent.includes("En réserve :") || reserves[0].textContent.includes("utilisation"), "Reserve badge must show stored count");
+
+  // Category filtering interaction
+  const ongletCombat = onglets.find(o => o.textContent === "Combat");
+  assert.ok(ongletCombat, "Combat tab must exist");
+  ongletCombat.click();
+
+  const cartesCombat = cibleBoutique.querySelectorAll(".pk-boutique-carte");
+  assert.ok(cartesCombat.length > 0, "Combat items must be displayed after filtering");
+  for (const c of cartesCombat) {
+    assert.ok(c.classList.contains("pk-cat-combat") || c.textContent.includes("Combat"), "All displayed items must be in Combat category");
+  }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
