@@ -4051,6 +4051,153 @@ test("Replay engine determinism and Mulberry32 PRNG bit-level parity across Gen 
   assert.ok(r1.score > 0, "Score must be positive");
 });
 
+test("Canonical Showdown move stats, accuracy formatting (Préc -), and Gen 3 multi-stat effects execution", () => {
+  // ── 1. Gen 3 data invariants (no DOM needed) ────────────────────────────
+  const moves3 = noyauContext.POKE_GEN3_ATTAQUES;
+  assert.ok(Array.isArray(moves3) && moves3.length === 103, `POKE_GEN3_ATTAQUES must have 103 moves, got ${moves3 && moves3.length}`);
+
+  const VALID_CATS = new Set(["physique", "special", "statut"]);
+  for (const m of moves3) {
+    assert.ok(VALID_CATS.has(m.categorie), `Move ${m.cle} has invalid category: ${m.categorie}`);
+    if (m.puissance === 0) {
+      assert.strictEqual(m.categorie, "statut", `Move ${m.cle} has puissance 0 but category ${m.categorie}`);
+    }
+    assert.ok(m.precision === true || (typeof m.precision === "number" && m.precision > 0),
+      `Move ${m.cle} has invalid precision: ${m.precision}`);
+  }
+
+  // Specific Gen 3 era-accurate values
+  const byKey = noyauContext.POKE_GEN3_ATTAQUE_PAR_CLE;
+  assert.ok(byKey, "POKE_GEN3_ATTAQUE_PAR_CLE must be defined");
+  assert.strictEqual(byKey.BULK_UP.categorie,    "statut",   "BULK_UP must be statut");
+  assert.strictEqual(byKey.BULK_UP.precision,    true,       "BULK_UP must have precision true");
+  assert.strictEqual(byKey.CALM_MIND.categorie,  "statut",   "CALM_MIND must be statut");
+  assert.strictEqual(byKey.CALM_MIND.precision,  true,       "CALM_MIND must have precision true");
+  assert.strictEqual(byKey.DRAGON_DANCE.categorie,"statut",  "DRAGON_DANCE must be statut");
+  assert.strictEqual(byKey.DRAGON_DANCE.precision, true,     "DRAGON_DANCE must have precision true");
+  assert.strictEqual(byKey.COSMIC_POWER.categorie,"statut",  "COSMIC_POWER must be statut");
+  assert.strictEqual(byKey.AERIAL_ACE.puissance, 60,         "AERIAL_ACE power must be 60");
+  assert.strictEqual(byKey.AERIAL_ACE.precision, true,       "AERIAL_ACE must have precision true");
+  assert.strictEqual(byKey.AERIAL_ACE.categorie, "physique", "AERIAL_ACE must be physique");
+  assert.strictEqual(byKey.LEAF_BLADE.puissance, 70,         "LEAF_BLADE Gen 3 power must be 70");
+  assert.strictEqual(byKey.DIVE.puissance,        60,        "DIVE Gen 3 power must be 60");
+  assert.strictEqual(byKey.DOOM_DESIRE.puissance, 120,       "DOOM_DESIRE Gen 3 power must be 120");
+  assert.strictEqual(byKey.DOOM_DESIRE.precision, 85,        "DOOM_DESIRE Gen 3 precision must be 85");
+
+  // ── 2. Gen 3 multi-stat effects execution ────────────────────────────────
+  const Combat  = noyauContext.PokeCombat;
+  const Moteur  = noyauContext.PokeMoteur;
+  const Hasard  = noyauContext.PokeHasard;
+  const Regles  = noyauContext.PokeRegles;
+
+  const prevGen = Regles.courante ? Regles.courante() : "gen1";
+  Regles.poser("gen3");
+
+  try {
+    const h   = new Hasard("TASK4-MULTI-STAT");
+    const mon = Moteur.creer(255, 10, h);
+    const foe = Moteur.creer(1,   10, h);
+    const state = Combat.demarrer([mon], [foe], { graine: "TASK4-MULTI-STAT", dresseur: false }, h);
+
+    // BULK_UP → +1 atk, +1 def
+    const evBU = Combat.jouerCoup(state, "joueur", "adverse", byKey.BULK_UP, h);
+    const buPaliers = evBU.filter(e => e.t === "palier" && e.cote === "joueur");
+    assert.strictEqual(buPaliers.length, 2, "Bulk Up must emit 2 palier events");
+    assert.ok(buPaliers.some(e => e.stat === "atk" && e.delta === 1), "Bulk Up must boost atk +1");
+    assert.ok(buPaliers.some(e => e.stat === "def" && e.delta === 1), "Bulk Up must boost def +1");
+
+    // CALM_MIND → +1 sat, +1 sdf
+    const evCM = Combat.jouerCoup(state, "joueur", "adverse", byKey.CALM_MIND, h);
+    const cmPaliers = evCM.filter(e => e.t === "palier" && e.cote === "joueur");
+    assert.strictEqual(cmPaliers.length, 2, "Calm Mind must emit 2 palier events");
+    assert.ok(cmPaliers.some(e => e.stat === "sat" && e.delta === 1), "Calm Mind must boost sat +1");
+    assert.ok(cmPaliers.some(e => e.stat === "sdf" && e.delta === 1), "Calm Mind must boost sdf +1");
+
+    // DRAGON_DANCE → +1 atk, +1 vit
+    const evDD = Combat.jouerCoup(state, "joueur", "adverse", byKey.DRAGON_DANCE, h);
+    const ddPaliers = evDD.filter(e => e.t === "palier" && e.cote === "joueur");
+    assert.strictEqual(ddPaliers.length, 2, "Dragon Dance must emit 2 palier events");
+    assert.ok(ddPaliers.some(e => e.stat === "atk" && e.delta === 1), "Dragon Dance must boost atk +1");
+    assert.ok(ddPaliers.some(e => e.stat === "vit" && e.delta === 1), "Dragon Dance must boost vit +1");
+  } finally {
+    Regles.poser(prevGen);
+  }
+
+  // ── 3. UI accuracy formatting (Préc - / Préc N%) ─────────────────────────
+  // createShowdownCombatTestContext has PokeUICombat + NOYAU; add Gen 3 data on top
+  const uiCtx = createShowdownCombatTestContext();
+  for (const f of uiCtx.POKE_ORDRE_GEN3) {
+    loadScriptInContext(f, uiCtx);
+  }
+  uiCtx.PokeRegles.poser("gen3");
+  const uiByKey = uiCtx.POKE_GEN3_ATTAQUE_PAR_CLE;
+
+  // 4-slot attaque list: BULK_UP, AERIAL_ACE, WILL_O_WISP, DOOM_DESIRE
+  // Build as attaque objects with pp/ppMax for the player's moveset
+  const uiH   = new uiCtx.PokeHasard("TASK4-UI");
+  const uiMon = uiCtx.PokeMoteur.creer(255, 10, uiH);  // Torchic
+  const uiFoe = uiCtx.PokeMoteur.creer(1,   10, uiH);  // Bulbasaur
+
+  const task4Attaques = [
+    uiByKey.BULK_UP,
+    uiByKey.AERIAL_ACE,
+    uiByKey.WILL_O_WISP,
+    uiByKey.DOOM_DESIRE
+  ];
+
+  uiMon.attaques = task4Attaques.map(a => ({ cle: a.cle, pp: a.pp || 10, ppMax: a.pp || 10 }));
+
+  const uiState = {
+    joueur: {
+      equipe: [uiMon],
+      actif: 0,
+      paliers: uiCtx.PokeCombat.paliersNeufs(),
+      volatils: {},
+      participants: { 0: true }
+    },
+    adverse: {
+      equipe: [uiFoe],
+      actif: 0,
+      paliers: uiCtx.PokeCombat.paliersNeufs(),
+      volatils: {},
+      participants: { 0: true }
+    },
+    tour: 1,
+    fini: null
+  };
+
+  const uiRoot = new ShowdownMockNode("div");
+  const Ecran4 = uiCtx.PokeUICombat.Ecran;
+  const ecran4 = new Ecran4(uiRoot, uiState, { hasard: new uiCtx.PokeHasard("TASK4-ECRAN"), rythme: 900 });
+  ecran4.menuAttaques();
+
+  const btns = uiRoot.querySelectorAll(".pk-attaque-btn");
+  if (btns.length >= 3) {
+    // BULK_UP: Préc -
+    const bulkStats = btns[0].querySelector(".pk-attaque-stats");
+    if (bulkStats) {
+      assert.ok(!bulkStats.textContent.includes("Préc 0%"), "BULK_UP must NOT show Préc 0%");
+      assert.ok(bulkStats.textContent.includes("Préc -"),   "BULK_UP must show Préc -");
+      const bulkCatTag = btns[0].querySelector(".pk-cat-tag");
+      if (bulkCatTag) assert.strictEqual(bulkCatTag.textContent, "STAT", "BULK_UP badge must be STAT");
+    }
+
+    // AERIAL_ACE: Préc -
+    const airStats = btns[1].querySelector(".pk-attaque-stats");
+    if (airStats) {
+      assert.ok(!airStats.textContent.includes("Préc 0%"), "AERIAL_ACE must NOT show Préc 0%");
+      assert.ok(airStats.textContent.includes("Préc -"),   "AERIAL_ACE must show Préc -");
+    }
+
+    // WILL_O_WISP: Préc 85% (offensive status with accuracy check)
+    const wowStats = btns[2].querySelector(".pk-attaque-stats");
+    if (wowStats) {
+      assert.ok(wowStats.textContent.includes("Préc 85%"), `WILL_O_WISP must show Préc 85%, got: ${wowStats.textContent}`);
+      assert.ok(!wowStats.textContent.includes("Préc -"),  "WILL_O_WISP must NOT show Préc -");
+    }
+  }
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Final Summary & Exit
 // ─────────────────────────────────────────────────────────────────────────────
