@@ -315,6 +315,9 @@ function createMockCanvas(width = 800, height = 480) {
     closePath: () => drawOps.push(["closePath"]),
     moveTo: (x, y) => drawOps.push(["moveTo", x, y]),
     lineTo: (x, y) => drawOps.push(["lineTo", x, y]),
+    quadraticCurveTo: (cpx, cpy, x, y) => drawOps.push(["quadraticCurveTo", cpx, cpy, x, y]),
+    bezierCurveTo: (cp1x, cp1y, cp2x, cp2y, x, y) => drawOps.push(["bezierCurveTo", cp1x, cp1y, cp2x, cp2y, x, y]),
+    ellipse: (x, y, rx, ry, rot, sa, ea) => drawOps.push(["ellipse", x, y, rx, ry, rot, sa, ea]),
     arc: (x, y, r, sa, ea) => drawOps.push(["arc", x, y, r, sa, ea]),
     stroke: () => drawOps.push(["stroke"]),
     fill: () => drawOps.push(["fill"]),
@@ -660,6 +663,66 @@ test("anim-showdown.js satisfies architectural and NOYAU purity rules", () => {
   for (const pat of forbiddenNonDet) {
     assert.ok(!pat.test(code), `Forbidden non-deterministic call found matching ${pat}`);
   }
+});
+
+test("HiDPI context scaling applies ctx.scale(dpr, dpr) for crisp high-resolution rendering", () => {
+  const { animCtx, pumpFrames } = createAnimContext({ devicePixelRatio: 2 });
+  loadScriptInContext(animScriptPath, animCtx);
+  const A = animCtx.PokeAnimShowdown;
+
+  const { canvas, drawOps } = createMockCanvas(800, 480);
+  canvas._dpr = 2;
+
+  A.jouerAttaque(canvas, "tonnerre", "joueur");
+  pumpFrames(2, 50);
+
+  const scaleOps = drawOps.filter((op) => op[0] === "scale");
+  assert.ok(scaleOps.length > 0, "ctx.scale must be called when dpr > 1");
+  assert.deepStrictEqual(scaleOps[0], ["scale", 2, 2], "ctx.scale must be called with (dpr, dpr)");
+});
+
+test("Concurrent animation overwrite protection cancels existing animation loop on same canvas", () => {
+  let cancelled = false;
+  const { animCtx, pumpFrames } = createAnimContext({
+    cancelAnimationFrame: () => {
+      cancelled = true;
+    },
+  });
+  loadScriptInContext(animScriptPath, animCtx);
+  const A = animCtx.PokeAnimShowdown;
+
+  const { canvas } = createMockCanvas(800, 480);
+
+  // Start animation 1
+  A.jouerAttaque(canvas, "tonnerre", "joueur");
+  assert.ok(typeof canvas._animCancel === "function", "canvas._animCancel must be installed on canvas");
+
+  // Start animation 2 on same canvas before 1 finishes
+  A.jouerAttaque(canvas, "lance-flammes", "joueur");
+  assert.strictEqual(cancelled, true, "Previous animation RAF must be cancelled when new animation begins");
+});
+
+test("Wave crest direction adapts based on attacker side (joueur vs adverse)", () => {
+  const { animCtx, pumpFrames } = createAnimContext();
+  loadScriptInContext(animScriptPath, animCtx);
+  const A = animCtx.PokeAnimShowdown;
+
+  // Player -> Opponent (left to right)
+  const { canvas: c1, drawOps: ops1 } = createMockCanvas(800, 480);
+  A.jouerAttaque(c1, "surf", "joueur");
+  pumpFrames(4, 50);
+
+  // Opponent -> Player (right to left)
+  const { canvas: c2, drawOps: ops2 } = createMockCanvas(800, 480);
+  A.jouerAttaque(c2, "surf", "adverse");
+  pumpFrames(4, 50);
+
+  // Check arc calls (crest foam arc has different angles for left-to-right vs right-to-left)
+  const arcs1 = ops1.filter((op) => op[0] === "arc");
+  const arcs2 = ops2.filter((op) => op[0] === "arc");
+  assert.ok(arcs1.length > 0 && arcs2.length > 0, "Both surf animations must draw wave arcs");
+  // The first arc in each frame is the foam crest arc
+  assert.notDeepStrictEqual(arcs1[0], arcs2[0], "Foam crest arc angles must differ based on wave direction");
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

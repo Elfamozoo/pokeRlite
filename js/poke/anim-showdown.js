@@ -146,6 +146,7 @@
 
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
+    canvas._dpr = dpr;
 
     if (canvas.style) {
       canvas.style.position = "absolute";
@@ -162,10 +163,32 @@
 
   // ── 4. Boucle d'animation fluide ──────────────────────────────────────────
 
-  function animer(dureeMs, onCadre, onFin) {
+  function animer(canvas, dureeMs, onCadre, onFin) {
     var debut = null;
     var fini = false;
+    var timerId = null;
     var dernier = 0;
+
+    function annuler() {
+      if (fini) return;
+      fini = true;
+      if (timerId != null) {
+        if (typeof W.cancelAnimationFrame === "function") {
+          W.cancelAnimationFrame(timerId);
+        } else if (typeof W.clearTimeout === "function") {
+          W.clearTimeout(timerId);
+        }
+        timerId = null;
+      }
+    }
+
+    // Protection anti-chevauchement : annulation de l'animation en cours sur le même canvas
+    if (canvas) {
+      if (typeof canvas._animCancel === "function") {
+        canvas._animCancel();
+      }
+      canvas._animCancel = annuler;
+    }
 
     function etape(timestamp) {
       if (fini) return;
@@ -181,35 +204,45 @@
 
       if (p >= 1) {
         fini = true;
+        if (canvas && canvas._animCancel === annuler) {
+          canvas._animCancel = null;
+        }
         if (typeof onFin === "function") onFin();
       } else {
         if (typeof W.requestAnimationFrame === "function") {
-          W.requestAnimationFrame(etape);
+          timerId = W.requestAnimationFrame(etape);
         } else if (typeof W.setTimeout === "function") {
-          W.setTimeout(function () { etape(null); }, 16);
+          timerId = W.setTimeout(function () { etape(null); }, 16);
         } else {
           fini = true;
+          if (canvas && canvas._animCancel === annuler) {
+            canvas._animCancel = null;
+          }
           if (typeof onFin === "function") onFin();
         }
       }
     }
 
     if (typeof W.requestAnimationFrame === "function") {
-      W.requestAnimationFrame(etape);
+      timerId = W.requestAnimationFrame(etape);
     } else if (typeof W.setTimeout === "function") {
-      W.setTimeout(function () { etape(null); }, 16);
+      timerId = W.setTimeout(function () { etape(null); }, 16);
     } else {
       onCadre(1);
+      if (canvas && canvas._animCancel === annuler) {
+        canvas._animCancel = null;
+      }
       if (typeof onFin === "function") onFin();
     }
   }
 
   function obtenirPositions(canvas, coteAttaquant) {
-    var w = (canvas && canvas.width) || 800;
-    var h = (canvas && canvas.height) || 480;
+    var dpr = (canvas && canvas._dpr) || (W.devicePixelRatio > 0 ? W.devicePixelRatio : 1);
+    var w = ((canvas && canvas.width) ? canvas.width / dpr : (canvas && canvas.clientWidth)) || 800;
+    var h = ((canvas && canvas.height) ? canvas.height / dpr : (canvas && canvas.clientHeight)) || 480;
 
     var estJoueur = (coteAttaquant === "joueur" || coteAttaquant === "player");
-    // Position perspective Showdown: camp joueur en bas à gauche, adverse en haut à droite
+    // Position perspective Showdown en coordonnées logiques CSS
     var posJoueur = { x: w * 0.25, y: h * 0.72 };
     var posAdverse = { x: w * 0.75, y: h * 0.32 };
 
@@ -217,7 +250,8 @@
       source: estJoueur ? posJoueur : posAdverse,
       cible: estJoueur ? posAdverse : posJoueur,
       w: w,
-      h: h
+      h: h,
+      dpr: dpr
     };
   }
 
@@ -291,16 +325,28 @@
     var xVague = xDepart + (xArrivee - xDepart) * p;
     var ySol = (geo.source.y + geo.cible.y) * 0.5 + 40;
     var amplitude = Math.sin(p * Math.PI) * 70;
+    var versDroite = (geo.cible.x >= geo.source.x);
+    var dir = versDroite ? 1 : -1;
 
     ctx.save();
-    // Corps de la vague
+    // Corps de la vague orienté selon la direction du mouvement
+    var xArriere = xVague - dir * 120;
+    var xAvant = xVague + dir * 100;
+    var c1x = xVague - dir * 40;
+    var c2x = xVague + dir * 40;
+
     ctx.beginPath();
-    ctx.moveTo(xVague - 120, ySol + 60);
-    ctx.quadraticCurveTo(xVague - 40, ySol - amplitude * 1.3, xVague, ySol - amplitude);
-    ctx.quadraticCurveTo(xVague + 40, ySol - amplitude * 0.7, xVague + 100, ySol + 60);
+    ctx.moveTo(xArriere, ySol + 60);
+    if (typeof ctx.quadraticCurveTo === "function") {
+      ctx.quadraticCurveTo(c1x, ySol - amplitude * 1.3, xVague, ySol - amplitude);
+      ctx.quadraticCurveTo(c2x, ySol - amplitude * 0.7, xAvant, ySol + 60);
+    } else {
+      ctx.lineTo(xVague, ySol - amplitude);
+      ctx.lineTo(xAvant, ySol + 60);
+    }
     ctx.closePath();
 
-    var grad = ctx.createLinearGradient(xVague - 80, ySol - amplitude, xVague + 80, ySol + 60);
+    var grad = ctx.createLinearGradient(xArriere, ySol - amplitude, xAvant, ySol + 60);
     grad.addColorStop(0, "rgba(56, 189, 248, 0.85)");
     grad.addColorStop(0.5, "rgba(14, 165, 233, 0.75)");
     grad.addColorStop(1, "rgba(3, 105, 161, 0.9)");
@@ -311,7 +357,11 @@
     ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
     ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.arc(xVague, ySol - amplitude, 25, Math.PI, Math.PI * 1.8);
+    if (versDroite) {
+      ctx.arc(xVague, ySol - amplitude, 25, Math.PI, Math.PI * 1.8);
+    } else {
+      ctx.arc(xVague, ySol - amplitude, 25, Math.PI * 1.2, Math.PI * 2);
+    }
     ctx.stroke();
 
     // Gouttes et bulles d'eau
@@ -526,7 +576,11 @@
       ctx.lineWidth = 3;
       ctx.beginPath();
       // Ovale déformé type onde psychique
-      ctx.ellipse(cx, cy, rayon * 1.2, rayon * 0.7, Math.PI / 8, 0, Math.PI * 2);
+      if (typeof ctx.ellipse === "function") {
+        ctx.ellipse(cx, cy, rayon * 1.2, rayon * 0.7, Math.PI / 8, 0, Math.PI * 2);
+      } else {
+        ctx.arc(cx, cy, rayon, 0, Math.PI * 2);
+      }
       ctx.stroke();
     }
     ctx.restore();
@@ -659,10 +713,16 @@
     var duree = 480; // ~480ms standard
 
     animer(
+      canvas,
       duree,
       function (p) {
         try {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          ctx.save();
+          if (typeof ctx.scale === "function" && geo.dpr && geo.dpr !== 1) {
+            ctx.scale(geo.dpr, geo.dpr);
+          }
 
           if (sig === "elec") dessinerTonnerre(ctx, p, geo);
           else if (sig === "eau") dessinerSurf(ctx, p, geo);
@@ -677,6 +737,8 @@
             else if (cat === "statut") dessinerStatut(ctx, p, geo);
             else dessinerPhysique(ctx, p, geo);
           }
+
+          ctx.restore();
         } catch (e) {
           // Sécurité headless/mock
         }
@@ -713,8 +775,9 @@
       return;
     }
 
-    var w = canvas.width || 800;
-    var h = canvas.height || 480;
+    var dpr = (canvas && canvas._dpr) || (W.devicePixelRatio > 0 ? W.devicePixelRatio : 1);
+    var w = ((canvas && canvas.width) ? canvas.width / dpr : (canvas && canvas.clientWidth)) || 800;
+    var h = ((canvas && canvas.height) ? canvas.height / dpr : (canvas && canvas.clientHeight)) || 480;
     var estJoueur = (coteCible === "joueur" || coteCible === "player");
     var cibleX = estJoueur ? w * 0.25 : w * 0.75;
     var cibleY = estJoueur ? h * 0.70 : h * 0.32;
@@ -723,10 +786,16 @@
     var duree = 400;
 
     animer(
+      canvas,
       duree,
       function (p) {
         try {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          ctx.save();
+          if (typeof ctx.scale === "function" && dpr && dpr !== 1) {
+            ctx.scale(dpr, dpr);
+          }
 
           var nbChevrons = 3;
 
@@ -774,6 +843,7 @@
               ctx.stroke();
             }
           }
+          ctx.restore();
           ctx.restore();
         } catch (e) {
           // Sécurité headless/mock
