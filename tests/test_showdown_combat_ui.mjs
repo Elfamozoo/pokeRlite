@@ -382,6 +382,11 @@ loadScriptInContext("js/poke/ordre.js", context);
 for (const f of context.POKE_ORDRE_NOYAU) {
   loadScriptInContext(f, context);
 }
+if (context.POKE_ORDRE_GEN3) {
+  for (const f of context.POKE_ORDRE_GEN3) {
+    loadScriptInContext(f, context);
+  }
+}
 loadScriptInContext("js/poke/tempo.js", context);
 loadScriptInContext("js/poke/icones.js", context);
 loadScriptInContext("js/poke/sprites-showdown.js", context);
@@ -803,6 +808,43 @@ runTest("Displays tactical move effectiveness badges (.pk-attaque-efficacite) on
   const badgeRac = boutonsRac[0].querySelector(".pk-attaque-efficacite");
   assert.ok(badgeRac.classList.contains("est-inutile"), "0x has .est-inutile");
   assert.match(badgeRac.textContent, /×0/);
+});
+
+// 11. Move button accuracy displays 'Préc -' for status moves and never-miss moves, never 'Préc 0%'
+runTest("Move button accuracy displays 'Préc -' for status moves and never-miss moves, never 'Préc 0%'", () => {
+  const ancienneGen = context.PokeRegles && context.PokeRegles.courante && context.PokeRegles.courante();
+  if (context.PokeRegles && context.PokeRegles.poser) {
+    context.PokeRegles.poser("gen3");
+  }
+  try {
+    const hote = new MockNode("div");
+    const etat = createDummyState();
+    etat.joueur.equipe[0].attaques = [
+      { cle: "BULK_UP", pp: 20, ppMax: 20 },
+      { cle: "AERIAL_ACE", pp: 20, ppMax: 20 }
+    ];
+    const ecran = new Ecran(hote, etat, { hasard: new context.PokeHasard(1), rythme: 900 });
+
+    const buttons = ecran.elActions.querySelectorAll(".pk-attaque-btn");
+    assert.strictEqual(buttons.length, 2);
+
+    const bulkUpStats = buttons[0].querySelector(".pk-attaque-stats").textContent;
+    const aerialAceStats = buttons[1].querySelector(".pk-attaque-stats").textContent;
+
+    assert.ok(bulkUpStats.includes("Préc -"), `Bulk Up stats should show 'Préc -', got: ${bulkUpStats}`);
+    assert.ok(!bulkUpStats.includes("Préc 0%"), `Bulk Up stats must NOT show 'Préc 0%'`);
+    assert.ok(aerialAceStats.includes("Préc -"), `Aerial Ace stats should show 'Préc -', got: ${aerialAceStats}`);
+    assert.ok(!aerialAceStats.includes("Préc 0%"), `Aerial Ace stats must NOT show 'Préc 0%'`);
+
+    const bulkUpCat = buttons[0].querySelector(".pk-cat-tag").textContent;
+    const aerialAceCat = buttons[1].querySelector(".pk-cat-tag").textContent;
+    assert.strictEqual(bulkUpCat, "STAT", `Bulk Up category badge should be STAT, got: ${bulkUpCat}`);
+    assert.strictEqual(aerialAceCat, "PHY", `Aerial Ace category badge should be PHY, got: ${aerialAceCat}`);
+  } finally {
+    if (context.PokeRegles && context.PokeRegles.poser && ancienneGen) {
+      context.PokeRegles.poser(ancienneGen);
+    }
+  }
 });
 
 console.log(`\n\x1b[32mAll ${passed}/${total} Showdown combat UI tests completed!\x1b[0m\n`);

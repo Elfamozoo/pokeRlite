@@ -2493,7 +2493,7 @@
           b.setAttribute("aria-disabled", "true");
         }
 
-        var catClass = !a.puissance ? "statut" : (W.PokeCombat && W.PokeCombat.estSpecial && W.PokeCombat.estSpecial(a.type)) ? "special" : "physique";
+        var catClass = (!a.puissance || a.categorie === "statut") ? "statut" : ((W.PokeCombat && W.PokeCombat.estSpecial && W.PokeCombat.estSpecial(a.type)) ? "special" : "physique");
         var catLabel = catClass === "statut" ? "STAT" : (catClass === "special" ? "SPÉ" : "PHY");
 
         var mult = 1;
@@ -2523,7 +2523,8 @@
         b.style.setProperty("--type-couleur", "var(--type-" + typeKey + ")");
 
         var puiStr = a.puissance ? a.puissance : "-";
-        var precStr = a.precision != null ? a.precision : (a.puissance ? 100 : "-");
+        var isNeverMiss = a.precision === true || a.precision === 0 || a.precision == null || !a.puissance || a.effet === "SWIFT_EFFECT";
+        var precStr = isNeverMiss ? "-" : a.precision;
         var ppStr = m.pp + " / " + m.ppMax;
         var statsText = "Pui " + puiStr + " | Préc " + (precStr === "-" ? "-" : precStr + "%") + " | PP " + ppStr;
 
