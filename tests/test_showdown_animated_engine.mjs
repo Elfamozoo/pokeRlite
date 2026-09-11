@@ -121,6 +121,8 @@ test("Special species cases match Showdown exact identifiers", () => {
   assert.strictEqual(S.nomShowdown("Pikachu"), "pikachu");
   assert.strictEqual(S.nomShowdown("Nidoran♀"), "nidoranf");
   assert.strictEqual(S.nomShowdown("Nidoran♂"), "nidoranm");
+  assert.strictEqual(S.nomShowdown("Nidoran ♀"), "nidoranf");
+  assert.strictEqual(S.nomShowdown("Nidoran ♂"), "nidoranm");
   assert.strictEqual(S.nomShowdown("Farfetch'd"), "farfetchd");
   assert.strictEqual(S.nomShowdown("Mr. Mime"), "mrmime");
   assert.strictEqual(S.nomShowdown("Ho-Oh"), "hooh");
@@ -204,6 +206,11 @@ test("repliFace and repliDos generate correct local GBA fallback URLs", () => {
 
   assert.strictEqual(S.repliFace(386), "assets/img/poke/gen3/face/386.png?i=6");
   assert.strictEqual(S.repliDos(386), "assets/img/poke/gen3/dos/386.png?i=6");
+
+  assert.strictEqual(S.repliFace("25"), "assets/img/poke/gen3/face/25.png?i=6");
+  assert.strictEqual(S.repliDos("25"), "assets/img/poke/gen3/dos/25.png?i=6");
+  assert.strictEqual(S.repliFace({ n: "25" }), "assets/img/poke/gen3/face/25.png?i=6");
+  assert.strictEqual(S.repliDos({ n: "25" }), "assets/img/poke/gen3/dos/25.png?i=6");
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

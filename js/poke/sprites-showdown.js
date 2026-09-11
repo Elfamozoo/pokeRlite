@@ -82,10 +82,9 @@
 
   function normaliserNom(s) {
     if (!s) return "";
-    var str = String(s).trim();
-    if (str === "Nidoran♀" || str === "nidoran♀" || str === "Nidoran-f" || str === "nidoran-f") return "nidoranf";
-    if (str === "Nidoran♂" || str === "nidoran♂" || str === "Nidoran-m" || str === "nidoran-m") return "nidoranm";
-    return str.toLowerCase().replace(/[^a-z0-9]/g, "");
+    var str = String(s).trim().toLowerCase();
+    str = str.replace(/[♀]/g, "f").replace(/[♂]/g, "m");
+    return str.replace(/[^a-z0-9]/g, "");
   }
 
   function numDe(mon) {
@@ -128,12 +127,12 @@
   }
 
   function repliFace(mon) {
-    var id = (typeof mon === "object" && mon !== null) ? mon.n : mon;
+    var id = numDe(mon) || ((typeof mon === "object" && mon !== null) ? mon.n : mon);
     return "assets/img/poke/gen3/face/" + id + ".png?i=6";
   }
 
   function repliDos(mon) {
-    var id = (typeof mon === "object" && mon !== null) ? mon.n : mon;
+    var id = numDe(mon) || ((typeof mon === "object" && mon !== null) ? mon.n : mon);
     return "assets/img/poke/gen3/dos/" + id + ".png?i=6";
   }
 
