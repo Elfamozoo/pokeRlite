@@ -502,6 +502,7 @@
       talentsActifs: function () { return true; },
       tenus: function () { return W.POKE_GEN3_TENUS || W.POKE_GEN2_TENUS; },
       objetsTable: function () { return W.POKE_GEN3_OBJETS || null; },
+      effetsNeufs: function () { return W.POKE_GEN3_EFFETS_NEUFS_TABLE || null; },
       errants: function () { return W.POKE_GEN3_ERRANTS || null; },
       mythique: function () { return { n: 385, niveau: 30, lieu: "mossdeep-space-center" }; },
       conseil: function () { return W.POKE_GEN3_CONSEIL || W.POKE_CONSEIL; },

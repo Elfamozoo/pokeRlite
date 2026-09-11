@@ -97,6 +97,7 @@ suite("1. ordre.js Gen 3 Wiring & Module Lists");
 const EXPECTED_GEN3_NOYAU = [
   "js/poke/gen3/types.js",
   "js/poke/gen3/effets.js",
+  "js/poke/gen3/effets-neufs.js",
   "js/poke/gen3/objets.js",
   "js/poke/gen3/ct.js",
   "js/poke/gen3/obtentions.js",
@@ -158,7 +159,7 @@ test("Zero sound files in POKE_ORDRE_GEN3 (pure NOYAU logic)", () => {
   }
 });
 
-test("All 19 GEN3 files exist on disk", () => {
+test("All 20 GEN3 files exist on disk", () => {
   for (const relPath of EXPECTED_GEN3_NOYAU) {
     const fullPath = path.join(ROOT_DIR, relPath);
     assert.ok(fs.existsSync(fullPath), `Gen 3 NOYAU file does not exist on disk: ${relPath}`);

@@ -412,6 +412,27 @@ function runTest(name, fn) {
   }
 }
 
+const test = runTest;
+
+function createCombatUIContext() {
+  const ctx = createIsolatedContext();
+  loadScriptInContext("js/poke/ordre.js", ctx);
+  for (const f of ctx.POKE_ORDRE_NOYAU) {
+    loadScriptInContext(f, ctx);
+  }
+  if (ctx.POKE_ORDRE_GEN3) {
+    for (const f of ctx.POKE_ORDRE_GEN3) {
+      loadScriptInContext(f, ctx);
+    }
+  }
+  loadScriptInContext("js/poke/tempo.js", ctx);
+  loadScriptInContext("js/poke/icones.js", ctx);
+  loadScriptInContext("js/poke/sprites-showdown.js", ctx);
+  loadScriptInContext("js/poke/anim-showdown.js", ctx);
+  loadScriptInContext("js/poke/ui-combat.js", ctx);
+  return ctx;
+}
+
 function createDummyState() {
   return {
     joueur: {
@@ -855,6 +876,56 @@ runTest("Move button accuracy displays 'Préc -' for status moves and never-miss
     if (context.PokeRegles && context.PokeRegles.poser && ancienneGen) {
       context.PokeRegles.poser(ancienneGen);
     }
+  }
+});
+
+// 12. Gen 3 multi-stat moves boost multiple stages simultaneously
+test("Gen 3 multi-stat moves boost multiple stages simultaneously", () => {
+  const ctx = createCombatUIContext();
+  const Combat = ctx.PokeCombat;
+  const Moteur = ctx.PokeMoteur;
+  const Hasard = ctx.PokeHasard;
+  const Regles = ctx.PokeRegles;
+
+  const prevRegles = Regles.courante ? Regles.courante() : "gen1";
+  Regles.poser("gen3");
+
+  try {
+    const h = new Hasard("MULTI-STAT-TEST");
+    const mon = Moteur.creer(255, 10, h); // Torchic
+    const foe = Moteur.creer(1, 10, h);   // Bulbasaur
+
+    const state = Combat.demarrer([mon], [foe], { graine: "MULTI-STAT-TEST", dresseur: false }, h);
+
+    // Execute BULK_UP (+1 Atk, +1 Def)
+    const bulkUp = ctx.POKE_GEN3_ATTAQUE_PAR_CLE.BULK_UP;
+    assert.ok(bulkUp, "BULK_UP must exist");
+    const ev = Combat.jouerCoup(state, "joueur", "adverse", bulkUp, h);
+
+    const palierEvs = ev.filter(e => e.t === "palier" && e.cote === "joueur");
+    assert.strictEqual(palierEvs.length, 2, "Bulk Up must emit 2 palier events");
+    assert.ok(palierEvs.some(e => e.stat === "atk" && e.delta === 1), "Must boost Attack by +1");
+    assert.ok(palierEvs.some(e => e.stat === "def" && e.delta === 1), "Must boost Defense by +1");
+
+    // Execute CALM_MIND (+1 SpA, +1 SpD)
+    const calmMind = ctx.POKE_GEN3_ATTAQUE_PAR_CLE.CALM_MIND;
+    assert.ok(calmMind, "CALM_MIND must exist");
+    const evCm = Combat.jouerCoup(state, "joueur", "adverse", calmMind, h);
+    const cmPalierEvs = evCm.filter(e => e.t === "palier" && e.cote === "joueur");
+    assert.strictEqual(cmPalierEvs.length, 2, "Calm Mind must emit 2 palier events");
+    assert.ok(cmPalierEvs.some(e => e.stat === "sat" && e.delta === 1), "Must boost Sp.Atk by +1");
+    assert.ok(cmPalierEvs.some(e => e.stat === "sdf" && e.delta === 1), "Must boost Sp.Def by +1");
+
+    // Execute DRAGON_DANCE (+1 Atk, +1 Speed)
+    const dragonDance = ctx.POKE_GEN3_ATTAQUE_PAR_CLE.DRAGON_DANCE;
+    assert.ok(dragonDance, "DRAGON_DANCE must exist");
+    const evDd = Combat.jouerCoup(state, "joueur", "adverse", dragonDance, h);
+    const ddPalierEvs = evDd.filter(e => e.t === "palier" && e.cote === "joueur");
+    assert.strictEqual(ddPalierEvs.length, 2, "Dragon Dance must emit 2 palier events");
+    assert.ok(ddPalierEvs.some(e => e.stat === "atk" && e.delta === 1), "Must boost Attack by +1");
+    assert.ok(ddPalierEvs.some(e => e.stat === "vit" && e.delta === 1), "Must boost Speed by +1");
+  } finally {
+    Regles.poser(prevRegles);
   }
 });
 

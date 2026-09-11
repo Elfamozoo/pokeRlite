@@ -201,6 +201,7 @@
   var GEN3 = [
     "js/poke/gen3/types.js",
     "js/poke/gen3/effets.js",
+    "js/poke/gen3/effets-neufs.js",
     "js/poke/gen3/objets.js",
     "js/poke/gen3/ct.js",
     "js/poke/gen3/obtentions.js",

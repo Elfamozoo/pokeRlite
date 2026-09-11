@@ -502,7 +502,7 @@
     //    multiplicateur fixe, sans un jet.
     var _nm = NEUFS();
     if (_nm && ctx.meteo && !ctx.airLock && !(talentsSontActifs(ctx) && airLockActif(ctx.e || ctx))) {
-      var _md = _nm.meteoDegats[ctx.meteo];
+      var _md = _nm.meteoDegats && _nm.meteoDegats[ctx.meteo];
       if (_md && _md[a.type]) A = Math.floor(A * _md[a.type]);
     }
     // La brûlure coupe l'Attaque de moitié — physique uniquement.
@@ -1533,7 +1533,7 @@
     var n = NEUFS();
     if (!n) return null;
 
-    var m = n.meteo[a.effet];
+    var m = (n.meteo || {})[a.effet];
     if (m) {
       // 🔴 LA MÉTÉO EST DU COMBAT, PAS D'UN CAMP. Posée sur un camp, elle
       //    aurait avantagé celui qui la lance deux fois — une fois par ses
@@ -1561,7 +1561,7 @@
     var aj = (n.avecJet || {})[a.effet];
     if (aj) return avecJet(aj, e, source, cible, pA, pD, quiA, quiD, mv, ev, h);
 
-    var d = n.durees[a.effet];
+    var d = (n.durees || {})[a.effet];
     if (d) {
       if (d.deuxCamps) {
         source.volatils[d.cle] = d.tours;
@@ -3579,6 +3579,27 @@
     return ev;
   }
 
+  function jouerCoup(e, coteA, coteD, attaque, h) {
+    var source = typeof coteA === "string" ? e[coteA] : coteA;
+    var cible = typeof coteD === "string" ? e[coteD] : coteD;
+    var pA = actif(source);
+    if (!pA) return [];
+    var cle = typeof attaque === "string" ? attaque : (attaque && attaque.cle ? attaque.cle : null);
+    if (!cle) return [];
+    var idx = -1;
+    if (pA.attaques) {
+      for (var i = 0; i < pA.attaques.length; i++) {
+        if (pA.attaques[i] && pA.attaques[i].cle === cle) { idx = i; break; }
+      }
+    }
+    if (idx === -1) {
+      if (!pA.attaques) pA.attaques = [];
+      idx = pA.attaques.length;
+      pA.attaques.push({ cle: cle, pp: 20, ppMax: 20 });
+    }
+    return assaut(e, source, cible, idx, h);
+  }
+
   // Une prise dure des TOURS, pas des actions : on la décompte ici, où les deux
   // camps ont fini de jouer et où l'ordre des vitesses ne compte plus.
   function decompterEtreinte(cote, quiVictime, ev) {
@@ -3952,6 +3973,7 @@
     combienOntCombattu: combienOntCombattu,
     EFFETS_NON_TRAITES: EFFETS_NON_TRAITES,
     jouerTour: jouerTour,
+    jouerCoup: jouerCoup,
     // Le tour est-il pris ? Lu par `jouerTour` pour forcer le coup, et par
     // l'écran de combat pour éteindre les boutons AVANT de vider le sac.
     tourForce: tourForce,
