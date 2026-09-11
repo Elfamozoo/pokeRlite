@@ -821,25 +821,36 @@ runTest("Move button accuracy displays 'Préc -' for status moves and never-miss
     const etat = createDummyState();
     etat.joueur.equipe[0].attaques = [
       { cle: "BULK_UP", pp: 20, ppMax: 20 },
-      { cle: "AERIAL_ACE", pp: 20, ppMax: 20 }
+      { cle: "AERIAL_ACE", pp: 20, ppMax: 20 },
+      { cle: "TOXIC", pp: 10, ppMax: 10 },
+      { cle: "HYPNOSIS", pp: 20, ppMax: 20 }
     ];
     const ecran = new Ecran(hote, etat, { hasard: new context.PokeHasard(1), rythme: 900 });
 
     const buttons = ecran.elActions.querySelectorAll(".pk-attaque-btn");
-    assert.strictEqual(buttons.length, 2);
+    assert.strictEqual(buttons.length, 4);
 
     const bulkUpStats = buttons[0].querySelector(".pk-attaque-stats").textContent;
     const aerialAceStats = buttons[1].querySelector(".pk-attaque-stats").textContent;
+    const toxicStats = buttons[2].querySelector(".pk-attaque-stats").textContent;
+    const hypnosisStats = buttons[3].querySelector(".pk-attaque-stats").textContent;
 
     assert.ok(bulkUpStats.includes("Préc -"), `Bulk Up stats should show 'Préc -', got: ${bulkUpStats}`);
     assert.ok(!bulkUpStats.includes("Préc 0%"), `Bulk Up stats must NOT show 'Préc 0%'`);
     assert.ok(aerialAceStats.includes("Préc -"), `Aerial Ace stats should show 'Préc -', got: ${aerialAceStats}`);
     assert.ok(!aerialAceStats.includes("Préc 0%"), `Aerial Ace stats must NOT show 'Préc 0%'`);
 
+    assert.ok(toxicStats.includes("Préc 85%"), `Toxic stats should show 'Préc 85%', got: ${toxicStats}`);
+    assert.ok(!toxicStats.includes("Préc -"), `Toxic stats must NOT show 'Préc -'`);
+    assert.ok(hypnosisStats.includes("Préc 60%"), `Hypnosis stats should show 'Préc 60%', got: ${hypnosisStats}`);
+    assert.ok(!hypnosisStats.includes("Préc -"), `Hypnosis stats must NOT show 'Préc -'`);
+
     const bulkUpCat = buttons[0].querySelector(".pk-cat-tag").textContent;
     const aerialAceCat = buttons[1].querySelector(".pk-cat-tag").textContent;
+    const toxicCat = buttons[2].querySelector(".pk-cat-tag").textContent;
     assert.strictEqual(bulkUpCat, "STAT", `Bulk Up category badge should be STAT, got: ${bulkUpCat}`);
     assert.strictEqual(aerialAceCat, "PHY", `Aerial Ace category badge should be PHY, got: ${aerialAceCat}`);
+    assert.strictEqual(toxicCat, "STAT", `Toxic category badge should be STAT, got: ${toxicCat}`);
   } finally {
     if (context.PokeRegles && context.PokeRegles.poser && ancienneGen) {
       context.PokeRegles.poser(ancienneGen);

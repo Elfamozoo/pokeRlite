@@ -2506,7 +2506,7 @@
         }
 
         var effBadge = "";
-        if (!a.puissance) {
+        if (!a.puissance || a.categorie === "statut") {
           effBadge = '<span class="pk-attaque-efficacite est-statut">STAT</span>';
         } else if (mult >= 2) {
           effBadge = '<span class="pk-attaque-efficacite est-super">' + (mult >= 4 ? "×4" : "×2") + '</span>';
@@ -2523,7 +2523,7 @@
         b.style.setProperty("--type-couleur", "var(--type-" + typeKey + ")");
 
         var puiStr = a.puissance ? a.puissance : "-";
-        var isNeverMiss = a.precision === true || a.precision === 0 || a.precision == null || !a.puissance || a.effet === "SWIFT_EFFECT";
+        var isNeverMiss = a.precision === true || a.precision === 0 || a.precision == null || a.effet === "SWIFT_EFFECT" || !(typeof a.precision === "number" && a.precision > 0);
         var precStr = isNeverMiss ? "-" : a.precision;
         var ppStr = m.pp + " / " + m.ppMax;
         var statsText = "Pui " + puiStr + " | Préc " + (precStr === "-" ? "-" : precStr + "%") + " | PP " + ppStr;
