@@ -929,4 +929,102 @@ test("Gen 3 multi-stat moves boost multiple stages simultaneously", () => {
   }
 });
 
+// 13. All Gen 3 moves have valid canonical Showdown properties
+test("All Gen 3 moves have valid canonical Showdown properties", () => {
+  const moves = context.POKE_GEN3_ATTAQUES;
+  assert.ok(Array.isArray(moves), "POKE_GEN3_ATTAQUES must be an array");
+  assert.strictEqual(moves.length, 103, "POKE_GEN3_ATTAQUES must contain 103 moves");
+
+  const validCategories = new Set(["physique", "special", "statut"]);
+
+  for (const m of moves) {
+    // All 103 moves have categorie in ["physique", "special", "statut"]
+    assert.ok(
+      validCategories.has(m.categorie),
+      `Move ${m.cle} has invalid categorie: ${m.categorie}`
+    );
+
+    // If puissance === 0, categorie is "statut"
+    if (m.puissance === 0) {
+      assert.strictEqual(
+        m.categorie,
+        "statut",
+        `Move ${m.cle} with power 0 must have categorie "statut", got ${m.categorie}`
+      );
+    }
+
+    // precision is either true or a number > 0. Never 0 or false.
+    assert.ok(
+      m.precision === true || (typeof m.precision === "number" && m.precision > 0),
+      `Move ${m.cle} must have precision true or > 0, got: ${m.precision}`
+    );
+    assert.notStrictEqual(m.precision, 0, `Move ${m.cle} precision must never be 0`);
+    assert.notStrictEqual(m.precision, false, `Move ${m.cle} precision must never be false`);
+  }
+
+  const parCle = context.POKE_GEN3_ATTAQUE_PAR_CLE;
+
+  // Specific assertions for BULK_UP, CALM_MIND, DRAGON_DANCE, COSMIC_POWER, AERIAL_ACE, LEAF_BLADE, DIVE, DOOM_DESIRE, STOCKPILE, WILL_O_WISP
+  const bulkUp = parCle.BULK_UP;
+  assert.ok(bulkUp, "BULK_UP must exist");
+  assert.strictEqual(bulkUp.puissance, 0);
+  assert.strictEqual(bulkUp.precision, true);
+  assert.strictEqual(bulkUp.categorie, "statut");
+
+  const calmMind = parCle.CALM_MIND;
+  assert.ok(calmMind, "CALM_MIND must exist");
+  assert.strictEqual(calmMind.puissance, 0);
+  assert.strictEqual(calmMind.precision, true);
+  assert.strictEqual(calmMind.categorie, "statut");
+
+  const dragonDance = parCle.DRAGON_DANCE;
+  assert.ok(dragonDance, "DRAGON_DANCE must exist");
+  assert.strictEqual(dragonDance.puissance, 0);
+  assert.strictEqual(dragonDance.precision, true);
+  assert.strictEqual(dragonDance.categorie, "statut");
+
+  const cosmicPower = parCle.COSMIC_POWER;
+  assert.ok(cosmicPower, "COSMIC_POWER must exist");
+  assert.strictEqual(cosmicPower.puissance, 0);
+  assert.strictEqual(cosmicPower.precision, true);
+  assert.strictEqual(cosmicPower.categorie, "statut");
+
+  const aerialAce = parCle.AERIAL_ACE;
+  assert.ok(aerialAce, "AERIAL_ACE must exist");
+  assert.strictEqual(aerialAce.puissance, 60);
+  assert.strictEqual(aerialAce.precision, true);
+  assert.strictEqual(aerialAce.categorie, "physique");
+
+  const leafBlade = parCle.LEAF_BLADE;
+  assert.ok(leafBlade, "LEAF_BLADE must exist");
+  assert.strictEqual(leafBlade.puissance, 70, "LEAF_BLADE Gen 3 power must be 70 (not 90)");
+  assert.strictEqual(leafBlade.precision, 100);
+  assert.strictEqual(leafBlade.categorie, "special", "LEAF_BLADE in Gen 3 is Grass (special)");
+
+  const dive = parCle.DIVE;
+  assert.ok(dive, "DIVE must exist");
+  assert.strictEqual(dive.puissance, 60, "DIVE Gen 3 power must be 60 (not 80)");
+  assert.strictEqual(dive.precision, 100);
+  assert.strictEqual(dive.categorie, "special", "DIVE in Gen 3 is Water (special)");
+
+  const doomDesire = parCle.DOOM_DESIRE;
+  assert.ok(doomDesire, "DOOM_DESIRE must exist");
+  assert.strictEqual(doomDesire.puissance, 120, "DOOM_DESIRE Gen 3 power must be 120 (not 140)");
+  assert.strictEqual(doomDesire.precision, 85, "DOOM_DESIRE Gen 3 precision must be 85 (not 100)");
+  assert.strictEqual(doomDesire.categorie, "physique", "DOOM_DESIRE in Gen 3 is Steel (physique)");
+
+  const stockpile = parCle.STOCKPILE;
+  assert.ok(stockpile, "STOCKPILE must exist");
+  assert.strictEqual(stockpile.puissance, 0);
+  assert.strictEqual(stockpile.precision, true);
+  assert.strictEqual(stockpile.pp, 20);
+  assert.strictEqual(stockpile.categorie, "statut");
+
+  const willOWisp = parCle.WILL_O_WISP;
+  assert.ok(willOWisp, "WILL_O_WISP must exist");
+  assert.strictEqual(willOWisp.puissance, 0);
+  assert.strictEqual(willOWisp.precision, 85);
+  assert.strictEqual(willOWisp.categorie, "statut");
+});
+
 console.log(`\n\x1b[32mAll ${passed}/${total} Showdown combat UI tests completed!\x1b[0m\n`);

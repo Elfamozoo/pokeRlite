@@ -27,7 +27,7 @@ const moves = rawMoves.map(m => {
     cle: m.cle,
     nom: m.nom,
     type: m.type,
-    categorie: SPECIAUX.has(m.type) ? "special" : "physique",
+    categorie: m.puissance === 0 ? "statut" : (SPECIAUX.has(m.type) ? "special" : "physique"),
     puissance: m.puissance,
     precision: m.precision,
     pp: m.pp,
@@ -282,7 +282,7 @@ const objets = {
   ORAN_BERRY: { nom: { fr: "Baie Oran", en: "Oran Berry" }, prix: 20, tenu: "HELD_BERRY" },
   PERSIM_BERRY: { nom: { fr: "Baie Kika", en: "Persim Berry" }, prix: 20, tenu: "HELD_HEAL_CONFUSION" },
   LUM_BERRY: { nom: { fr: "Baie Prine", en: "Lum Berry" }, prix: 20, tenu: "HELD_HEAL_STATUS" },
-  SITRUS_BERRY: { nom: { fr: "Baie Sitrus", en: "Sitrus Berry" }, prix: 20, tenu: "HELD_BERRY" },
+  SITRUS_BERRY: { nom: { fr: "Baie Sitrus", en: "Sitrus Berry" }, prix: 20, tenu: "HELD_SITRUS_BERRY" },
   FIGY_BERRY: { nom: { fr: "Baie Figuy", en: "Figy Berry" }, prix: 20, tenu: "HELD_BERRY" },
   WIKI_BERRY: { nom: { fr: "Baie Wiki", en: "Wiki Berry" }, prix: 20, tenu: "HELD_BERRY" },
   MAGO_BERRY: { nom: { fr: "Baie Mago", en: "Mago Berry" }, prix: 20, tenu: "HELD_BERRY" },
@@ -297,7 +297,7 @@ const objets = {
   GANLON_BERRY: { nom: { fr: "Baie Lingan", en: "Ganlon Berry" }, prix: 50, tenu: "HELD_DEFENSE_BOOST" },
   SALAC_BERRY: { nom: { fr: "Baie Sailak", en: "Salac Berry" }, prix: 50, tenu: "HELD_SPEED_BOOST" },
   PETAYA_BERRY: { nom: { fr: "Baie Pitaye", en: "Petaya Berry" }, prix: 50, tenu: "HELD_SPECIAL_BOOST" },
-  APICOT_BERRY: { nom: { fr: "Baie Abriko", en: "Apicot Berry" }, prix: 50, tenu: "HELD_SPECIAL_BOOST" },
+  APICOT_BERRY: { nom: { fr: "Baie Abriko", en: "Apicot Berry" }, prix: 50, tenu: "HELD_SPECIAL_DEF_BOOST" },
 
   // ── Clés, Fossiles & Objets rares ────────────────────────────────────────
   CLAW_FOSSIL: { nom: { fr: "Fossile Griffe", en: "Claw Fossil" }, prix: 1000, tenu: null },
