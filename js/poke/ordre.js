@@ -102,6 +102,7 @@
     // de zéro doit rendre la main sans passer par un minuteur — voir tempo.js.
     "js/poke/tempo.js",
     "js/poke/icones.js",
+    "js/poke/sprites-showdown.js",
     // Le son : les programmes du ROM d'abord, la puce qui les joue ensuite.
     // 🔴 Ils vivent dans les ÉCRANS : le serveur rejoue un combat sans jamais
     //    rien émettre, et un son ne décide de rien.
