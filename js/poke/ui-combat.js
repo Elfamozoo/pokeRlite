@@ -22,6 +22,12 @@
   };
   var LANG = function () { return W.POKE_LANG || "fr"; };
 
+  if (W.PokeType && !W.PokeType.multiplicateur) {
+    W.PokeType.multiplicateur = function (typeAtt, typesDef) {
+      return (W.PokeCombat && W.PokeCombat.efficacite) ? W.PokeCombat.efficacite(typeAtt, typesDef) : 1;
+    };
+  }
+
   // ── Les textes ─────────────────────────────────────────────────────────────
   //  Aucun accord de genre n'est nécessaire ici : le combat parle des Pokémon,
   //  jamais du dresseur. Les rares lignes qui s'adressent au joueur sont
@@ -657,6 +663,15 @@
   // ═══════════════════════════════════════════════════════════════════════════
   function monterCamp(hote, mon, cote) {
     var e = ESP()[mon.n];
+    var isShiny = !!(mon && (mon.chromatique || (W.PokeEclat && W.PokeEclat.chromatique(mon.dv))));
+    var monInfo = isShiny ? { n: mon.n, chromatique: true } : mon;
+    var srcAni = (W.PokeSpritesShowdown && typeof W.PokeSpritesShowdown.ani === "function")
+      ? W.PokeSpritesShowdown.ani(monInfo, cote)
+      : sprite(mon, cote);
+    var srcRepli = (W.PokeSpritesShowdown && typeof W.PokeSpritesShowdown.repli === "function")
+      ? W.PokeSpritesShowdown.repli(mon, cote)
+      : ((W.PokeSprites && W.PokeSprites.combatFace) ? W.PokeSprites.combatFace(mon.n) : W.PokeSprites.face(mon.n));
+
     hote.className = "pkdx-camp";
     hote.setAttribute("data-cote", cote);
     hote.innerHTML =
@@ -724,12 +739,10 @@
       //    depuis toujours (`onerror` vers la face).
       //  ⚠️ `this.onerror = null` AVANT de changer la source : sans ça, un repli
       //     qui rate lui aussi boucle indéfiniment sur le même gestionnaire.
-      //  ⚠️ La face est le bon repli : elle existe pour les 151 espèces, elle
-      //     est déjà chargée ailleurs, et un Pokémon vu de face reste lisible.
       '<img class="est-entrant pk-sprite-combattant" data-cote="' + cote + '" alt="' + esc(e.nom[LANG()]) + '" data-mon="' + mon.n + '"' +
-        " onerror=\"this.onerror=null;this.src='" + ((W.PokeSprites && W.PokeSprites.combatFace) ? W.PokeSprites.combatFace(mon.n) : W.PokeSprites.face(mon.n)) + "'\"" +
-        (W.PokeEclat && W.PokeEclat.chromatique(mon.dv) ? ' data-chromatique="oui"' : "") +
-        ' src="' + sprite(mon, cote) + '">';
+        " onerror=\"this.onerror=null;this.src='" + srcRepli + "';\"" +
+        (isShiny ? ' data-chromatique="oui"' : "") +
+        ' src="' + srcAni + '">';
     // L'entrée ne se joue qu'une fois : la classe part dès que l'animation est
     // finie, donc plus rien ne la relance.
     // ⚠️ La minuterie n'est pas une ceinture de plus, elle est NÉCESSAIRE :
@@ -1270,8 +1283,14 @@
     for (var c = 0; c < cotes.length; c++) {
       var equipe = (cotes[c][1] && cotes[c][1].equipe) || [];
       for (var i = 0; i < equipe.length; i++) {
+        var mItem = equipe[i];
+        if (!mItem) continue;
+        var isSh = !!(mItem.chromatique || (W.PokeEclat && W.PokeEclat.chromatique(mItem.dv)));
+        var mObj = isSh ? { n: mItem.n, chromatique: true } : mItem;
         var im = new W.Image();
-        im.src = sprite(equipe[i], cotes[c][0]);
+        im.src = (W.PokeSpritesShowdown && typeof W.PokeSpritesShowdown.ani === "function")
+          ? W.PokeSpritesShowdown.ani(mObj, cotes[c][0])
+          : sprite(mItem, cotes[c][0]);
       }
     }
   };
@@ -1288,6 +1307,7 @@
                 '<span class="pk-hb-niveau"></span>' +
               '</div>' +
               '<div class="pk-hb-statut-hote"></div>' +
+              '<div class="pk-hb-paliers"></div>' +
               '<div class="pk-hb-barre-wrap">' +
                 '<div class="pk-hb-barre"><div class="pk-hb-barre-remplie"></div></div>' +
                 '<span class="pk-hb-chiffre"></span>' +
@@ -1311,6 +1331,7 @@
                 '<span class="pk-hb-niveau"></span>' +
               '</div>' +
               '<div class="pk-hb-statut-hote"></div>' +
+              '<div class="pk-hb-paliers"></div>' +
               '<div class="pk-hb-barre-wrap">' +
                 '<div class="pk-hb-barre"><div class="pk-hb-barre-remplie"></div></div>' +
                 '<span class="pk-hb-chiffre"></span>' +
@@ -1337,6 +1358,9 @@
     this.elHbJoueur = this.hote.querySelector('.pk-healthbox[data-cote="joueur"]');
     this.elCombat = this.hote.querySelector(".pk-showdown-combat") || this.hote.querySelector(".pkdx-combat");
     this.elArene = this.hote.querySelector(".pk-arene-showdown") || this.hote.querySelector(".pkdx-arene") || this.elCombat;
+    this.canvasFx = (W.PokeAnimShowdown && typeof W.PokeAnimShowdown.monter === "function")
+      ? W.PokeAnimShowdown.monter(this.elArene)
+      : null;
     this.elEcran = this.hote.querySelector(".pkdx-ecran-gb") || this.elArene;
     this.elTexte = this.hote.querySelector(".pk-arene-dialogue-toast") || this.hote.querySelector(".pkdx-dialogue");
     this.elActions = this.hote.querySelector(".pk-actions-showdown") || this.hote.querySelector(".pkdx-actions");
@@ -1623,6 +1647,25 @@
         }
       }
 
+      // Paliers Showdown (.pk-hb-paliers)
+      var elPaliers = hb.querySelector(".pk-hb-paliers");
+      if (elPaliers) {
+        var statsPaliers = ["atk", "def", "vit", "spe", "precision", "esquive"];
+        var paliers = camp.paliers || {};
+        var htmlPaliers = "";
+        for (var pIdx = 0; pIdx < statsPaliers.length; pIdx++) {
+          var st = statsPaliers[pIdx];
+          var vStage = paliers[st] || 0;
+          if (vStage !== 0) {
+            var nomCourt = (COURT[st] && (COURT[st][LANG()] || COURT[st].fr)) || st.toUpperCase();
+            var clsStage = vStage > 0 ? "est-hausse" : "est-baisse";
+            var signeStage = vStage > 0 ? "+" : "";
+            htmlPaliers += '<span class="pk-palier-pill ' + clsStage + '">' + signeStage + vStage + ' ' + nomCourt + '</span>';
+          }
+        }
+        elPaliers.innerHTML = htmlPaliers;
+      }
+
       // Barre remplie
       var elBarre = hb.querySelector(".pk-hb-barre-remplie");
       if (elBarre) {
@@ -1813,6 +1856,11 @@
       camp.classList.add("est-ko");
     } else if (ev.t === "ball") {
       this.animerCapture(ev);
+    } else if (ev.t === "palier") {
+      if (ev.delta && !ev.bloque && W.PokeAnimShowdown && typeof W.PokeAnimShowdown.jouerStatAura === "function") {
+        var canvasAura = this.canvasFx || (this.elArene && this.elArene.querySelector && this.elArene.querySelector("canvas.pk-arene-fx"));
+        W.PokeAnimShowdown.jouerStatAura(canvasAura, ev.cote, ev.delta);
+      }
     } else if (ev.t === "rappelle" || ev.t === "envoie") {
       // ═══════════════════════════════════════════════════════════════════════
       //  🔴 « LE SWITCH N'A PAS LA PRIORITÉ » — RAPPORT DE TESTEUR DU 14/08.
@@ -1941,6 +1989,23 @@
   //  la saute entièrement au lieu d'attendre une seconde par attaque.
   Ecran.prototype.animationDe = function (item) {
     if (!item.premier || !item.ev || item.ev.t !== "utilise") return null;
+
+    if (W.PokeAnimShowdown && (this.canvasFx || this.elArene)) {
+      var cFx = this.canvasFx || (this.elArene && this.elArene.querySelector && this.elArene.querySelector("canvas.pk-arene-fx"));
+      var vShowdown = Math.max(0.55, Math.min(1, (this.opt.rythme || 900) / 900));
+      if (vShowdown < 0.2) return null;
+      var attShowdown = item.ev.attaque;
+      var coteShowdown = item.ev.cote;
+      return {
+        duree: 500 * vShowdown,
+        jouer: function () {
+          return new Promise(function (resolve) {
+            W.PokeAnimShowdown.jouerAttaque(cFx, attShowdown, coteShowdown, resolve);
+          });
+        }
+      };
+    }
+
     var lecteur = W.PokeAnimAttaque;
     if (!lecteur || !this.elEcran) return null;
     // ═════════════════════════════════════════════════════════════════════════
@@ -2429,6 +2494,26 @@
         var catClass = !a.puissance ? "statut" : (W.PokeCombat && W.PokeCombat.estSpecial && W.PokeCombat.estSpecial(a.type)) ? "special" : "physique";
         var catLabel = catClass === "statut" ? "STAT" : (catClass === "special" ? "SPÉ" : "PHY");
 
+        var mult = 1;
+        if (a.puissance) {
+          if (W.PokeType && typeof W.PokeType.multiplicateur === "function") {
+            mult = W.PokeType.multiplicateur(a.type, typesEnFace);
+          } else if (W.PokeCombat && typeof W.PokeCombat.efficacite === "function") {
+            mult = W.PokeCombat.efficacite(a.type, typesEnFace);
+          }
+        }
+
+        var effBadge = "";
+        if (!a.puissance) {
+          effBadge = '<span class="pk-attaque-efficacite est-statut">STAT</span>';
+        } else if (mult >= 2) {
+          effBadge = '<span class="pk-attaque-efficacite est-super">' + (mult >= 4 ? "×4" : "×2") + '</span>';
+        } else if (mult > 0 && mult < 1) {
+          effBadge = '<span class="pk-attaque-efficacite est-peu">' + (mult <= 0.25 ? "×¼" : "×½") + '</span>';
+        } else if (mult === 0) {
+          effBadge = '<span class="pk-attaque-efficacite est-inutile">×0</span>';
+        }
+
         var typeKey = (a.type || "normal").toLowerCase();
         var tObj = TYPES_NOMS && TYPES_NOMS()[a.type];
         var typeNom = (tObj && (tObj[LANG()] || tObj.fr || tObj.en)) || a.type;
@@ -2443,6 +2528,7 @@
         b.innerHTML =
           '<div class="pk-attaque-haut">' +
             '<span class="pk-attaque-nom"><b>' + esc(a.nom[LANG()] || a.nom.fr || a.nom) + '</b></span>' +
+            effBadge +
             '<span class="pk-cat-tag ' + catClass + '">' + catLabel + '</span>' +
           '</div>' +
           '<div class="pk-attaque-bas">' +

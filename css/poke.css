@@ -7751,6 +7751,16 @@ body.encre .pkdx {
   perspective: 600px;
 }
 
+/* Canvas d'effets visuels et animations de combat Showdown */
+.pk-arene-fx {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
 /* Socles des Pokémon (adverse haut-droite, joueur bas-gauche) */
 .pk-arene-socle {
   position: absolute;
@@ -7957,6 +7967,38 @@ body.encre .pkdx {
   font-variant-numeric: tabular-nums;
 }
 
+/* Paliers Showdown (Buffs / Debuffs dans la fiche de statut) */
+.pk-hb-paliers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0;
+  min-height: 0;
+}
+
+.pk-palier-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1.2;
+  border: 1px solid transparent;
+}
+
+.pk-palier-pill.est-hausse {
+  background: rgba(34, 197, 94, 0.18);
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.pk-palier-pill.est-baisse {
+  background: rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
 /* Pupitre de commande d'actions */
 .pk-actions-showdown {
   display: flex;
@@ -8032,6 +8074,45 @@ body.encre .pkdx {
 .pk-cat-tag.physique { background: #ce4069; color: #fff; }
 .pk-cat-tag.special { background: #4f90d5; color: #fff; }
 .pk-cat-tag.statut { background: #9099a1; color: #fff; }
+
+/* Badges tactiques d'efficacité des attaques Showdown */
+.pk-attaque-efficacite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+  margin-left: 4px;
+}
+
+.pk-attaque-efficacite.est-super {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.pk-attaque-efficacite.est-peu {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.pk-attaque-efficacite.est-inutile {
+  background: rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
+  border-color: rgba(148, 163, 184, 0.45);
+}
+
+.pk-attaque-efficacite.est-statut {
+  background: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border-color: rgba(168, 85, 247, 0.45);
+}
 
 /* Boutons tactiques auxiliaires (Équipe, Sac, Fuir) */
 .pk-barre-tactique {

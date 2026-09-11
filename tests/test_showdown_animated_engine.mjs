@@ -726,6 +726,670 @@ test("Wave crest direction adapts based on attacker side (joueur vs adverse)", (
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Task 3 Tests: Combat UI Integration — Canvas FX, Sprites, Pills & Badges
+// ─────────────────────────────────────────────────────────────────────────────
+
+class MockDOMNode {
+  constructor(tag = "div") {
+    this.tagName = tag.toUpperCase();
+    this.children = [];
+    this.parentNode = null;
+    this.attrs = new Map();
+    this.classes = new Set();
+    this._textContent = "";
+    this.disabled = false;
+    this.listeners = new Map();
+    this.dataset = {};
+    this.scrollTop = 0;
+    this.scrollHeight = 100;
+
+    if (this.tagName === "CANVAS") {
+      const mockCanvas = createMockCanvas(800, 480);
+      this.width = mockCanvas.canvas.width;
+      this.height = mockCanvas.canvas.height;
+      this.getContext = mockCanvas.canvas.getContext;
+      this._drawOps = mockCanvas.drawOps;
+    }
+
+    const styleProps = new Map();
+    this.style = new Proxy({}, {
+      get: (target, prop) => {
+        if (prop === "setProperty") {
+          return (k, v) => styleProps.set(k, String(v));
+        }
+        if (prop === "getPropertyValue") {
+          return (k) => styleProps.get(k) || "";
+        }
+        return styleProps.get(prop) || "";
+      },
+      set: (target, prop, val) => {
+        styleProps.set(prop, String(val));
+        return true;
+      }
+    });
+  }
+
+  get clientWidth() { return 800; }
+  get clientHeight() { return 480; }
+  get offsetWidth() { return 800; }
+  get offsetHeight() { return 480; }
+
+  get className() {
+    return Array.from(this.classes).join(" ");
+  }
+
+  set className(val) {
+    this.classes.clear();
+    if (val) {
+      String(val).trim().split(/\s+/).forEach((c) => c && this.classes.add(c));
+    }
+  }
+
+  get classList() {
+    return {
+      add: (...cls) => cls.forEach((c) => c && this.classes.add(c)),
+      remove: (...cls) => cls.forEach((c) => this.classes.delete(c)),
+      contains: (c) => this.classes.has(c),
+      toggle: (c) => {
+        if (this.classes.has(c)) {
+          this.classes.delete(c);
+          return false;
+        }
+        this.classes.add(c);
+        return true;
+      }
+    };
+  }
+
+  getAttribute(name) {
+    if (name === "class") return this.className || null;
+    if (name === "disabled") return this.disabled ? "" : null;
+    return this.attrs.has(name) ? this.attrs.get(name) : null;
+  }
+
+  setAttribute(name, val) {
+    if (name === "class") {
+      this.className = val;
+    } else if (name === "disabled") {
+      this.disabled = true;
+      this.attrs.set(name, String(val));
+    } else {
+      this.attrs.set(name, String(val));
+    }
+  }
+
+  removeAttribute(name) {
+    if (name === "class") {
+      this.classes.clear();
+    } else if (name === "disabled") {
+      this.disabled = false;
+      this.attrs.delete(name);
+    } else {
+      this.attrs.delete(name);
+    }
+  }
+
+  hasAttribute(name) {
+    if (name === "class") return this.classes.size > 0;
+    if (name === "disabled") return this.disabled;
+    return this.attrs.has(name);
+  }
+
+  appendChild(child) {
+    if (typeof child === "string") {
+      const textNode = new MockDOMNode("#text");
+      textNode.textContent = child;
+      child = textNode;
+    }
+    child.parentNode = this;
+    this.children.push(child);
+    return child;
+  }
+
+  insertBefore(newChild, refChild) {
+    if (!refChild) return this.appendChild(newChild);
+    const idx = this.children.indexOf(refChild);
+    if (idx !== -1) {
+      newChild.parentNode = this;
+      this.children.splice(idx, 0, newChild);
+    } else {
+      this.appendChild(newChild);
+    }
+    return newChild;
+  }
+
+  removeChild(child) {
+    const idx = this.children.indexOf(child);
+    if (idx !== -1) {
+      this.children.splice(idx, 1);
+      child.parentNode = null;
+    }
+    return child;
+  }
+
+  remove() {
+    if (this.parentNode) {
+      this.parentNode.removeChild(this);
+    }
+  }
+
+  addEventListener(type, fn) {
+    if (!this.listeners.has(type)) this.listeners.set(type, []);
+    this.listeners.get(type).push(fn);
+  }
+
+  removeEventListener(type, fn) {
+    if (!this.listeners.has(type)) return;
+    this.listeners.set(type, this.listeners.get(type).filter((f) => f !== fn));
+  }
+
+  click() {
+    const list = this.listeners.get("click") || [];
+    const ev = { target: this, currentTarget: this, preventDefault: () => {}, stopPropagation: () => {} };
+    for (const fn of list) fn(ev);
+  }
+
+  get firstChild() {
+    return this.children[0] || null;
+  }
+
+  set firstChild(val) {
+    if (this.children.length === 0) {
+      if (val) this.appendChild(val);
+    } else {
+      this.children[0] = val;
+    }
+  }
+
+  get textContent() {
+    if (this.tagName === "#TEXT") return this._textContent;
+    if (this.children.length === 0) return this._textContent;
+    return this.children.map((c) => c.textContent).join(" ");
+  }
+
+  set textContent(val) {
+    this.children.length = 0;
+    this._textContent = String(val);
+  }
+
+  get innerHTML() {
+    return serializeDOM(this);
+  }
+
+  set innerHTML(val) {
+    this.children.length = 0;
+    this._textContent = "";
+    if (val) {
+      parseHTML(val, this);
+    }
+  }
+
+  querySelector(sel) {
+    const all = this.querySelectorAll(sel);
+    return all.length > 0 ? all[0] : null;
+  }
+
+  querySelectorAll(sel) {
+    const results = [];
+    const parts = sel.trim().split(/\s+/);
+    if (parts.length === 1) {
+      queryAllDOM(this, parts[0], results);
+    } else {
+      let currentSet = [this];
+      for (const part of parts) {
+        const nextSet = [];
+        for (const node of currentSet) {
+          queryAllDOM(node, part, nextSet);
+        }
+        currentSet = nextSet;
+      }
+      return currentSet;
+    }
+    return results;
+  }
+}
+
+function matchesDOMSelector(el, sel) {
+  if (!el || el.tagName === "#TEXT") return false;
+  let rest = sel.trim();
+
+  const tagMatch = rest.match(/^([a-zA-Z0-9]+)/);
+  if (tagMatch) {
+    if (el.tagName !== tagMatch[1].toUpperCase()) return false;
+    rest = rest.slice(tagMatch[1].length);
+  }
+
+  const attrRegex = /\[([a-zA-Z0-9\-_]+)(?:=([\'\"])?([^\'\"\]]+)\2)?\]/g;
+  let match;
+  while ((match = attrRegex.exec(rest)) !== null) {
+    const attrName = match[1];
+    const attrVal = match[3];
+    if (!el.hasAttribute(attrName)) return false;
+    if (attrVal !== undefined && el.getAttribute(attrName) !== attrVal) return false;
+  }
+  rest = rest.replace(/\[[^\]]+\]/g, "");
+
+  const classMatches = rest.match(/\.([a-zA-Z0-9\-_]+)/g);
+  if (classMatches) {
+    for (const cm of classMatches) {
+      if (!el.classList.contains(cm.slice(1))) return false;
+    }
+  }
+
+  return true;
+}
+
+function queryAllDOM(root, sel, results) {
+  for (const child of root.children) {
+    if (matchesDOMSelector(child, sel)) {
+      results.push(child);
+    }
+    queryAllDOM(child, sel, results);
+  }
+}
+
+function serializeDOM(el) {
+  if (el.tagName === "#TEXT") return el._textContent;
+  let out = "";
+  for (const child of el.children) {
+    if (child.tagName === "#TEXT") {
+      out += child._textContent;
+    } else {
+      const tag = child.tagName.toLowerCase();
+      out += `<${tag}`;
+      if (child.className) out += ` class="${child.className}"`;
+      for (const [k, v] of child.attrs) {
+        if (k !== "class") out += ` ${k}="${v}"`;
+      }
+      out += `>${serializeDOM(child)}</${tag}>`;
+    }
+  }
+  return out;
+}
+
+function parseHTML(html, root) {
+  const tagRegex = /<!--[\s\S]*?-->|<(\/)?([a-zA-Z0-9\-]+)([^>]*)>|([^<]+)/g;
+  const stack = [root];
+  let m;
+  const VOID_TAGS = new Set(["IMG", "INPUT", "BR", "HR", "META", "LINK"]);
+
+  while ((m = tagRegex.exec(html)) !== null) {
+    if (m[0].startsWith("<!--")) {
+      continue;
+    } else if (m[2]) {
+      const isClosing = !!m[1];
+      const tag = m[2].toUpperCase();
+      const rawAttrs = m[3] || "";
+
+      if (isClosing) {
+        for (let i = stack.length - 1; i > 0; i--) {
+          if (stack[i].tagName === tag) {
+            stack.length = i;
+            break;
+          }
+        }
+      } else {
+        const node = new MockDOMNode(tag);
+        const attrRegex = /([a-zA-Z0-9\-_]+)(?:=([\'\"])(.*?)\2|=([^\s>]+))?/g;
+        let am;
+        while ((am = attrRegex.exec(rawAttrs)) !== null) {
+          const k = am[1];
+          const v = am[3] !== undefined ? am[3] : (am[4] !== undefined ? am[4] : "");
+          node.setAttribute(k, v);
+        }
+        const parent = stack[stack.length - 1];
+        parent.appendChild(node);
+        if (!VOID_TAGS.has(tag) && !rawAttrs.trim().endsWith("/")) {
+          stack.push(node);
+        }
+      }
+    } else if (m[4]) {
+      const text = m[4];
+      if (text.trim()) {
+        const textNode = new MockDOMNode("#text");
+        textNode._textContent = text;
+        stack[stack.length - 1].appendChild(textNode);
+      }
+    }
+  }
+}
+
+function createCombatUIContext() {
+  const mockDoc = {
+    createElement: (tag) => new MockDOMNode(tag),
+    createTextNode: (text) => {
+      const n = new MockDOMNode("#text");
+      n._textContent = text;
+      return n;
+    },
+    querySelector: () => null,
+    querySelectorAll: () => [],
+    body: new MockDOMNode("body"),
+  };
+
+  const context = createIsolatedContext({
+    document: mockDoc,
+    window: null,
+    setTimeout: (fn) => { if (fn) fn(); return 1; },
+    clearTimeout: () => {},
+    devicePixelRatio: 2,
+    requestAnimationFrame: (cb) => { if (cb) cb(50); return 1; },
+    cancelAnimationFrame: () => {},
+  });
+  context.window = context;
+
+  loadScriptInContext("js/poke/ordre.js", context);
+  for (const f of context.POKE_ORDRE_NOYAU) {
+    loadScriptInContext(f, context);
+  }
+  loadScriptInContext("js/poke/tempo.js", context);
+  loadScriptInContext("js/poke/icones.js", context);
+  loadScriptInContext("js/poke/sprites-showdown.js", context);
+  loadScriptInContext("js/poke/anim-showdown.js", context);
+  loadScriptInContext("js/poke/ui-combat.js", context);
+
+  return context;
+}
+
+function createTestBattleState(ctx) {
+  return {
+    joueur: {
+      equipe: [
+        {
+          n: 25,
+          nom: "Pikachu",
+          niveau: 50,
+          pv: 100,
+          stats: { pv: 100, atk: 55, def: 40, spe: 50, vit: 90 },
+          statut: null,
+          dv: { atk: 15, def: 15, spe: 15, vit: 15 },
+          attaques: [
+            { cle: "THUNDERBOLT", pp: 15, ppMax: 15 },
+            { cle: "QUICK_ATTACK", pp: 30, ppMax: 30 },
+            { cle: "THUNDER_WAVE", pp: 20, ppMax: 20 },
+            { cle: "HEADBUTT", pp: 15, ppMax: 15 }
+          ]
+        }
+      ],
+      actif: 0,
+      paliers: ctx.PokeCombat ? ctx.PokeCombat.paliersNeufs() : { atk: 0, def: 0, spe: 0, vit: 0, precision: 0, esquive: 0 },
+      volatils: {},
+      participants: { 0: true }
+    },
+    adverse: {
+      dresseur: true,
+      equipe: [
+        {
+          n: 1,
+          nom: "Bulbizarre",
+          niveau: 50,
+          pv: 100,
+          stats: { pv: 100, atk: 49, def: 49, spe: 65, vit: 45 },
+          statut: null,
+          dv: { atk: 15, def: 15, spe: 15, vit: 15 },
+          attaques: [
+            { cle: "TACKLE", pp: 35, ppMax: 35 },
+            { cle: "VINE_WHIP", pp: 25, ppMax: 25 }
+          ]
+        }
+      ],
+      actif: 0,
+      paliers: ctx.PokeCombat ? ctx.PokeCombat.paliersNeufs() : { atk: 0, def: 0, spe: 0, vit: 0, precision: 0, esquive: 0 },
+      volatils: {},
+      participants: { 0: true }
+    },
+    tour: 0,
+    fini: null
+  };
+}
+
+test("Task 3: Ecran.prototype.monter() mounts <canvas class=\"pk-arene-fx\"> and sets ecran.canvasFx", () => {
+  const ctx = createCombatUIContext();
+  const Ecran = ctx.PokeUICombat.Ecran;
+  const hote = new MockDOMNode("div");
+  const etat = createTestBattleState(ctx);
+
+  const ecran = new Ecran(hote, etat, { hasard: new ctx.PokeHasard(1), rythme: 900 });
+  const canvas = hote.querySelector("canvas.pk-arene-fx");
+  assert.ok(canvas, "Canvas with class 'pk-arene-fx' must be mounted in arena");
+  assert.strictEqual(ecran.canvasFx, canvas, "ecran.canvasFx must reference the mounted canvas");
+});
+
+test("Task 3: monterCamp renders Showdown animated GIF with onerror fallback to local GBA sprite", () => {
+  const ctx = createCombatUIContext();
+  const Ecran = ctx.PokeUICombat.Ecran;
+  const hote = new MockDOMNode("div");
+  const etat = createTestBattleState(ctx);
+
+  const ecran = new Ecran(hote, etat, { hasard: new ctx.PokeHasard(1), rythme: 900 });
+
+  const imgJoueur = ecran.elJoueur.querySelector("img");
+  assert.ok(imgJoueur, "Player combatant must render an <img> sprite");
+  const srcJoueur = imgJoueur.getAttribute("src");
+  assert.strictEqual(srcJoueur, "https://play.pokemonshowdown.com/sprites/ani-back/pikachu.gif", "Player sprite must use Showdown animated back GIF");
+  const onerrorJoueur = imgJoueur.getAttribute("onerror");
+  assert.ok(onerrorJoueur && onerrorJoueur.includes("this.onerror=null;"), "Player img must have onerror handler clearing itself");
+  assert.ok(onerrorJoueur.includes("assets/img/poke/gen3/dos/25.png"), "Player onerror must fallback to local GBA back sprite");
+
+  const imgAdverse = ecran.elAdverse.querySelector("img");
+  assert.ok(imgAdverse, "Opponent combatant must render an <img> sprite");
+  const srcAdverse = imgAdverse.getAttribute("src");
+  assert.strictEqual(srcAdverse, "https://play.pokemonshowdown.com/sprites/ani/bulbasaur.gif", "Opponent sprite must use Showdown animated front GIF");
+  const onerrorAdverse = imgAdverse.getAttribute("onerror");
+  assert.ok(onerrorAdverse && onerrorAdverse.includes("this.onerror=null;"), "Opponent img must have onerror handler");
+  assert.ok(onerrorAdverse.includes("assets/img/poke/gen3/face/1.png"), "Opponent onerror must fallback to local GBA front sprite");
+});
+
+test("Task 3: rafraichir() renders stat stage pills inside .pk-hb-paliers for non-zero stats (+1 Atk, -1 Def)", () => {
+  const ctx = createCombatUIContext();
+  const Ecran = ctx.PokeUICombat.Ecran;
+  const hote = new MockDOMNode("div");
+  const etat = createTestBattleState(ctx);
+
+  const ecran = new Ecran(hote, etat, { hasard: new ctx.PokeHasard(1), rythme: 900 });
+
+  // Initial: all stages 0, no pills rendered
+  const paliersJoueur = ecran.elHbJoueur.querySelector(".pk-hb-paliers");
+  assert.ok(paliersJoueur, "Player healthbox must contain .pk-hb-paliers container");
+  const pillsInit = paliersJoueur.querySelectorAll(".pk-palier-pill");
+  assert.strictEqual(pillsInit.length, 0, "Neutral 0 stat stages must not render any pills");
+
+  // Modify stages: Player has Atk +2, Def -1, Vit 0
+  etat.joueur.paliers.atk = 2;
+  etat.joueur.paliers.def = -1;
+  etat.joueur.paliers.vit = 0;
+
+  // Opponent has Def +1, Vit -2
+  etat.adverse.paliers.def = 1;
+  etat.adverse.paliers.vit = -2;
+
+  ecran.rafraichir();
+
+  const pillsJoueur = paliersJoueur.querySelectorAll(".pk-palier-pill");
+  assert.strictEqual(pillsJoueur.length, 2, "Player should have exactly 2 pills for non-zero stages");
+
+  const pillAtk = pillsJoueur[0];
+  assert.ok(pillAtk.classList.contains("est-hausse"), "Positive stat stage must have .est-hausse class");
+  assert.match(pillAtk.textContent, /\+2\s*(ATQ|ATK)/i, "Pill must display '+2 ATQ/ATK'");
+
+  const pillDef = pillsJoueur[1];
+  assert.ok(pillDef.classList.contains("est-baisse"), "Negative stat stage must have .est-baisse class");
+  assert.match(pillDef.textContent, /\-1\s*(DÉF|DEF)/i, "Pill must display '-1 DÉF/DEF'");
+
+  const paliersAdverse = ecran.elHbAdverse.querySelector(".pk-hb-paliers");
+  assert.ok(paliersAdverse, "Opponent healthbox must contain .pk-hb-paliers container");
+  const pillsAdv = paliersAdverse.querySelectorAll(".pk-palier-pill");
+  assert.strictEqual(pillsAdv.length, 2, "Opponent should have exactly 2 pills for non-zero stages");
+  assert.ok(pillsAdv[0].classList.contains("est-hausse"), "Def +1 must be .est-hausse");
+  assert.match(pillsAdv[0].textContent, /\+1\s*(DÉF|DEF)/i, "Opponent Def +1 pill");
+  assert.ok(pillsAdv[1].classList.contains("est-baisse"), "Vit -2 must be .est-baisse");
+  assert.match(pillsAdv[1].textContent, /\-2\s*(VIT|SPD)/i, "Opponent Vit -2 pill");
+});
+
+test("Task 3: Move buttons in .pk-grille-attaques display live effectiveness badge (.pk-attaque-efficacite)", () => {
+  const ctx = createCombatUIContext();
+  const Ecran = ctx.PokeUICombat.Ecran;
+  const hote = new MockDOMNode("div");
+  const etat = createTestBattleState(ctx);
+
+  const ecran = new Ecran(hote, etat, { hasard: new ctx.PokeHasard(1), rythme: 900 });
+
+  // Opponent is Bulbizarre (Plante / Poison)
+  // Move 0: Tonnerre (Électrik) -> 0.5x on Plant -> .est-peu with ×½
+  // Move 1: Vive-Attaque (Normal) -> 1.0x -> neutral, no badge
+  // Move 2: Cage-Éclair (Status) -> .est-statut with STAT
+  const boutons = hote.querySelectorAll(".pk-grille-attaques .pk-attaque-btn");
+  assert.strictEqual(boutons.length, 4, "Must render 4 move buttons");
+
+  const badge0 = boutons[0].querySelector(".pk-attaque-efficacite");
+  assert.ok(badge0, "Move 0 (Tonnerre vs Plant/Poison) must have .pk-attaque-efficacite badge");
+  assert.ok(badge0.classList.contains("est-peu"), "0.5x multiplier must have class .est-peu");
+  assert.match(badge0.textContent, /×½|×0\.5/, "0.5x multiplier badge text must be ×½");
+
+  const badge1 = boutons[1].querySelector(".pk-attaque-efficacite");
+  assert.ok(!badge1 || badge1.textContent.trim() === "", "Neutral 1x offensive move has no badge");
+
+  const badge2 = boutons[2].querySelector(".pk-attaque-efficacite");
+  assert.ok(badge2, "Status move (Cage-Éclair) must have .pk-attaque-efficacite badge");
+  assert.ok(badge2.classList.contains("est-statut"), "Status move must have class .est-statut");
+  assert.strictEqual(badge2.textContent.trim(), "STAT", "Status move badge text must be STAT");
+
+  // Switch opponent to Water/Flying (e.g. Léviator #130) -> 4x multiplier
+  etat.adverse.equipe[0] = {
+    n: 130,
+    nom: "Leviator",
+    niveau: 50,
+    pv: 100,
+    stats: { pv: 100, atk: 125, def: 79, spe: 100, vit: 81 },
+    statut: null,
+    attaques: [{ cle: "TACKLE", pp: 35, ppMax: 35 }]
+  };
+  ecran.menuAttaques();
+  const boutonsLev = hote.querySelectorAll(".pk-grille-attaques .pk-attaque-btn");
+  const badgeLev = boutonsLev[0].querySelector(".pk-attaque-efficacite");
+  assert.ok(badgeLev, "Tonnerre vs Leviator (Water/Flying) must render badge");
+  assert.ok(badgeLev.classList.contains("est-super"), "4x multiplier must have class .est-super");
+  assert.match(badgeLev.textContent, /×4/, "4x multiplier badge text must be ×4");
+
+  // Switch opponent to Ground/Rock (e.g. Racaillou #74) -> 0x multiplier
+  etat.adverse.equipe[0] = {
+    n: 74,
+    nom: "Racaillou",
+    niveau: 50,
+    pv: 100,
+    stats: { pv: 100, atk: 80, def: 100, spe: 30, vit: 20 },
+    statut: null,
+    attaques: [{ cle: "TACKLE", pp: 35, ppMax: 35 }]
+  };
+  ecran.menuAttaques();
+  const boutonsRac = hote.querySelectorAll(".pk-grille-attaques .pk-attaque-btn");
+  const badgeRac = boutonsRac[0].querySelector(".pk-attaque-efficacite");
+  assert.ok(badgeRac, "Tonnerre vs Racaillou (Rock/Ground) must render badge");
+  assert.ok(badgeRac.classList.contains("est-inutile"), "0x multiplier must have class .est-inutile");
+  assert.match(badgeRac.textContent, /×0/, "0x multiplier badge text must be ×0");
+
+  // Switch opponent to Pure Water (e.g. Carapuce #7) -> 2x multiplier
+  etat.adverse.equipe[0] = {
+    n: 7,
+    nom: "Carapuce",
+    niveau: 50,
+    pv: 100,
+    stats: { pv: 100, atk: 48, def: 65, spe: 50, vit: 43 },
+    statut: null,
+    attaques: [{ cle: "TACKLE", pp: 35, ppMax: 35 }]
+  };
+  ecran.menuAttaques();
+  const boutonsCara = hote.querySelectorAll(".pk-grille-attaques .pk-attaque-btn");
+  const badgeCara = boutonsCara[0].querySelector(".pk-attaque-efficacite");
+  assert.ok(badgeCara, "Tonnerre vs Carapuce (Water) must render badge");
+  assert.ok(badgeCara.classList.contains("est-super"), "2x multiplier must have class .est-super");
+  assert.match(badgeCara.textContent, /×2/, "2x multiplier badge text must be ×2");
+});
+
+test("Task 3: Stat change events trigger PokeAnimShowdown.jouerStatAura", () => {
+  const ctx = createCombatUIContext();
+  const Ecran = ctx.PokeUICombat.Ecran;
+  const hote = new MockDOMNode("div");
+  const etat = createTestBattleState(ctx);
+
+  const ecran = new Ecran(hote, etat, { hasard: new ctx.PokeHasard(1), rythme: 900 });
+
+  let auraCalls = [];
+  const origJouerStatAura = ctx.PokeAnimShowdown.jouerStatAura;
+  ctx.PokeAnimShowdown.jouerStatAura = function (canvas, cote, delta, cb) {
+    auraCalls.push({ canvas, cote, delta });
+    if (typeof cb === "function") cb();
+  };
+
+  // Stat boost event
+  ecran.animer({ t: "palier", cote: "joueur", stat: "atk", delta: 1 });
+  assert.strictEqual(auraCalls.length, 1, "Stat boost must trigger jouerStatAura");
+  assert.strictEqual(auraCalls[0].cote, "joueur");
+  assert.strictEqual(auraCalls[0].delta, 1);
+  assert.strictEqual(auraCalls[0].canvas, ecran.canvasFx);
+
+  // Stat drop event
+  ecran.animer({ t: "palier", cote: "adverse", stat: "def", delta: -1 });
+  assert.strictEqual(auraCalls.length, 2, "Stat drop must trigger jouerStatAura");
+  assert.strictEqual(auraCalls[1].cote, "adverse");
+  assert.strictEqual(auraCalls[1].delta, -1);
+
+  // Blocked stat change must not trigger aura
+  ecran.animer({ t: "palier", cote: "joueur", stat: "atk", delta: 1, bloque: true });
+  assert.strictEqual(auraCalls.length, 2, "Blocked stat change must NOT trigger jouerStatAura");
+
+  ctx.PokeAnimShowdown.jouerStatAura = origJouerStatAura;
+});
+
+test("Task 3: animationDe hooks PokeAnimShowdown.jouerAttaque when PokeAnimShowdown is available", () => {
+  const ctx = createCombatUIContext();
+  const Ecran = ctx.PokeUICombat.Ecran;
+  const hote = new MockDOMNode("div");
+  const etat = createTestBattleState(ctx);
+
+  const ecran = new Ecran(hote, etat, { hasard: new ctx.PokeHasard(1), rythme: 900 });
+
+  let attackCalls = [];
+  const origJouerAttaque = ctx.PokeAnimShowdown.jouerAttaque;
+  ctx.PokeAnimShowdown.jouerAttaque = function (canvas, att, cote, cb) {
+    attackCalls.push({ canvas, att, cote });
+    if (typeof cb === "function") cb();
+  };
+
+  const anim = ecran.animationDe({
+    premier: true,
+    ev: { t: "utilise", attaque: "THUNDERBOLT", cote: "joueur" }
+  });
+
+  assert.ok(anim, "animationDe must return an animation descriptor");
+  assert.strictEqual(typeof anim.jouer, "function", "anim.jouer must be a function");
+  assert.ok(typeof anim.duree === "number" && anim.duree > 0, "anim.duree must be positive number");
+
+  const promise = anim.jouer();
+  assert.ok(promise && typeof promise.then === "function", "anim.jouer() must return a Promise");
+  assert.strictEqual(attackCalls.length, 1, "jouerAttaque must be called");
+  assert.strictEqual(attackCalls[0].att, "THUNDERBOLT");
+  assert.strictEqual(attackCalls[0].cote, "joueur");
+  assert.strictEqual(attackCalls[0].canvas, ecran.canvasFx);
+
+  ctx.PokeAnimShowdown.jouerAttaque = origJouerAttaque;
+});
+
+test("Task 3: CSS rules for .pk-arene-fx, .pk-hb-paliers, .pk-palier-pill, and .pk-attaque-efficacite exist in css/poke.css", () => {
+  const css = fs.readFileSync(path.join(ROOT_DIR, "css/poke.css"), "utf-8");
+  assert.match(css, /\.pk-arene-fx\b/, "Must define .pk-arene-fx in poke.css");
+  assert.match(css, /\.pk-hb-paliers\b/, "Must define .pk-hb-paliers in poke.css");
+  assert.match(css, /\.pk-palier-pill\b/, "Must define .pk-palier-pill in poke.css");
+  assert.match(css, /\.pk-palier-pill\.est-hausse\b/, "Must define .pk-palier-pill.est-hausse in poke.css");
+  assert.match(css, /\.pk-palier-pill\.est-baisse\b/, "Must define .pk-palier-pill.est-baisse in poke.css");
+  assert.match(css, /\.pk-attaque-efficacite\b/, "Must define .pk-attaque-efficacite in poke.css");
+  assert.match(css, /\.pk-attaque-efficacite\.est-super\b/, "Must define .pk-attaque-efficacite.est-super in poke.css");
+  assert.match(css, /\.pk-attaque-efficacite\.est-peu\b/, "Must define .pk-attaque-efficacite.est-peu in poke.css");
+  assert.match(css, /\.pk-attaque-efficacite\.est-inutile\b/, "Must define .pk-attaque-efficacite.est-inutile in poke.css");
+  assert.match(css, /\.pk-attaque-efficacite\.est-statut\b/, "Must define .pk-attaque-efficacite.est-statut in poke.css");
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Summary
 // ─────────────────────────────────────────────────────────────────────────────
 console.log(`\n\x1b[1m\x1b[35m------------------------------------------------------------\x1b[0m`);
@@ -742,3 +1406,4 @@ if (failedTests > 0) {
   console.log(`\x1b[32m\x1b[1mALL TESTS PASSED SUCCESSFULLY! (100% PASS RATE)\x1b[0m\n`);
   process.exit(0);
 }
+

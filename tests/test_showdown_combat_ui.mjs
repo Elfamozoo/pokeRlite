@@ -25,6 +25,16 @@ class MockNode {
     this.scrollTop = 0;
     this.scrollHeight = 100;
 
+    if (this.tagName === "CANVAS") {
+      this.width = 800;
+      this.height = 480;
+      this.getContext = (type) => ({
+        save: () => {}, restore: () => {}, clearRect: () => {}, fillRect: () => {}, strokeRect: () => {},
+        beginPath: () => {}, closePath: () => {}, moveTo: () => {}, lineTo: () => {}, stroke: () => {}, fill: () => {},
+        scale: () => {}, arc: () => {}
+      });
+    }
+
     const styleProps = new Map();
     this.style = new Proxy({}, {
       get: (target, prop) => {
@@ -42,6 +52,11 @@ class MockNode {
       }
     });
   }
+
+  get clientWidth() { return 800; }
+  get clientHeight() { return 480; }
+  get offsetWidth() { return 800; }
+  get offsetHeight() { return 480; }
 
   get className() {
     return Array.from(this.classes).join(" ");
@@ -369,6 +384,8 @@ for (const f of context.POKE_ORDRE_NOYAU) {
 }
 loadScriptInContext("js/poke/tempo.js", context);
 loadScriptInContext("js/poke/icones.js", context);
+loadScriptInContext("js/poke/sprites-showdown.js", context);
+loadScriptInContext("js/poke/anim-showdown.js", context);
 loadScriptInContext("js/poke/ui-combat.js", context);
 
 const Ecran = context.PokeUICombat.Ecran;
@@ -678,6 +695,114 @@ runTest("Bag button is suppressed when usine: true or duel: true", () => {
   });
   const barreStd = hoteStd.querySelector(".pk-barre-tactique");
   assert.match(barreStd.textContent, /\bSAC\b/i, "Bag button MUST exist in normal battle");
+});
+
+// 8. Canvas FX mount and animated sprite rendering with offline fallback
+runTest("Mounts Canvas FX (.pk-arene-fx) and renders Showdown animated GIFs with offline fallback", () => {
+  const hote = new MockNode("div");
+  const etat = createDummyState();
+  const ecran = new Ecran(hote, etat, { hasard: new context.PokeHasard(1), rythme: 900 });
+
+  const canvas = hote.querySelector("canvas.pk-arene-fx");
+  assert.ok(canvas, "Canvas FX (.pk-arene-fx) must be mounted in arena");
+  assert.strictEqual(ecran.canvasFx, canvas, "ecran.canvasFx must point to mounted canvas");
+
+  const imgJoueur = ecran.elJoueur.querySelector("img");
+  assert.ok(imgJoueur, "Player sprite image must exist");
+  assert.strictEqual(imgJoueur.getAttribute("src"), "https://play.pokemonshowdown.com/sprites/ani-back/pikachu.gif");
+  assert.ok(imgJoueur.getAttribute("onerror").includes("assets/img/poke/gen3/dos/25.png"));
+
+  const imgAdverse = ecran.elAdverse.querySelector("img");
+  assert.ok(imgAdverse, "Opponent sprite image must exist");
+  assert.strictEqual(imgAdverse.getAttribute("src"), "https://play.pokemonshowdown.com/sprites/ani/bulbasaur.gif");
+  assert.ok(imgAdverse.getAttribute("onerror").includes("assets/img/poke/gen3/face/1.png"));
+});
+
+// 9. Healthbox stat stage modifier pills (.pk-hb-paliers)
+runTest("Renders stat stage modifier pills (.pk-palier-pill.est-hausse / .est-baisse) in .pk-hb-paliers", () => {
+  const hote = new MockNode("div");
+  const etat = createDummyState();
+  const ecran = new Ecran(hote, etat, { hasard: new context.PokeHasard(1), rythme: 900 });
+
+  const paliersJoueur = ecran.elHbJoueur.querySelector(".pk-hb-paliers");
+  assert.ok(paliersJoueur, "Player healthbox must contain .pk-hb-paliers");
+  assert.strictEqual(paliersJoueur.querySelectorAll(".pk-palier-pill").length, 0, "Zero stages render 0 pills");
+
+  // Buff / debuff
+  etat.joueur.paliers.atk = 2;
+  etat.joueur.paliers.def = -1;
+  etat.adverse.paliers.vit = 1;
+  ecran.rafraichir();
+
+  const pillsJ = paliersJoueur.querySelectorAll(".pk-palier-pill");
+  assert.strictEqual(pillsJ.length, 2, "Player renders 2 pills for Atk +2 and Def -1");
+  assert.ok(pillsJ[0].classList.contains("est-hausse"), "Atk +2 must be .est-hausse");
+  assert.match(pillsJ[0].textContent, /\+2\s*(ATQ|ATK)/i);
+  assert.ok(pillsJ[1].classList.contains("est-baisse"), "Def -1 must be .est-baisse");
+  assert.match(pillsJ[1].textContent, /\-1\s*(DÉF|DEF)/i);
+
+  const pillsA = ecran.elHbAdverse.querySelector(".pk-hb-paliers").querySelectorAll(".pk-palier-pill");
+  assert.strictEqual(pillsA.length, 1, "Opponent renders 1 pill for Vit +1");
+  assert.ok(pillsA[0].classList.contains("est-hausse"));
+  assert.match(pillsA[0].textContent, /\+1\s*(VIT|SPD)/i);
+});
+
+// 10. Tactical move effectiveness badges (.pk-attaque-efficacite)
+runTest("Displays tactical move effectiveness badges (.pk-attaque-efficacite) on move buttons", () => {
+  const hote = new MockNode("div");
+  const etat = createDummyState();
+  const ecran = new Ecran(hote, etat, { hasard: new context.PokeHasard(1), rythme: 900 });
+
+  const boutons = hote.querySelectorAll(".pk-grille-attaques .pk-attaque-btn");
+  assert.strictEqual(boutons.length, 4, "Must render 4 move buttons");
+
+  // Move 0: Tonnerre (Électrik) vs Bulbizarre (Plante/Poison) -> 0.5x -> .est-peu with ×½
+  const badge0 = boutons[0].querySelector(".pk-attaque-efficacite");
+  assert.ok(badge0, "Move 0 must have .pk-attaque-efficacite badge");
+  assert.ok(badge0.classList.contains("est-peu"), "0.5x multiplier has .est-peu");
+  assert.match(badge0.textContent, /×½/);
+
+  // Move 1: Vive-Attaque (Normal) -> 1x -> no badge
+  const badge1 = boutons[1].querySelector(".pk-attaque-efficacite");
+  assert.ok(!badge1 || badge1.textContent.trim() === "", "1.0x neutral move has no badge");
+
+  // Move 2: Cage-Éclair (Status) -> .est-statut with STAT
+  const badge2 = boutons[2].querySelector(".pk-attaque-efficacite");
+  assert.ok(badge2, "Status move must have .pk-attaque-efficacite badge");
+  assert.ok(badge2.classList.contains("est-statut"), "Status move has .est-statut");
+  assert.strictEqual(badge2.textContent.trim(), "STAT");
+
+  // Opponent Leviator (Water/Flying) -> 4x multiplier
+  etat.adverse.equipe[0] = {
+    n: 130,
+    nom: "Leviator",
+    niveau: 50,
+    pv: 100,
+    stats: { pv: 100, atk: 125, def: 79, spe: 100, vit: 81 },
+    statut: null,
+    attaques: [{ cle: "TACKLE", pp: 35, ppMax: 35 }]
+  };
+  ecran.menuAttaques();
+  const boutonsLev = hote.querySelectorAll(".pk-grille-attaques .pk-attaque-btn");
+  const badgeLev = boutonsLev[0].querySelector(".pk-attaque-efficacite");
+  assert.ok(badgeLev.classList.contains("est-super"), "4x has .est-super");
+  assert.match(badgeLev.textContent, /×4/);
+
+  // Opponent Racaillou (Rock/Ground) -> 0x multiplier
+  etat.adverse.equipe[0] = {
+    n: 74,
+    nom: "Racaillou",
+    niveau: 50,
+    pv: 100,
+    stats: { pv: 100, atk: 80, def: 100, spe: 30, vit: 20 },
+    statut: null,
+    attaques: [{ cle: "TACKLE", pp: 35, ppMax: 35 }]
+  };
+  ecran.menuAttaques();
+  const boutonsRac = hote.querySelectorAll(".pk-grille-attaques .pk-attaque-btn");
+  const badgeRac = boutonsRac[0].querySelector(".pk-attaque-efficacite");
+  assert.ok(badgeRac.classList.contains("est-inutile"), "0x has .est-inutile");
+  assert.match(badgeRac.textContent, /×0/);
 });
 
 console.log(`\n\x1b[32mAll ${passed}/${total} Showdown combat UI tests completed!\x1b[0m\n`);

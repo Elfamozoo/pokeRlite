@@ -216,7 +216,11 @@
     else element.removeAttribute("data-type");
   }
 
-  W.PokeType = { attr: attr, pastille: pastille, poser: poser, nom: nomDuType, id: idDuNom };
+  function multiplicateur(typeAtt, typesDef) {
+    return (W.PokeCombat && W.PokeCombat.efficacite) ? W.PokeCombat.efficacite(typeAtt, typesDef) : 1;
+  }
+
+  W.PokeType = { attr: attr, pastille: pastille, poser: poser, nom: nomDuType, id: idDuNom, multiplicateur: multiplicateur };
 
   // ═══════════════════════════════════════════════════════════════════════════
   //  OÙ VIT LE VISAGE D'UNE ESPÈCE — UNE SEULE PORTE  [19/08/2026]
