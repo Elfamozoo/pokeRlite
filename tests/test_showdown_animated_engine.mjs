@@ -1224,6 +1224,20 @@ test("Task 3: rafraichir() renders stat stage pills inside .pk-hb-paliers for no
   assert.match(pillsAdv[0].textContent, /\+1\s*(DÉF|DEF)/i, "Opponent Def +1 pill");
   assert.ok(pillsAdv[1].classList.contains("est-baisse"), "Vit -2 must be .est-baisse");
   assert.match(pillsAdv[1].textContent, /\-2\s*(VIT|SPD)/i, "Opponent Vit -2 pill");
+
+  // Gen 2/3 Special stats (sat, sde)
+  etat.joueur.paliers.sat = 2;
+  etat.joueur.paliers.sde = -1;
+  ecran.rafraichir();
+
+  const pillsJoueurGen3 = paliersJoueur.querySelectorAll(".pk-palier-pill");
+  assert.strictEqual(pillsJoueurGen3.length, 4, "Player should have 4 pills including sat and sde");
+  const pillSat = pillsJoueurGen3[2];
+  assert.ok(pillSat.classList.contains("est-hausse"), "sat +2 must be .est-hausse");
+  assert.match(pillSat.textContent, /\+2\s*SpA/i, "sat pill must display '+2 SpA'");
+  const pillSde = pillsJoueurGen3[3];
+  assert.ok(pillSde.classList.contains("est-baisse"), "sde -1 must be .est-baisse");
+  assert.match(pillSde.textContent, /\-1\s*SpD/i, "sde pill must display '-1 SpD'");
 });
 
 test("Task 3: Move buttons in .pk-grille-attaques display live effectiveness badge (.pk-attaque-efficacite)", () => {
@@ -1304,6 +1318,25 @@ test("Task 3: Move buttons in .pk-grille-attaques display live effectiveness bad
   assert.ok(badgeCara, "Tonnerre vs Carapuce (Water) must render badge");
   assert.ok(badgeCara.classList.contains("est-super"), "2x multiplier must have class .est-super");
   assert.match(badgeCara.textContent, /×2/, "2x multiplier badge text must be ×2");
+
+  // Transformed types (typesForces) via Conversion / Morphing
+  // Give Carapuce typesForces = ["ground"] -> Tonnerre becomes ineffective (0x)
+  etat.adverse.equipe[0].typesForces = ["ground"];
+  ecran.menuAttaques();
+  const boutonsTrans = hote.querySelectorAll(".pk-grille-attaques .pk-attaque-btn");
+  const badgeTrans = boutonsTrans[0].querySelector(".pk-attaque-efficacite");
+  assert.ok(badgeTrans, "Tonnerre vs typesForces=['ground'] must render badge");
+  assert.ok(badgeTrans.classList.contains("est-inutile"), "0x multiplier on typesForces must have class .est-inutile");
+  assert.match(badgeTrans.textContent, /×0/, "Badge text must be ×0 for typesForces ground");
+
+  // Change typesForces to ["water", "flying"] -> Tonnerre becomes 4x super effective
+  etat.adverse.equipe[0].typesForces = ["water", "flying"];
+  ecran.menuAttaques();
+  const boutonsTrans4 = hote.querySelectorAll(".pk-grille-attaques .pk-attaque-btn");
+  const badgeTrans4 = boutonsTrans4[0].querySelector(".pk-attaque-efficacite");
+  assert.ok(badgeTrans4, "Tonnerre vs typesForces=['water','flying'] must render badge");
+  assert.ok(badgeTrans4.classList.contains("est-super"), "4x multiplier on typesForces must have class .est-super");
+  assert.match(badgeTrans4.textContent, /×4/, "Badge text must be ×4 for typesForces water/flying");
 });
 
 test("Task 3: Stat change events trigger PokeAnimShowdown.jouerStatAura", () => {
@@ -1372,7 +1405,22 @@ test("Task 3: animationDe hooks PokeAnimShowdown.jouerAttaque when PokeAnimShowd
   assert.strictEqual(attackCalls[0].cote, "joueur");
   assert.strictEqual(attackCalls[0].canvas, ecran.canvasFx);
 
+  // Defensive check: when PokeAnimShowdown.jouerAttaque is missing, animationDe falls back cleanly
+  ctx.PokeAnimShowdown.jouerAttaque = null;
+  const animNoAtt = ecran.animationDe({
+    premier: true,
+    ev: { t: "utilise", attaque: "THUNDERBOLT", cote: "joueur" }
+  });
+  assert.strictEqual(animNoAtt, null, "animationDe without jouerAttaque falls back cleanly");
   ctx.PokeAnimShowdown.jouerAttaque = origJouerAttaque;
+
+  // Auto-player fast rhythm (< 0.2, i.e. rythme < 180) skips animation
+  const ecranFast = new Ecran(hote, etat, { hasard: new ctx.PokeHasard(1), rythme: 100 });
+  const animFast = ecranFast.animationDe({
+    premier: true,
+    ev: { t: "utilise", attaque: "THUNDERBOLT", cote: "joueur" }
+  });
+  assert.strictEqual(animFast, null, "animationDe skips animation when rhythm is under 0.2 (auto-player)");
 });
 
 test("Task 3: CSS rules for .pk-arene-fx, .pk-hb-paliers, .pk-palier-pill, and .pk-attaque-efficacite exist in css/poke.css", () => {

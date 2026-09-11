@@ -1550,6 +1550,7 @@
   // ═══════════════════════════════════════════════════════════════════════════
   var COURT = {
     atk: { fr: "ATQ", en: "ATK" }, def: { fr: "DÉF", en: "DEF" },
+    sat: { fr: "SpA", en: "SpA" }, sde: { fr: "SpD", en: "SpD" },
     vit: { fr: "VIT", en: "SPD" }, spe: { fr: "SPÉ", en: "SPC" },
     precision: { fr: "PRÉ", en: "ACC" }, esquive: { fr: "ESQ", en: "EVA" },
     critique: { fr: "CRIT", en: "CRIT" },
@@ -1650,7 +1651,7 @@
       // Paliers Showdown (.pk-hb-paliers)
       var elPaliers = hb.querySelector(".pk-hb-paliers");
       if (elPaliers) {
-        var statsPaliers = ["atk", "def", "vit", "spe", "precision", "esquive"];
+        var statsPaliers = ["atk", "def", "sat", "sde", "vit", "spe", "precision", "esquive"];
         var paliers = camp.paliers || {};
         var htmlPaliers = "";
         for (var pIdx = 0; pIdx < statsPaliers.length; pIdx++) {
@@ -1990,10 +1991,11 @@
   Ecran.prototype.animationDe = function (item) {
     if (!item.premier || !item.ev || item.ev.t !== "utilise") return null;
 
-    if (W.PokeAnimShowdown && (this.canvasFx || this.elArene)) {
+    if (W.PokeAnimShowdown && typeof W.PokeAnimShowdown.jouerAttaque === "function" && (this.canvasFx || this.elArene)) {
       var cFx = this.canvasFx || (this.elArene && this.elArene.querySelector && this.elArene.querySelector("canvas.pk-arene-fx"));
-      var vShowdown = Math.max(0.55, Math.min(1, (this.opt.rythme || 900) / 900));
-      if (vShowdown < 0.2) return null;
+      var rythme = (this.opt.rythme || 900) / 900;
+      if (rythme < 0.2) return null;
+      var vShowdown = Math.max(0.55, Math.min(1, rythme));
       var attShowdown = item.ev.attaque;
       var coteShowdown = item.ev.cote;
       return {
@@ -2467,7 +2469,7 @@
     }
 
     var adverse = this.etat && this.etat.adverse && W.PokeCombat.actif(this.etat.adverse);
-    var typesEnFace = (adverse && ESP()[adverse.n] && ESP()[adverse.n].types) || [];
+    var typesEnFace = (adverse && (adverse.typesForces || (ESP()[adverse.n] && ESP()[adverse.n].types))) || [];
     var entrave = vj.entrave;
 
     var grille = W.document.createElement("div");
