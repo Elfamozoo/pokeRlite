@@ -113,6 +113,7 @@
     //    combat sans jamais dessiner, et une animation ne décide de rien.
     "js/poke/animations.js",
     "js/poke/anim-attaque.js",
+    "js/poke/anim-showdown.js",
     "js/poke/progression.js",
     // La phrase d'un objet, une fois pour toutes : la carte de butin, l'étal de
     // la boutique et l'infobulle du sac la lisent au même endroit. Elle vient

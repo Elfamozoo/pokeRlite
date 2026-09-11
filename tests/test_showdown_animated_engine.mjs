@@ -298,6 +298,371 @@ test("sprites-showdown.js is registered in ordre.js POKE_ORDRE_ECRANS", () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Task 2 Tests: Modern Attack FX Canvas Engine (anim-showdown.js)
+// ─────────────────────────────────────────────────────────────────────────────
+const animScriptPath = "js/poke/anim-showdown.js";
+
+function createMockCanvas(width = 800, height = 480) {
+  const drawOps = [];
+  const ctx = {
+    canvas: null,
+    save: () => drawOps.push(["save"]),
+    restore: () => drawOps.push(["restore"]),
+    clearRect: (x, y, w, h) => drawOps.push(["clearRect", x, y, w, h]),
+    fillRect: (x, y, w, h) => drawOps.push(["fillRect", x, y, w, h]),
+    strokeRect: (x, y, w, h) => drawOps.push(["strokeRect", x, y, w, h]),
+    beginPath: () => drawOps.push(["beginPath"]),
+    closePath: () => drawOps.push(["closePath"]),
+    moveTo: (x, y) => drawOps.push(["moveTo", x, y]),
+    lineTo: (x, y) => drawOps.push(["lineTo", x, y]),
+    arc: (x, y, r, sa, ea) => drawOps.push(["arc", x, y, r, sa, ea]),
+    stroke: () => drawOps.push(["stroke"]),
+    fill: () => drawOps.push(["fill"]),
+    translate: (x, y) => drawOps.push(["translate", x, y]),
+    rotate: (a) => drawOps.push(["rotate", a]),
+    scale: (sx, sy) => drawOps.push(["scale", sx, sy]),
+    createLinearGradient: () => ({ addColorStop: () => {} }),
+    createRadialGradient: () => ({ addColorStop: () => {} }),
+    setLineDash: () => {},
+    fillStyle: "#000",
+    strokeStyle: "#000",
+    lineWidth: 1,
+    globalAlpha: 1,
+    shadowBlur: 0,
+    shadowColor: "transparent",
+  };
+  const canvas = {
+    width,
+    height,
+    clientWidth: width,
+    clientHeight: height,
+    style: {},
+    className: "",
+    getContext: (type) => (type === "2d" ? ctx : null),
+  };
+  ctx.canvas = canvas;
+  return { canvas, ctx, drawOps };
+}
+
+function createAnimContext(customProps = {}) {
+  let pendingCallbacks = [];
+  let currentTime = 0;
+  const animCtx = createIsolatedContext({
+    devicePixelRatio: 2,
+    requestAnimationFrame: (cb) => {
+      pendingCallbacks.push(cb);
+      return pendingCallbacks.length;
+    },
+    cancelAnimationFrame: () => {},
+    setTimeout: (cb, ms) => {
+      pendingCallbacks.push(() => cb());
+      return 1;
+    },
+    clearTimeout: () => {},
+    ...customProps,
+  });
+
+  const pumpFrames = (frameCount = 10, timeStep = 50) => {
+    for (let f = 0; f < frameCount; f++) {
+      currentTime += timeStep;
+      const currentCbs = pendingCallbacks;
+      pendingCallbacks = [];
+      for (const cb of currentCbs) {
+        cb(currentTime);
+      }
+    }
+  };
+
+  return { animCtx, pumpFrames, getPendingCount: () => pendingCallbacks.length };
+}
+
+test("anim-showdown.js loads and exports W.PokeAnimShowdown", () => {
+  assert.ok(fs.existsSync(path.join(ROOT_DIR, animScriptPath)), `File ${animScriptPath} must exist`);
+  const { animCtx } = createAnimContext();
+  loadScriptInContext(animScriptPath, animCtx);
+  assert.ok(animCtx.PokeAnimShowdown, "PokeAnimShowdown must be defined on globalThis");
+  assert.strictEqual(typeof animCtx.PokeAnimShowdown.monter, "function", "monter must be a function");
+  assert.strictEqual(typeof animCtx.PokeAnimShowdown.jouerAttaque, "function", "jouerAttaque must be a function");
+  assert.strictEqual(typeof animCtx.PokeAnimShowdown.jouerStatAura, "function", "jouerStatAura must be a function");
+  assert.strictEqual(typeof animCtx.PokeAnimShowdown.estAttaqueSignature, "function", "estAttaqueSignature must be a function");
+});
+
+test("anim-showdown.js is registered in ordre.js in ECRANS right after anim-attaque.js", () => {
+  const ordreCtx = createIsolatedContext();
+  loadScriptInContext("js/poke/ordre.js", ordreCtx);
+  const screens = ordreCtx.POKE_ORDRE_ECRANS;
+  assert.ok(screens.includes("js/poke/anim-showdown.js"), "anim-showdown.js must be registered in POKE_ORDRE_ECRANS");
+  const idxAnimAttaque = screens.indexOf("js/poke/anim-attaque.js");
+  const idxAnimShowdown = screens.indexOf("js/poke/anim-showdown.js");
+  assert.ok(idxAnimAttaque >= 0, "anim-attaque.js must exist in POKE_ORDRE_ECRANS");
+  assert.ok(idxAnimShowdown > idxAnimAttaque, "anim-showdown.js must come after anim-attaque.js in POKE_ORDRE_ECRANS");
+
+  const rawOrdre = fs.readFileSync(path.join(ROOT_DIR, "js/poke/ordre.js"), "utf-8");
+  assert.ok(
+    /["']js\/poke\/anim-attaque\.js["'],\s*["']js\/poke\/anim-showdown\.js["']/.test(rawOrdre),
+    "anim-showdown.js must be declared in ECRANS immediately after anim-attaque.js"
+  );
+});
+
+test("monter(hote) creates canvas with proper class, HiDPI scaling, styling, and reuse", () => {
+  const { animCtx } = createAnimContext({ devicePixelRatio: 2 });
+  loadScriptInContext(animScriptPath, animCtx);
+  const A = animCtx.PokeAnimShowdown;
+
+  const children = [];
+  const fakeDoc = {
+    createElement: (tag) => {
+      const el = {
+        tagName: tag.toUpperCase(),
+        className: "",
+        style: {},
+        width: 0,
+        height: 0,
+        getContext: () => null,
+      };
+      return el;
+    },
+  };
+  animCtx.document = fakeDoc;
+
+  const mockHote = {
+    clientWidth: 600,
+    clientHeight: 400,
+    children: children,
+    querySelector: (sel) => {
+      if (sel === "canvas.pk-arene-fx" || sel === ".pk-arene-fx") {
+        return children.find((c) => c.className && c.className.includes("pk-arene-fx")) || null;
+      }
+      return null;
+    },
+    appendChild: (child) => {
+      children.push(child);
+      return child;
+    },
+  };
+
+  const canvas1 = A.monter(mockHote);
+  assert.ok(canvas1, "monter must return the canvas element");
+  assert.strictEqual(children.length, 1, "Canvas must be appended to hote");
+  assert.ok(canvas1.className.includes("pk-arene-fx"), "Canvas must have pk-arene-fx class");
+  // HiDPI check: 600x400 * dpr 2 = 1200x800
+  assert.strictEqual(canvas1.width, 1200, "Canvas width must be clientWidth * dpr");
+  assert.strictEqual(canvas1.height, 800, "Canvas height must be clientHeight * dpr");
+  assert.strictEqual(canvas1.style.position, "absolute");
+  assert.strictEqual(canvas1.style.pointerEvents, "none");
+  assert.strictEqual(canvas1.style.zIndex, "4");
+
+  // Re-call monter on same hote must reuse existing canvas
+  const canvas2 = A.monter(mockHote);
+  assert.strictEqual(canvas2, canvas1, "monter must reuse existing canvas instead of creating a second one");
+  assert.strictEqual(children.length, 1, "Only one canvas element should exist in hote");
+});
+
+test("estAttaqueSignature correctly identifies signature attack keys and objects", () => {
+  const { animCtx } = createAnimContext();
+  loadScriptInContext(animScriptPath, animCtx);
+  const A = animCtx.PokeAnimShowdown;
+
+  // Signature moves in French and English
+  const signatures = [
+    "tonnerre", "Tonnerre", "THUNDERBOLT", "fatal-foudre", "Fatal-Foudre", "THUNDER",
+    "surf", "Surf", "SURF", "cascade", "Cascade", "WATERFALL",
+    "seisme", "Séisme", "EARTHQUAKE", "ampleur", "Ampleur", "MAGNITUDE",
+    "lance-flammes", "Lance-Flammes", "FLAMETHROWER", "deflagration", "Déflagration", "FIRE_BLAST",
+    "laser-glace", "Laser Glace", "ICE_BEAM", "blizzard", "Blizzard", "BLIZZARD",
+    "tranche", "Tranche", "SLASH", "griffe", "Griffe", "SCRATCH", "morsure", "Morsure", "BITE",
+    "psyko", "Psyko", "PSYCHIC_M", "ball-ombre", "Ball'Ombre", "SHADOW_BALL", "vibrobscur", "Vibrobscur", "DARK_PULSE",
+  ];
+
+  for (const sig of signatures) {
+    assert.strictEqual(A.estAttaqueSignature(sig), true, `Expected ${sig} to be recognized as signature move`);
+  }
+
+  // Attack object forms
+  assert.strictEqual(A.estAttaqueSignature({ cle: "THUNDERBOLT" }), true);
+  assert.strictEqual(A.estAttaqueSignature({ nom: { fr: "Lance-Flammes" } }), true);
+  assert.strictEqual(A.estAttaqueSignature({ cle: "SURF" }), true);
+
+  // Generic / non-signature moves
+  assert.strictEqual(A.estAttaqueSignature("charge"), false);
+  assert.strictEqual(A.estAttaqueSignature("tackle"), false);
+  assert.strictEqual(A.estAttaqueSignature("rugissement"), false);
+  assert.strictEqual(A.estAttaqueSignature("growl"), false);
+  assert.strictEqual(A.estAttaqueSignature("vive-attaque"), false);
+  assert.strictEqual(A.estAttaqueSignature("repos"), false);
+  assert.strictEqual(A.estAttaqueSignature(null), false);
+  assert.strictEqual(A.estAttaqueSignature(undefined), false);
+});
+
+test("jouerAttaque dispatches all 7 signature moves and completes via callback", () => {
+  const { animCtx, pumpFrames } = createAnimContext();
+  loadScriptInContext(animScriptPath, animCtx);
+  const A = animCtx.PokeAnimShowdown;
+
+  const testMoves = [
+    { key: "tonnerre", name: "Tonnerre (Electric Lightning)" },
+    { key: "surf", name: "Surf (Tidal Crest Wave)" },
+    { key: "seisme", name: "Séisme (Fissure & Debris)" },
+    { key: "lance-flammes", name: "Lance-Flammes (Flame Particles)" },
+    { key: "laser-glace", name: "Laser Glace (Cryogenic Beam & Crystals)" },
+    { key: "tranche", name: "Tranche (Slashing Kinetic Arcs)" },
+    { key: "psyko", name: "Psyko (Chromatic Shockwaves)" },
+  ];
+
+  for (const { key, name } of testMoves) {
+    const { canvas, drawOps } = createMockCanvas(800, 480);
+    let cbCalled = false;
+
+    A.jouerAttaque(canvas, key, "joueur", () => {
+      cbCalled = true;
+    });
+
+    // Pump frames forward past duration (~500ms)
+    pumpFrames(12, 50);
+
+    assert.ok(cbCalled, `${name}: callback must be called when animation completes`);
+    assert.ok(drawOps.length > 0, `${name}: canvas operations must be executed`);
+    
+    // Check that clearRect was called at least once (to clear canvas on end)
+    const hasClear = drawOps.some((op) => op[0] === "clearRect");
+    assert.ok(hasClear, `${name}: clearRect must be called to reset canvas`);
+  }
+});
+
+test("jouerAttaque procedural fallback handles physical, special, and status moves", () => {
+  const { animCtx, pumpFrames } = createAnimContext();
+  loadScriptInContext(animScriptPath, animCtx);
+  const A = animCtx.PokeAnimShowdown;
+
+  const genericMoves = [
+    { key: "charge", cat: "physique", desc: "Generic Physical (Thrust + Impact)" },
+    { key: "bulles-do", cat: "special", desc: "Generic Special (Beam / Projectile)" },
+    { key: "rugissement", cat: "statut", desc: "Generic Status (Concentric Energy Rings)" },
+  ];
+
+  for (const { key, cat, desc } of genericMoves) {
+    const { canvas, drawOps } = createMockCanvas(800, 480);
+    let cbCalled = false;
+
+    A.jouerAttaque(canvas, { cle: key, categorie: cat }, "joueur", () => {
+      cbCalled = true;
+    });
+
+    pumpFrames(12, 50);
+
+    assert.ok(cbCalled, `${desc}: callback must be invoked`);
+    assert.ok(drawOps.length > 0, `${desc}: drawing operations must be performed`);
+    const hasClear = drawOps.some((op) => op[0] === "clearRect");
+    assert.ok(hasClear, `${desc}: canvas must be cleared upon completion`);
+  }
+});
+
+test("jouerStatAura handles positive boost (green chevrons) and negative drop (red chevrons)", () => {
+  const { animCtx, pumpFrames } = createAnimContext();
+  loadScriptInContext(animScriptPath, animCtx);
+  const A = animCtx.PokeAnimShowdown;
+
+  // Boost (delta > 0)
+  {
+    const { canvas, ctx, drawOps } = createMockCanvas(800, 480);
+    let cbCalled = false;
+    A.jouerStatAura(canvas, "joueur", 1, () => {
+      cbCalled = true;
+    });
+    pumpFrames(10, 50);
+    assert.ok(cbCalled, "Stat boost: callback must be called");
+    assert.ok(drawOps.length > 0, "Stat boost: canvas operations must be executed");
+    const hasClear = drawOps.some((op) => op[0] === "clearRect");
+    assert.ok(hasClear, "Stat boost: canvas must be cleared");
+  }
+
+  // Drop (delta < 0)
+  {
+    const { canvas, ctx, drawOps } = createMockCanvas(800, 480);
+    let cbCalled = false;
+    A.jouerStatAura(canvas, "adverse", -1, () => {
+      cbCalled = true;
+    });
+    pumpFrames(10, 50);
+    assert.ok(cbCalled, "Stat drop: callback must be called");
+    assert.ok(drawOps.length > 0, "Stat drop: canvas operations must be executed");
+    const hasClear = drawOps.some((op) => op[0] === "clearRect");
+    assert.ok(hasClear, "Stat drop: canvas must be cleared");
+  }
+
+  // Zero delta
+  {
+    const { canvas } = createMockCanvas(800, 480);
+    let cbCalled = false;
+    A.jouerStatAura(canvas, "joueur", 0, () => {
+      cbCalled = true;
+    });
+    pumpFrames(10, 50);
+    assert.ok(cbCalled, "Zero delta: callback must still be invoked safely");
+  }
+});
+
+test("PokeAnimShowdown headless and mock resilience", () => {
+  const { animCtx } = createAnimContext();
+  loadScriptInContext(animScriptPath, animCtx);
+  const A = animCtx.PokeAnimShowdown;
+
+  // monter with null / invalid hote
+  assert.doesNotThrow(() => {
+    A.monter(null);
+  }, "monter(null) must not throw");
+
+  // jouerAttaque with null canvas
+  let cb1 = false;
+  assert.doesNotThrow(() => {
+    A.jouerAttaque(null, "tonnerre", "joueur", () => { cb1 = true; });
+  });
+  assert.strictEqual(cb1, true, "jouerAttaque with null canvas must invoke callback");
+
+  // jouerAttaque with canvas returning null context
+  let cb2 = false;
+  assert.doesNotThrow(() => {
+    A.jouerAttaque({ getContext: () => null }, "tonnerre", "joueur", () => { cb2 = true; });
+  });
+  assert.strictEqual(cb2, true, "jouerAttaque with null 2D context must invoke callback");
+
+  // jouerStatAura with null canvas
+  let cb3 = false;
+  assert.doesNotThrow(() => {
+    A.jouerStatAura(null, "joueur", 1, () => { cb3 = true; });
+  });
+  assert.strictEqual(cb3, true, "jouerStatAura with null canvas must invoke callback");
+
+  // Missing cb argument
+  assert.doesNotThrow(() => {
+    A.jouerAttaque(null, "tonnerre", "joueur");
+    A.jouerStatAura(null, "joueur", 1);
+  }, "Missing cb argument must not throw");
+});
+
+test("anim-showdown.js satisfies architectural and NOYAU purity rules", () => {
+  const raw = fs.readFileSync(path.join(ROOT_DIR, animScriptPath), "utf-8");
+  const code = stripComments(raw);
+
+  // Strict mode check
+  assert.ok(
+    code.includes('"use strict"') || code.includes("'use strict'"),
+    "File must include 'use strict'"
+  );
+
+  // Zero non-deterministic calls affecting simulation
+  const forbiddenNonDet = [
+    /\bMath\.random\s*\(/,
+    /\bDate\.now\s*\(/,
+    /\bnew\s+Date\b/,
+    /\bcrypto\.getRandomValues\s*\(/,
+  ];
+  for (const pat of forbiddenNonDet) {
+    assert.ok(!pat.test(code), `Forbidden non-deterministic call found matching ${pat}`);
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Summary
 // ─────────────────────────────────────────────────────────────────────────────
 console.log(`\n\x1b[1m\x1b[35m------------------------------------------------------------\x1b[0m`);
